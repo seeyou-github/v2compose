@@ -23,3 +23,8 @@
 ## Gson
 -keep class io.github.v2compose.bean.** { <fields>; }
 -keep class io.github.v2compose.network.bean.** { <fields>; }
+
+## OkHttp
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
