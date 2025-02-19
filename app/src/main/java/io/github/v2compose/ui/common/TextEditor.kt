@@ -58,7 +58,6 @@ import kotlinx.coroutines.launch
 
 private val ContentBarHeight = 40.dp
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TextEditor(
     content: String,
@@ -102,7 +101,6 @@ fun TextEditor(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ContentBar(
     tabTitles: List<Int>,

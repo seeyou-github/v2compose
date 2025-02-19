@@ -40,7 +40,7 @@ class App : Application(), ImageLoaderFactory, Configuration.Provider {
     }
 
     private fun beforeOnCreate() {
-        resetScrollableTabRowMinimumTabWidth()
+//        resetScrollableTabRowMinimumTabWidth()
     }
 
     private fun init() {

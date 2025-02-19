@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
+import io.github.v2compose.ui.common.MyScrollableTabRow
 import io.github.v2compose.ui.main.home.recent.RecentTab
 import io.github.v2compose.ui.main.home.tab.NewsTab
 import kotlinx.coroutines.launch
@@ -27,7 +28,6 @@ private val TabRowHeight = 32.dp
 
 private const val TAG = "HomeContent"
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
     onNewsItemClick: (NewsInfo.Item) -> Unit,
@@ -67,9 +67,10 @@ fun HomeContent(
             }
         }
 
-        ScrollableTabRow(
+        MyScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
             edgePadding = 12.dp,
+            minItemWidth = 0.dp,
         ) {
             tabInfos.forEachIndexed { index, tabInfo ->
                 val selected = index == pagerState.currentPage
