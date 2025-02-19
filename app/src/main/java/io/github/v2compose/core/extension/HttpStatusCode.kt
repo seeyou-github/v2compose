@@ -12,5 +12,6 @@ val Int.isRedirect: Boolean
         HttpURLConnection.HTTP_MOVED_PERM,
         HttpURLConnection.HTTP_MOVED_TEMP,
         HttpURLConnection.HTTP_SEE_OTHER -> true
+
         else -> false
     }

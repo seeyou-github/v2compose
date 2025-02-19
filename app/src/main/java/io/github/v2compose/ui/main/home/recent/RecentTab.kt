@@ -13,9 +13,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import io.github.v2compose.network.bean.RecentTopics
-import io.github.v2compose.ui.common.*
+import io.github.v2compose.ui.common.PagingLoadState
+import io.github.v2compose.ui.common.PullToRefresh
+import io.github.v2compose.ui.common.SimpleTopic
+import io.github.v2compose.ui.common.pagingAppendMoreItem
+import io.github.v2compose.ui.common.pagingPrependMoreItem
+import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
 
@@ -78,8 +83,8 @@ private fun RecentTopicsList(
 
         LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
             pagingPrependMoreItem(recentTopics)
-            itemsIndexed(recentTopics, key = { _, item -> item.id }) { index, item ->
-                if (item == null) return@itemsIndexed
+            items(recentTopics.itemCount, key = recentTopics.itemKey { it.id }) { index ->
+                val item = recentTopics[index] ?: return@items
                 SimpleTopic(title = item.title,
                     userName = item.userName,
                     userAvatar = item.avatar,

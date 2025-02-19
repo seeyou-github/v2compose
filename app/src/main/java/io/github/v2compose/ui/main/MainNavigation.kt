@@ -1,9 +1,8 @@
 package io.github.v2compose.ui.main
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.compose.composable
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.ui.common.OnHtmlImageClick
@@ -18,7 +17,6 @@ fun NavController.navigateToMain() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.mainScreen(
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onRecentItemClick: (RecentTopics.Item) -> Unit,

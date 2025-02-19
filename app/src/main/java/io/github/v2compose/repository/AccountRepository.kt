@@ -2,7 +2,14 @@ package io.github.v2compose.repository
 
 import androidx.paging.PagingData
 import io.github.v2compose.bean.Account
-import io.github.v2compose.network.bean.*
+import io.github.v2compose.network.bean.DailyInfo
+import io.github.v2compose.network.bean.HomePageInfo
+import io.github.v2compose.network.bean.LoginParam
+import io.github.v2compose.network.bean.MyFollowingInfo
+import io.github.v2compose.network.bean.MyNodesInfo
+import io.github.v2compose.network.bean.MyTopicsInfo
+import io.github.v2compose.network.bean.NotificationInfo
+import io.github.v2compose.network.bean.TwoStepLoginInfo
 import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {

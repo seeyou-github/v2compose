@@ -18,7 +18,7 @@ fun TextAlertDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { title?.let { Text(title) }},
+        title = { title?.let { Text(title) } },
         text = { Text(message, style = MaterialTheme.typography.bodyLarge) },
         confirmButton = {
             TextButton(onClick = {

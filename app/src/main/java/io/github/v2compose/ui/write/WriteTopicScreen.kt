@@ -3,17 +3,47 @@ package io.github.v2compose.ui.write
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.Polyline
-import androidx.compose.material.icons.rounded.Send
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +64,11 @@ import io.github.v2compose.bean.ContentFormat
 import io.github.v2compose.bean.DraftTopic
 import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.network.bean.TopicNode
-import io.github.v2compose.ui.common.*
+import io.github.v2compose.ui.common.CloseButton
+import io.github.v2compose.ui.common.HtmlAlertDialog
+import io.github.v2compose.ui.common.ListDivider
+import io.github.v2compose.ui.common.SelectNode
+import io.github.v2compose.ui.common.TextEditor
 import io.github.v2compose.usecase.LoadNodesState
 
 @Composable
@@ -74,7 +108,6 @@ fun WriteTopicScreenRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WriteTopicScreen(
     initialDraftTopic: DraftTopic,
@@ -188,7 +221,6 @@ private fun WriteTopicScreen(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun TopicTitleField(
     title: String,
     onTitleChanged: (String) -> Unit,
@@ -199,6 +231,7 @@ private fun TopicTitleField(
         mutableStateOf(TextFieldValue(title, TextRange(title.length)))
     }
 
+    val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
     TextField(
         value = textFieldValue,
         onValueChange = {
@@ -211,13 +244,19 @@ private fun TopicTitleField(
 //            .heightIn(min = 80.dp),
         keyboardActions = KeyboardActions(onNext = { onNextAction() }),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.colors(
             errorIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            containerColor = Color.Transparent,
-            placeholderColor = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedPlaceholderColor = placeholderColor,
+            unfocusedPlaceholderColor = placeholderColor,
+            errorPlaceholderColor = placeholderColor,
+            disabledPlaceholderColor = placeholderColor,
         ),
         placeholder = { Text(stringResource(id = R.string.topic_title)) },
         textStyle = MaterialTheme.typography.bodyLarge,
@@ -226,7 +265,6 @@ private fun TopicTitleField(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicContentField(
     content: String, onContentChanged: (String) -> Unit, modifier: Modifier = Modifier
@@ -234,6 +272,7 @@ fun TopicContentField(
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(content, TextRange(content.length)))
     }
+    val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
 
     TextField(
         value = textFieldValue,
@@ -242,13 +281,19 @@ fun TopicContentField(
             onContentChanged(it.text)
         },
         modifier = modifier.fillMaxWidth(),
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.colors(
             errorIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            containerColor = Color.Transparent,
-            placeholderColor = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedPlaceholderColor = placeholderColor,
+            unfocusedPlaceholderColor = placeholderColor,
+            errorPlaceholderColor = placeholderColor,
+            disabledPlaceholderColor = placeholderColor,
         ),
         placeholder = { Text(stringResource(R.string.topic_content_placeholder)) },
         textStyle = MaterialTheme.typography.bodyMedium.copy(
@@ -260,8 +305,8 @@ fun TopicContentField(
 }
 
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun TopBar(
     createTopicState: CreateTopicState, onCloseClick: () -> Unit, onSendClick: () -> Unit
 ) {
@@ -290,7 +335,7 @@ private fun SendButton(
                 strokeWidth = 2.dp
             )
         } else {
-            Icon(imageVector = Icons.Rounded.Send, contentDescription = "send")
+            Icon(imageVector = Icons.AutoMirrored.Rounded.Send, contentDescription = "send")
         }
     }
 }
@@ -330,16 +375,19 @@ private fun HandleCreateTopicState(
                 }
             }
         }
+
         is CreateTopicState.Failure -> {
             val problem: CreateTopicPageInfo.Problem = createTopicState.pageInfo.problem ?: return
             if (problem.isEmpty) return
             HtmlAlertDialog(content = problem.html, onUriClick = onUriClick)
         }
+
         is CreateTopicState.Success -> {
             LaunchedEffect(createTopicState) {
                 onCreateTopicSuccess(createTopicState.topicId)
             }
         }
+
         else -> {}
     }
 }

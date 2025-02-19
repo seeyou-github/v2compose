@@ -1,13 +1,12 @@
 package io.github.v2compose.ui.write
 
 import android.net.Uri
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
 import io.github.v2compose.core.StringDecoder
 
 private const val argsNode = "node"
@@ -28,7 +27,7 @@ fun NavController.navigateToWriteTopic(node: String? = null, nodeTitle: String? 
     navigate("/write?$argsNode=$encodedNode&$argsNodeTitle=$encodedNodeTitle")
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+
 fun NavGraphBuilder.writeTopicScreen(
     onCloseClick: () -> Unit,
     openUri: (String) -> Unit,

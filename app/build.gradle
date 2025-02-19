@@ -1,9 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
     id "kotlin-parcelize"
     id 'com.google.dagger.hilt.android'
+    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
 if (getGradle().getStartParameter().getTaskRequests().toString().contains("Google")) {
@@ -12,14 +13,12 @@ if (getGradle().getStartParameter().getTaskRequests().toString().contains("Googl
 }
 
 android {
-
     namespace 'io.github.v2compose'
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "io.github.v2compose"
         minSdk 26
-        targetSdk 33
         versionCode 101
         versionName "1.0.1"
 
@@ -50,9 +49,7 @@ android {
     }
     buildFeatures {
         compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.4.0'
+        buildConfig true
     }
     packagingOptions {
         resources {
@@ -73,70 +70,64 @@ android {
 }
 
 dependencies {
-    def nav_version = "2.6.0-beta01"
-    def accompanist_version = "0.30.0"
+    def nav_version = "2.8.7"
     def lifecycle_version = '2.6.1'
-    def hiltVersion = "2.45"
-    def hiltAndroidXVersion = "1.1.0-alpha01"
-    def paging_version = "3.2.0-alpha04"
+    def hiltVersion = "2.55"
+    def hiltAndroidXVersion = "1.2.0"
+    def paging_version = "3.3.6"
+    def coil_version = "2.7.0"
 
     implementation project(":htmlText")
 
     //Jetpack
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
-    implementation 'androidx.activity:activity-compose:1.7.1'
-    implementation "androidx.annotation:annotation:1.6.0"
+    implementation 'androidx.activity:activity-compose:1.10.0'
+    implementation "androidx.annotation:annotation:1.9.1"
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
     implementation "com.google.dagger:hilt-android:$hiltVersion"
-    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    ksp "com.google.dagger:hilt-android-compiler:$hiltVersion"
     implementation "androidx.hilt:hilt-navigation-compose:$hiltAndroidXVersion"
 
     implementation 'androidx.core:core-splashscreen:1.0.1'
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-webview:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
 
-    implementation("androidx.paging:paging-runtime:$paging_version")
-    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
+    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
+    implementation("androidx.paging:paging-compose:$paging_version")
 
-    implementation "androidx.browser:browser:1.5.0"
+    implementation "androidx.browser:browser:1.8.0"
 
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation "androidx.datastore:datastore-preferences:1.1.2"
 
-    implementation "androidx.webkit:webkit:1.6.1"
+    implementation "androidx.webkit:webkit:1.12.1"
 
-    implementation("androidx.startup:startup-runtime:1.1.1")
+    implementation("androidx.startup:startup-runtime:1.2.0")
 
-    def work_version = "2.8.1"
+    def work_version = "2.10.0"
     implementation "androidx.work:work-runtime-ktx:$work_version"
-    implementation 'androidx.hilt:hilt-work:1.0.0'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    implementation "androidx.hilt:hilt-work:$hiltAndroidXVersion"
+    ksp "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
 
     //compose
-    implementation platform('androidx.compose:compose-bom:2023.01.00')
+    implementation platform('androidx.compose:compose-bom:2025.02.00')
     implementation "androidx.compose.foundation:foundation"
-    implementation "androidx.compose.material:material"
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-tooling-preview"
     implementation "androidx.compose.material:material-icons-extended"
 
     //firebase
-    googleImplementation platform('com.google.firebase:firebase-bom:31.3.0')
+    googleImplementation platform('com.google.firebase:firebase-bom:33.9.0')
     googleImplementation 'com.google.firebase:firebase-crashlytics-ktx'
     googleImplementation 'com.google.firebase:firebase-analytics-ktx'
 
     //test
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.01.00')
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation platform('androidx.compose:compose-bom:2025.02.00')
     androidTestImplementation "androidx.compose.ui:ui-test-junit4"
     debugImplementation "androidx.compose.ui:ui-tooling"
     debugImplementation "androidx.compose.ui:ui-test-manifest"
@@ -147,27 +138,27 @@ dependencies {
     implementation 'me.ghui:global-retrofit-converter:1.0.2'
 
     //network
-    implementation "com.squareup.okhttp3:okhttp:4.10.0"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
-    implementation 'com.google.code.gson:gson:2.10'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.orhanobut:logger:2.2.0'
-    implementation("com.squareup.moshi:moshi:1.14.0")
+    implementation("com.squareup.moshi:moshi:1.15.2")
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
     //coil
-    implementation("io.coil-kt:coil:2.2.2")
-    implementation("io.coil-kt:coil-gif:2.2.2")
-    implementation("io.coil-kt:coil-svg:2.2.2")
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation "io.coil-kt:coil:$coil_version"
+    implementation "io.coil-kt:coil-gif:$coil_version"
+    implementation "io.coil-kt:coil-svg:2.6.0"
+    implementation "io.coil-kt:coil-compose:$coil_version"
 
     //ui composables
-    implementation 'com.github.SimformSolutionsPvtLtd:SSJetPackComposeProgressButton:1.0.7'
+    implementation 'com.github.SimformSolutionsPvtLtd:SSJetPackComposeProgressButton:1.1.0'
     implementation "me.onebone:toolbar-compose:2.3.5"
 
-    implementation("org.greenrobot:eventbus:3.3.1")
+    implementation "org.greenrobot:eventbus:3.3.1"
 
     //markdown
     final def markwon_version = '4.6.2'
@@ -177,9 +168,7 @@ dependencies {
     implementation "io.noties.markwon:html:$markwon_version"
     implementation "io.noties.markwon:image-coil:$markwon_version"
     implementation "io.noties.markwon:inline-parser:$markwon_version"
-}
 
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    implementation "io.github.kevinnzou:compose-webview:0.33.6"
+
 }

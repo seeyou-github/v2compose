@@ -7,7 +7,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
@@ -17,7 +28,14 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -25,13 +43,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -588,6 +617,7 @@ private fun HtmlElementsScope.InlineImage(
         "loading" -> {
             LoadingImage(modifier = Modifier.size(width, maxOf(height, 48.dp)))
         }
+
         "success" -> {
             val clickEnabled = clickable && onImageClick != null
             AsyncImage(
@@ -597,6 +627,7 @@ private fun HtmlElementsScope.InlineImage(
                 modifier = if (clickEnabled) modifier.clickable { onImageClick?.invoke(img) } else modifier,
             )
         }
+
         "error" -> {
             ErrorImage(
                 modifier = modifier.clickable {
@@ -605,6 +636,7 @@ private fun HtmlElementsScope.InlineImage(
                 },
             )
         }
+
         "" -> {
             AutoLoadInlineImage(img = img, modifier = modifier)
         }
@@ -616,7 +648,7 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
     img: Img,
     modifier: Modifier
 ) {
-    var retryTimes by remember { mutableStateOf(0) }
+    var retryTimes by remember { mutableIntStateOf(0) }
 
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
@@ -692,16 +724,19 @@ private fun AnnotatedString.Builder.inlineText(node: Node, scope: HtmlElementsSc
             "br" -> {
                 append('\n')
             }
+
             "em" -> {
                 withStyle(SpanStyle(fontStyle = FontStyle.Italic)) {
                     childNodesInlineText(node, scope)
                 }
             }
+
             "strong" -> {
                 withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                     childNodesInlineText(node, scope)
                 }
             }
+
             "a" -> {
                 val href = node.attr("href")
                 pushStringAnnotation(tag = "URL", annotation = href)
@@ -715,6 +750,7 @@ private fun AnnotatedString.Builder.inlineText(node: Node, scope: HtmlElementsSc
                 }
                 pop()
             }
+
             "code" -> {
                 //使用对代码优化显示的字体
                 withStyle(
@@ -726,12 +762,14 @@ private fun AnnotatedString.Builder.inlineText(node: Node, scope: HtmlElementsSc
                     childNodesInlineText(node, scope)
                 }
             }
+
             "img" -> {
                 val src = node.attr("src")
                 if (src.isNotEmpty()) {
                     appendInlineContent(src)
                 }
             }
+
             "input" -> {
                 val type = node.attr("type")
                 val checked = node.hasAttr("checked")

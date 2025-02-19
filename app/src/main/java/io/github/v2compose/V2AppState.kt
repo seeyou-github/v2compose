@@ -11,9 +11,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
@@ -114,7 +114,7 @@ class V2AppState @Inject constructor(
         val appImageDir = File(pictureDir, "v2compose").also {
             it.mkdirs()
         }
-        context.imageLoader.diskCache?.get(url)?.let { snapshot ->
+        context.imageLoader.diskCache?.openSnapshot(url)?.let { snapshot ->
             val newFile = File(appImageDir, imageName)
             snapshot.data.toFile().copyTo(newFile, overwrite = true)
             snapshot.close()
@@ -150,6 +150,7 @@ fun NavController.innerOpenUri(uri: String): Boolean {
             val replyFloor = uriObj.fragment?.replace("reply", "")?.toIntOrNull() ?: 0
             navigateToTopic(screenId, replyFloor)
         }
+
         "go" -> navigateToNode(screenId)
         "member" -> navigateToUser(userName = screenId)
         else -> navigateToWebView(uri.fullUrl(Constants.baseUrl))

@@ -1,8 +1,8 @@
 package io.github.v2compose.usecase
 
+import io.github.v2compose.V2exUri
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.repository.AccountRepository
-import io.github.v2compose.V2exUri
 import javax.inject.Inject
 
 class CheckInUseCase @Inject constructor(

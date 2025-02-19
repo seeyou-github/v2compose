@@ -69,6 +69,10 @@ public class MyTopicsInfo extends BaseInfo {
         private String tagLink;
         @Pick(value = "span[title]", attr = Attrs.OWN_TEXT)
         private String time;
+        private String _id;
+        private String _userName;
+        private String _avatar;
+        private String _tagName;
 
         @Override
         public String toString() {
@@ -84,8 +88,6 @@ public class MyTopicsInfo extends BaseInfo {
                     '}';
         }
 
-        private String _id;
-
         public String getId() {
             if (_id != null) return _id;
             if (link == null) return "";
@@ -97,8 +99,6 @@ public class MyTopicsInfo extends BaseInfo {
             return time == null ? "" : time;
         }
 
-        private String _userName;
-
         public String getUserName() {
             if (_userName != null) return _userName;
             if (Check.isEmpty(userLink)) return null;
@@ -109,8 +109,6 @@ public class MyTopicsInfo extends BaseInfo {
         public String getUserLink() {
             return userLink;
         }
-
-        private String _avatar;
 
         public String getAvatar() {
             if (_avatar != null) return _avatar;
@@ -130,8 +128,6 @@ public class MyTopicsInfo extends BaseInfo {
         public int getCommentNum() {
             return commentNum;
         }
-
-        private String _tagName;
 
         public String getTagName() {
             if (_tagName != null) return _tagName;

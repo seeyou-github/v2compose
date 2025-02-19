@@ -3,19 +3,49 @@ package io.github.v2compose.ui.topic
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.rounded.Comment
+import androidx.compose.material.icons.automirrored.rounded.Send
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,17 +60,33 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
 import io.github.v2compose.R
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.ContentInfo.Supplement
 import io.github.v2compose.network.bean.TopicInfo.Reply
 import io.github.v2compose.ui.HandleSnackbarMessage
-import io.github.v2compose.ui.common.*
+import io.github.v2compose.ui.common.HtmlAlertDialog
+import io.github.v2compose.ui.common.HtmlContent
+import io.github.v2compose.ui.common.ListDivider
+import io.github.v2compose.ui.common.OnHtmlImageClick
+import io.github.v2compose.ui.common.SegmentedControl
+import io.github.v2compose.ui.common.SimpleTopic
+import io.github.v2compose.ui.common.pagingAppendMoreItem
+import io.github.v2compose.ui.common.pagingPrependMoreItem
+import io.github.v2compose.ui.common.pagingRefreshItem
+import io.github.v2compose.ui.common.rememberLazyListState
+import io.github.v2compose.ui.common.rememberMutableStateListOf
 import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.topic.bean.ReplyWrapper
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
-import io.github.v2compose.ui.topic.composables.*
+import io.github.v2compose.ui.topic.composables.ReplyInput
+import io.github.v2compose.ui.topic.composables.ReplyInputState
+import io.github.v2compose.ui.topic.composables.ReplyMenuItem
+import io.github.v2compose.ui.topic.composables.TopicMenuItem
+import io.github.v2compose.ui.topic.composables.TopicReply
+import io.github.v2compose.ui.topic.composables.TopicTopBar
+import io.github.v2compose.ui.topic.composables.UserRepliesDialog
+import io.github.v2compose.ui.topic.composables.fabSizeWithMargin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -158,7 +204,7 @@ private fun TopicScreen(
 ) {
     val density = LocalDensity.current
 
-    var clickReplyTimes by remember { mutableStateOf(0) }
+    var clickReplyTimes by remember { mutableIntStateOf(0) }
     var replyInputInitialText by remember { mutableStateOf("") }
     var replyInputCurrentText by remember { mutableStateOf("") }
     var replyInputState by remember { mutableStateOf(ReplyInputState.Collapsed) }
@@ -294,7 +340,7 @@ private fun TopicList(
     val coroutineScope = rememberCoroutineScope()
     val clickedUserReplies = rememberMutableStateListOf<List<Reply>>()
     val repliesBarIndex = rememberRepliesBarIndex(topicInfo)
-    var currentTargetFloor by rememberSaveable { mutableStateOf(targetFloor) }
+    var currentTargetFloor by rememberSaveable { mutableIntStateOf(targetFloor) }
 
     val repliesBarHeight = with(LocalDensity.current) { 40.dp.roundToPx() }
     val floorRegex = "#reply\\d+".toRegex()
@@ -305,7 +351,8 @@ private fun TopicList(
             if (!uri.startsWith("/member/")) break
             val userName = uri.removePrefix("/member/")
             val userReplies =
-                topicItems.itemSnapshotList.filter { it is Reply && it.floor < reply.floor && it.userName == userName } as List<Reply>
+                topicItems.itemSnapshotList.filterIsInstance<Reply>()
+                    .filter { it.floor < reply.floor && it.userName == userName }
             if (userReplies.isEmpty()) break
             clickedUserReplies.add(userReplies)
             return
@@ -369,8 +416,9 @@ private fun TopicList(
             }
 
             if (topicInfo.topic.contentInfo.supplements.isNotEmpty()) {
-                itemsIndexed(items = topicInfo.topic.contentInfo.supplements,
-                    key = { supplementIndex, item -> "supplement:$supplementIndex" },
+                val supplements = topicInfo.topic.contentInfo.supplements
+                itemsIndexed(items = supplements,
+                    key = { supplementIndex, _ -> "supplement:$supplementIndex" },
                     contentType = { _, _ -> "supplement" }) { supplementIndex, item ->
                     val tag = "supplement:$supplementIndex"
                     TopicSupplement(
@@ -416,12 +464,13 @@ private fun TopicList(
 
         pagingPrependMoreItem(lazyPagingItems = topicItems)
 
-        itemsIndexed(items = topicItems,
-            key = { index, item -> if (item is Reply) item.replyId else "item#$index" }) { index, item ->
+        items(topicItems.itemCount,
+            key = { index -> topicItems[index].let { if (it is Reply) it.replyId else "item#$index" } }) { index ->
+            val item = topicItems[index] ?: return@items
             if (item is Reply) {
                 val replyWrapper = replyWrappers[item.replyId]
                 if (replyWrapper?.ignored == true) {
-                    return@itemsIndexed
+                    return@items
                 }
                 val tag = "reply#${item.replyId}"
                 TopicReply(
@@ -616,7 +665,6 @@ enum class FabType {
     Reply, Send, Loading
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun FabButton(
     visible: Boolean,
@@ -634,8 +682,18 @@ private fun FabButton(
             val contentColor = LocalContentColor.current
             AnimatedContent(targetState = type) { state ->
                 when (state) {
-                    FabType.Send -> Icon(Icons.Rounded.Send, type.name, tint = contentColor)
-                    FabType.Reply -> Icon(Icons.Rounded.Comment, type.name, tint = contentColor)
+                    FabType.Send -> Icon(
+                        Icons.AutoMirrored.Rounded.Send,
+                        type.name,
+                        tint = contentColor
+                    )
+
+                    FabType.Reply -> Icon(
+                        Icons.AutoMirrored.Rounded.Comment,
+                        type.name,
+                        tint = contentColor
+                    )
+
                     FabType.Loading -> CircularProgressIndicator(
                         modifier = Modifier.size(24.dp), color = contentColor, strokeWidth = 2.dp
                     )

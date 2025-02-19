@@ -1,13 +1,12 @@
 package io.github.v2compose.ui.user
 
 import android.net.Uri
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.ui.common.OnHtmlImageClick
 
@@ -29,7 +28,6 @@ fun NavController.navigateToUser(userName: String, userAvatar: String? = null) {
     navigate("/member/$encodedUserName?userAvatar=$encodedUserAvatar")
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.userScreen(
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,

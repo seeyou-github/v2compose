@@ -37,7 +37,7 @@ class MineContentState(
         }
     }
 
-    fun doActionIfLoggedIn(account: Account, action:() -> Unit){
+    fun doActionIfLoggedIn(account: Account, action: () -> Unit) {
         if (account.isValid()) {
             action()
         } else {

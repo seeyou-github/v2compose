@@ -3,18 +3,25 @@ package io.github.v2compose.ui.webview
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.google.accompanist.web.*
+import com.kevinnzou.web.LoadingState
+import com.kevinnzou.web.WebContent
+import com.kevinnzou.web.WebView
+import com.kevinnzou.web.WebViewState
 import io.github.v2compose.Constants
 import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull
-import io.github.v2compose.network.NetConstants
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.webview.client.V2exWebViewClient
 
@@ -23,7 +30,6 @@ fun WebViewScreenRoute(url: String, onCloseClick: () -> Unit, openUri: (String) 
     WebViewScreen(url = url, onCloseClick = onCloseClick, openUri = openUri)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WebViewScreen(url: String, onCloseClick: () -> Unit, openUri: (String) -> Unit) {
     val webViewState = rememberSaveableWebViewState(
@@ -62,14 +68,14 @@ private fun WebViewScreen(url: String, onCloseClick: () -> Unit, openUri: (Strin
                     }
                 }, client = remember(openUri) { V2exWebViewClient(openUri) })
             if (webViewState.isLoading) {
-                LinearProgressIndicator(progress = loadingProgress)
+                LinearProgressIndicator(progress = { loadingProgress })
             }
         }
     }
 }
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun WebViewTopBar(
     pageTitle: String?,
     onCloseClick: () -> Unit
@@ -102,9 +108,9 @@ private fun rememberSaveableWebViewState(
                     ?.let { listOf(it.url, it.additionalHttpHeaders) } ?: listOf()
             },
             restore = {
-                if(it.isEmpty()){
+                if (it.isEmpty()) {
                     WebViewState(WebContent.Url(url, additionalHttpHeaders))
-                }else{
+                } else {
                     WebViewState(WebContent.Url(it[0] as String, it[1] as Map<String, String>))
                 }
             }

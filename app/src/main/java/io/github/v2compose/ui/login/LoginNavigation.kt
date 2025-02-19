@@ -1,9 +1,12 @@
 package io.github.v2compose.ui.login
 
 import android.net.Uri
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.navigation.*
-import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 
 private const val argsNext = "next"
 const val loginNavigationRoute = "/signin?next={$argsNext}"
@@ -16,7 +19,6 @@ fun NavController.navigateToLogin(
     navigate("/signin?next=$encodedNext", navOptions = navOptions)
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.loginScreen(
     onCloseClick: () -> Unit,
     onSignInWithGoogleClick: (String) -> Unit,

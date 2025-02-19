@@ -1,12 +1,11 @@
 package io.github.v2compose.ui.webview
 
 import android.net.Uri
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
 
 private const val argsUrl = "url"
 const val webViewNavigationRoute = "/webview?$argsUrl={$argsUrl}"
@@ -16,8 +15,7 @@ fun NavController.navigateToWebView(url: String) {
     navigate("/webview?url=$encodeUrl")
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-fun NavGraphBuilder.webViewScreen(onCloseClick: () -> Unit, openUri:(String) -> Unit) {
+fun NavGraphBuilder.webViewScreen(onCloseClick: () -> Unit, openUri: (String) -> Unit) {
     composable(
         webViewNavigationRoute,
         arguments = listOf(navArgument(argsUrl) { type = NavType.StringType })

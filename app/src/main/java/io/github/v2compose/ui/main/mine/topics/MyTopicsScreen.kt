@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,10 +19,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import io.github.v2compose.R
 import io.github.v2compose.network.bean.MyTopicsInfo
-import io.github.v2compose.ui.common.*
+import io.github.v2compose.ui.common.BackIcon
+import io.github.v2compose.ui.common.SimpleTopic
+import io.github.v2compose.ui.common.pagingAppendMoreItem
+import io.github.v2compose.ui.common.pagingRefreshItem
+import io.github.v2compose.ui.common.rememberLazyListState
 
 private const val TAG = "MyFollowingScreen"
 
@@ -92,7 +100,8 @@ private fun MyTopicsList(
     val lazyListState = myTopics.rememberLazyListState()
     LazyColumn(state = lazyListState) {
         pagingRefreshItem(myTopics)
-        itemsIndexed(myTopics, key = { _, item -> item.id }) { index, item ->
+        items(myTopics.itemCount, key = myTopics.itemKey { it.id }) { index ->
+            val item = myTopics[index]
             item?.let {
                 Log.d(TAG, "mytopics, index = $index, item = $item")
                 SimpleTopic(

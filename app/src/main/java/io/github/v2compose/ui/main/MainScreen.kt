@@ -1,17 +1,39 @@
 package io.github.v2compose.ui.main
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
@@ -101,7 +123,6 @@ fun MainScreenRoute(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun MainScreen(
     unreadNotifications: Int,
     loadNodesState: LoadNodesState,
@@ -122,7 +143,7 @@ private fun MainScreen(
     loadNodes: () -> Unit,
     onBottomTabClickAgain: () -> Unit,
 ) {
-    var navBarSelectedIndex by rememberSaveable { mutableStateOf(0) }
+    var navBarSelectedIndex by rememberSaveable { mutableIntStateOf(0) }
     var showNodes by rememberSaveable { mutableStateOf(false) }
     val hasNodes = rememberSaveable(loadNodesState) { loadNodesState is LoadNodesState.Success }
 
@@ -144,6 +165,7 @@ private fun MainScreen(
                                 onSearchClick()
                             }
                         }
+
                         MenuItem.Settings -> onSettingsClick()
                     }
                 },
@@ -204,8 +226,8 @@ private enum class MenuItem(val imageVector: ImageVector) {
     Search(Icons.Rounded.Search), Settings(Icons.Rounded.Settings)
 }
 
-@Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun MainTopBar(
     currentNavBarIndex: Int,
     onMenuItemClick: (MenuItem) -> Unit,
@@ -257,6 +279,7 @@ fun MainContent(
                 onNodeClick = onNodeClick,
                 onUserAvatarClick = onUserAvatarClick,
             )
+
             1 -> NodesContent(onNodeClick = onNodeClick, modifier = modifier)
             2 -> NotificationsContent(
                 onLoginClick = onLoginClick,
@@ -265,6 +288,7 @@ fun MainContent(
                 onHtmlImageClick = onHtmlImageClick,
                 modifier = modifier,
             )
+
             3 -> MineContent(
                 onLoginClick = onLoginClick,
                 onMyHomePageClick = onMyHomePageClick,
@@ -279,7 +303,6 @@ fun MainContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainBottomNavigation(
     selectedIndex: Int, unreadNotifications: Int, onItemSelected: (Int) -> Unit
@@ -306,7 +329,7 @@ fun MainBottomNavigation(
 
 enum class MainBottomTab(val title: Int, val icon: ImageVector) {
     Home(R.string.main_home, Icons.Outlined.Home),
-    Nodes(R.string.main_nodes, Icons.Outlined.List),
+    Nodes(R.string.main_nodes, Icons.AutoMirrored.Outlined.List),
     Notifications(R.string.main_notifications, Icons.Outlined.Notifications),
     Mine(R.string.main_mine, Icons.Outlined.Person)
 }

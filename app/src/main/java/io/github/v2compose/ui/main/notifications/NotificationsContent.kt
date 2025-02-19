@@ -2,16 +2,28 @@ package io.github.v2compose.ui.main.notifications
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +38,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import io.github.v2compose.R
 import io.github.v2compose.V2exUri
 import io.github.v2compose.network.bean.NotificationInfo
-import io.github.v2compose.ui.common.*
+import io.github.v2compose.ui.common.HtmlContent
+import io.github.v2compose.ui.common.ListDivider
+import io.github.v2compose.ui.common.OnHtmlImageClick
+import io.github.v2compose.ui.common.PagingLoadState
+import io.github.v2compose.ui.common.PullToRefresh
+import io.github.v2compose.ui.common.TopicUserAvatar
+import io.github.v2compose.ui.common.pagingAppendMoreItem
+import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
@@ -144,7 +163,8 @@ private fun NotificationList(
     PullToRefresh(refreshing = refreshing, onRefresh = { notifications.refresh() }) {
         LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
             //pagingRefreshItem(lazyPagingItems = notifications)
-            itemsIndexed(items = notifications, key = { _, item -> item.id }) { _, item ->
+            items(notifications.itemCount, key = notifications.itemKey { it.id }) { index ->
+                val item = notifications[index]
                 item?.let {
                     val tag = "notification#${item.id}"
                     NotificationItem(
@@ -178,7 +198,6 @@ private fun NotificationItem(
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    val contentColor = LocalContentColor.current
     val titleText = remember(item) {
         buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -200,13 +219,13 @@ private fun NotificationItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     titleText,
-                    color = contentColor.copy(alpha = ContentAlpha.high),
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
                     item.time,
-                    color = contentColor.copy(alpha = ContentAlpha.medium),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.align(Alignment.End),
                 )

@@ -246,6 +246,12 @@ public class TopicInfo extends BaseInfo {
         private String canSendThanksText;
         @Pick("div.box div.header a.op")
         private String appendTxt;
+        private int _favoriteCount = -1;
+        private String _commentNum;
+        private String _tagName;
+        private String _time;
+        private int _viewCount = -1;
+        private String _avatar;
 
         public HeaderInfo() {
         }
@@ -266,7 +272,6 @@ public class TopicInfo extends BaseInfo {
         public boolean isValid() {
             return Check.notEmpty(userName, tag);
         }
-
 
         public boolean canAppend() {
             return Check.notEmpty(appendTxt) && appendTxt.equals("APPEND");
@@ -293,8 +298,6 @@ public class TopicInfo extends BaseInfo {
             return !Check.isEmpty(favoriteLink) && favoriteLink.contains("unfavorite/");
         }
 
-        private int _favoriteCount = -1;
-
         //17 人收藏
         public int getFavoriteCount() {
             if (_favoriteCount >= 0) return _favoriteCount;
@@ -309,8 +312,6 @@ public class TopicInfo extends BaseInfo {
             }
             return 0;
         }
-
-        private String _commentNum;
 
         public String getCommentNum() {
             if (_commentNum != null) return _commentNum;
@@ -327,15 +328,11 @@ public class TopicInfo extends BaseInfo {
             return tag;
         }
 
-        private String _tagName;
-
         public String getTagName() {
             if (_tagName != null) return _tagName;
             _tagName = tagLink.replace("/go/", "");
             return _tagName;
         }
-
-        private String _time;
 
         public String getTime() {
             if (_time != null) return _time;
@@ -354,8 +351,6 @@ public class TopicInfo extends BaseInfo {
             return _time == null ? "" : _time;
         }
 
-        private int _viewCount = -1;
-
         public int getViewCount() {
             if (_viewCount >= 0) return _viewCount;
             try {
@@ -370,8 +365,6 @@ public class TopicInfo extends BaseInfo {
         public String getUserName() {
             return userName;
         }
-
-        private String _avatar;
 
         public String getAvatar() {
             if (_avatar != null) return _avatar;
@@ -430,12 +423,13 @@ public class TopicInfo extends BaseInfo {
         private String alreadyThanked;
         @Pick(attr = "id")
         private String replyId;
+        private String _replyId;
+        private String _replyContent;
+        private int _thanksCount = -1;
 
         public int getFloor() {
             return floor;
         }
-
-        private String _replyId;
 
         public String getReplyId() {
             if (_replyId != null) return _replyId;
@@ -452,8 +446,6 @@ public class TopicInfo extends BaseInfo {
         public boolean hadThanked() {
             return Check.notEmpty(alreadyThanked);
         }
-
-        private String _replyContent;
 
         public String getReplyContent() {
             if (_replyContent != null) return _replyContent;
@@ -472,8 +464,6 @@ public class TopicInfo extends BaseInfo {
         public String getTime() {
             return time;
         }
-
-        private int _thanksCount = -1;
 
         public int getThanksCount() {
             if (_thanksCount >= 0) return _thanksCount;

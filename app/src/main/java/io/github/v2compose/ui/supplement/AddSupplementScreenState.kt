@@ -27,7 +27,7 @@ class AddSupplementScreenState(
     context: Context,
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState
-): BaseScreenState(context, coroutineScope, snackbarHostState) {
+) : BaseScreenState(context, coroutineScope, snackbarHostState) {
 
 
 }

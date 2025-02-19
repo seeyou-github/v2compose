@@ -1,17 +1,24 @@
 package io.github.v2compose.ui.gallery
 
 import android.util.Log
-import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.GalleryImage
-import io.github.v2compose.ui.common.LightSystemBarIcons
 
 private const val TAG = "GalleryScreen"
 
@@ -37,7 +44,7 @@ private fun GalleryScreen(currentPic: String, pics: List<String>, onBackClick: (
     }
     Log.d(TAG, "initialPicIndex = $initialPicIndex")
 
-    LightSystemBarIcons()
+//    LightSystemBarIcons()
 
     Scaffold(
         contentWindowInsets = WindowInsets(top = 0, bottom = 0),

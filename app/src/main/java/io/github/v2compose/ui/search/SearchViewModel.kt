@@ -9,7 +9,14 @@ import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.repository.TopicRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,16 +51,13 @@ class SearchViewModel @Inject constructor(
                 .also {
                     it.remove(value)
                     it.add(0, value)
-                    if(it.size > 10){
-                        it.removeLast()
-                    }
                 }
-            appPreferences.searchKeywords(searchKeywords)
+            appPreferences.searchKeywords(searchKeywords.take(10))
         }
     }
 
-    fun clearHistoryKeywords(){
-        viewModelScope.launch{
+    fun clearHistoryKeywords() {
+        viewModelScope.launch {
             appPreferences.searchKeywords(listOf())
         }
     }

@@ -1,12 +1,11 @@
 package io.github.v2compose
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
-import com.google.accompanist.navigation.animation.AnimatedNavHost
 import io.github.v2compose.ui.gallery.galleryScreen
 import io.github.v2compose.ui.gallery.navigateToGallery
 import io.github.v2compose.ui.login.google.googleLoginScreen
@@ -43,7 +42,6 @@ import io.github.v2compose.ui.write.writeTopicScreen
 
 private const val TAG = "V2AppNavGraph"
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun V2AppNavGraph(
     navController: NavHostController,
@@ -52,7 +50,7 @@ fun V2AppNavGraph(
 ) {
     val account by viewModel.account.collectAsStateWithLifecycle()
 
-    AnimatedNavHost(navController = navController, startDestination = mainNavigationRoute) {
+    NavHost(navController = navController, startDestination = mainNavigationRoute) {
         mainScreen(
             onNewsItemClick = { navController.navigateToTopic(it.id) },
             onRecentItemClick = { navController.navigateToTopic(it.id) },

@@ -4,6 +4,6 @@ import io.github.v2compose.network.bean.Release
 
 interface AppRepository {
 
-    suspend fun getAppLatestRelease():Release
+    suspend fun getAppLatestRelease(): Release
 
 }

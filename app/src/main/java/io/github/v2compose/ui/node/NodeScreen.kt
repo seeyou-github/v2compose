@@ -3,15 +3,40 @@ package io.github.v2compose.ui.node
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.BookmarkAdd
+import androidx.compose.material.icons.rounded.BookmarkAdded
+import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,12 +45,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import io.github.v2compose.Constants
 import io.github.v2compose.R
@@ -33,8 +59,21 @@ import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
 import io.github.v2compose.ui.HandleSnackbarMessage
-import io.github.v2compose.ui.common.*
-import me.onebone.toolbar.*
+import io.github.v2compose.ui.common.BackIcon
+import io.github.v2compose.ui.common.HtmlContent
+import io.github.v2compose.ui.common.ListDivider
+import io.github.v2compose.ui.common.LoadError
+import io.github.v2compose.ui.common.Loading
+import io.github.v2compose.ui.common.TextAlertDialog
+import io.github.v2compose.ui.common.TopicUserAvatar
+import io.github.v2compose.ui.common.pagingAppendMoreItem
+import io.github.v2compose.ui.common.pagingRefreshItem
+import io.github.v2compose.ui.common.rememberLazyListState
+import me.onebone.toolbar.CollapsingToolbarScaffold
+import me.onebone.toolbar.CollapsingToolbarScaffoldState
+import me.onebone.toolbar.CollapsingToolbarScope
+import me.onebone.toolbar.ScrollStrategy
+import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
 private const val TAG = "NodeScreen"
 
@@ -193,7 +232,7 @@ private fun CollapsingToolbarScope.NodeTopBar(
         },
         navigationIcon = { BackIcon(onBackClick = onBackClick) },
         actions = {
-            if(isLoggedIn){
+            if (isLoggedIn) {
                 favorited?.let {
                     IconButton(
                         onClick = { onFavoriteClickInternal() },
@@ -224,10 +263,10 @@ private fun CollapsingToolbarScope.NodeTopBar(
             nodeUiState = nodeUiState,
         )
 
-        if(isLoggedIn){
+        if (isLoggedIn) {
             favorited?.let {
                 val contentColor =
-                    LocalContentColor.current.copy(alpha = if (it) ContentAlpha.medium else ContentAlpha.high)
+                    if (it) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
 
                 AssistChip(
                     modifier = Modifier.align(Alignment.CenterEnd),
@@ -283,7 +322,7 @@ private fun NodeTitle(
                 Text(
                     stringResource(id = R.string.node_topics_and_favorites, it.topics, it.stars),
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.disabled),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 )
             }
         }
@@ -315,6 +354,7 @@ private fun NodeContent(
                 modifier = modifier,
             )
         }
+
         is NodeUiState.Error -> {
             LoadError(
                 error = nodeUiState.error,
@@ -322,6 +362,7 @@ private fun NodeContent(
                 modifier = modifier
             )
         }
+
         is NodeUiState.Loading -> {
             Loading(modifier = modifier)
         }
@@ -350,7 +391,8 @@ private fun TopicList(
 
     LazyColumn(modifier = modifier.fillMaxSize(), state = lazyPagingItems.rememberLazyListState()) {
         pagingRefreshItem(lazyPagingItems = lazyPagingItems)
-        itemsIndexed(items = lazyPagingItems, key = { index, item -> item }) { index, item ->
+        items(lazyPagingItems.itemCount, lazyPagingItems.itemKey()) { index ->
+            val item = lazyPagingItems[index]
             if (item is NodeTopicInfo) {
                 if (nodeInfo.header.isNotEmpty()) {
                     NodeDescription(desc = nodeInfo.header, openUri = openUri)

@@ -10,7 +10,7 @@ data class Release(
     companion object {
         val Empty = Release(0, "", "", "", "")
 
-        fun fromMap(map:Map<String, Any?>):Release{
+        fun fromMap(map: Map<String, Any?>): Release {
             return Release(
                 id = map["id"] as Int,
                 name = map["name"] as String?,
@@ -25,7 +25,7 @@ data class Release(
         return id > 0 && tagName.isNotEmpty() && htmlUrl.isNotEmpty()
     }
 
-    fun toMap():Map<String, Any?>{
+    fun toMap(): Map<String, Any?> {
         return mapOf(
             "id" to id,
             "name" to name,

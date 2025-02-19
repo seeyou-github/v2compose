@@ -3,7 +3,6 @@ package io.github.v2compose.network;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
-import java.net.CookieStore;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +80,7 @@ public class WebkitCookieManager implements CookieJar {
         try {
             put(url.uri(), generatedResponseHeaders);
         } catch (IOException e) {
-            L.e(e.toString());
+            L.e("WebkitCookieManager.saveFromResponse error", e);
         }
     }
 
@@ -102,7 +101,7 @@ public class WebkitCookieManager implements CookieJar {
                 }
             }
         } catch (IOException e) {
-            L.e(e.toString());
+            L.e("WebkitCookieManager.loadForRequest error", e);
         }
         return cookieArrayList;
     }

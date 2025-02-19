@@ -1,7 +1,35 @@
 package io.github.v2compose.network
 
 import com.google.gson.Gson
-import io.github.v2compose.network.bean.*
+import io.github.v2compose.network.bean.AppendTopicPageInfo
+import io.github.v2compose.network.bean.BingSearchResultInfo
+import io.github.v2compose.network.bean.CreateTopicPageInfo
+import io.github.v2compose.network.bean.DailyHotInfo
+import io.github.v2compose.network.bean.DailyInfo
+import io.github.v2compose.network.bean.HomePageInfo
+import io.github.v2compose.network.bean.LoginParam
+import io.github.v2compose.network.bean.MyFollowingInfo
+import io.github.v2compose.network.bean.MyNodesInfo
+import io.github.v2compose.network.bean.MyTopicsInfo
+import io.github.v2compose.network.bean.NewsInfo
+import io.github.v2compose.network.bean.Node
+import io.github.v2compose.network.bean.NodeInfo
+import io.github.v2compose.network.bean.NodeTopicInfo
+import io.github.v2compose.network.bean.NodesInfo
+import io.github.v2compose.network.bean.NodesNavInfo
+import io.github.v2compose.network.bean.NotificationInfo
+import io.github.v2compose.network.bean.RecentTopics
+import io.github.v2compose.network.bean.ReplyTopicResultInfo
+import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
+import io.github.v2compose.network.bean.ThxResponseInfo
+import io.github.v2compose.network.bean.TopicInfo
+import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.network.bean.TwoStepLoginInfo
+import io.github.v2compose.network.bean.UserInfo
+import io.github.v2compose.network.bean.UserPageInfo
+import io.github.v2compose.network.bean.UserReplies
+import io.github.v2compose.network.bean.UserTopics
+import io.github.v2compose.network.bean.V2exResult
 import me.ghui.fruit.Fruit
 import me.ghui.fruit.converter.retrofit.FruitConverterFactory
 import me.ghui.retrofit.converter.GlobalConverterFactory
@@ -12,7 +40,15 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.Url
 
 /**
  * Created by ghui on 05/05/2017.

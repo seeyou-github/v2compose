@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.github.v2compose.network.NetConstants;
 import io.github.v2compose.util.Check;
+import io.github.v2compose.util.L;
 import io.github.v2compose.util.UriUtils;
 import io.github.v2compose.util.Utils;
 import me.ghui.fruit.Attrs;
@@ -25,14 +26,23 @@ import me.ghui.fruit.annotations.Pick;
 public class NodeTopicInfo extends BaseInfo {
 
     @Pick("span.topic-count strong")
-    private int total;
+    private String totalText;
     @Pick(value = "a[href*=favorite/] ", attr = Attrs.HREF)
     private String favoriteLink;
     @Pick("div.box div.cell:has(table)")
     private List<Item> items;
 
+    private int _total = -1;
+
     public int getTotal() {
-        return total;
+        if (_total > 0) return _total;
+        try {
+            String text = totalText.replaceAll(",", "");
+            _total = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            L.e("parse total error", e);
+        }
+        return 0;
     }
 
     public List<Item> getItems() {
@@ -58,7 +68,7 @@ public class NodeTopicInfo extends BaseInfo {
     public String toString() {
         return "NodeTopicInfo{" +
                 "favoriteLink=" + favoriteLink +
-                ",total=" + total +
+                ",totalText=" + totalText +
                 ", items=" + items +
                 '}';
     }

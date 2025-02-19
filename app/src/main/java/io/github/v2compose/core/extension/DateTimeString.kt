@@ -3,7 +3,8 @@ package io.github.v2compose.core.extension
 import android.content.Context
 import io.github.v2compose.R
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 private const val UTC_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"
 

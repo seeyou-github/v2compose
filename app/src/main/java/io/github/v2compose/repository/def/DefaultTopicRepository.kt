@@ -12,7 +12,13 @@ import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.SearchPagingSource
 import io.github.v2compose.datasource.TopicPagingSource
 import io.github.v2compose.network.V2exService
-import io.github.v2compose.network.bean.*
+import io.github.v2compose.network.bean.AppendTopicPageInfo
+import io.github.v2compose.network.bean.CreateTopicPageInfo
+import io.github.v2compose.network.bean.ReplyTopicResultInfo
+import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
+import io.github.v2compose.network.bean.TopicInfo
+import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.network.bean.V2exResult
 import io.github.v2compose.repository.ActionMethod
 import io.github.v2compose.repository.TopicRepository
 import kotlinx.coroutines.flow.Flow

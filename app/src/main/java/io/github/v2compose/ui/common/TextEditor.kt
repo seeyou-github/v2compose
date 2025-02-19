@@ -4,13 +4,30 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -59,11 +76,10 @@ fun TextEditor(
             listOf(R.string.content_body)
         }
     }
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { tabTitles.size })
 
     Box(modifier = modifier) {
         HorizontalPager(
-            pageCount = tabTitles.size,
             state = pagerState,
             key = { tabTitles[it] },
             modifier = Modifier.padding(top = ContentBarHeight)
@@ -75,6 +91,7 @@ fun TextEditor(
                     onContentChanged = onContentChanged,
                     modifier = Modifier.focusRequester(contentFocusRequester),
                 )
+
                 1 -> MarkdownPreview(content)
             }
         }
@@ -145,7 +162,6 @@ private fun ContentBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ContentEditor(
     content: String,
@@ -156,7 +172,7 @@ private fun ContentEditor(
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(content, TextRange(content.length)))
     }
-
+    val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
     TextField(
         value = textFieldValue,
         onValueChange = {
@@ -164,13 +180,19 @@ private fun ContentEditor(
             onContentChanged(it.text)
         },
         modifier = modifier.fillMaxSize(),
-        colors = TextFieldDefaults.textFieldColors(
+        colors = TextFieldDefaults.colors(
             errorIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            containerColor = Color.Transparent,
-            placeholderColor = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedPlaceholderColor = placeholderColor,
+            unfocusedPlaceholderColor = placeholderColor,
+            errorPlaceholderColor = placeholderColor,
+            disabledPlaceholderColor = placeholderColor,
         ),
         placeholder = { Text(placeholder) },
         textStyle = MaterialTheme.typography.bodyMedium.copy(

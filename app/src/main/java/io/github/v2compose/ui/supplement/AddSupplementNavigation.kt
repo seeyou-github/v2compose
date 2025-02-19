@@ -1,12 +1,11 @@
 package io.github.v2compose.ui.supplement
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
 
 private const val argsTopicId = "topicId"
 const val addSupplementNavigationRoute = "/append/topic/{$argsTopicId}"
@@ -23,7 +22,6 @@ fun NavController.navigateToAddSupplement(topicId: String) {
     navigate("/append/topic/$topicId")
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.addSupplementScreen(
     onCloseClick: () -> Unit,
     onAddSupplementSuccess: (String) -> Unit,

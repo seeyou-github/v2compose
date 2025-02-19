@@ -3,11 +3,11 @@ package io.github.v2compose.ui.webview.client
 import android.webkit.HttpAuthHandler
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import com.google.accompanist.web.AccompanistWebViewClient
+import com.kevinnzou.web.AccompanistWebViewClient
 
 class V2exWebViewClient(private val openUri: (String) -> Unit) : AccompanistWebViewClient() {
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-        if(interceptUrl(request)) return true
+        if (interceptUrl(request)) return true
         return super.shouldOverrideUrlLoading(view, request)
     }
 

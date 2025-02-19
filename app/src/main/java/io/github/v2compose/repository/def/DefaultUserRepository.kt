@@ -3,6 +3,7 @@ package io.github.v2compose.repository.def
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import io.github.v2compose.V2exUri
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.datasource.UserRepliesDataSource
 import io.github.v2compose.datasource.UserTopicsDataSource
@@ -11,7 +12,6 @@ import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.repository.UserRepository
-import io.github.v2compose.V2exUri
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

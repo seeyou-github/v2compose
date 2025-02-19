@@ -3,7 +3,13 @@ package io.github.v2compose.repository
 import androidx.paging.PagingData
 import io.github.v2compose.bean.ContentFormat
 import io.github.v2compose.bean.DraftTopic
-import io.github.v2compose.network.bean.*
+import io.github.v2compose.network.bean.AppendTopicPageInfo
+import io.github.v2compose.network.bean.CreateTopicPageInfo
+import io.github.v2compose.network.bean.ReplyTopicResultInfo
+import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
+import io.github.v2compose.network.bean.TopicInfo
+import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.network.bean.V2exResult
 import kotlinx.coroutines.flow.Flow
 
 interface TopicRepository {

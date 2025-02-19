@@ -1,14 +1,36 @@
 package io.github.v2compose.ui.user.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.rounded.AddCircleOutline
+import androidx.compose.material.icons.rounded.Block
+import androidx.compose.material.icons.rounded.RemoveCircleOutline
+import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,7 +105,7 @@ private fun FollowIcon(
 ) {
     var currentFollowed by remember(followed) { mutableStateOf(followed) }
     val followColor =
-        if (currentFollowed) LocalContentColor.current.copy(alpha = ContentAlpha.medium) else MaterialTheme.colorScheme.primary
+        if (currentFollowed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
     var showUnfollowDialog by remember { mutableStateOf(false) }
     val onFollowClickInternal = {
         if (currentFollowed == followed) {
@@ -189,11 +211,14 @@ private fun UserInfo(
         AsyncImage(
             model = userPageInfo?.avatar ?: "",
             contentDescription = "${userPageInfo?.userName}'s avatar",
-            modifier = Modifier.size(48.dp).clip(CircleShape).also { mod ->
-                userPageInfo?.let {
-                    mod.background(color = colorScheme.onBackground.copy(alpha = 0.1f))
-                }
-            },
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .also { mod ->
+                    userPageInfo?.let {
+                        mod.background(color = colorScheme.onBackground.copy(alpha = 0.1f))
+                    }
+                },
             contentScale = ContentScale.Crop,
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -218,7 +243,7 @@ private fun UserInfo(
         Text(
             userPageInfo?.desc ?: "",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.heightIn(min = 40.dp)
         )
     }
@@ -242,14 +267,13 @@ private fun UserActions(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun BlockButton(
     userPageInfo: UserPageInfo,
     onBlockClick: () -> Unit
 ) {
     var blocked by remember(userPageInfo) { mutableStateOf(userPageInfo.hadBlocked()) }
     val blockColor =
-        LocalContentColor.current.copy(alpha = if (blocked) ContentAlpha.high else ContentAlpha.medium)
+        if (blocked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
     var showBlockDialog by remember { mutableStateOf(false) }
     val onBlockClickInternal = {
 
@@ -291,14 +315,13 @@ private fun BlockButton(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun FollowButton(
     userPageInfo: UserPageInfo,
     onFollowClick: () -> Unit
 ) {
     var followed by remember(userPageInfo) { mutableStateOf(userPageInfo.hadFollowed()) }
     val followColor =
-        if (followed) LocalContentColor.current.copy(alpha = ContentAlpha.medium) else MaterialTheme.colorScheme.primary
+        if (followed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
     var showUnfollowDialog by remember { mutableStateOf(false) }
     val onFollowClickInternal = {
         if (followed == userPageInfo.hadFollowed()) {

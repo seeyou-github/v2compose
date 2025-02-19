@@ -1,10 +1,13 @@
 package io.github.v2compose.ui.topic
 
 import android.net.Uri
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.SavedStateHandle
-import androidx.navigation.*
-import com.google.accompanist.navigation.animation.composable
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
+import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.ui.common.OnHtmlImageClick
 
@@ -29,7 +32,6 @@ fun NavController.navigateToTopic(
     navigate("/t/$encodedTopicId#reply$replyFloor", navOptions)
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.topicScreen(
     onBackClick: () -> Unit,
     onNodeClick: (String, String) -> Unit,

@@ -65,8 +65,8 @@ class App : Application(), ImageLoaderFactory, Configuration.Provider {
 
     override fun newImageLoader(): ImageLoader = imageLoader
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder().setWorkerFactory(workerFactory).build()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
     private fun resetScrollableTabRowMinimumTabWidth() {
         try {

@@ -53,9 +53,11 @@ class TopicScreenState(
                     V2exUri.topicUrl(topicArgs.topicId)
                 )
             }
+
             TopicMenuItem.OpenInBrowser -> {
                 openInBrowser(V2exUri.topicUrl(topicArgs.topicId))
             }
+
             else -> {}
         }
     }

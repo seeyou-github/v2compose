@@ -17,7 +17,6 @@ import io.github.v2compose.core.extension.toStringList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import java.security.KeyRep
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -100,11 +99,12 @@ class AppPreferences @Inject constructor(
         }
     }
 
-    suspend fun replyWithFloor(value:Boolean){
+    suspend fun replyWithFloor(value: Boolean) {
         context.appDataStore.edit {
             it[KeyReplyWithFloor] = value
         }
     }
+
     suspend fun searchKeywords(value: List<String>) {
         context.appDataStore.edit {
             it[KeySearchKeywords] = value.toJson(moshi)

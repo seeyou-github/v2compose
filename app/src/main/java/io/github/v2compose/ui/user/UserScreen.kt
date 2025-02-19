@@ -1,20 +1,37 @@
 package io.github.v2compose.ui.user
 
-import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,7 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import io.github.v2compose.Constants
 import io.github.v2compose.R
 import io.github.v2compose.V2exUri
@@ -35,11 +52,21 @@ import io.github.v2compose.core.share
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.ui.HandleSnackbarMessage
-import io.github.v2compose.ui.common.*
+import io.github.v2compose.ui.common.HtmlContent
+import io.github.v2compose.ui.common.ListDivider
+import io.github.v2compose.ui.common.LoadError
+import io.github.v2compose.ui.common.Loading
+import io.github.v2compose.ui.common.NodeTag
+import io.github.v2compose.ui.common.OnHtmlImageClick
+import io.github.v2compose.ui.common.pagingAppendMoreItem
+import io.github.v2compose.ui.common.pagingRefreshItem
+import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.user.composables.UserToolbar
 import kotlinx.coroutines.launch
-import me.onebone.toolbar.*
+import me.onebone.toolbar.CollapsingToolbarScaffold
+import me.onebone.toolbar.ScrollStrategy
+import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
 private const val TAG = "UserScreen"
 
@@ -181,16 +208,17 @@ private fun UserContent(
                 onHtmlImageClick = onHtmlImageClick,
             )
         }
+
         is UserUiState.Loading -> {
             Loading()
         }
+
         is UserUiState.Error -> {
             LoadError(error = userUiState.error, onRetryClick = onRetryClick)
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserPager(
     userTopics: LazyPagingItems<UserTopics.Item>,
@@ -204,7 +232,7 @@ fun UserPager(
     onHtmlImageClick: OnHtmlImageClick,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(pageCount = { 2 })
     val tabNames = listOf(stringResource(R.string.user_topic), stringResource(R.string.user_reply))
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -234,7 +262,7 @@ fun UserPager(
             }
         }
 
-        HorizontalPager(pageCount = 2, state = pagerState) { index ->
+        HorizontalPager(state = pagerState) { index ->
             when (index) {
                 0 -> UserTopicsList(
                     items = userTopics,
@@ -242,6 +270,7 @@ fun UserPager(
                     onTopicClick = onTopicClick,
                     onNodeClick = onNodeClick
                 )
+
                 1 -> UserRepliesList(
                     items = userReplies,
                     sizedHtmls = sizedHtmls,
@@ -265,8 +294,8 @@ private fun UserTopicsList(
     LazyColumn(modifier = Modifier.fillMaxSize(), state = items.rememberLazyListState()) {
         pagingRefreshItem(lazyPagingItems = items)
 
-        itemsIndexed(items = items, key = { index, item -> item.link }) { index, item ->
-            if (item == null) return@itemsIndexed
+        items(items.itemCount, key = items.itemKey { it.link }) { index ->
+            val item = items[index] ?: return@items
             UserTopicItem(
                 topic = item,
                 topicTitleOverview = topicTitleOverview,
@@ -309,7 +338,7 @@ fun UserTopicItem(
             Text(
                 topic.lastReply,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         ListDivider(
@@ -330,10 +359,10 @@ private fun UserRepliesList(
     LazyColumn(modifier = Modifier.fillMaxSize(), state = items.rememberLazyListState()) {
         pagingRefreshItem(items)
 
-        itemsIndexed(
-            items = items,
-            key = { index, item -> "${item.dock.link}#${item.dock.time}#${item.content.content}" }) { index, item ->
-            if (item == null) return@itemsIndexed
+        items(
+            items.itemCount,
+            key = items.itemKey { item -> "${item.dock.link}#${item.dock.time}#${item.content.content}" }) { index ->
+            val item = items[index] ?: return@items
             val tag = "${item.dock.link}#${item.dock.time}#${item.content.content}"
             UserReplyItem(
                 reply = item,
@@ -358,7 +387,6 @@ fun UserReplyItem(
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    val contentColor = LocalContentColor.current
     Box(modifier = Modifier
         .fillMaxSize()
         .clickable { onTopicClick(reply.dock.link) }) {
@@ -366,13 +394,13 @@ fun UserReplyItem(
             Text(
                 reply.dock.title,
                 style = MaterialTheme.typography.labelMedium,
-                color = contentColor.copy(alpha = ContentAlpha.medium),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 reply.dock.time,
                 style = MaterialTheme.typography.labelMedium,
-                color = contentColor.copy(alpha = ContentAlpha.disabled),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                 modifier = Modifier.align(Alignment.End),
             )
             Spacer(modifier = Modifier.height(8.dp))

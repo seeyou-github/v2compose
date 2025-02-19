@@ -14,6 +14,6 @@ interface UserRepository {
 
     fun getUserReplies(userName: String): Flow<PagingData<UserReplies.Item>>
 
-    suspend fun doUserAction(userName: String, url:String): UserPageInfo
+    suspend fun doUserAction(userName: String, url: String): UserPageInfo
 
 }

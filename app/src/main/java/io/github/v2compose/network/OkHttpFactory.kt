@@ -57,7 +57,7 @@ object OkHttpFactory {
                 .proxySelector(proxySelector)
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
-                HttpLoggingInterceptor { msg: String? -> L.v(msg) }
+                HttpLoggingInterceptor { msg: String -> L.v(msg) }
                     .setLevel(HttpLoggingInterceptor.Level.BASIC)
             )
         }
@@ -76,7 +76,7 @@ object OkHttpFactory {
                 .proxySelector(proxySelector)
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
-                HttpLoggingInterceptor { msg: String? -> L.v(msg) }
+                HttpLoggingInterceptor { msg: String -> L.v(msg) }
                     .setLevel(HttpLoggingInterceptor.Level.BASIC)
             )
         }

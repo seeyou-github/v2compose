@@ -11,12 +11,12 @@ data class TopicInfoWrapper(
 ) {
 
     val favoriteCount: Int
-        get()  {
+        get() {
             val innerCount = topic?.headerInfo?.favoriteCount ?: 0
             val innerFavorited = topic?.headerInfo?.hadFavorited()
-            if(favorited == true && innerFavorited == false){
+            if (favorited == true && innerFavorited == false) {
                 return innerCount + 1
-            }else if(favorited == false && innerFavorited == true){
+            } else if (favorited == false && innerFavorited == true) {
                 return innerCount - 1
             }
             return innerCount

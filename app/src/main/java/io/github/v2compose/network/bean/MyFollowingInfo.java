@@ -60,6 +60,9 @@ public class MyFollowingInfo extends BaseInfo {
         private String tagTitle;
         @Pick(value = "a.node", attr = Attrs.HREF)
         private String tagLink;
+        private String _id;
+        private String _avatar;
+        private String _tagName;
 
         @Override
         public String toString() {
@@ -75,8 +78,6 @@ public class MyFollowingInfo extends BaseInfo {
                     '}';
         }
 
-        private String _id;
-
         public String getId() {
             if (_id != null) return _id;
             if (link == null) return "";
@@ -87,8 +88,6 @@ public class MyFollowingInfo extends BaseInfo {
         public String getTime() {
             return time == null ? "" : time;
         }
-
-        private String _avatar;
 
         public String getAvatar() {
             if (_avatar != null) return _avatar;
@@ -112,8 +111,6 @@ public class MyFollowingInfo extends BaseInfo {
         public int getCommentNum() {
             return commentNum;
         }
-
-        private String _tagName;
 
         public String getTagName() {
             if (_tagName != null) return _tagName;

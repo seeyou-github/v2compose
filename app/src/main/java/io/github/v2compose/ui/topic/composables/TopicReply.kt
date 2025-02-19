@@ -11,13 +11,37 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.rounded.Reply
+import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -99,7 +123,7 @@ fun TopicReply(
                     Text(
                         text = reply.time,
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
 
                     HtmlContent(
@@ -154,8 +178,7 @@ private fun TopicReplyActions(
     }
     var bottomSheetVisible by remember { mutableStateOf(false) }
 
-    val actionContentColor =
-        MaterialTheme.colorScheme.secondary.copy(alpha = ContentAlpha.medium)
+    val actionContentColor = MaterialTheme.colorScheme.secondary
 
     Box(modifier = modifier.padding(end = 4.dp)) {
         Row {
@@ -233,7 +256,7 @@ fun UserTopicReply(
 ) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
         if (index != 0) {
-            ListDivider(color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = ContentAlpha.disabled))
+            ListDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
         }
         Spacer(Modifier.height(8.dp))
         HtmlContent(
@@ -272,7 +295,7 @@ private fun PublishedTime(time: String, modifier: Modifier = Modifier) {
         time,
         modifier = modifier,
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 
@@ -282,14 +305,14 @@ private fun ReplyFloor(floor: Int, modifier: Modifier = Modifier) {
         stringResource(id = R.string.n_floor, floor),
         modifier = modifier,
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
 enum class ReplyMenuItem(val icon: ImageVector, @StringRes val labelResId: Int) {
     Thank(Icons.Rounded.FavoriteBorder, R.string.menu_item_thank),
     Thanked(Icons.Rounded.Favorite, R.string.menu_item_unthank),
-    Reply(Icons.Rounded.Reply, R.string.reply_comment),
+    Reply(Icons.AutoMirrored.Rounded.Reply, R.string.reply_comment),
     Copy(Icons.Rounded.ContentCopy, R.string.copy_comment),
     Ignore(Icons.Rounded.VisibilityOff, R.string.ignore_comment),
     HomePage(Icons.Rounded.Person, R.string.user_home_page),
@@ -369,12 +392,12 @@ fun ReplySheetItem(item: ReplyMenuItem, modifier: Modifier = Modifier) {
                 imageVector = item.icon,
                 contentDescription = item.name,
                 modifier = Modifier.size(24.dp),
-                tint = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 stringResource(id = item.labelResId),
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.high),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium
             )
         }

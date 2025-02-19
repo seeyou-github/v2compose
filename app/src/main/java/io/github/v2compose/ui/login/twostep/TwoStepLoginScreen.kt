@@ -1,15 +1,30 @@
 package io.github.v2compose.ui.login.twostep
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -101,9 +116,11 @@ private fun TwoStepLoginScreen(
                         onLogin = onLogin
                     )
                 }
+
                 is TwoStepLoginUiState.Loading -> {
                     Loading()
                 }
+
                 is TwoStepLoginUiState.Error -> {
                     LoadError(
                         error = twoStepLoginUiState.error,
@@ -122,7 +139,6 @@ private fun LoginContent(
     onLogin: (String) -> Unit
 ) {
     val context = LocalContext.current
-    val contentColor = LocalContentColor.current
 
     val focusRequester = remember { FocusRequester() }
     var code by remember { mutableStateOf("") }
@@ -144,7 +160,7 @@ private fun LoginContent(
         Text(
             twoStepLoginInfo.title.ifEmpty { stringResource(id = R.string.two_step_login_desc) },
             style = MaterialTheme.typography.bodyMedium,
-            color = contentColor.copy(alpha = ContentAlpha.high),
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(Modifier.height(8.dp))
@@ -167,7 +183,7 @@ private fun LoginContent(
         Text(
             stringResource(id = R.string.two_step_login_tips),
             style = MaterialTheme.typography.labelMedium,
-            color = contentColor.copy(alpha = ContentAlpha.disabled),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         )
 
         LaunchedEffect(focusRequester) {
@@ -176,7 +192,6 @@ private fun LoginContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TfaCode(
     code: String,
@@ -224,8 +239,8 @@ private fun LoginButton(loginState: LoginState, enabled: Boolean, onLoginClick: 
             }
         },
         assetColor = MaterialTheme.colorScheme.onPrimary,
-        successIconColor = MaterialTheme.colorScheme.onPrimary,
-        failureIconColor = MaterialTheme.colorScheme.onPrimary,
+        successIconTintColor = MaterialTheme.colorScheme.onPrimary,
+        failureIconTintColor = MaterialTheme.colorScheme.onPrimary,
         buttonState = buttonState,
         enabled = enabled,
         text = stringResource(id = R.string.login),
@@ -235,9 +250,7 @@ private fun LoginButton(loginState: LoginState, enabled: Boolean, onLoginClick: 
         successIconPainter = rememberVectorPainter(image = Icons.Rounded.Done),
         failureIconPainter = rememberVectorPainter(image = Icons.Rounded.Info),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledBackgroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
         )
     )

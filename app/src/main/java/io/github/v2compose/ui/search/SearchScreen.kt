@@ -2,19 +2,38 @@ package io.github.v2compose.ui.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -26,10 +45,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +61,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemsIndexed
+import androidx.paging.compose.itemKey
 import io.github.v2compose.R
 import io.github.v2compose.core.extension.toTimeText
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
@@ -70,7 +93,6 @@ fun SearchScreenRoute(
 }
 
 //TODO: 支持更多选项，1选择时间范围（一个小时内、一天内、一周内、一个月内、一年内，时间不限），2排序方式(默认，发帖时间)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchScreen(
     keyword: String?,
@@ -159,7 +181,7 @@ private fun SearchBar(keyword: String?, onCloseClick: () -> Unit, onSearchClick:
                 Icon(
                     painter = painterResource(id = R.drawable.logo_sov2ex),
                     contentDescription = "sov2ex logo",
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.disabled)
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 )
             },
             shape = RoundedCornerShape(12.dp),
@@ -214,7 +236,7 @@ private fun SearchHistoryKeywords(
                     .clip(CircleShape)
                     .clickable { onDeleteKeywordsClick() }
                     .padding(6.dp),
-                tint = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         FlowRow(
@@ -247,7 +269,7 @@ private fun SearchKeyword(keyword: String, onKeywordClick: (String) -> Unit) {
         ) {
             Text(
                 keyword,
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.high),
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -267,7 +289,8 @@ private fun SearchResult(
         state = lazyListState,
     ) {
         pagingRefreshItem(topics)
-        itemsIndexed(items = topics, key = { _, item -> item.source.id }) { index, item ->
+        items(topics.itemCount, topics.itemKey { it.source.id }) { index ->
+            val item = topics[index]
             item?.let {
                 SearchTopic(topic = item, onTopicClick = onTopicClick)
             }
@@ -326,7 +349,7 @@ private fun SearchTopic(
                     topic.source.replies,
                 ),
                 style = MaterialTheme.typography.labelSmall,
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))

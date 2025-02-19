@@ -10,7 +10,6 @@ import androidx.compose.ui.platform.LocalContext
 import io.github.v2compose.LocalSnackbarHostState
 import io.github.v2compose.core.share
 import io.github.v2compose.ui.BaseScreenState
-import io.github.v2compose.ui.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -29,7 +28,7 @@ class NodeScreenState(
     context: Context,
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState
-):BaseScreenState(context, coroutineScope, snackbarHostState) {
+) : BaseScreenState(context, coroutineScope, snackbarHostState) {
 
     fun share(nodeArgs: NodeArgs, nodeUiState: NodeUiState) {
         val title = if (nodeUiState is NodeUiState.Success) {

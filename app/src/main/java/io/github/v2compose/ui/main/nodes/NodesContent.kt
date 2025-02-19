@@ -1,10 +1,18 @@
 package io.github.v2compose.ui.main.nodes
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.PagerState
@@ -13,7 +21,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -24,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.flowlayout.*
 import io.github.v2compose.network.bean.Node
 import io.github.v2compose.ui.common.LoadMore
 import io.github.v2compose.ui.common.PullToRefresh
@@ -51,7 +61,10 @@ fun NodesContent(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+private val CategoryTitleBarWidth = 92.dp
+private val NodeMinWidth = 88.dp
+private val NodeHeight = 92.dp
+
 @Composable
 private fun NodesContainer(
     nodesUiState: NodesUiState,
@@ -60,19 +73,38 @@ private fun NodesContainer(
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
 
-    Box(modifier.fillMaxSize()) {
-        val nodeCategories = remember(nodesUiState) {
-            when (nodesUiState) {
-                is NodesUiState.Success -> nodesUiState.data
-                is NodesUiState.Loading -> nodesUiState.data
-                is NodesUiState.Error -> null
-            }
+    val nodeCategories = remember(nodesUiState) {
+        when (nodesUiState) {
+            is NodesUiState.Success -> nodesUiState.data
+            is NodesUiState.Loading -> nodesUiState.data
+            is NodesUiState.Error -> null
         }
-        if (nodeCategories != null) {
-            val refreshing = nodesUiState is NodesUiState.Loading
+    }
 
+    if (nodeCategories != null) {
+        BoxWithConstraints(modifier.fillMaxSize()) {
+            val maxPageWidth = maxWidth - CategoryTitleBarWidth
+            val pageColumnCount = floor(maxPageWidth / NodeMinWidth).toInt()
+            val nodeWidth = floor((maxPageWidth / pageColumnCount).value).dp
+
+            val pageRowCount = floor(maxHeight / NodeHeight).toInt()
+            val nodeHeight = floor((maxHeight / pageRowCount).value).dp
+            val pageNodeCount = pageRowCount * pageColumnCount
+
+            val nodePages: List<List<Node>> = remember(nodeCategories) {
+                nodeCategories.map { category ->
+                    val nodeCount = category.second.size
+                    val pageCount = ceil(1f * nodeCount / pageNodeCount).toInt()
+                    (0 until pageCount).map { index ->
+                        val toIndex = minOf((index + 1) * pageNodeCount, nodeCount)
+                        category.second.subList(index * pageNodeCount, toIndex)
+                    }
+                }.flatten()
+            }
+            val pagerState = rememberPagerState(pageCount = { nodePages.size })
+
+            val refreshing = nodesUiState is NodesUiState.Loading
             ClickHandler(enabled = !refreshing) {
                 coroutineScope.launch {
                     if (pagerState.isScrollInProgress) {
@@ -89,108 +121,104 @@ private fun NodesContainer(
             PullToRefresh(refreshing = refreshing, onRefresh = onRefresh) {
                 NodesList(
                     nodeCategories = nodeCategories,
+                    nodePages = nodePages,
+                    pageColumnCount = pageColumnCount,
+                    pageRowCount = pageRowCount,
+                    nodeWidth = nodeWidth,
+                    nodeHeight = nodeHeight,
                     pagerState = pagerState,
                     onNodeClick = onNodeClick,
                 )
             }
-        } else {
-            LoadMore(
-                hasError = nodesUiState is NodesUiState.Error,
-                error = if (nodesUiState is NodesUiState.Error) nodesUiState.error else null,
-                onRetryClick = onRefresh
+        }
+    } else {
+        LoadMore(
+            hasError = nodesUiState is NodesUiState.Error,
+            error = if (nodesUiState is NodesUiState.Error) nodesUiState.error else null,
+            onRetryClick = onRefresh
+        )
+    }
+}
+
+@Composable
+private fun NodesList(
+    nodeCategories: List<Pair<String, List<Node>>>,
+    nodePages: List<List<Node>>,
+    pageColumnCount: Int,
+    pageRowCount: Int,
+    nodeWidth: Dp,
+    nodeHeight: Dp,
+    pagerState: PagerState,
+    onNodeClick: (String, String) -> Unit,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val pageNodeCount = pageRowCount * pageColumnCount
+
+    val categoryIndies: List<Int> = remember(nodeCategories) {
+        nodeCategories.map { category -> ceil(1f * category.second.size / pageNodeCount).toInt() }
+            .runningFold(0) { sum, pages -> sum + pages }
+    }
+
+    val selectedCategoryIndex = remember(pagerState.currentPage) {
+        val nextPage = categoryIndies.indexOfFirst { it > pagerState.currentPage }
+        if (nextPage >= 0) nextPage - 1 else categoryIndies.size - 1
+    }
+
+    Row(modifier = Modifier.fillMaxHeight()) {
+        LazyColumn(
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                .fillMaxHeight()
+                .width(CategoryTitleBarWidth),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            itemsIndexed(
+                items = nodeCategories,
+                key = { _, item -> item.first }) { index, item ->
+                CategoryTitle(
+                    selected = selectedCategoryIndex == index,
+                    title = item.first,
+                    onTitleClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(categoryIndies[index])
+                        }
+                    },
+                )
+            }
+        }
+        VerticalPager(
+            modifier = Modifier.fillMaxSize(),
+            state = pagerState,
+        ) { index ->
+            NodesGroup(
+                nodePages[index],
+                nodeWidth,
+                nodeHeight,
+                pageColumnCount,
+                pageRowCount,
+                onNodeClick = onNodeClick
             )
         }
     }
 }
 
-private val CategoryTitleBarWidth = 92.dp
-private val NodeMinWidth = 88.dp
-private val NodeHeight = 92.dp
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun NodesList(
-    nodeCategories: List<Pair<String, List<Node>>>,
-    pagerState: PagerState,
-    onNodeClick: (String, String) -> Unit,
-) {
-    val coroutineScope = rememberCoroutineScope()
-
-    BoxWithConstraints {
-        val maxPageWidth = maxWidth - CategoryTitleBarWidth
-        val nodeColumnCount = floor(maxPageWidth / NodeMinWidth).toInt()
-        val nodeWidth = floor((maxPageWidth / nodeColumnCount).value).dp
-
-        val nodeRowCount = floor(maxHeight / NodeHeight).toInt()
-        val pageNodeCount = nodeRowCount * nodeColumnCount
-        val nodeHeight = floor((maxHeight / nodeRowCount).value).dp
-
-        val categoryIndies: List<Int> = remember(nodeCategories) {
-            nodeCategories.map { category -> ceil(1f * category.second.size / pageNodeCount).toInt() }
-                .runningFold(0) { sum, pages -> sum + pages }
-        }
-        val nodePages: List<List<Node>> = remember(nodeCategories) {
-            nodeCategories.map { category ->
-                val nodeCount = category.second.size
-                val pageCount = ceil(1f * nodeCount / pageNodeCount).toInt()
-                (0 until pageCount).map { index ->
-                    val toIndex = minOf((index + 1) * pageNodeCount, nodeCount)
-                    category.second.subList(index * pageNodeCount, toIndex)
-                }
-            }.flatten()
-        }
-        val selectedCategoryIndex = remember(pagerState.currentPage) {
-            val nextPage = categoryIndies.indexOfFirst { it > pagerState.currentPage }
-            if (nextPage >= 0) nextPage - 1 else categoryIndies.size - 1
-        }
-
-        Row() {
-            LazyColumn(
-
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
-                    .fillMaxHeight()
-                    .width(CategoryTitleBarWidth),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                itemsIndexed(
-                    items = nodeCategories,
-                    key = { _, item -> item.first }) { index, item ->
-                    CategoryTitle(
-                        selected = selectedCategoryIndex == index,
-                        title = item.first,
-                        onTitleClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(categoryIndies[index])
-                            }
-                        },
-                    )
-                }
-            }
-            VerticalPager(
-                pageCount = nodePages.size,
-                modifier = Modifier.fillMaxSize(),
-                state = pagerState,
-            ) { index ->
-                NodesGroup(nodePages[index], nodeWidth, nodeHeight, onNodeClick = onNodeClick)
-            }
-        }
-    }
-}
-
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun NodesGroup(
     nodes: List<Node>,
     nodeWidth: Dp,
     nodeHeight: Dp,
+    columnCount: Int,
+    rowCount: Int,
     onNodeClick: (String, String) -> Unit
 ) {
     FlowRow(
         modifier = Modifier.fillMaxSize(),
-        mainAxisAlignment = FlowMainAxisAlignment.Center,
+        maxItemsInEachRow = columnCount,
+        maxLines = rowCount
     ) {
         val nodesSize = nodes.size
-        val fullSize = ceil(nodesSize / 3f).toInt() * 3
+        val fullSize = ceil(1f * nodesSize / columnCount).toInt() * columnCount
         (0 until fullSize).forEach { index ->
             if (index < nodesSize) {
                 val item = nodes[index]
@@ -198,10 +226,10 @@ private fun NodesGroup(
                     title = item.title,
                     avatar = item.avatar,
                     onItemClick = { onNodeClick(item.name, item.title) },
-                    modifier = Modifier.size(nodeWidth, nodeHeight),
+                    modifier = Modifier.width(nodeWidth)
                 )
             } else {
-                Spacer(Modifier.size(nodeWidth, nodeHeight))
+                Spacer(modifier = Modifier.width(nodeWidth))
             }
         }
     }

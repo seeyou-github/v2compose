@@ -2,9 +2,16 @@ package io.github.v2compose.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,20 +69,20 @@ fun SimpleTopic(
                         Text(
                             time,
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             stringResource(R.string.n_comment, replyCount.ifBlank { "0" }),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         viewCount?.let {
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 stringResource(R.string.n_views, viewCount.toString()),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }

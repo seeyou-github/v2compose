@@ -1,6 +1,12 @@
 package io.github.v2compose.ui.common
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.TargetBasedAnimation
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,16 +14,25 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -27,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transition.CrossfadeTransition
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.github.v2compose.LocalImageSaver
 import io.github.v2compose.R
 import kotlinx.coroutines.delay
@@ -45,13 +59,13 @@ fun GalleryImage(
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
-    var viewWidth by remember { mutableStateOf(0f) }
-    var viewHeight by remember { mutableStateOf(0f) }
+    var viewWidth by remember { mutableFloatStateOf(0f) }
+    var viewHeight by remember { mutableFloatStateOf(0f) }
 
-    var offsetX by rememberSaveable { mutableStateOf(0f) }
-    var offsetY by rememberSaveable { mutableStateOf(0f) }
+    var offsetX by rememberSaveable { mutableFloatStateOf(0f) }
+    var offsetY by rememberSaveable { mutableFloatStateOf(0f) }
 
-    var scale by rememberSaveable { mutableStateOf(1f) }
+    var scale by rememberSaveable { mutableFloatStateOf(1f) }
 
     val transformableState = rememberTransformableState { zoomChange, offsetChange, _ ->
         scale = minOf(maxOf(scale * zoomChange, 1f), 3f)
@@ -63,7 +77,7 @@ fun GalleryImage(
     }
 
     val visibleState = remember { MutableTransitionState(0.3f).apply { targetState = 1f } }
-    val visibleTransition = updateTransition(transitionState = visibleState, label = "visible")
+    val visibleTransition = rememberTransition(transitionState = visibleState, label = "visible")
     val currentAlpha by visibleTransition.animateFloat(
         transitionSpec = { tween(durationMillis = 400) },
         label = "alpha"
@@ -72,7 +86,7 @@ fun GalleryImage(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = ContentAlpha.medium * currentAlpha))
+            .background(color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = currentAlpha))
             .combinedClickable(interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {
@@ -161,13 +175,13 @@ fun GalleryImage(
     }
 }
 
-@Composable
-fun LightSystemBarIcons() {
-    val systemUiController = rememberSystemUiController()
-    DisposableEffect(systemUiController) {
-        systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = false)
-        onDispose {
-            systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
-        }
-    }
-}
+//@Composable
+//fun LightSystemBarIcons() {
+//    val systemUiController = rememberSystemUiController()
+//    DisposableEffect(systemUiController) {
+//        systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = false)
+//        onDispose {
+//            systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
+//        }
+//    }
+//}

@@ -38,6 +38,7 @@ public class MyNodesInfo extends BaseInfo {
         private int topicNum;
         @Pick(attr = Attrs.HREF)
         private String link;
+        private String _name;
 
         @Override
         public String toString() {
@@ -60,8 +61,6 @@ public class MyNodesInfo extends BaseInfo {
         public int getTopicNum() {
             return topicNum;
         }
-
-        private String _name;
 
         public String getName() {
             if (_name != null) return _name;
