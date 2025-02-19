@@ -21,10 +21,14 @@
 #-renamesourcefileattribute SourceFile
 
 ## Gson
--keep class io.github.v2compose.bean.** { <fields>; }
--keep class io.github.v2compose.network.bean.** { <fields>; }
+-keep class io.github.v2compose.bean.** { *; }
+-keep class io.github.v2compose.network.bean.** { *; }
 
 ## OkHttp
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+
+## Fruit
+-keep,allowobfuscation,allowshrinking class me.ghui.fruit.reflect.TypeToken { *; }
+-keep,allowobfuscation,allowshrinking class * extends me.ghui.fruit.reflect.TypeToken { *; }
