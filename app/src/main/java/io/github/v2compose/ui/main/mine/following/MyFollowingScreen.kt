@@ -99,7 +99,7 @@ private fun MyFollowingTopicList(
     val lazyListState = myFollowing.rememberLazyListState()
     LazyColumn(state = lazyListState) {
         pagingRefreshItem(myFollowing)
-        items(myFollowing.itemCount, key = { _ -> myFollowing.itemKey { it.id } }) { index ->
+        items(myFollowing.itemCount, key = myFollowing.itemKey { it.id }) { index ->
             val item = myFollowing[index]
             item?.let {
                 Log.d(TAG, "myfollowing, index = $index, item = $item")
