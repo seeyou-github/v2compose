@@ -69,7 +69,7 @@ fun SelectNode(
     ) {
         Box(modifier = Modifier
             .clickable { onDismiss() }
-            .background(color = MaterialTheme.colorScheme.inverseSurface)
+            .background(color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.6f))
             .systemBarsPadding()
             .imePadding()
             .padding(32.dp)) {

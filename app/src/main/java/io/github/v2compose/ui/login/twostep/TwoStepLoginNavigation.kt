@@ -2,7 +2,7 @@ package io.github.v2compose.ui.login.twostep
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import io.github.v2compose.core.composableWithAnimation
 
 const val twoStepLoginNavigationRoute = "/2fa"
 
@@ -13,7 +13,7 @@ fun NavController.navigateToTwoStepLogin() {
 fun NavGraphBuilder.twoStepLoginScreen(
     onCloseClick: () -> Unit,
 ) {
-    composable(
+    composableWithAnimation(
         twoStepLoginNavigationRoute,
     ) {
         TwoStepLoginScreenRoute(

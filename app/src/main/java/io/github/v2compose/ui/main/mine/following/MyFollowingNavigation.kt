@@ -2,7 +2,7 @@ package io.github.v2compose.ui.main.mine.following
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.network.bean.MyFollowingInfo
 
 const val myFollowingRoute = "/my/following"
@@ -17,7 +17,7 @@ fun NavGraphBuilder.myFollowingScreen(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
 ) {
-    composable(myFollowingRoute) {
+    composableWithAnimation(myFollowingRoute) {
         MyFollowingScreenRoute(
             onBackClick = onBackClick,
             onTopicClick = onTopicClick,

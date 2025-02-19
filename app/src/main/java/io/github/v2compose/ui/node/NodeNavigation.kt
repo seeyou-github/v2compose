@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
+import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.network.bean.NodeTopicInfo
 
 private const val ArgsNodeName = "nodeName"
@@ -38,7 +38,7 @@ fun NavGraphBuilder.nodeScreen(
     onUserAvatarClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
 ) {
-    composable(
+    composableWithAnimation(
         route = nodeNavigationNavigationRoute,
         arguments = listOf(
             navArgument(ArgsNodeName) { type = NavType.StringType },

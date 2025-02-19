@@ -5,8 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.github.v2compose.core.composableWithAnimation
 
 private const val argsNext = "next"
 const val loginNavigationRoute = "/signin?next={$argsNext}"
@@ -23,7 +23,7 @@ fun NavGraphBuilder.loginScreen(
     onCloseClick: () -> Unit,
     onSignInWithGoogleClick: (String) -> Unit,
 ) {
-    composable(
+    composableWithAnimation(
         route = loginNavigationRoute,
         arguments = listOf(navArgument(argsNext) {
             type = NavType.StringType

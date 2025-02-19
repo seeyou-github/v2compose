@@ -2,7 +2,7 @@ package io.github.v2compose.ui.settings
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import io.github.v2compose.core.composableWithAnimation
 
 const val settingsScreenNavigationRoute = "/settings"
 
@@ -15,7 +15,7 @@ fun NavGraphBuilder.settingsScreen(
     openUri: (String) -> Unit,
     onLogoutSuccess: () -> Unit
 ) {
-    composable(route = settingsScreenNavigationRoute) {
+    composableWithAnimation(route = settingsScreenNavigationRoute) {
         SettingsScreenRoute(
             onBackClick = onBackClick,
             openUri = openUri,

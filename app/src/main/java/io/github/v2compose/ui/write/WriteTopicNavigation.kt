@@ -5,9 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
+import io.github.v2compose.core.composableWithAnimation
 
 private const val argsNode = "node"
 private const val argsNodeTitle = "node_title"
@@ -33,7 +33,7 @@ fun NavGraphBuilder.writeTopicScreen(
     openUri: (String) -> Unit,
     onCreateTopicSuccess: (topicId: String) -> Unit,
 ) {
-    composable(
+    composableWithAnimation(
         route = createTopicNavigationRoute,
         arguments = listOf(
             navArgument(argsNode) { type = NavType.StringType },

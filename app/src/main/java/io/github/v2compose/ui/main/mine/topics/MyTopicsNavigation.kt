@@ -2,7 +2,7 @@ package io.github.v2compose.ui.main.mine.topics
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.network.bean.MyTopicsInfo
 
 const val myTopicsRoute = "/my/topics"
@@ -17,7 +17,7 @@ fun NavGraphBuilder.myTopicsScreen(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
 ) {
-    composable(myTopicsRoute) {
+    composableWithAnimation(myTopicsRoute) {
         MyTopicsScreenRoute(
             onBackClick = onBackClick,
             onTopicClick = onTopicClick,

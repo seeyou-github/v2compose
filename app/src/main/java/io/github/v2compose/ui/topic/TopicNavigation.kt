@@ -6,9 +6,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
+import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.ui.common.OnHtmlImageClick
 
 private const val argsTopicId: String = "topicId"
@@ -40,7 +40,7 @@ fun NavGraphBuilder.topicScreen(
     onAddSupplementClick: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    composable(
+    composableWithAnimation(
         topicNavigationRoute,
         arguments = listOf(
             navArgument(argsTopicId) { type = NavType.StringType },

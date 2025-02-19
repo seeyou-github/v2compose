@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.github.v2compose.core.composableWithAnimation
 
 private const val argsTopicId = "topicId"
 const val addSupplementNavigationRoute = "/append/topic/{$argsTopicId}"
@@ -27,7 +27,7 @@ fun NavGraphBuilder.addSupplementScreen(
     onAddSupplementSuccess: (String) -> Unit,
     openUri: (String) -> Unit,
 ) {
-    composable(
+    composableWithAnimation(
         addSupplementNavigationRoute,
         arguments = listOf(navArgument(argsTopicId) { type = NavType.StringType })
     ) {

@@ -4,8 +4,8 @@ import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.github.v2compose.core.composableWithAnimation
 
 private const val argsUrl = "url"
 const val webViewNavigationRoute = "/webview?$argsUrl={$argsUrl}"
@@ -16,7 +16,7 @@ fun NavController.navigateToWebView(url: String) {
 }
 
 fun NavGraphBuilder.webViewScreen(onCloseClick: () -> Unit, openUri: (String) -> Unit) {
-    composable(
+    composableWithAnimation(
         webViewNavigationRoute,
         arguments = listOf(navArgument(argsUrl) { type = NavType.StringType })
     ) {

@@ -3,8 +3,8 @@ package io.github.v2compose.ui.login.google
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import io.github.v2compose.core.composableWithAnimation
 
 private const val argsOnce = "once"
 
@@ -15,7 +15,7 @@ fun NavController.navigateToGoogleLogin(once: String) {
 }
 
 fun NavGraphBuilder.googleLoginScreen(onCloseClick: () -> Unit, onLoginSuccess: () -> Unit) {
-    composable(
+    composableWithAnimation(
         googleLoginNavigationRoute,
         arguments = listOf(navArgument(argsOnce) { type = NavType.StringType })
     ) {
