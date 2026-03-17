@@ -1,17 +1,16 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
-    id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
-// 对应 Groovy 的 getGradle().getStartParameter()...
 val isGoogleFlavorRequested = gradle.startParameter.taskRequests.toString().contains("Google")
 if (isGoogleFlavorRequested) {
-    apply(plugin = "com.google.gms.google-services")
-    apply(plugin = "com.google.firebase.crashlytics")
+    apply(plugin = libs.plugins.google.services.get().pluginId)
+    apply(plugin = libs.plugins.crashlytics.get().pluginId)
 }
 
 android {
@@ -63,108 +62,96 @@ android {
     productFlavors {
         create("foss") {
             dimension = "tracking"
+            multiDexEnabled = true
         }
         create("google") {
             dimension = "tracking"
+            multiDexEnabled = true
         }
     }
 }
 
 dependencies {
-    val navVersion = "2.8.7"
-    val lifecycleVersion = "2.6.1"
-    val hiltVersion = "2.55"
-    val hiltAndroidXVersion = "1.2.0"
-    val pagingVersion = "3.3.6"
-    val coilVersion = "2.7.0"
-
     implementation(project(":htmlText"))
 
     // Jetpack
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
-    implementation("androidx.activity:activity-compose:1.10.0")
-    implementation("androidx.annotation:annotation:1.9.1")
-    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.navigation.compose)
 
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    implementation("androidx.hilt:hilt-navigation-compose:$hiltAndroidXVersion")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
-    implementation("androidx.paging:paging-compose:$pagingVersion")
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
-    implementation("androidx.browser:browser:1.8.0")
-    implementation("androidx.datastore:datastore-preferences:1.1.2")
-    implementation("androidx.webkit:webkit:1.12.1")
-    implementation("androidx.startup:startup-runtime:1.2.0")
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.webkit)
+    implementation(libs.androidx.startup.runtime)
 
-    val workVersion = "2.10.0"
-    implementation("androidx.work:work-runtime-ktx:$workVersion")
-    implementation("androidx.hilt:hilt-work:$hiltAndroidXVersion")
-    ksp("androidx.hilt:hilt-compiler:$hiltAndroidXVersion")
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
 
     // compose
-    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation(platform(libs.androidx.compose.bom))
     implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.tooling.preview)
     implementation("androidx.compose.material:material-icons-extended")
 
     // firebase (flavor specific)
-    "googleImplementation"(platform("com.google.firebase:firebase-bom:33.9.0"))
-    "googleImplementation"("com.google.firebase:firebase-crashlytics-ktx")
-    "googleImplementation"("com.google.firebase:firebase-analytics-ktx")
+    "googleImplementation"(platform(libs.firebase.bom))
+    "googleImplementation"(libs.firebase.crashlytics.ktx)
+    "googleImplementation"(libs.firebase.analytics.ktx)
 
     // test
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     // v2er-ghui
-    implementation("me.ghui:Fruit:1.0.4")
-    implementation("me.ghui:fruit-converter-retrofit:1.0.5")
-    implementation("me.ghui:global-retrofit-converter:1.0.2")
+    implementation(libs.fruit)
+    implementation(libs.fruit.converter.retrofit)
+    implementation(libs.global.retrofit.converter)
 
     // network
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.orhanobut:logger:2.2.0")
-    implementation("com.squareup.moshi:moshi:1.15.2")
-    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.google.gson)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.orhanobut.logger)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.kotlin.codegen)
 
     // coil
-    implementation("io.coil-kt:coil:$coilVersion")
-    implementation("io.coil-kt:coil-gif:$coilVersion")
-    implementation("io.coil-kt:coil-svg:2.6.0")
-    implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation(libs.coil)
+    implementation(libs.coil.gif)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.compose)
 
     // ui composables
-    implementation("com.github.SimformSolutionsPvtLtd:SSJetPackComposeProgressButton:1.1.0")
-    implementation("me.onebone:toolbar-compose:2.3.5")
-    implementation("org.greenrobot:eventbus:3.3.1")
+    implementation(libs.ssjetpack.progress.button)
+    implementation(libs.toolbar.compose)
+    implementation(libs.eventbus)
 
     // markdown
-    val markwonVersion = "4.6.2"
-    implementation("io.noties.markwon:core:$markwonVersion")
-    implementation("io.noties.markwon:ext-strikethrough:$markwonVersion")
-    implementation("io.noties.markwon:ext-tables:$markwonVersion")
-    implementation("io.noties.markwon:html:$markwonVersion")
-    implementation("io.noties.markwon:image-coil:$markwonVersion")
-    implementation("io.noties.markwon:inline-parser:$markwonVersion")
+    implementation(libs.bundles.markwon)
 
-    implementation("io.github.kevinnzou:compose-webview:0.33.6")
+    implementation(libs.compose.webview)
 }
