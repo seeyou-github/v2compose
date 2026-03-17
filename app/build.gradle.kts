@@ -1,21 +1,20 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
 }
 
-val isGoogleFlavorRequested = gradle.startParameter.taskRequests.toString().contains("Google")
-if (isGoogleFlavorRequested) {
-    apply(plugin = libs.plugins.google.services.get().pluginId)
-    apply(plugin = libs.plugins.crashlytics.get().pluginId)
-}
+//val isGoogleFlavorRequested = gradle.startParameter.taskRequests.toString().contains("Google")
+//if (isGoogleFlavorRequested) {
+//    apply(plugin = libs.plugins.google.services.get().pluginId)
+//    apply(plugin = libs.plugins.crashlytics.get().pluginId)
+//}
 
 android {
     namespace = "io.github.v2compose"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.github.v2compose"
@@ -45,9 +44,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -103,11 +99,11 @@ dependencies {
 
     // compose
     implementation(platform(libs.androidx.compose.bom))
-    implementation("androidx.compose.foundation:foundation")
+    implementation(libs.androidx.foundation)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.material.icons.extended)
 
     // firebase (flavor specific)
     "googleImplementation"(platform(libs.firebase.bom))
