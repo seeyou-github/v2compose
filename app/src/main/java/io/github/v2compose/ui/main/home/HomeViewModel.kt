@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor() : ViewModel() {
-    private val TAB_NAMES =
+    private val tabNames =
         arrayOf(
             "全部",
             "最热",
@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             "节点",
             "关注"
         )
-    private val TAB_VALUES = arrayOf(
+    private val tabValues = arrayOf(
         "all",
         "hot",
         "recent",
@@ -40,7 +40,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         "members"
     )
     val newsTabInfos =
-        TAB_NAMES.mapIndexed { index, title -> NewsTabInfo(title, TAB_VALUES[index]) }
+        tabNames.mapIndexed { index, title -> NewsTabInfo(title, tabValues[index]) }
 }
 
 data class NewsTabInfo(val name: String, val value: String) {

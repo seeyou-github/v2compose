@@ -13,7 +13,7 @@ object NotificationCenter {
     const val ChannelAutoCheckIn = "autoCheckIn"
 
     fun init(context: Context) {
-        val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
+        val manager = context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?
             ?: return
         manager.createNotificationChannel(
             ChannelAutoCheckIn,
@@ -32,7 +32,7 @@ object NotificationCenter {
     }
 
     fun checkNotificationChannelEnabled(context: Context, channelID: String): Boolean {
-        val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
+        val manager = context.getSystemService(NOTIFICATION_SERVICE) as? NotificationManager?
             ?: return false
         val channel = manager.getNotificationChannel(channelID)
         return channel.importance != NotificationManager.IMPORTANCE_NONE

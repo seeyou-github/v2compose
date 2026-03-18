@@ -1,9 +1,11 @@
 package io.github.v2compose.ui.main.home.tab
 
 import androidx.compose.runtime.Stable
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.repository.NewsRepository
@@ -14,20 +16,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NewsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = NewsViewModel.Factory::class)
+class NewsViewModel @AssistedInject constructor(
+    @Assisted val tab: String,
     private val newsRepository: NewsRepository,
     private val topicRepository: TopicRepository,
 ) : ViewModel() {
 
-    companion object {
-        const val KEY_TAB = "tab"
+    @AssistedFactory
+    interface Factory {
+        fun create(tab: String): NewsViewModel
     }
-
-    val tab: String = savedStateHandle[KEY_TAB] ?: ""
 
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()

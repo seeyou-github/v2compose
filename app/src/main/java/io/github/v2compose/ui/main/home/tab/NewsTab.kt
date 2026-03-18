@@ -8,22 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
-import androidx.core.os.bundleOf
-import androidx.hilt.navigation.HiltViewModelFactory
-import androidx.lifecycle.DEFAULT_ARGS_KEY
-import androidx.lifecycle.SAVED_STATE_REGISTRY_OWNER_KEY
-import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.MutableCreationExtras
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.ui.common.LoadMore
 import io.github.v2compose.ui.common.PullToRefresh
@@ -42,7 +30,10 @@ fun NewsTab(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
 ) {
-    val viewModel: NewsViewModel = newsViewModel(newsTabInfo.value)
+    val viewModel: NewsViewModel = hiltViewModel<NewsViewModel, NewsViewModel.Factory>(
+        key = newsTabInfo.value, // 关键：不同的 key 会创建不同的实例
+        creationCallback = { factory -> factory.create(newsTabInfo.value) }
+    )
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
 
     val newsUiState by viewModel.newsUiState.collectAsStateWithLifecycle()
@@ -58,42 +49,6 @@ fun NewsTab(
         onNodeClick = onNodeClick,
         onUserAvatarClick = onUserAvatarClick,
     )
-}
-
-@Composable
-private fun newsViewModel(tabValue: String): NewsViewModel {
-    val context = LocalContext.current
-    val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    }
-    val factory = remember(context, viewModelStoreOwner) {
-        if (viewModelStoreOwner is NavBackStackEntry) {
-            HiltViewModelFactory(context = context, navBackStackEntry = viewModelStoreOwner)
-        } else {
-            null
-        }
-    }
-    return viewModel(
-        viewModelStoreOwner = viewModelStoreOwner,
-        key = tabValue,
-        factory = factory,
-        extras = rememberCreationExtras(tabValue)
-    )
-}
-
-@Composable
-private fun rememberCreationExtras(tabValue: String): CreationExtras {
-    val savedStateRegistryOwner = LocalSavedStateRegistryOwner.current
-    val viewModelStoreOwner = LocalViewModelStoreOwner.current
-    return remember(tabValue, savedStateRegistryOwner, viewModelStoreOwner) {
-        MutableCreationExtras().apply {
-            set(SAVED_STATE_REGISTRY_OWNER_KEY, savedStateRegistryOwner)
-            viewModelStoreOwner?.let {
-                set(VIEW_MODEL_STORE_OWNER_KEY, it)
-            }
-            set(DEFAULT_ARGS_KEY, bundleOf(NewsViewModel.KEY_TAB to tabValue))
-        }
-    }
 }
 
 @Composable

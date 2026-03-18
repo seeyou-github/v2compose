@@ -24,12 +24,6 @@ object OkHttpFactory {
 
     private const val TIMEOUT_SECONDS: Long = 10
 
-//    val gson: Gson by lazy { createGson() }
-//    val fruit: Fruit by lazy { createFruit() }
-//    val cookieManager: WebkitCookieManager by lazy { createCookieManager() }
-//    val httpClient: OkHttpClient by lazy { createHttpClient() }
-//    val imageHttpClient: OkHttpClient by lazy { createImageHttpClient(cookieManager) }
-
     fun createGson(): Gson {
         return GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create()

@@ -6,11 +6,16 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-//val isGoogleFlavorRequested = gradle.startParameter.taskRequests.toString().contains("Google")
-//if (isGoogleFlavorRequested) {
-//    apply(plugin = libs.plugins.google.services.get().pluginId)
-//    apply(plugin = libs.plugins.crashlytics.get().pluginId)
-//}
+// 1. 定义判断逻辑：是否包含 Google 相关的构建任务
+val isGoogleTask = gradle.startParameter.taskRequests.any { request ->
+    request.args.any { it.contains("Google", ignoreCase = true) }
+}
+
+// 2. 只有在执行 Google 相关任务时才动态应用插件
+if (isGoogleTask) {
+    apply(plugin = libs.plugins.google.services.get().pluginId)
+    apply(plugin = libs.plugins.crashlytics.get().pluginId)
+}
 
 android {
     namespace = "io.github.v2compose"
