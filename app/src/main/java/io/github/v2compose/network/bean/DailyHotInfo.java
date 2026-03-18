@@ -28,7 +28,7 @@ public class DailyHotInfo extends ArrayList<DailyHotInfo.Item> implements IBase,
 
     @Override
     public boolean isValid() {
-        if (size() <= 0) return true;
+        if (isEmpty()) return true;
         return Check.notEmpty(get(0).id);
     }
 

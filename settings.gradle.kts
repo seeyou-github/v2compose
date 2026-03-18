@@ -17,3 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "V2compose"
 include(":app")
 include(":htmlText")
+include(":v2exApi")
