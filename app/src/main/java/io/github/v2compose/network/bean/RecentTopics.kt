@@ -3,7 +3,7 @@ package io.github.v2compose.network.bean
 import androidx.compose.runtime.Stable
 import io.github.v2compose.util.AvatarUtils
 import io.github.v2compose.util.UriUtils.getLastSegment
-import me.ghui.fruit.annotations.Pick
+import io.github.fruit.annotations.Pick
 import java.io.Serializable
 
 @Pick("div#Wrapper")

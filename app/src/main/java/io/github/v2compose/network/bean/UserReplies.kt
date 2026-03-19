@@ -1,7 +1,7 @@
 package io.github.v2compose.network.bean
 
-import me.ghui.fruit.Attrs
-import me.ghui.fruit.annotations.Pick
+import io.github.fruit.Attrs
+import io.github.fruit.annotations.Pick
 import java.io.Serializable
 
 @Pick("div#Wrapper")

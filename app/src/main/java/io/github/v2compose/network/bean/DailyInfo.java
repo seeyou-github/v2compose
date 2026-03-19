@@ -3,7 +3,7 @@ package io.github.v2compose.network.bean;
 import io.github.v2compose.util.Check;
 import io.github.v2compose.util.UriUtils;
 import io.github.v2compose.util.Utils;
-import me.ghui.fruit.annotations.Pick;
+import io.github.fruit.annotations.Pick;
 
 /**
  * Created by ghui on 07/08/2017.

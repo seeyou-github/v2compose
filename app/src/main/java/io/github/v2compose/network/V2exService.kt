@@ -30,8 +30,8 @@ import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.network.bean.V2exResult
-import me.ghui.fruit.Fruit
-import me.ghui.fruit.converter.retrofit.FruitConverterFactory
+import io.github.fruit.Fruit
+import io.github.fruit.converter.retrofit.FruitConverterFactory
 import me.ghui.retrofit.converter.GlobalConverterFactory
 import me.ghui.retrofit.converter.annotations.Html
 import me.ghui.retrofit.converter.annotations.Json

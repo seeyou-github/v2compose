@@ -10,8 +10,8 @@ import io.github.v2compose.network.NetConstants;
 import io.github.v2compose.util.AvatarUtils;
 import io.github.v2compose.util.Check;
 import io.github.v2compose.util.Utils;
-import me.ghui.fruit.Attrs;
-import me.ghui.fruit.annotations.Pick;
+import io.github.fruit.Attrs;
+import io.github.fruit.annotations.Pick;
 
 /**
  * Created by ghui on 10/05/2017.

@@ -1,6 +1,6 @@
 package io.github.v2compose.network.bean;
 
-import me.ghui.fruit.converter.retrofit.IBaseWrapper;
+import io.github.fruit.converter.retrofit.IBaseWrapper;
 
 /**
  * Created by ghui on 24/07/2017.

@@ -11,7 +11,7 @@ import io.github.v2compose.network.GithubService
 import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.V2exService
 import io.github.v2compose.network.WebkitCookieManager
-import me.ghui.fruit.Fruit
+import io.github.fruit.Fruit
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import javax.inject.Qualifier

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.v2compose.util.Check;
-import me.ghui.fruit.Attrs;
-import me.ghui.fruit.annotations.Pick;
+import io.github.fruit.Attrs;
+import io.github.fruit.annotations.Pick;
 
 /**
  * Created by ghui on 21/05/2017.

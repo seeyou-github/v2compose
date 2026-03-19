@@ -30,5 +30,8 @@
 -dontwarn org.openjsse.**
 
 ## Fruit
--keep,allowobfuscation,allowshrinking class me.ghui.fruit.reflect.TypeToken { *; }
--keep,allowobfuscation,allowshrinking class * extends me.ghui.fruit.reflect.TypeToken { *; }
+# keep @Pick annotated classes and fields for KSP generated adapters
+-keep @io.github.fruit.annotations.Pick class * { *; }
+-keepclassmembers class * {
+    @io.github.fruit.annotations.Pick <fields>;
+}

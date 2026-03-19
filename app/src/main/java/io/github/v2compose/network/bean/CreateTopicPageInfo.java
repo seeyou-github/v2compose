@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.v2compose.util.Check;
-import me.ghui.fruit.Attrs;
-import me.ghui.fruit.annotations.Pick;
+import io.github.fruit.Attrs;
+import io.github.fruit.annotations.Pick;
 
 /**
  * Created by ghui on 05/06/2017.

@@ -75,9 +75,9 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
-fruit = { group = "me.ghui", name = "Fruit", version.ref = "fruit" }
-fruit-converter-retrofit = { group = "me.ghui", name = "fruit-converter-retrofit", version = "1.0.5" }
-global-retrofit-converter = { group = "me.ghui", name = "global-retrofit-converter", version = "1.0.2" }
+fruit = { group = "io.github.fruit", name = "fruit" }
+fruit-ksp = { group = "io.github.fruit", name = "fruit-ksp" }
+fruit-converter-retrofit = { group = "io.github.fruit", name = "fruit-converter-retrofit" }
 eventbus = { group = "org.greenrobot", name = "eventbus", version = "3.3.1" }
 markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
 markwon-ext-strikethrough = { group = "io.noties.markwon", name = "ext-strikethrough", version.ref = "markwon" }

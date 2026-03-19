@@ -126,8 +126,8 @@ dependencies {
 
     // v2er-ghui
     implementation(libs.fruit)
+    ksp(libs.fruit.ksp)
     implementation(libs.fruit.converter.retrofit)
-    implementation(libs.global.retrofit.converter)
 
     // network
     implementation(libs.okhttp)

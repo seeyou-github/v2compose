@@ -1,7 +1,7 @@
 package io.github.v2compose.network.bean;
 
 import io.github.v2compose.util.Check;
-import me.ghui.fruit.annotations.Pick;
+import io.github.fruit.annotations.Pick;
 
 /**
  * Created by ghui on 16/08/2017.

@@ -6,7 +6,7 @@ import io.github.v2compose.network.bean.LoginResultInfo
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.first
-import me.ghui.fruit.Fruit
+import io.github.fruit.Fruit
 import retrofit2.HttpException
 import javax.inject.Inject
 

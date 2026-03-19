@@ -12,7 +12,8 @@ import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.util.Check
 import io.github.v2compose.util.L
-import me.ghui.fruit.Fruit
+import io.github.fruit.Fruit
+import io.github.fruit.registerGeneratedAdapters
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
@@ -30,7 +31,9 @@ object OkHttpFactory {
     }
 
     fun createFruit(): Fruit {
-        return Fruit()
+        return Fruit().apply {
+            registerGeneratedAdapters()
+        }
     }
 
     fun createHttpClient(
