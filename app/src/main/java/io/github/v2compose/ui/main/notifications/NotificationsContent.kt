@@ -162,10 +162,10 @@ private fun NotificationList(
     PullToRefresh(refreshing = refreshing, onRefresh = { notifications.refresh() }) {
         LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
             //pagingRefreshItem(lazyPagingItems = notifications)
-            items(notifications.itemCount, key = notifications.itemKey { it.id }) { index ->
+            items(notifications.itemCount, key = notifications.itemKey { it.getId() }) { index ->
                 val item = notifications[index]
                 item?.let {
-                    val tag = "notification#${item.id}"
+                    val tag = "notification#${item.getId()}"
                     NotificationItem(
                         item = item,
                         content = sizedHtmls[tag] ?: item.content,
@@ -203,7 +203,7 @@ private fun NotificationItem(
                 append(item.name)
             }
             append(" ")
-            append(item.title)
+            append(item.getAdjustedTitle())
         }
     }
     Box(modifier = Modifier.clickable { onUriClick(item.link) }) {

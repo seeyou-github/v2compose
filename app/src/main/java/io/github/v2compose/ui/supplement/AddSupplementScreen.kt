@@ -187,7 +187,7 @@ private fun AddSupplementBackHandler(supplement: String, onCloseClick: () -> Uni
 @Composable
 private fun HandleProblem(pageInfo: AppendTopicPageInfo?, onUriClick: (String) -> Unit) {
     pageInfo?.problem?.let {
-        if (!it.isEmpty) {
+        if (!it.isEmpty()) {
             HtmlAlertDialog(content = it.html, onUriClick = onUriClick)
         }
     }

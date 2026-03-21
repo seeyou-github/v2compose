@@ -1,94 +1,55 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 05/06/2017.
  */
-
-@Pick("div#Wrapper")
-public class CreateTopicPageInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class CreateTopicPageInfo : BaseInfo() {
     @Pick(value = "input[name=once]", attr = "value")
-    private String once;
+    val once: String = ""
 
     @Pick("div.problem")
-    private Problem problem;
+    val problem: Problem? = null
 
-    public String getOnce() {
-        return once;
+    fun toPostMap(title: String, content: String, nodeName: String): Map<String, String> {
+        return mapOf(
+            "title" to title,
+            "content" to content,
+            "node_name" to nodeName,
+            "once" to once
+        )
     }
 
-    @Nullable
-    public Problem getProblem() {
-        return problem;
+    override fun isValid(): Boolean {
+        return once.isNotEmpty()
     }
 
-    public Map<String, String> toPostMap(String title, String content, String nodeName) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("title", title);
-        map.put("content", content);
-        map.put("node_name", nodeName);
-        map.put("once", once);
-        return map;
+    override fun toString(): String {
+        return "CreateTopicPageInfo(once='$once', problem=$problem)"
     }
 
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(once);
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "CreateTopicPageInfo{" +
-                "once='" + once + '\'' +
-                ", problem=" + problem +
-                '}';
-    }
-
-    public static class Problem implements Serializable {
+    @Pulp
+    class Problem : Serializable {
         @Pick(attr = Attrs.HTML)
-        private String html;
+        val html: String = ""
 
         @Pick(attr = Attrs.OWN_TEXT)
-        private String title;
+        val title: String = ""
+
         @Pick("ul li")
-        private List<String> tips;
+        val tips: List<String> = listOf()
 
-        public String getHtml() {
-            return html;
+        fun isEmpty(): Boolean {
+            return tips.isEmpty() && title.isEmpty()
         }
 
-        public List<String> getTips() {
-            return tips != null ? tips : Collections.emptyList();
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        @Override
-        public String toString() {
-            return "Problem{" +
-                    "html='" + html + '\'' +
-                    ", title='" + title + '\'' +
-                    ", tips=" + tips +
-                    '}';
-        }
-
-        public boolean isEmpty() {
-            return Check.isEmpty(tips) && Check.isEmpty(title);
+        override fun toString(): String {
+            return "Problem(html='$html', title='$title', tips=$tips)"
         }
     }
 }

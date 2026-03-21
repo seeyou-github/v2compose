@@ -2,9 +2,7 @@ package io.github.v2compose.network
 
 import com.google.gson.Gson
 import io.github.v2compose.network.bean.AppendTopicPageInfo
-import io.github.v2compose.network.bean.BingSearchResultInfo
 import io.github.v2compose.network.bean.CreateTopicPageInfo
-import io.github.v2compose.network.bean.DailyHotInfo
 import io.github.v2compose.network.bean.DailyInfo
 import io.github.v2compose.network.bean.HomePageInfo
 import io.github.v2compose.network.bean.LoginParam
@@ -32,9 +30,9 @@ import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.network.bean.V2exResult
 import io.github.fruit.Fruit
 import io.github.fruit.converter.retrofit.FruitConverterFactory
-import me.ghui.retrofit.converter.GlobalConverterFactory
-import me.ghui.retrofit.converter.annotations.Html
-import me.ghui.retrofit.converter.annotations.Json
+import io.github.fruit.retrofit.converter.GlobalConverterFactory
+import io.github.fruit.retrofit.converter.annotations.Html
+import io.github.fruit.retrofit.converter.annotations.Json
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -69,10 +67,6 @@ interface V2exService {
             return retrofit.create(V2exService::class.java)
         }
     }
-
-    @Json
-    @GET("/api/topics/hot.json")
-    suspend fun dailyHot(): DailyHotInfo
 
     @Json
     @GET("/api/nodes/show.json")
@@ -167,10 +161,6 @@ interface V2exService {
     @Html
     @GET("/member/{user}/replies")
     suspend fun userReplies(@Path("user") username: String, @Query("p") page: Int): UserReplies
-
-    @Html
-    @GET
-    suspend fun bingSearch(@Url url: String): BingSearchResultInfo
 
     @Html
     @GET("/write")

@@ -1,142 +1,109 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.annotation.NonNull;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.Utils;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.v2compose.util.AvatarUtils
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 17/05/2017.
  * https://www.v2ex.com/my/topics
  */
-
-@Pick("div#Wrapper")
-public class MyTopicsInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class MyTopicsInfo : BaseInfo() {
     @Pick(value = "input.page_input", attr = "max")
-    private String totalPageCount;
+    private val totalPageCountText: String = ""
+
     @Pick("div.cell.item")
-    private List<Item> items;
+    val items: List<Item> = listOf()
 
-    @NonNull
-    public List<Item> getItems() {
-        return items != null ? items : Collections.emptyList();
+    val totalPageCount: Int
+        get() = totalPageCountText.toIntOrNull() ?: 0
+
+    override fun toString(): String {
+        return "MyTopicsInfo(total=$totalPageCount, items=$items)"
     }
 
-    public int getTotalPageCount() {
-        try {
-            return Integer.parseInt(totalPageCount);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        return 0;
+    override fun isValid(): Boolean {
+        if (items.isEmpty()) return true
+        return items[0].title.isNotEmpty()
     }
 
-    @Override
-    public String toString() {
-        return "TopicStarInfo{" +
-                "total=" + totalPageCount +
-                ", items=" + items +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        if (Utils.listSize(items) <= 0) return true;
-        return Check.notEmpty(items.get(0).title);
-    }
-
-    public static class Item implements Serializable {
+    @Pulp
+    class Item : Serializable {
         @Pick(value = "td>a[href^=/member]", attr = Attrs.HREF)
-        private String userLink;
+        val userLink: String = ""
+
         @Pick(value = "img.avatar", attr = Attrs.SRC)
-        private String avatar;
+        val avatar: String = ""
+
         @Pick("span.item_title")
-        private String title;
+        val title: String = ""
+
         @Pick(value = "span.item_title a", attr = Attrs.HREF)
-        private String link;
+        val link: String = ""
+
         @Pick("a[class^=count_]")
-        private int commentNum;
+        val commentNum: Int = 0
+
         @Pick("a.node")
-        private String tagTitle;
+        val tagTitle: String = ""
+
         @Pick(value = "a.node", attr = Attrs.HREF)
-        private String tagLink;
+        val tagLink: String = ""
+
         @Pick(value = "span[title]", attr = Attrs.OWN_TEXT)
-        private String time;
-        private String _id;
-        private String _userName;
-        private String _avatar;
-        private String _tagName;
+        val time: String = ""
 
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "userLink='" + userLink + '\'' +
-                    ", avatar='" + avatar + '\'' +
-                    ", title='" + title + '\'' +
-                    ", link='" + link + '\'' +
-                    ", commentNum=" + commentNum +
-                    ", tagTitle='" + tagTitle + '\'' +
-                    ", tagLink='" + tagLink + '\'' +
-                    ", time='" + time + '\'' +
-                    '}';
-        }
+        private var _id: String = ""
+        private var _userName: String = ""
+        private var _avatar: String = ""
+        private var _tagName: String = ""
 
-        public String getId() {
-            if (_id != null) return _id;
-            if (link == null) return "";
-            _id = link.substring("/t/".length(), link.indexOf('#'));
-            return _id;
-        }
+        val id: String
+            get() {
+                if (_id.isNotEmpty()) return _id
+                if (link.startsWith("/t/")) {
+                    val end = link.indexOf('#')
+                    _id = if (end > 0) {
+                        link.substring("/t/".length, end)
+                    } else {
+                        link.substring("/t/".length)
+                    }
+                }
+                return _id
+            }
 
-        public String getTime() {
-            return time == null ? "" : time;
-        }
+        val userName: String
+            get() {
+                if (_userName.isNotEmpty()) return _userName
+                if (userLink.isNotEmpty()) {
+                    _userName = userLink.substring(userLink.lastIndexOf("/") + 1)
+                }
+                return _userName
+            }
 
-        public String getUserName() {
-            if (_userName != null) return _userName;
-            if (Check.isEmpty(userLink)) return null;
-            _userName = userLink.substring(userLink.lastIndexOf("/") + 1);
-            return _userName;
-        }
+        val adjustedAvatar: String
+            get() {
+                if (_avatar.isNotEmpty()) return _avatar
+                if (avatar.isNotEmpty()) {
+                    _avatar = AvatarUtils.adjustAvatar(avatar)
+                }
+                return _avatar
+            }
 
-        public String getUserLink() {
-            return userLink;
-        }
+        val tagName: String
+            get() {
+                if (_tagName.isNotEmpty()) return _tagName
+                if (tagLink.startsWith("/go/")) {
+                    _tagName = tagLink.substring("/go/".length)
+                }
+                return _tagName
+            }
 
-        public String getAvatar() {
-            if (_avatar != null) return _avatar;
-            if (avatar == null) return "";
-            _avatar = AvatarUtils.adjustAvatar(avatar);
-            return _avatar;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getLink() {
-            return link;
-        }
-
-        public int getCommentNum() {
-            return commentNum;
-        }
-
-        public String getTagName() {
-            if (_tagName != null) return _tagName;
-            _tagName = tagLink.substring("/go/".length());
-            return _tagName;
-        }
-
-        public String getTagTitle() {
-            return tagTitle;
+        override fun toString(): String {
+            return "Item(userLink='$userLink', avatar='$avatar', title='$title', link='$link', commentNum=$commentNum, tagTitle='$tagTitle', tagLink='$tagLink', time='$time')"
         }
     }
 }

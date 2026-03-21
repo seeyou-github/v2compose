@@ -48,10 +48,9 @@ class TopicScreenState(
         if (topicInfo == null) return
         when (item) {
             TopicMenuItem.Share -> {
-                share(
-                    topicInfo.headerInfo.title,
-                    V2exUri.topicUrl(topicArgs.topicId)
-                )
+                topicInfo.headerInfo?.let {
+                    share(it.title, V2exUri.topicUrl(topicArgs.topicId))
+                }
             }
 
             TopicMenuItem.OpenInBrowser -> {

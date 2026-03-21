@@ -126,6 +126,8 @@ dependencies {
 
     // v2er-ghui
     implementation(libs.fruit)
+    implementation(libs.jsoup) // 保持对 Jsoup 的依赖以兼容旧代码
+    implementation("com.fleeksoft.ksoup:ksoup:0.2.6") 
     ksp(libs.fruit.ksp)
     implementation(libs.fruit.converter.retrofit)
 

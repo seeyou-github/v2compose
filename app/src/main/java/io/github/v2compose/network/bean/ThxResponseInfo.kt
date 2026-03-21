@@ -1,19 +1,18 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
 /**
  * Created by ghui on 22/06/2017.
  */
-
-public class ThxResponseInfo extends BaseInfo {
+@Pulp
+class ThxResponseInfo : BaseInfo() {
     @Pick(value = "a[href=/balance]", attr = Attrs.HREF)
-    private String link;
+    private val link: String = ""
 
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(link);
+    override fun isValid(): Boolean {
+        return link.isNotEmpty()
     }
 }

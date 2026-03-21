@@ -167,11 +167,11 @@ private fun TopicReplyActions(
     onMenuItemClick: (ReplyMenuItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val hadThanked = replyWrapper?.thanked ?: reply.hadThanked()
+    val hadThanked = replyWrapper?.thanked ?: reply.hadThanked
     val thanksCount = remember(reply, replyWrapper) {
         val thanked = replyWrapper?.thanked
         var thanksDiff = 0
-        if (thanked != null && reply.hadThanked() != thanked) {
+        if (thanked != null && reply.hadThanked != thanked) {
             thanksDiff = if (thanked) 1 else -1
         }
         reply.thanksCount + thanksDiff

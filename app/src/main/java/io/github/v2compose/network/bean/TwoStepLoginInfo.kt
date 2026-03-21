@@ -1,62 +1,46 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
 /**
  * Created by ghui on 16/08/2017.
  */
-public class TwoStepLoginInfo extends BaseInfo {
-
+@Pulp
+class TwoStepLoginInfo : BaseInfo() {
     @Pick(value = "[href^=/member]", attr = "href")
-    private String userLink;
+    private val userLink: String = ""
+
     @Pick(value = "img[src*=avatar/]", attr = "src")
-    private String avatar;
-    @Pick(value = "div.problem", attr = Attrs.INNER_HTML)
-    private String problem;
+    private val avatar: String = ""
+
+    @Pick(value = "div.problem", attr = Attrs.HTML)
+    val problem: String = ""
+
     @Pick("tr:first-child")
-    private String title;
+    val title: String = ""
+
     @Pick(value = "input[type=hidden]", attr = "value")
-    private String once;
+    val once: String = ""
 
-    public String getUserName() {
-        if (Check.isEmpty(userLink)) {
-            return null;
+    val userName: String?
+        get() {
+            if (userLink.isEmpty()) return null
+            return userLink.split("/").getOrNull(2)
         }
-        return userLink.split("/")[2];
+
+    val largeAvatar: String?
+        get() {
+            if (avatar.isEmpty()) return null
+            return avatar.replace("normal.png", "large.png")
+        }
+
+    override fun isValid(): Boolean {
+        return avatar.isNotEmpty() && once.isNotEmpty() && title.isNotEmpty() && title.contains("两步验证")
     }
 
-    public String getAvatar() {
-        if (Check.isEmpty(avatar)) return null;
-        return avatar.replace("normal.png", "large.png");
-    }
-
-    public String getProblem() {
-        return problem != null ? problem : "";
-    }
-
-    public String getTitle() {
-        return title != null ? title : "";
-    }
-
-    public String getOnce() {
-        return once;
-    }
-
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(avatar) && Check.notEmpty(avatar) && Check.notEmpty(once) && Check.notEmpty(title) && title.contains("两步验证");
-    }
-
-    @Override
-    public String toString() {
-        return "TwoStepLoginInfo{" +
-                "userLink='" + userLink + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", problem='" + problem + '\'' +
-                ", title='" + title + '\'' +
-                ", once='" + once + '\'' +
-                '}';
+    override fun toString(): String {
+        return "TwoStepLoginInfo(userLink='$userLink', avatar='$avatar', problem='$problem', title='$title', once='$once')"
     }
 }

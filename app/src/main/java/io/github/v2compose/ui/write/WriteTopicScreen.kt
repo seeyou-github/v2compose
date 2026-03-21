@@ -378,7 +378,7 @@ private fun HandleCreateTopicState(
 
         is CreateTopicState.Failure -> {
             val problem: CreateTopicPageInfo.Problem = createTopicState.pageInfo.problem ?: return
-            if (problem.isEmpty) return
+            if (problem.isEmpty()) return
             HtmlAlertDialog(content = problem.html, onUriClick = onUriClick)
         }
 

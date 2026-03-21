@@ -1,96 +1,52 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.compose.runtime.Stable;
-
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
+import androidx.compose.runtime.Stable
+import com.google.gson.annotations.SerializedName
+import io.github.v2compose.util.AvatarUtils
+import java.io.Serializable
 
 /**
  * Created by ghui on 27/05/2017.
  * 节点详情
  * https://www.v2ex.com/api/nodes/show.json?name=qna
  */
-
 @Stable
-public class NodeInfo extends BaseInfo implements Serializable {
+class NodeInfo : BaseInfo(), Serializable {
     @SerializedName("id")
-    private int id;
+    val id: Int = 0
+
     @SerializedName("name")
-    private String name;
+    val name: String = ""
+
     @SerializedName("url")
-    private String url;
+    val url: String = ""
+
     @SerializedName("title")
-    private String title;
+    val title: String = ""
+
     @SerializedName("topics")
-    private int topics;
+    val topics: Int = 0
+
     @SerializedName("stars")
-    private int stars;
+    val stars: Int = 0
+
     @SerializedName("header")
-    private String header = "";
+    val header: String = ""
+
     @SerializedName("created")
-    private long created;
+    val created: Long = 0
+
     @SerializedName("avatar_large")
-    private String avatar;
+    val avatar: String = ""
 
-    @Override
-    public String toString() {
-        return "NodeInfo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", title='" + title + '\'' +
-                ", topics=" + topics +
-                ", stars=" + stars +
-                ", header='" + header + '\'' +
-                ", created=" + created +
-                ", avatar='" + avatar + '\'' +
-                '}';
+    val adjustedAvatar: String
+        get() = AvatarUtils.adjustAvatar(avatar)
+
+    override fun toString(): String {
+        return "NodeInfo(id=$id, name='$name', url='$url', title='$title', topics=$topics, stars=$stars, header='$header', created=$created, avatar='$avatar')"
     }
 
-    public int getId() {
-        return id;
+    override fun isValid(): Boolean {
+        return name.isNotEmpty()
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public int getTopics() {
-        return topics;
-    }
-
-    public int getStars() {
-        return stars;
-    }
-
-    public String getHeader() {
-        return header != null ? header : "";
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public String getAvatar() {
-        return AvatarUtils.adjustAvatar(avatar);
-    }
-
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(name);
-    }
-
-
 }

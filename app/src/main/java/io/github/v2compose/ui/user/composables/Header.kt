@@ -72,7 +72,7 @@ fun CollapsingToolbarScope.UserToolbar(
     }, actions = {
         if (isLoggedIn) {
             userPageInfo?.let {
-                if (userPageInfo.followUrl != null) {
+                if (userPageInfo.getFollowUrl() != null) {
                     FollowIcon(
                         userPageInfo.hadFollowed(),
                         onFollowClick = onFollowClick,
@@ -257,10 +257,10 @@ private fun UserActions(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.End) {
-        userPageInfo.followUrl?.let {
+        userPageInfo.getFollowUrl()?.let {
             FollowButton(userPageInfo, onFollowClick)
         }
-        userPageInfo.blockUrl?.let {
+        userPageInfo.getBlockUrl()?.let {
             BlockButton(userPageInfo, onBlockClick)
         }
     }

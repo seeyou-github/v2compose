@@ -1,104 +1,63 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import android.text.TextUtils;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
-import androidx.annotation.Nullable;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
-
-@Pick("div#Wrapper")
-public class AppendTopicPageInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class AppendTopicPageInfo : BaseInfo() {
     @Pick(value = "input[name=once]", attr = "value")
-    private String once;
+    val once: String = ""
+
     @Pick("div.inner ul li")
-    private List<Tip> tips;
+    val tips: List<Tip> = listOf()
+
     @Pick("div.problem")
-    private Problem problem;
+    val problem: Problem? = null
 
-    @Nullable
-    public Problem getProblem() {
-        return problem;
+    fun toPostMap(content: String): Map<String, String> {
+        return mapOf(
+            "once" to once,
+            "content" to content
+        )
     }
 
-    public List<Tip> getTips() {
-        return tips;
+    override fun isValid(): Boolean {
+        return once.isNotEmpty() && tips.size > 1
     }
 
-    public String getOnce() {
-        return once;
+    override fun toString(): String {
+        return "AppendTopicPageInfo(once='$once', tips=$tips, problem=$problem)"
     }
 
-    public Map<String, String> toPostMap(String content) {
-        Map<String, String> map = new HashMap<>(2);
-        map.put("once", once);
-        map.put("content", content);
-        return map;
-    }
-
-    @Override
-    public boolean isValid() {
-        return !TextUtils.isEmpty(once) && tips != null && tips.size() > 1;
-    }
-
-    @Override
-    public String toString() {
-        return "AppendTopicPageInfo{" +
-                "once='" + once + '\'' +
-                ", tips=" + tips +
-                '}';
-    }
-
-    public static class Tip implements Serializable {
+    @Pulp
+    class Tip : Serializable {
         @Pick
-        public String text;
+        val text: String = ""
 
-        @Override
-        public String toString() {
-            return "Tip{" +
-                    "text='" + text + '\'' +
-                    '}';
+        override fun toString(): String {
+            return "Tip(text='$text')"
         }
     }
 
-    public static class Problem implements Serializable {
+    @Pulp
+    class Problem : Serializable {
         @Pick(attr = Attrs.HTML)
-        private String html;
+        val html: String = ""
+
         @Pick(attr = Attrs.OWN_TEXT)
-        private String title;
+        val title: String = ""
+
         @Pick("ul li")
-        private List<String> tips;
+        val tips: List<String> = listOf()
 
-        public boolean isEmpty() {
-            return Check.isEmpty(tips) && Check.isEmpty(title);
+        fun isEmpty(): Boolean {
+            return tips.isEmpty() && title.isEmpty()
         }
 
-        public String getHtml() {
-            return html;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public List<String> getTips() {
-            return tips != null ? tips : Collections.emptyList();
-        }
-
-        @Override
-        public String toString() {
-            return "Problem{" +
-                    "html='" + html + '\'' +
-                    ", title='" + title + '\'' +
-                    ", tips=" + tips +
-                    '}';
+        override fun toString(): String {
+            return "Problem(html='$html', title='$title', tips=$tips)"
         }
     }
 }

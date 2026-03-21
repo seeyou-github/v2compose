@@ -1,33 +1,22 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
-@Pick(value = "div#Wrapper")
-public class ReplyTopicResultInfo extends BaseInfo {
+@Pulp(value = "div#Wrapper")
+class ReplyTopicResultInfo : BaseInfo() {
     @Pick(value = "input[name=once]", attr = "value")
-    private String once;
+    var once: String = ""
+
     @Pick(value = "div.problem", attr = Attrs.HTML)
-    private String problem;
+    var problem: String = ""
 
-    public String getOnce() {
-        return once;
+    override fun isValid(): Boolean {
+        return once.isNotEmpty()
     }
 
-    public String getProblem() {
-        return problem != null ? problem : "";
-    }
-
-    @Override
-    public boolean isValid() {
-        return once != null && !once.isEmpty();
-    }
-
-    @Override
-    public String toString() {
-        return "ReplyTopicResultInfo{" +
-                "once='" + once + '\'' +
-                ", problem='" + problem + '\'' +
-                '}';
+    override fun toString(): String {
+        return "ReplyTopicResultInfo(once='$once', problem='$problem')"
     }
 }

@@ -1,80 +1,44 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.v2compose.util.AvatarUtils
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
-@Pick("div#Wrapper")
-public class HomePageInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class HomePageInfo : BaseInfo() {
     @Pick("h1")
-    private String userName;
+    val userName: String = ""
+
     @Pick(value = "img.avatar", attr = Attrs.SRC)
-    private String avatar;
+    private val avatar: String = ""
+
     @Pick("td[valign=top] > span.gray")
-    private String desc;
+    val desc: String = ""
+
     @Pick("strong.online")
-    private String online;
+    private val online: String = ""
 
     @Pick("a[href=/my/nodes] span.bigger")
-    private int nodes;
+    val nodes: Int = 0
 
     @Pick("a[href=/my/topics] span.bigger")
-    private int topics;
+    val topics: Int = 0
 
     @Pick("a[href=/my/following] span.bigger")
-    private int following;
+    val following: Int = 0
 
-    private String getUrl(String onclick) {
-        if (Check.notEmpty(onclick)) {
-            String reg = "{ location.href = '";
-            int start = onclick.indexOf(reg) + reg.length();
-            int end = onclick.lastIndexOf("'");
-            return onclick.substring(start, end);
-        }
-        return null;
+    val adjustedAvatar: String
+        get() = AvatarUtils.adjustAvatar(avatar)
+
+    val isOnline: Boolean
+        get() = online.isNotEmpty() && online == "ONLINE"
+
+    override fun toString(): String {
+        return "HomePageInfo(userName='$userName', avatar='$avatar', desc='$desc', online='$online')"
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getAvatar() {
-        return AvatarUtils.adjustAvatar(avatar);
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public boolean isOnline() {
-        return Check.notEmpty(online) && online.equals("ONLINE");
-    }
-
-    public int getNodes() {
-        return nodes;
-    }
-
-    public int getTopics() {
-        return topics;
-    }
-
-    public int getFollowing() {
-        return following;
-    }
-
-    @Override
-    public String toString() {
-        return "UserPageInfo{" +
-                "userName='" + userName + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", desc='" + desc + '\'' +
-                ", online='" + online + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(userName);
+    override fun isValid(): Boolean {
+        return userName.isNotEmpty()
     }
 }

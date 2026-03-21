@@ -312,22 +312,26 @@ private fun SearchTopic(
     topic: SoV2EXSearchResultInfo.Hit,
     onTopicClick: (SoV2EXSearchResultInfo.Hit) -> Unit,
 ) {
-    val highlightContent: String = remember(topic) {
-        val content = topic.highlight.content.firstOrNull()
-        val supplement = topic.highlight.postscriptListContent.firstOrNull()
-        val reply = topic.highlight.replyListContent.firstOrNull()
-        listOf(content, supplement, reply).filterIsInstance<String>()
-            .joinToString(separator = "...").ifEmpty { topic.source.content }
+    val highlightContent = remember(topic) {
+        val highlight = topic.highlight
+        listOfNotNull(
+            highlight?.content?.firstOrNull(),
+            highlight?.postscriptListContent?.firstOrNull(),
+            highlight?.replyListContent?.firstOrNull()
+        ).filter { it.isNotBlank() }
+            .joinToString("...")
+            .ifBlank { topic.source.content }
     }
 
     Column {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onTopicClick(topic) }
-            .background(color = MaterialTheme.colorScheme.background)
-            .padding(vertical = 8.dp, horizontal = 16.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onTopicClick(topic) }
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(vertical = 8.dp, horizontal = 16.dp)) {
             SearchTopicText(
-                text = topic.highlight.title.firstOrNull() ?: topic.source.title,
+                text = topic.highlight?.title?.firstOrNull() ?: topic.source.title,
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.titleMedium,
             )

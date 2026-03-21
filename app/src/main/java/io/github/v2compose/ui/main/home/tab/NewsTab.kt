@@ -18,6 +18,8 @@ import io.github.v2compose.ui.common.PullToRefresh
 import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.main.composables.ClickHandler
 import io.github.v2compose.ui.main.home.NewsTabInfo
+import io.github.v2compose.util.L
+import io.github.v2compose.util.Logf
 import kotlinx.coroutines.launch
 
 private const val TAG = "NewTab"
@@ -118,17 +120,22 @@ private fun NewsList(
 
         LazyColumn(state = lazyListState) {
             items(newsInfo.items, key = { it.id }) { item ->
+                val tagId = item.tagId
+                if(tagId.isNullOrBlank()){
+                    L.e("topic's item, tagId is null or blank, item = $item")
+                    return@items
+                }
                 SimpleTopic(
                     title = item.title,
                     userName = item.userName,
                     userAvatar = item.avatar,
                     time = item.time,
                     replyCount = item.replies.toString(),
-                    nodeName = item.tagId,
+                    nodeName = tagId,
                     nodeTitle = item.tagName,
                     titleOverview = topicTitleOverview,
                     onItemClick = { onNewsItemClick(item) },
-                    onNodeClick = { onNodeClick(item.tagId, item.tagName) },
+                    onNodeClick = { onNodeClick(tagId, item.tagName) },
                     onUserAvatarClick = { onUserAvatarClick(item.userName, item.avatar) }
                 )
             }

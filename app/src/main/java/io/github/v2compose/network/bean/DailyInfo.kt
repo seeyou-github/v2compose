@@ -1,71 +1,63 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.UriUtils;
-import io.github.v2compose.util.Utils;
-import io.github.fruit.annotations.Pick;
+import io.github.v2compose.util.UriUtils
+import io.github.v2compose.util.Utils
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
 /**
  * Created by ghui on 07/08/2017.
  */
-
-public class DailyInfo extends BaseInfo {
+@Pulp
+class DailyInfo : BaseInfo() {
     @Pick(value = "[href^=/member]", attr = "href")
-    private String userLink;
+    val userLink: String = ""
+
     @Pick(value = "img[src*=avatar/]", attr = "src")
-    private String avatar;
+    val avatar: String = ""
+
     @Pick("h1")
-    private String title;
+    val title: String = ""
+
     @Pick("div.cell:contains(已连续)")
-    private String continuousLoginDaysText;
+    val continuousLoginDaysText: String = ""
+
     @Pick(value = "div.cell input[type=button]", attr = "onclick")
-    private String checkInUrl; //location.href = '/mission/daily/redeem?once=84830';
+    val checkInUrl: String = "" // location.href = '/mission/daily/redeem?once=84830';
 
-    public boolean hadCheckedIn() {
-        return Check.notEmpty(checkInUrl) && checkInUrl.equals("location.href = '/balance';");
+    fun hadCheckedIn(): Boolean {
+        return checkInUrl.isNotEmpty() && checkInUrl == "location.href = '/balance';"
     }
 
-    public String getContinuousLoginDaysText() {
-        return continuousLoginDaysText;
-    }
+    val continuousLoginDays: String
+        get() = Utils.extractDigits(continuousLoginDaysText)
 
-    public String getContinuousLoginDays() {
-        return Utils.extractDigits(continuousLoginDaysText);
-    }
-
-
-    public String getUserName() {
-        if (Check.isEmpty(userLink)) {
-            return null;
+    val userName: String?
+        get() {
+            if (userLink.isEmpty()) return null
+            return userLink.split("/").getOrNull(2)
         }
-        return userLink.split("/")[2];
-    }
 
-    public String getAvatar() {
-        if (Check.isEmpty(avatar)) return null;
-        return avatar.replace("normal.png", "large.png");
-    }
-
-    public String once() {
-        String result = UriUtils.getParamValue(checkInUrl, "once");
-        if (Check.notEmpty(result)) {
-            result = result.replace("';", "");
+    val largeAvatar: String?
+        get() {
+            if (avatar.isEmpty()) return null
+            return avatar.replace("normal.png", "large.png")
         }
-        return result;
+
+    val once: String
+        get() {
+            var result = UriUtils.getParamValue(checkInUrl, "once")
+            if (!result.isNullOrEmpty()) {
+                result = result.replace("';", "")
+            }
+            return result ?: ""
+        }
+
+    override fun isValid(): Boolean {
+        return checkInUrl.isNotEmpty()
     }
 
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(checkInUrl);
-    }
-
-    @Override
-    public String toString() {
-        return "DailyInfo{" +
-                "title='" + title + '\'' +
-                ", continuousLoginDay='" + getContinuousLoginDays() + '\'' +
-                ", checkinUrl='" + checkInUrl + '\'' +
-                ", once='" + once() + '\'' +
-                '}';
+    override fun toString(): String {
+        return "DailyInfo(title='$title', continuousLoginDays='$continuousLoginDays', checkInUrl='$checkInUrl', once='$once')"
     }
 }

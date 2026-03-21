@@ -88,7 +88,7 @@ class DefaultAccountRepository @Inject constructor(
 
     override suspend fun fetchUserInfo() {
         val dailyInfo = v2exService.dailyInfo()
-        if (dailyInfo.isValid) {
+        if (dailyInfo.isValid()) {
             accountPreferences.updateAccount(
                 userName = dailyInfo.userName,
                 userAvatar = dailyInfo.avatar

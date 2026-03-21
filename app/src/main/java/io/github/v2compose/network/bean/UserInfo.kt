@@ -1,216 +1,105 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import com.google.gson.annotations.SerializedName;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import io.github.v2compose.util.Check;
+import com.google.gson.annotations.SerializedName
+import io.github.v2compose.util.Check
+import org.json.JSONObject
+import java.io.Serializable
 
 /**
  * Created by ghui on 03/05/2017.
  */
-
-public class UserInfo extends BaseInfo {
-    /*
-    "status" : "found",
-    "id" : 161290,
-    "url" : "http://www.v2ex.com/member/ghui",
-    "username" : "ghui",
-    "website" : "https://ghui.me",
-    "twitter" : "",
-    "psn" : "",
-    "github" : "",
-    "btc" : "",
-    "location" : "",
-    "tagline" : "",
-    "bio" : "",
-    "avatar_mini" : "//v2ex.assets.uxengine.net/avatar/c6f7/ffa0/161290_mini.png?m=1492488139",
-    "avatar_normal" : "//v2ex.assets.uxengine.net/avatar/c6f7/ffa0/161290_normal.png?m=1492488139",
-    "avatar_large" : "//v2ex.assets.uxengine.net/avatar/c6f7/ffa0/161290_large.png?m=1492488139",
-    "created" : 1456813618
-     */
-
+class UserInfo : BaseInfo(), Serializable {
     @SerializedName("status")
-    private String status;
+    var status: String = ""
+
     @SerializedName("id")
-    private String id;
+    var id: String = ""
+
     @SerializedName("username")
-    private String userName;
+    var userName: String = ""
+
     @SerializedName("website")
-    private String website;
+    var website: String = ""
+
     @SerializedName("twitter")
-    private String twitter;
+    var twitter: String = ""
+
     @SerializedName("psn")
-    private String psn;
+    var psn: String = ""
+
     @SerializedName("github")
-    private String github;
+    var github: String = ""
+
     @SerializedName("btc")
-    private String btc;
+    var btc: String = ""
+
     @SerializedName("location")
-    private String location;
+    var location: String = ""
+
     @SerializedName("tagline")
-    private String tagline;
+    var tagline: String = ""
+
     @SerializedName("bio")
-    private String bio;
+    var bio: String = ""
+
     @SerializedName("avatar_large")
-    private String avatar;
+    var avatar: String = ""
+
     @SerializedName("avatar_xlarge")
-    private String avatarX;
+    var avatarX: String = ""
+
     @SerializedName("avatar_xxlarge")
-    private String avatarXx;
+    var avatarXx: String = ""
+
     @SerializedName("avatar_xxxlarge")
-    private String avatarXxx;
+    var avatarXxx: String = ""
+
     @SerializedName("created")
-    private String created;
+    var created: String = ""
 
-    public static UserInfo build(String userName, String avatar) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserName(userName);
-        userInfo.setAvatar(avatar);
-        return userInfo;
+    companion object {
+        fun build(userName: String, avatar: String): UserInfo {
+            val userInfo = UserInfo()
+            userInfo.userName = userName
+            userInfo.avatar = avatar
+            return userInfo
+        }
     }
 
-    public String getStatus() {
-        return status;
+    val avatarUrl: String
+        get() {
+            var result = if (!avatar.startsWith("http")) "https:$avatar" else avatar
+            if (!result.contains("large.png")) {
+                if (result.contains("mini.png")) {
+                    result = result.replace("mini.png", "large.png")
+                } else if (result.contains("normal.png")) {
+                    result = result.replace("normal.png", "large.png")
+                }
+            }
+            return result
+        }
+
+    val largestAvatar: String
+        get() {
+            if (avatarXxx.isNotEmpty()) return avatarXxx
+            if (avatarXx.isNotEmpty()) return avatarXx
+            if (avatarX.isNotEmpty()) return avatarX
+            return avatarUrl
+        }
+
+    override fun isValid(): Boolean {
+        return id.isNotEmpty()
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getTwitter() {
-        return twitter;
-    }
-
-    public void setTwitter(String twitter) {
-        this.twitter = twitter;
-    }
-
-    public String getPsn() {
-        return psn;
-    }
-
-    public void setPsn(String psn) {
-        this.psn = psn;
-    }
-
-    public String getGithub() {
-        return github;
-    }
-
-    public void setGithub(String github) {
-        this.github = github;
-    }
-
-    public String getBtc() {
-        return btc;
-    }
-
-    public void setBtc(String btc) {
-        this.btc = btc;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getTagline() {
-        return tagline;
-    }
-
-    public void setTagline(String tagline) {
-        this.tagline = tagline;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getAvatar() {
-        if (!avatar.startsWith("http")) return "https:" + avatar;
-        if (!avatar.contains("large.png")) {
-            if (avatar.contains("mini.png")) {
-                avatar = avatar.replace("mini.png", "large.png");
-            } else if (avatar.contains("normal.png")) {
-                avatar = avatar.replace("normal.png", "large.png");
+    val userBasicInfo: String?
+        get() {
+            return try {
+                JSONObject().apply {
+                    put("id", id)
+                    put("name", userName)
+                }.toString()
+            } catch (e: Exception) {
+                null
             }
         }
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getLargestAvatar() {
-        if (avatarXxx != null && !avatarXxx.isEmpty()) {
-            return avatarXxx;
-        }
-        if (avatarXx != null && !avatarXx.isEmpty()) {
-            return avatarXx;
-        }
-        if (avatarX != null && !avatarX.isEmpty()) {
-            return avatarX;
-        }
-        return getAvatar();
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(id);
-    }
-
-    public String getUserBasicInfo() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("id", id);
-            jsonObject.put("name", userName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return jsonObject.toString();
-    }
-
 }

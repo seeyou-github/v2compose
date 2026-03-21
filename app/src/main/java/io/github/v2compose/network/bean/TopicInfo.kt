@@ -1,495 +1,305 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import android.text.TextUtils;
-
-import androidx.annotation.NonNull;
-import androidx.compose.runtime.Stable;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
-
+import androidx.compose.runtime.Stable
+import io.github.v2compose.util.AvatarUtils
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import org.jsoup.Jsoup
+import java.io.Serializable
 
 /**
  * Created by ghui on 04/05/2017.
  */
 @Stable
-public class TopicInfo extends BaseInfo {
+@Pulp
+class TopicInfo : BaseInfo() {
     @Pick("div#Wrapper")
-    private HeaderInfo headerInfo;
+    val headerInfo: HeaderInfo? = null
+
     @Pick("div.content div.box")
-    private ContentInfo contentInfo;
+    val contentInfo: ContentInfo? = null
+
     @Pick("div.problem")
-    private Problem problem;
+    val problem: Problem? = null
+
     @Pick("div[id^=r_]")
-    private List<Reply> replies;
+    val replies: List<Reply> = listOf()
+
     @Pick(value = "input[name=once]", attr = "value")
-    private String once;
+    val once: String = ""
+
     @Pick(value = "meta[property=og:url]", attr = "content")
-    private String topicLink;
+    val topicLink: String = ""
+
     @Pick(value = "a[onclick*=/report/topic/]", attr = "onclick")
-    private String reportLink;
+    private val reportLink: String = ""
+
     @Pick(value = "div#Wrapper div.box div.inner span.fade")
-    private String hasRePortStr;
+    private val hasRePortStr: String = ""
+
     @Pick(value = "a[onclick*=/fade/topic/]", attr = "onclick")
-    private String fadeStr;
+    private val fadeStr: String = ""
+
     @Pick(value = "a[onclick*=/sticky/topic/]", attr = "onclick")
-    private String stickyStr;
+    private val stickyStr: String = ""
 
-    public Problem getProblem() {
-        return problem;
+    val canSticky: Boolean get() = stickyUrl.isNotEmpty()
+    val canFade: Boolean get() = fadeUrl.isNotEmpty()
+
+    val hasReported: Boolean
+        get() = hasRePortStr.isNotEmpty() && hasRePortStr.contains("已对本主题进行了报告")
+
+    val hasReportPermission: Boolean
+        get() = hasReported || reportLink.isNotEmpty()
+
+    val fadeUrl: String
+        get() {
+            if (fadeStr.isEmpty()) return ""
+            val sIndex = fadeStr.indexOf("/fade/topic/")
+            val eIndex = fadeStr.lastIndexOf("'")
+            return if (sIndex >= 0 && eIndex > sIndex) fadeStr.substring(sIndex, eIndex) else ""
+        }
+
+    val stickyUrl: String
+        get() {
+            if (stickyStr.isEmpty()) return ""
+            val sIndex = stickyStr.indexOf("/sticky/topic/")
+            val eIndex = stickyStr.lastIndexOf("'")
+            return if (sIndex >= 0 && eIndex > sIndex) stickyStr.substring(sIndex, eIndex) else ""
+        }
+
+    val totalPage: Int
+        get() = headerInfo?.getTotalPage() ?: 0
+
+    fun toReplyMap(content: String): Map<String, String> {
+        return mapOf("once" to once, "content" to content)
     }
 
-    public String getTopicLink() {
-        return topicLink;
+    override fun toString(): String {
+        return "TopicInfo(topicLink='$topicLink', headerInfo=$headerInfo, repliesCount=${replies.size}, once='$once')"
     }
 
-    public boolean canSticky() {
-        return Check.notEmpty(stickyStr());
+    override fun isValid(): Boolean {
+        return headerInfo?.isValid() == true
     }
 
-    public boolean canfade() {
-        return Check.notEmpty(fadeUrl());
-    }
-
-    public boolean hasReported() {
-        return !TextUtils.isEmpty(hasRePortStr) && hasRePortStr.contains("已对本主题进行了报告");
-    }
-
-    public boolean hasReportPermission() {
-        return hasReported() || !TextUtils.isEmpty(reportLink);
-    }
-
-    public String fadeUrl() {
-        if (TextUtils.isEmpty(fadeStr)) return null;
-        int sIndex = fadeStr.indexOf("/fade/topic/");
-        int eIndex = fadeStr.lastIndexOf("'");
-        return fadeStr.substring(sIndex, eIndex);
-    }
-
-    public String stickyStr() {
-        if (TextUtils.isEmpty(stickyStr)) return null;
-        int sIndex = stickyStr.indexOf("/sticky/topic/");
-        int eIndex = stickyStr.lastIndexOf("'");
-        return stickyStr.substring(sIndex, eIndex);
-    }
-
-    public String getOnce() {
-        return once;
-    }
-
-    public Map<String, String> toReplyMap(String content) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("once", once);
-        map.put("content", content);
-        return map;
-    }
-
-    public List<Reply> getReplies() {
-        return replies == null ? Collections.emptyList() : replies;
-    }
-
-    public ContentInfo getContentInfo() {
-        return contentInfo;
-    }
-
-    public HeaderInfo getHeaderInfo() {
-        return headerInfo;
-    }
-
-    public int getTotalPage() {
-        return headerInfo.getTotalPage();
-    }
-
-    @Override
-    public String toString() {
-        return "TopicInfo{" +
-                "topicLink=" + topicLink +
-                ", headerInfo=" + headerInfo +
-                ", replies=" + replies +
-                ", once=" + once +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        if (headerInfo == null) return false;
-        return headerInfo.isValid();
-    }
-
-    public static class Problem implements Serializable {
+    @Pulp
+    class Problem : Serializable {
         @Pick(attr = Attrs.OWN_TEXT)
-        private String title;
+        val title: String = ""
+
         @Pick("ul li")
-        private List<String> tips;
+        val tips: List<String> = listOf()
 
-        public boolean isEmpty() {
-            return Check.isEmpty(tips) && Check.isEmpty(title);
-        }
+        fun isEmpty(): Boolean = tips.isEmpty() && title.isEmpty()
 
-        public List<String> getTips() {
-            return tips;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        @Override
-        public String toString() {
-            return "Problem{" +
-                    "title='" + title + '\'' +
-                    ", tips=" + tips +
-                    '}';
+        override fun toString(): String {
+            return "Problem(title='$title', tips=$tips)"
         }
     }
 
-    public static class ContentInfo extends BaseInfo {
+    @Pulp
+    class ContentInfo : BaseInfo() {
         @Pick(attr = Attrs.HTML)
-        private String html;
-
-        private String formatedHtml;
+        private val html: String = ""
 
         @Pick(value = "div.cell div.topic_content", attr = Attrs.HTML)
-        private String content;
+        val content: String = ""
 
         @Pick("div.subtle")
-        private List<Supplement> supplements;
+        val supplements: List<Supplement> = listOf()
 
-        /**
-         * 得到处理后的html, 移除最后一个element(时间，收藏，等不需要显示的信息)
-         *
-         * @return
-         */
-        public String getFormattedHtml() {
-            if (formatedHtml != null) return formatedHtml;
-            Document parentNode = Jsoup.parse(html);
-            parentNode.getElementsByClass("header").remove();
-            parentNode.getElementsByClass("inner").remove();
-            if ("".equals(parentNode.text())
-                    && parentNode.getElementsByClass("embedded_video_wrapper") == null) {
-                formatedHtml = null;
-                return formatedHtml;
+        private var formattedHtml: String? = null
+
+        fun getFormattedHtml(): String? {
+            if (formattedHtml != null) return formattedHtml
+            if (html.isEmpty()) return null
+            val doc = Jsoup.parse(html)
+            doc.getElementsByClass("header").remove()
+            doc.getElementsByClass("inner").remove()
+            val text = doc.text().trim()
+            val hasVideo = doc.getElementsByClass("embedded_video_wrapper").isNotEmpty()
+            return if (text.isEmpty() && !hasVideo) {
+                null
             } else {
-                formatedHtml = parentNode.body().html();
+                formattedHtml = doc.body().html()
+                formattedHtml
             }
-            return formatedHtml;
         }
 
-        public String getContent() {
-            return content == null ? "" : content;
-        }
+        override fun isValid(): Boolean = !getFormattedHtml().isNullOrEmpty()
 
-        public List<Supplement> getSupplements() {
-            return supplements != null ? supplements : Collections.emptyList();
-        }
-
-        @Override
-        public boolean isValid() {
-            return !TextUtils.isEmpty(getFormattedHtml());
-        }
-
-        public static class Supplement implements Serializable {
+        @Pulp
+        class Supplement : Serializable {
             @Pick("span.fade")
-            private String title;
+            val title: String = ""
+
             @Pick(value = "div.topic_content", attr = Attrs.HTML)
-            private String content;
-
-            public String getTitle() {
-                return title;
-            }
-
-            public String getContent() {
-                return content;
-            }
+            val content: String = ""
         }
     }
 
-    public static class HeaderInfo extends BaseInfo {
+    @Pulp
+    class HeaderInfo() : BaseInfo() {
         @Pick(value = "div.box img.avatar", attr = "src")
-        private String avatar;
+        val avatar: String = ""
+
         @Pick("div.box small.gray a")
-        private String userName;
+        val userName: String = ""
+
         @Pick(value = "div.box small.gray", attr = "ownText")
-        private String time;
+        private val timeText: String = ""
+
         @Pick("div.box a[href^=/go]")
-        private String tag;
+        val tag: String = ""
+
         @Pick(value = "div.box a[href^=/go]", attr = Attrs.HREF)
-        private String tagLink;
+        val tagLink: String = ""
+
         @Pick("div.cell span.gray:contains(回复)")
-        private String comment;
+        private val comment: String = ""
+
         @Pick("div.box div.inner a.page_normal:last-of-type")
-        private int page;
+        val page: Int = 0
+
         @Pick("div.box div.inner span.page_current")
-        private int currentPage;
+        val currentPage: Int = 0
+
         @Pick("div.box h1")
-        private String title;
+        val title: String = ""
+
         @Pick(value = "div.content div.box:first-child div.inner span:first-child")
-        private String favoriteText;
+        private val favoriteText: String = ""
+
         @Pick(value = "div.box a[href*=favorite/]", attr = Attrs.HREF)
-        private String favoriteLink;
+        val favoriteLink: String = ""
+
         @Pick(value = "div.box a[onclick*=ignore/]", attr = "onclick")
-        private String ignoreLink;
+        private val ignoreLink: String = ""
+
         @Pick("div.box div[id=topic_thank]")
-        private String thankedText;// 感谢已发送
+        private val thankedText: String = ""
+
         @Pick("div.box div.inner div#topic_thank")
-        private String canSendThanksText;
+        private val canSendThanksText: String = ""
+
         @Pick("div.box div.header a.op")
-        private String appendTxt;
-        private int _favoriteCount = -1;
-        private String _commentNum;
-        private String _tagName;
-        private String _time;
-        private int _viewCount = -1;
-        private String _avatar;
+        private val appendTxt: String = ""
 
-        public HeaderInfo() {
-        }
+        private var _commentNum: String = ""
+        private var _tagName: String = ""
+        private var _time: String = ""
+        private var _avatar: String = ""
 
-        private HeaderInfo(TopicBasicInfo basicInfo) {
-            this.avatar = basicInfo.getAvatar();
-            this.title = basicInfo.getTitle();
-            this.userName = basicInfo.getAuthor();
-            this.tag = basicInfo.getTag();
-            this.tagLink = basicInfo.getTagLink();
-        }
+        override fun isValid(): Boolean = userName.isNotEmpty() && tag.isNotEmpty()
 
-        public static HeaderInfo build(TopicBasicInfo basicInfo) {
-            return new HeaderInfo(basicInfo);
-        }
+        fun canAppend(): Boolean = appendTxt.isNotEmpty() && appendTxt == "APPEND"
+        fun canSendThanks(): Boolean = canSendThanksText.isNotEmpty()
+        fun hadThanked(): Boolean = thankedText.isNotEmpty() && thankedText.contains("已发送")
+        fun hadFavorited(): Boolean =
+            favoriteLink.isNotEmpty() && favoriteLink.contains("unfavorite/")
 
-        @Override
-        public boolean isValid() {
-            return Check.notEmpty(userName, tag);
-        }
+        fun hadIgnored(): Boolean = ignoreLink.isNotEmpty() && ignoreLink.contains("unignore/")
 
-        public boolean canAppend() {
-            return Check.notEmpty(appendTxt) && appendTxt.equals("APPEND");
-        }
-
-        /**
-         * new user can't send thanks
-         *
-         * @return
-         */
-        public boolean canSendThanks() {
-            return Check.notEmpty(canSendThanksText);
-        }
-
-        public boolean hadThanked() {
-            return Check.notEmpty(thankedText) && thankedText.contains("已发送");
-        }
-
-        public String getFavoriteLink() {
-            return favoriteLink;
-        }
-
-        public boolean hadFavorited() {
-            return !Check.isEmpty(favoriteLink) && favoriteLink.contains("unfavorite/");
-        }
-
-        //17 人收藏
-        public int getFavoriteCount() {
-            if (_favoriteCount >= 0) return _favoriteCount;
-            if (Check.isEmpty(favoriteText)) {
-                return 0;
+        fun getFavoriteCount(): Int {
+            if (favoriteText.isEmpty()) return 0
+            return try {
+                favoriteText.trim().split(" ").getOrNull(0)?.toInt() ?: 0
+            } catch (e: Exception) {
+                0
             }
-            try {
-                _favoriteCount = Integer.parseInt(favoriteText.trim().substring(0, favoriteText.indexOf(" ")));
-                return _favoriteCount;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return 0;
         }
 
-        public String getCommentNum() {
-            if (_commentNum != null) return _commentNum;
-            if (Check.isEmpty(comment)) return "";
-            _commentNum = comment.split(" ")[0];
-            return _commentNum;
+        fun getCommentNum(): String {
+            if (_commentNum.isNotEmpty()) return _commentNum
+            _commentNum = if (comment.isEmpty()) "" else comment.split(" ")[0]
+            return _commentNum
         }
 
-        public String getTagLink() {
-            return tagLink;
+        fun getTagName(): String {
+            if (_tagName.isNotEmpty()) return _tagName
+            _tagName = tagLink.replace("/go/", "")
+            return _tagName
         }
 
-        public String getTag() {
-            return tag;
-        }
-
-        public String getTagName() {
-            if (_tagName != null) return _tagName;
-            _tagName = tagLink.replace("/go/", "");
-            return _tagName;
-        }
-
-        public String getTime() {
-            if (_time != null) return _time;
-            try {
-                if (Check.notEmpty(time) && time.contains("·")) {
-                    String tempTime = time.split("·")[0].trim().substring(6).replaceAll(" ", "").trim();
-                    if (tempTime.contains("-") && tempTime.contains("+")) {
-                        tempTime = tempTime.substring(0, 10);
+        fun getTime(): String {
+            if (_time.isNotEmpty()) return _time
+            return try {
+                if (timeText.isNotEmpty() && timeText.contains("·")) {
+                    var temp = timeText.split("·")[0].trim().substring(6).replace(" ", "").trim()
+                    if (temp.contains("-") && temp.contains("+")) {
+                        temp = temp.substring(0, 10)
                     }
-                    _time = tempTime;
+                    _time = temp
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-            return _time == null ? "" : _time;
-        }
-
-        public int getViewCount() {
-            if (_viewCount >= 0) return _viewCount;
-            try {
-                String count = time.split("·")[1].trim();
-                _viewCount = Integer.parseInt(count.substring(0, count.indexOf(" ")));
-                return _viewCount;
-            } catch (Exception e) {
-                return 0;
+                _time
+            } catch (e: Exception) {
+                ""
             }
         }
 
-        public String getUserName() {
-            return userName;
+        fun getViewCount(): Int {
+            return try {
+                val countStr = timeText.split("·")[1].trim()
+                countStr.substring(0, countStr.indexOf(" ")).toInt()
+            } catch (e: Exception) {
+                0
+            }
         }
 
-        public String getAvatar() {
-            if (_avatar != null) return _avatar;
-            _avatar = AvatarUtils.adjustAvatar(avatar);
-            return _avatar;
+        fun getAdjustedAvatar(): String {
+            if (_avatar.isNotEmpty()) return _avatar
+            _avatar = AvatarUtils.adjustAvatar(avatar)
+            return _avatar
         }
 
-        public String getTitle() {
-            return title;
-        }
+        fun getTotalPage(): Int = maxOf(maxOf(page, currentPage), 1)
 
-        public int getTotalPage() {
-            return Math.max(Math.max(page, currentPage), 1);
-        }
-
-        public boolean hadIgnored() {
-            return !Check.isEmpty(ignoreLink) && ignoreLink.contains("unignore/");
-        }
-
-        @Override
-        public String toString() {
-            return "HeaderInfo{" +
-                    "avatar='" + avatar + '\'' +
-                    ", userName='" + userName + '\'' +
-                    ", time='" + time + '\'' +
-                    ", tag='" + tag + '\'' +
-                    ", tagLink='" + tagLink + '\'' +
-                    ", comment='" + comment + '\'' +
-                    ", page=" + page +
-                    ", currentPage=" + currentPage +
-                    ", title='" + title + '\'' +
-                    ", favoriteLink='" + favoriteLink + '\'' +
-                    ", ignoreLink='" + ignoreLink + '\'' +
-                    ", thankedText='" + thankedText + '\'' +
-                    ", canSendThanksText='" + canSendThanksText + '\'' +
-                    ", appendTxt='" + appendTxt + '\'' +
-                    '}';
+        override fun toString(): String {
+            return "HeaderInfo(userName='$userName', title='$title', favoriteCount=${getFavoriteCount()})"
         }
     }
 
     @Stable
-    public static class Reply implements Serializable {
-        @Pick(value = "div.reply_content", attr = Attrs.INNER_HTML)
-        private String replyContent;
+    @Pulp
+    class Reply : Serializable {
+        @Pick(value = "div.reply_content", attr = Attrs.HTML)
+        val replyContent: String = ""
+
         @Pick("strong a.dark[href^=/member]")
-        private String userName;
+        val userName: String = ""
+
         @Pick(value = "img.avatar", attr = "src")
-        private String avatar;
+        val avatar: String = ""
+
         @Pick("span.fade.small:not(:contains(♥))")
-        private String time;
+        val time: String = ""
+
         @Pick("span.small.fade:has(img)")
-        private String thanksText;
+        val thanksText: String = ""
+
         @Pick("span.no")
-        private int floor;
+        val floor: Int = 0
+
         @Pick("div.thank_area.thanked")
-        private String alreadyThanked;
+        val alreadyThanked: String = ""
+
         @Pick(attr = "id")
-        private String replyId;
-        private String _replyId;
-        private String _replyContent;
-        private int _thanksCount = -1;
+        val replyIdText: String = ""
 
-        public int getFloor() {
-            return floor;
-        }
+        val replyId: String
+            get() = replyIdText.substringAfter("_", "")
 
-        public String getReplyId() {
-            if (_replyId != null) return _replyId;
-            if (Check.isEmpty(replyId)) return null;
-            try {
-                _replyId = replyId.substring(replyId.indexOf("_") + 1);
-                return _replyId;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
+        val hadThanked: Boolean get() = alreadyThanked.isNotEmpty()
 
-        public boolean hadThanked() {
-            return Check.notEmpty(alreadyThanked);
-        }
+        val adjustedAvatar: String get() = AvatarUtils.adjustAvatar(avatar)
 
-        public String getReplyContent() {
-            if (_replyContent != null) return _replyContent;
-            _replyContent = replyContent.trim();
-            return _replyContent;
-        }
+        val thanksCount: Int
+            get() = thanksText.toIntOrNull() ?: 0
 
-        public String getUserName() {
-            return userName;
-        }
-
-        public String getAvatar() {
-            return AvatarUtils.adjustAvatar(avatar);
-        }
-
-        public String getTime() {
-            return time;
-        }
-
-        public int getThanksCount() {
-            if (_thanksCount >= 0) return _thanksCount;
-            if (Check.isEmpty(thanksText)) return 0;
-            try {
-                _thanksCount = Integer.parseInt(thanksText);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return _thanksCount;
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return "Reply{" +
-                    "replyContent='" + replyContent + '\'' +
-                    ", userName='" + userName + '\'' +
-                    ", avatar='" + avatar + '\'' +
-                    ", time='" + time + '\'' +
-                    ", thanksText='" + thanksText + '\'' +
-                    ", floor=" + floor +
-                    ", alreadyThanked='" + alreadyThanked + '\'' +
-                    ", replyId='" + replyId + '\'' +
-                    '}';
+        override fun toString(): String {
+            return "Reply(userName='$userName', floor=$floor, thanksCount=$thanksCount)"
         }
     }
-
 }

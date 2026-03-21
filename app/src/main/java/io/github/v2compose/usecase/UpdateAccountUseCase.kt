@@ -22,7 +22,7 @@ class UpdateAccountUseCase @Inject constructor(
         }
         val loginResultInfo: LoginResultInfo? =
             fruit.fromHtml(newsInfo.rawResponse, LoginResultInfo::class.java)
-        if (loginResultInfo == null || !loginResultInfo.isValid) {
+        if (loginResultInfo == null || !loginResultInfo.isValid()) {
             return
         }
         accountPreferences.updateAccount(

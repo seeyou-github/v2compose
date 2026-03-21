@@ -1,87 +1,56 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 21/05/2017.
  * https://www.v2ex.com/
  * bottom box
  */
+@Pulp("div.box:last-child div > table")
+class NodesNavInfo : ArrayList<NodesNavInfo.Item>(), IBase {
+    private var responseBody: String = ""
 
-@Pick("div.box:last-child div > table")
-public class NodesNavInfo extends ArrayList<NodesNavInfo.Item> implements IBase {
-    private String mResponseBody;
+    override fun getResponse(): String = responseBody
 
-    @Override
-    public String getResponse() {
-        return mResponseBody;
+    override fun setResponse(response: String) {
+        responseBody = response
     }
 
-    @Override
-    public void setResponse(String response) {
-        mResponseBody = response;
+    override fun isValid(): Boolean {
+        if (isEmpty()) return true
+        return this[0].category.isNotEmpty()
     }
 
-    @Override
-    public boolean isValid() {
-        if (size() <= 0) return true;
-        return Check.notEmpty(get(0).category);
-    }
-
-    public static class Item implements Serializable {
+    @Pulp
+    class Item : Serializable {
         @Pick("span.fade")
-        private String category;
+        val category: String = ""
+
         @Pick("a")
-        private List<NodeItem> nodes;
+        val nodes: List<NodeItem> = listOf()
 
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "category='" + category + '\'' +
-                    ", nodes=" + nodes +
-                    '}';
+        override fun toString(): String {
+            return "Item(category='$category', nodes=$nodes)"
         }
 
-        public String getCategory() {
-            return category;
-        }
-
-        public List<NodeItem> getNodes() {
-            return nodes;
-        }
-
-        public static class NodeItem implements Serializable {
+        @Pulp
+        class NodeItem : Serializable {
             @Pick
-            private String title;
+            val title: String = ""
+
             @Pick(attr = Attrs.HREF)
-            private String link;
+            val link: String = ""
 
-            @Override
-            public String toString() {
-                return "NodeItem{" +
-                        "name='" + title + '\'' +
-                        ", link='" + link + '\'' +
-                        '}';
-            }
+            val name: String
+                get() = if (link.length > 4) link.substring(4) else ""
 
-            public String getName() {
-                return link.substring(4);
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public String getLink() {
-                return link;
+            override fun toString(): String {
+                return "NodeItem(title='$title', link='$link')"
             }
         }
     }
-
 }

@@ -1,16 +1,8 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import io.github.fruit.converter.retrofit.IBaseWrapper;
+import io.github.fruit.converter.retrofit.IBaseWrapper
 
-/**
- * Created by ghui on 24/07/2017.
- */
+interface IBase : IBaseWrapper {
+    fun isValid(): Boolean
 
-public interface IBase extends IBaseWrapper {
-    /**
-     * 某个接口返回业务上的合法性
-     *
-     * @return
-     */
-    boolean isValid();
 }

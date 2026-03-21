@@ -1,88 +1,43 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Parcelable
+import io.github.v2compose.util.Check
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-import androidx.annotation.NonNull;
+/**
+ * https://v2ex.com/api/nodes/s2.json
+ */
+class NodesInfo : ArrayList<NodesInfo.Node>(), IBase, Serializable {
+    private var responseBody: String = ""
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
-import io.github.v2compose.util.Check;
-
-// https://v2ex.com/api/nodes/s2.json
-
-public class NodesInfo extends ArrayList<NodesInfo.Node> implements IBase, Serializable {
-    private String mResponseBody;
-
-    @Override
-    public boolean isValid() {
-        if (size() <= 0) return true;
-        return Check.notEmpty(get(0).id);
+    override fun isValid(): Boolean {
+        if (isEmpty()) return true
+        return this[0].id.isNotEmpty()
     }
 
-    @Override
-    public String getResponse() {
-        return mResponseBody;
+    override fun getResponse(): String = responseBody
+
+    override fun setResponse(response: String) {
+        responseBody = response
     }
 
-    @Override
-    public void setResponse(String response) {
-        mResponseBody = response;
-    }
+    @Parcelize
+    class Node(
+        var text: String = "",
+        var topics: Int = 0,
+        var id: String = "",
+        var isHot: Boolean = false
+    ) : Serializable, Parcelable, Comparable<Node> {
 
-    public static class Node implements Serializable, Parcelable, Comparable<Node> {
-        public static final Creator<Node> CREATOR = new Creator<Node>() {
-            @Override
-            public Node createFromParcel(Parcel in) {
-                return new Node(in);
-            }
-
-            @Override
-            public Node[] newArray(int size) {
-                return new Node[size];
-            }
-        };
-        public String text;
-        public int topics;
-        public String id;
-        public boolean isHot;
-
-        protected Node(Parcel in) {
-            text = in.readString();
-            topics = in.readInt();
-            id = in.readString();
-            isHot = in.readByte() != 0;
+        override fun toString(): String {
+            return "Node(text='$text', topics=$topics, id='$id', isHot=$isHot)"
         }
 
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "text='" + text + '\'' +
-                    ", topics=" + topics +
-                    ", id='" + id + '\'' +
-                    '}';
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(text);
-            dest.writeInt(topics);
-            dest.writeString(id);
-            dest.writeByte((byte) (isHot ? 1 : 0));
-        }
-
-        @Override
-        public int compareTo(@NonNull Node o) {
-            int flag1 = this.isHot ? 0 : 1;
-            int flag2 = o.isHot ? 0 : 1;
-            return flag1 - flag2;
+        override fun compareTo(other: Node): Int {
+            val flag1 = if (this.isHot) 0 else 1
+            val flag2 = if (other.isHot) 0 else 1
+            return flag1 - flag2
         }
     }
-
 }

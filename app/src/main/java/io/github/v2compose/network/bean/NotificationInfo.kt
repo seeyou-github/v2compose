@@ -1,120 +1,82 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.compose.runtime.Stable;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import io.github.v2compose.network.NetConstants;
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.Utils;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import androidx.compose.runtime.Stable
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import io.github.v2compose.network.NetConstants
+import io.github.v2compose.util.AvatarUtils
+import java.io.Serializable
 
 /**
  * Created by ghui on 10/05/2017.
  */
-
 @Stable
-@Pick("div#Wrapper")
-public class NotificationInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class NotificationInfo : BaseInfo() {
     @Pick("div#Main div.box div.fr.f12 strong")
-    private int total;
+    val total: Int = 0
+
     @Pick("div#Main div.box div.cell[id^=n_]")
-    private List<Reply> replies;
+    val replies: List<Reply> = listOf()
 
     @Pick("div#Rightbar div.box a[href*=notifications]")
-    private String unread;
+    private val unread: String = ""
 
-    public int getTotal() {
-        return total;
+    val unreadCount: Int
+        get() {
+            if (unread.isEmpty()) return 0
+            return try {
+                unread.split(" ").getOrNull(0)?.toInt() ?: 0
+            } catch (e: Exception) {
+                0
+            }
+        }
+
+    override fun isValid(): Boolean {
+        if (replies.isEmpty()) return true
+        return replies[0].name.isNotEmpty()
     }
 
-    public List<Reply> getReplies() {
-        return replies != null ? replies : Collections.emptyList();
-    }
-
-    public int getUnreadCount() {
-        if (Check.isEmpty(unread)) return 0;
-        return Integer.parseInt(unread.split(" ")[0]);
-    }
-
-    @Override
-    public String toString() {
-        return "NotificationInfo{" +
-                "total=" + total +
-                ", replies=" + replies +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        if (Utils.listSize(replies) <= 0) return true;
-        return Check.notEmpty(replies.get(0).name);
+    override fun toString(): String {
+        return "NotificationInfo(total=$total, replies=$replies)"
     }
 
     @Stable
-    public static class Reply implements Serializable {
+    @Pulp
+    class Reply : Serializable {
         @Pick(value = "div.cell[id^=n_]", attr = "id")
-        private String idText;
+        val idText: String = ""
+
         @Pick("a[href^=/member/] strong")
-        private String name;
+        val name: String = ""
+
         @Pick(value = "a[href^=/member/] img", attr = Attrs.SRC)
-        private String avatar;
+        val avatar: String = ""
+
         @Pick(value = "span.fade")
-        private String title;
+        val titleText: String = ""
+
         @Pick(value = "a[href^=/t/]", attr = Attrs.HREF)
-        private String link;
-        @Pick(value = "div.payload", attr = Attrs.INNER_HTML)
-        private String content;
+        val link: String = ""
+
+        @Pick(value = "div.payload", attr = Attrs.HTML)
+        val content: String = ""
+
         @Pick("span.snow")
-        private String time;
+        val time: String = ""
 
-        public String getId() {
-            return idText.substring(2);
-        }
+        fun getId(): String = if (idText.length > 2) idText.substring(2) else ""
 
-        public String getLink() {
-            return NetConstants.BASE_URL + link;
-        }
+        fun getFullLink(): String = NetConstants.BASE_URL + link
 
+        fun getAdjustedTitle(): String =
+            if (titleText.isNotEmpty()) titleText.replaceFirst(name, "").trim() else ""
 
-        public String getTitle() {
-            if (Check.notEmpty(title))
-                return title.replaceFirst(name, "").trim();
-            return title;
-        }
+        fun getAdjustedAvatar(): String = AvatarUtils.adjustAvatar(avatar)
 
-        public String getName() {
-            return name;
-        }
-
-        public String getAvatar() {
-            return AvatarUtils.adjustAvatar(avatar);
-        }
-
-        public String getContent() {
-            return content != null ? content : "";
-        }
-
-        public String getTime() {
-            return time;
-        }
-
-        @Override
-        public String toString() {
-            return "Reply{" +
-                    "idText='" + idText + '\'' +
-                    ", name='" + name + '\'' +
-                    ", avatar='" + avatar + '\'' +
-                    ", title='" + title + '\'' +
-                    ", link='" + link + '\'' +
-                    ", content='" + content + '\'' +
-                    ", time='" + time + '\'' +
-                    '}';
+        override fun toString(): String {
+            return "Reply(name='$name', time='$time')"
         }
     }
-
 }

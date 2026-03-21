@@ -1,10 +1,11 @@
 package io.github.v2compose.network.bean
 
-import io.github.fruit.Attrs
+import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 import java.io.Serializable
 
-@Pick("div#Wrapper")
+@Pulp("div#Wrapper")
 class UserReplies : BaseInfo() {
 
     @Pick("div.header strong.gray")
@@ -48,7 +49,7 @@ class UserReplies : BaseInfo() {
                 ")"
     }
 
-
+    @Pulp
     class ReplyDockItem {
         @Pick("span.gray")
         val title: String = ""
@@ -68,8 +69,9 @@ class UserReplies : BaseInfo() {
         }
     }
 
+    @Pulp
     class ReplyContentItem : Serializable {
-        @Pick(attr = Attrs.INNER_HTML)
+        @Pick(attr = Attrs.HTML)
         val content: String = ""
 
         override fun toString(): String {

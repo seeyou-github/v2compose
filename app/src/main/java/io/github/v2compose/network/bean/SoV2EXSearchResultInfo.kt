@@ -1,158 +1,80 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.compose.runtime.Stable;
-
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Collections;
-import java.util.List;
+import androidx.compose.runtime.Stable
+import com.google.gson.annotations.SerializedName
 
 @Stable
-public class SoV2EXSearchResultInfo extends BaseInfo {
+class SoV2EXSearchResultInfo : BaseInfo() {
     @SerializedName("total")
-    private int total;
+    val total: Int = 0
+
     @SerializedName("hits")
-    private List<Hit> hits;
+    val hits: List<Hit> = listOf()
 
-    public int getTotal() {
-        return total;
+    override fun toString(): String {
+        return "SoV2EXSearchResultInfo(total=$total, hits=$hits)"
     }
 
-    public List<Hit> getHits() {
-        return hits != null ? hits : Collections.emptyList();
-    }
-
-    @Override
-    public String toString() {
-        return "SoV2EXSearchResultInfo{" +
-                "total=" + total +
-                ", hits=" + hits +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        return true;
+    override fun isValid(): Boolean {
+        return true
     }
 
     @Stable
-    public static class Hit {
+    class Hit {
         @SerializedName("_source")
-        private Source source;
+        lateinit var source: Source
 
         @SerializedName("highlight")
-        private Highlight highlight;
+        val highlight: Highlight? = null
 
-        public Source getSource() {
-            return source;
-        }
-
-        public Highlight getHighlight() {
-            return highlight;
-        }
-
-        @Override
-        public String toString() {
-            return "Hit{" +
-                    "source=" + source +
-                    ", highlight=" + highlight +
-                    '}';
+        override fun toString(): String {
+            return "Hit(source=$source, highlight=$highlight)"
         }
 
         @Stable
-        public static class Source {
+        class Source {
             @SerializedName("id")
-            private String id;
+            val id: String = ""
+
             @SerializedName("title")
-            private String title;
+            val title: String = ""
+
             @SerializedName("content")
-            private String content;
+            val content: String = ""
+
             @SerializedName("node")
-            private String nodeName;
+            val nodeName: String = ""
+
             @SerializedName("replies")
-            private int replies;
+            val replies: Int = 0
+
             @SerializedName("created")
-            private String time;
+            val time: String = ""
+
             @SerializedName("member")
-            private String creator;
+            val creator: String = ""
 
-            public String getId() {
-                return id;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public String getContent() {
-                return content;
-            }
-
-            public String getNodeId() {
-                return nodeName;
-            }
-
-            public int getReplies() {
-                return replies;
-            }
-
-            public String getTime() {
-                return time;
-            }
-
-            public String getCreator() {
-                return creator;
-            }
-
-            @Override
-            public String toString() {
-                return "Source{" +
-                        "id='" + id + '\'' +
-                        ", title='" + title + '\'' +
-                        ", content='" + content + '\'' +
-                        ", nodeName='" + nodeName + '\'' +
-                        ", replies=" + replies +
-                        ", time='" + time + '\'' +
-                        ", creator='" + creator + '\'' +
-                        '}';
+            override fun toString(): String {
+                return "Source(id='$id', title='$title', content='$content', nodeName='$nodeName', replies=$replies, time='$time', creator='$creator')"
             }
         }
 
         @Stable
-        public static class Highlight {
+        class Highlight {
             @SerializedName("title")
-            private List<String> title;
+            val title: List<String> = listOf()
+
             @SerializedName("content")
-            private List<String> content;
+            val content: List<String> = listOf()
+
             @SerializedName("postscript_list.content")
-            private List<String> postscriptListContent;
+            val postscriptListContent: List<String> = listOf()
+
             @SerializedName("reply_list.content")
-            private List<String> replyListContent;
+            val replyListContent: List<String> = listOf()
 
-            public List<String> getTitle() {
-                return title != null ? title : Collections.emptyList();
-            }
-
-            public List<String> getContent() {
-                return content != null ? content : Collections.emptyList();
-            }
-
-            public List<String> getPostscriptListContent() {
-                return postscriptListContent != null ? postscriptListContent : Collections.emptyList();
-            }
-
-            public List<String> getReplyListContent() {
-                return replyListContent != null ? replyListContent : Collections.emptyList();
-            }
-
-            @Override
-            public String toString() {
-                return "Highlight{" +
-                        "title=" + title +
-                        ", content=" + content +
-                        ", postscriptListContent=" + postscriptListContent +
-                        ", replyListContent=" + replyListContent +
-                        '}';
+            override fun toString(): String {
+                return "Highlight(title=$title, content=$content, postscriptListContent=$postscriptListContent, replyListContent=$replyListContent)"
             }
         }
     }

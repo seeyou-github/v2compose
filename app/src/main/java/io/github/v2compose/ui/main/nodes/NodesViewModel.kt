@@ -46,8 +46,12 @@ class NodesViewModel @Inject constructor(private val nodeRepository: NodeReposit
         try {
             val startMills = System.currentTimeMillis()
 
-            val nodesNavInfo =
-                nodeRepository.nodesNavInfo.first() ?: nodeRepository.getNodesNavInfo()
+            var nodesNavInfo =
+                nodeRepository.nodesNavInfo.first()
+            if (nodesNavInfo.isNullOrEmpty()) {
+                nodesNavInfo = nodeRepository.getNodesNavInfo()
+            }
+
             val allNodes = nodeRepository.getAllNodes().associateBy { it.name }
             val result = nodesNavInfo.map { category ->
                 val nodes = category.nodes

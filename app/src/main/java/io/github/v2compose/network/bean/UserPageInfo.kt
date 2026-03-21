@@ -1,94 +1,83 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.annotation.NonNull;
-import androidx.compose.runtime.Stable;
-
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import androidx.compose.runtime.Stable
+import io.github.v2compose.util.AvatarUtils
+import io.github.v2compose.util.Check
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
 /**
  * Created by ghui on 01/06/2017.
  * https://www.v2ex.com/member/ghui
  */
-
 @Stable
-@Pick("div#Wrapper")
-public class UserPageInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class UserPageInfo : BaseInfo() {
     @Pick("h1")
-    private String userName;
+    val userName: String = ""
+
     @Pick(value = "img.avatar", attr = Attrs.SRC)
-    private String avatar;
+    val avatar: String = ""
+
     @Pick("td[valign=top] > span.gray")
-    private String desc;
+    val desc: String = ""
+
     @Pick("strong.online")
-    private String online;
+    val online: String = ""
+
     @Pick(value = "div.fr input", attr = "onclick")
-    private String followOnClick;
+    val followOnClick: String = ""
+
     @Pick(value = "div.fr input[value*=lock]", attr = "onclick")
-    private String blockOnClick;
+    val blockOnClick: String = ""
 
-    public boolean hadFollowed() {
-        return Check.notEmpty(followOnClick) && followOnClick.contains("取消");
+    fun hadFollowed(): Boolean {
+        return followOnClick.isNotEmpty() && followOnClick.contains("取消")
     }
 
-    public boolean hadBlocked() {
-        return Check.notEmpty(blockOnClick) && blockOnClick.contains("unblock");
+    fun hadBlocked(): Boolean {
+        return blockOnClick.isNotEmpty() && blockOnClick.contains("unblock")
     }
 
-    //    if (confirm('确认要取消对 diskerjtr 的关注？')) { location.href = '/unfollow/128373?once=15154'; }
-    public String getFollowUrl() {
-        return getUrl(followOnClick);
+    fun getFollowUrl(): String? {
+        return getUrl(followOnClick)
     }
 
-    //    if (confirm('确认要解除对 diskerjtr 的屏蔽？')) { location.href = '/unblock/128373?t=1456813618'; }
-    public String getBlockUrl() {
-        return getUrl(blockOnClick);
+    fun getBlockUrl(): String? {
+        return getUrl(blockOnClick)
     }
 
-    private String getUrl(String onclick) {
-        if (Check.notEmpty(onclick)) {
-            String reg = "{ location.href = '";
-            int start = onclick.indexOf(reg) + reg.length();
-            int end = onclick.lastIndexOf("'");
-            return onclick.substring(start, end);
+    private fun getUrl(onclick: String?): String? {
+        if (!onclick.isNullOrEmpty()) {
+            val reg = "{ location.href = '"
+            val start = onclick.indexOf(reg) + reg.length
+            val end = onclick.lastIndexOf("'")
+            if (start in 0 until end) {
+                return onclick.substring(start, end)
+            }
         }
-        return null;
+        return null
     }
 
-    public boolean isOnline() {
-        return Check.notEmpty(online) && online.equals("ONLINE");
+    val isOnline: Boolean
+        get() = online.isNotEmpty() && online == "ONLINE"
+
+    val adjustedAvatar: String
+        get() = AvatarUtils.adjustAvatar(avatar)
+
+    override fun toString(): String {
+        return "UserPageInfo(" +
+                "userName='$userName', " +
+                "followOnClick='$followOnClick', " +
+                "blockOnClick='$blockOnClick', " +
+                "avatar='$avatar', " +
+                "desc='$desc', " +
+                "online='$online'" +
+                ")"
     }
 
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getAvatar() {
-        return AvatarUtils.adjustAvatar(avatar);
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "UserPageInfo{" +
-                "userName='" + userName + '\'' +
-                ", followOnClick='" + followOnClick + '\'' +
-                ", blockOnClick='" + blockOnClick + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", desc='" + desc + '\'' +
-                ", online='" + online + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(userName);
+    override fun isValid(): Boolean {
+        return userName.isNotEmpty()
     }
 }

@@ -1,75 +1,48 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import androidx.annotation.NonNull;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import io.github.v2compose.util.Check;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
-
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 01/05/2017.
  */
-
-public class LoginParam extends BaseInfo {
+@Pulp
+class LoginParam : BaseInfo(), Serializable {
     @Pick(value = "input.sl[type=text]", attr = "name")
-    private String nameParam;
+    val nameParam: String = ""
+
     @Pick(value = "input[type=password]", attr = "name")
-    private String pswParam;
+    val pswParam: String = ""
+
     @Pick(value = "input[name=once]", attr = "value")
-    private String once;
+    val once: String = ""
+
     @Pick(value = "input[placeholder*=验证码]", attr = "name")
-    private String captchaParam;
-    @Pick(value = "div.problem", attr = Attrs.INNER_HTML)
-    private String problem;
+    val captchaParam: String = ""
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "LoginParam{" +
-                "nameParam='" + nameParam + '\'' +
-                ", pswParam='" + pswParam + '\'' +
-                ", once='" + once + '\'' +
-                ", captureParam='" + captchaParam + '\'' +
-                ", problem='" + problem + '\'' +
-                '}';
+    @Pick(value = "div.problem", attr = Attrs.HTML)
+    val problem: String = ""
+
+    override fun toString(): String {
+        return "LoginParam(nameParam='$nameParam', pswParam='$pswParam', once='$once', captchaParam='$captchaParam', problem='$problem')"
     }
 
-    public String getNameParam() {
-        return nameParam;
+    fun needCaptcha(): Boolean {
+        return captchaParam.isNotEmpty()
     }
 
-    public String getPswParam() {
-        return pswParam;
+    fun toMap(userName: String, psw: String, captcha: String): Map<String, String> {
+        return mapOf(
+            nameParam to userName,
+            pswParam to psw,
+            captchaParam to captcha,
+            "once" to once
+        )
     }
 
-    public String getOnce() {
-        return once;
-    }
-
-    public boolean needCaptcha() {
-        return Check.notEmpty(captchaParam);
-    }
-
-    public String getProblem() {
-        return problem != null ? problem : "";
-    }
-
-    public Map<String, String> toMap(String userName, String psw, String captcha) {
-        Map<String, String> map = new HashMap<>();
-        map.put(nameParam, userName);
-        map.put(pswParam, psw);
-        map.put(captchaParam, captcha);
-        map.put("once", once);
-//        map.put("next", "/mission/daily");
-        return map;
-    }
-
-    @Override
-    public boolean isValid() {
-        return Check.notEmpty(nameParam, pswParam, once);
+    override fun isValid(): Boolean {
+        return nameParam.isNotEmpty() && pswParam.isNotEmpty() && once.isNotEmpty()
     }
 }

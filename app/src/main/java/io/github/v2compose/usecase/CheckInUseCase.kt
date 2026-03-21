@@ -14,7 +14,7 @@ class CheckInUseCase @Inject constructor(
         return try {
             var dailyInfo = accountRepository.dailyInfo()
             if (!dailyInfo.hadCheckedIn()) {
-                dailyInfo = accountRepository.checkIn(dailyInfo.once())
+                dailyInfo = accountRepository.checkIn(dailyInfo.once)
             }
             CheckInResult(dailyInfo.hadCheckedIn(), dailyInfo.continuousLoginDaysText)
         } catch (e: Exception) {

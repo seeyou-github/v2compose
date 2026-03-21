@@ -34,6 +34,8 @@ android {
 dependencies {
     testImplementation(libs.junit)
 
+    api(libs.fruit)
+    api(libs.fruit.converter.retrofit)
     api(libs.jsoup)
     implementation(libs.google.gson)
     compileOnly(libs.okhttp)

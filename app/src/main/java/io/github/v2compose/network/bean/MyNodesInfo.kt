@@ -1,75 +1,54 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import java.io.Serializable;
-import java.util.List;
-
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.Utils;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 18/05/2017.
  * https://www.v2ex.com/my/nodes
  */
-
-@Pick("div#my-nodes")
-public class MyNodesInfo extends BaseInfo {
-
+@Pulp("div#my-nodes")
+class MyNodesInfo : BaseInfo() {
     @Pick("a.fav-node")
-    private List<Item> items;
+    val items: List<Item> = listOf()
 
-    public List<Item> getItems() {
-        return items;
+    override fun isValid(): Boolean {
+        if (items.isEmpty()) return true
+        return items[0].title.isNotEmpty()
     }
 
-    @Override
-    public boolean isValid() {
-        if (Utils.listSize(items) <= 0) return true;
-        return Check.notEmpty(items.get(0).title);
-    }
-
-    public static class Item implements Serializable {
+    @Pulp
+    class Item : Serializable {
         @Pick(value = "img", attr = Attrs.SRC)
-        private String avatar;
+        val avatar: String = ""
+
         @Pick(value = "span.fav-node-name", attr = Attrs.OWN_TEXT)
-        private String title;
+        val title: String = ""
+
         @Pick(value = "span.fade.f12")
-        private int topicNum;
+        val topicNum: Int = 0
+
         @Pick(attr = Attrs.HREF)
-        private String link;
-        private String _name;
+        val link: String = ""
 
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "avatar='" + avatar + '\'' +
-                    ", title='" + title + '\'' +
-                    ", topicNum=" + topicNum +
-                    ", link='" + link + '\'' +
-                    '}';
-        }
+        private var _name: String = ""
 
-        public String getAvatar() {
-            return avatar == null ? "" : avatar;
-        }
+        val avatarUrl: String
+            get() = avatar
 
-        public String getTitle() {
-            return title;
-        }
+        val name: String
+            get() {
+                if (_name.isNotEmpty()) return _name
+                if (link.startsWith("/go/")) {
+                    _name = link.substring("/go/".length)
+                }
+                return _name
+            }
 
-        public int getTopicNum() {
-            return topicNum;
-        }
-
-        public String getName() {
-            if (_name != null) return _name;
-            _name = link.substring("/go/".length());
-            return _name;
-        }
-
-        public String getLink() {
-            return link;
+        override fun toString(): String {
+            return "Item(avatar='$avatar', title='$title', topicNum=$topicNum, link='$link')"
         }
     }
 }

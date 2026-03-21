@@ -1,160 +1,112 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import android.text.TextUtils;
-
-import androidx.compose.runtime.Stable;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import io.github.v2compose.network.NetConstants;
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.L;
-import io.github.v2compose.util.UriUtils;
-import io.github.v2compose.util.Utils;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import androidx.compose.runtime.Stable
+import io.github.v2compose.network.NetConstants
+import io.github.v2compose.util.UriUtils
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 27/05/2017.
  * https://www.v2ex.com/go/python
  */
-
 @Stable
-@Pick("div#Wrapper")
-public class NodeTopicInfo extends BaseInfo {
-
+@Pulp("div#Wrapper")
+class NodeTopicInfo : BaseInfo() {
     @Pick("span.topic-count strong")
-    private String totalText;
+    val totalText: String = ""
+
     @Pick(value = "a[href*=favorite/] ", attr = Attrs.HREF)
-    private String favoriteLink;
+    val favoriteLink: String = ""
+
     @Pick("div.box div.cell:has(table)")
-    private List<Item> items;
+    val items: List<Item> = listOf()
 
-    private int _total = -1;
-
-    public int getTotal() {
-        if (_total > 0) return _total;
-        try {
-            String text = totalText.replaceAll(",", "");
-            _total = Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            L.e("parse total error", e);
+    val total: Int
+        get() {
+            if (totalText.isEmpty()) return 0
+            return try {
+                totalText.replace(",", "").toInt()
+            } catch (e: NumberFormatException) {
+                e.printStackTrace()
+                0
+            }
         }
-        return 0;
+
+    val fullFavoriteLink: String
+        get() = NetConstants.BASE_URL + favoriteLink
+
+    val hasStared: Boolean
+        get() = favoriteLink.isNotEmpty() && favoriteLink.contains("/unfavorite/node/")
+
+    val once: String?
+        get() = if (favoriteLink.isNotEmpty()) UriUtils.getParamValue(favoriteLink, "once") else null
+
+    override fun toString(): String {
+        return "NodeTopicInfo(favoriteLink='$favoriteLink', totalText='$totalText', items=$items)"
     }
 
-    public List<Item> getItems() {
-        return items != null ? items : Collections.emptyList();
-    }
-
-    public String getFavoriteLink() {
-        return NetConstants.BASE_URL + favoriteLink;
-    }
-
-    public boolean hasStared() {
-        return Check.notEmpty(favoriteLink) && favoriteLink.contains("/unfavorite/node/");
-    }
-
-    public String getOnce() {
-        if (Check.notEmpty(favoriteLink)) {
-            return UriUtils.getParamValue(favoriteLink, "once");
-        }
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return "NodeTopicInfo{" +
-                "favoriteLink=" + favoriteLink +
-                ",totalText=" + totalText +
-                ", items=" + items +
-                '}';
-    }
-
-    @Override
-    public boolean isValid() {
-        if (Utils.listSize(items) <= 0) return true;
-        return Check.notEmpty(items.get(0).userName);
+    override fun isValid(): Boolean {
+        if (items.isEmpty()) return true
+        return items[0].userName.isNotEmpty()
     }
 
     @Stable
-    public static class Item implements Serializable {
+    @Pulp
+    class Item : Serializable {
         @Pick(value = "img.avatar", attr = Attrs.SRC)
-        private String avatar;
+        val avatar: String = ""
+
         @Pick("span.item_title")
-        private String title;
+        val title: String = ""
+
         @Pick("span.small.fade strong")
-        private String userName;
+        val userName: String = ""
+
         @Pick(value = "span.small.fade", attr = Attrs.OWN_TEXT)
-        private String clickedAndContentLength;
+        private val clickedAndContentLength: String = ""
+
         @Pick("a[class^=count_]")
-        private int commentNum;
+        val commentNum: Int = 0
+
         @Pick(value = "span.item_title a", attr = Attrs.HREF)
-        private String topicLink;
+        private val topicLinkText: String = ""
 
-        private int clickNum = -1;
-
-        public String getTopicId() {
-            // topicLink example : /t/908177#reply33
-            int end = topicLink.indexOf('#');
-            return topicLink.substring(3, end);
-        }
-
-        public String getTopicLink() {
-            return topicLink;
-        }
-
-        public String getAvatar() {
-            if (!TextUtils.isEmpty(avatar) && avatar.startsWith("http")) {
-                return avatar;
+        val topicId: String
+            get() {
+                val end = topicLinkText.indexOf('#')
+                return if (end > 3) topicLinkText.substring(3, end) else ""
             }
-            return NetConstants.HTTPS_SCHEME + avatar;
-        }
 
-        public String getTitle() {
-            return title;
-        }
+        val topicLink: String
+            get() = topicLinkText
 
-        public String getUserName() {
-            return userName;
-        }
+        val avatarUrl: String
+            get() = if (avatar.isNotEmpty() && avatar.startsWith("http")) avatar else NetConstants.HTTPS_SCHEME + avatar
 
-        public int getCommentNum() {
-            return commentNum;
-        }
-
-        public int getClickNum() {
-            if (clickNum > 0) {
-                return clickNum;
-            }
-            //  •  719 个字符  •  109 次点击
-            if (Check.isEmpty(clickedAndContentLength)) {
-                clickNum = 0;
-            } else {
-                int count;
-                try {
-                    String result = clickedAndContentLength.substring(clickedAndContentLength.lastIndexOf("•") + 1);
-                    result = result.replaceAll("[^0-9]", "");
-                    count = Integer.parseInt(result);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    count = 0;
+        val clickNum: Int
+            get() {
+                if (clickedAndContentLength.isEmpty()) return 0
+                return try {
+                    val result = clickedAndContentLength.substring(clickedAndContentLength.lastIndexOf("•") + 1)
+                    result.replace("[^0-9]".toRegex(), "").toInt()
+                } catch (e: Exception) {
+                    0
                 }
-                clickNum = count;
             }
-            return clickNum;
-        }
 
-        public int getContentLength() {
-            if (Check.isEmpty(clickedAndContentLength)) return 0;
-            else {
-                clickedAndContentLength = clickedAndContentLength.trim();
-                String result = clickedAndContentLength.substring(0, clickedAndContentLength.lastIndexOf("•")).trim();
-                result = result.split(" ")[1].trim();
-                return Integer.parseInt(result);
+        val contentLength: Int
+            get() {
+                if (clickedAndContentLength.isEmpty()) return 0
+                return try {
+                    val trimmed = clickedAndContentLength.trim()
+                    val result = trimmed.substring(0, trimmed.lastIndexOf("•")).trim()
+                    result.split(" ")[1].trim().toInt()
+                } catch (e: Exception) {
+                    0
+                }
             }
-        }
     }
 }

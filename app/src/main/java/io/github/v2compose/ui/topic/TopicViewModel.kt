@@ -424,11 +424,13 @@ class TopicViewModel @Inject constructor(
             }
             return false
         }
-        if (_topicInfoWrapper.value.topic?.headerInfo?.canSendThanks() == false) {
-            viewModelScope.launch {
-                updateSnackbarMessage(context.getString(R.string.thanks_fail_just_joined))
+        _topicInfoWrapper.value.topic?.headerInfo?.let {
+            if (!it.canSendThanks()) {
+                viewModelScope.launch {
+                    updateSnackbarMessage(context.getString(R.string.thanks_fail_just_joined))
+                }
+                return false
             }
-            return false
         }
         return true
     }

@@ -1,129 +1,94 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-import java.io.Serializable;
-import java.util.List;
-
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.Utils;
-import io.github.fruit.Attrs;
-import io.github.fruit.annotations.Pick;
+import io.github.v2compose.util.AvatarUtils
+import io.github.fruit.annotations.Attrs
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 12/05/2017.
  * https://www.v2ex.com/my/following?p=1
  */
-
-@Pick("div#Wrapper")
-public class MyFollowingInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class MyFollowingInfo : BaseInfo() {
     @Pick(value = "input.page_input", attr = "max")
-    private int totalPageCount;
+    val totalPageCount: Int = 0
+
     @Pick("div.cell.item")
-    private List<Item> items;
+    val items: List<Item> = listOf()
 
-    @Override
-    public String toString() {
-        return "CareInfo{" +
-                "totalPageCount=" + totalPageCount +
-                ", items=" + items +
-                '}';
+    override fun isValid(): Boolean {
+        if (items.isEmpty()) return true
+        return items[0].userName.isNotEmpty()
     }
 
-    public int getTotalPageCount() {
-        return totalPageCount;
+    override fun toString(): String {
+        return "MyFollowingInfo(totalPageCount=$totalPageCount, items=$items)"
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    @Override
-    public boolean isValid() {
-        if (Utils.listSize(items) <= 0) return true;
-        return Check.notEmpty(items.get(0).userName);
-    }
-
-    public static class Item implements Serializable {
+    @Pulp
+    class Item : Serializable {
         @Pick(value = "img.avatar", attr = Attrs.SRC)
-        private String avatar;
+        val avatar: String = ""
+
         @Pick("strong a[href^=/member/]")
-        private String userName;
+        val userName: String = ""
+
         @Pick(value = "span[title]", attr = Attrs.OWN_TEXT)
-        private String time;
+        val time: String = ""
+
         @Pick("span.item_title a[href^=/t/]")
-        private String title;
+        val title: String = ""
+
         @Pick(value = "span.item_title a[href^=/t/]", attr = Attrs.HREF)
-        private String link;
+        val link: String = ""
+
         @Pick("a[class^=count_]")
-        private int commentNum;
+        val commentNum: Int = 0
+
         @Pick("a.node")
-        private String tagTitle;
+        val tagTitle: String = ""
+
         @Pick(value = "a.node", attr = Attrs.HREF)
-        private String tagLink;
-        private String _id;
-        private String _avatar;
-        private String _tagName;
+        val tagLink: String = ""
 
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "avatar='" + avatar + '\'' +
-                    ", userName='" + userName + '\'' +
-                    ", time='" + time + '\'' +
-                    ", title='" + title + '\'' +
-                    ", link='" + link + '\'' +
-                    ", comentNum=" + commentNum +
-                    ", tagTitle='" + tagTitle + '\'' +
-                    ", tagLink='" + tagLink + '\'' +
-                    '}';
-        }
+        private var _id: String = ""
+        private var _avatar: String = ""
+        private var _tagName: String = ""
 
-        public String getId() {
-            if (_id != null) return _id;
-            if (link == null) return "";
-            _id = link.substring("/t/".length(), link.indexOf('#'));
-            return _id;
-        }
+        val id: String
+            get() {
+                if (_id.isNotEmpty()) return _id
+                if (link.startsWith("/t/")) {
+                    val end = link.indexOf('#')
+                    _id = if (end > 0) {
+                        link.substring("/t/".length, end)
+                    } else {
+                        link.substring("/t/".length)
+                    }
+                }
+                return _id
+            }
 
-        public String getTime() {
-            return time == null ? "" : time;
-        }
+        val adjustedAvatar: String
+            get() {
+                if (_avatar.isNotEmpty()) return _avatar
+                _avatar = AvatarUtils.adjustAvatar(avatar)
+                return _avatar
+            }
 
-        public String getAvatar() {
-            if (_avatar != null) return _avatar;
-            if (avatar == null) return "";
-            _avatar = AvatarUtils.adjustAvatar(avatar);
-            return _avatar;
-        }
+        val tagName: String
+            get() {
+                if (_tagName.isNotEmpty()) return _tagName
+                if (tagLink.startsWith("/go/")) {
+                    _tagName = tagLink.substring("/go/".length)
+                }
+                return _tagName
+            }
 
-        public String getUserName() {
-            return userName;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getLink() {
-            return link;
-        }
-
-        public int getCommentNum() {
-            return commentNum;
-        }
-
-        public String getTagName() {
-            if (_tagName != null) return _tagName;
-            _tagName = tagLink.substring("/go/".length());
-            return _tagName;
-        }
-
-        public String getTagTitle() {
-            return tagTitle;
-        }
-
-        public String getTagLink() {
-            return tagLink;
+        override fun toString(): String {
+            return "Item(userName='$userName', title='$title', link='$link')"
         }
     }
 }

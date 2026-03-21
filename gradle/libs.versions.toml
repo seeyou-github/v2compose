@@ -16,14 +16,13 @@ coil = "2.7.0"
 moshi = "1.15.2"
 retrofit = "3.0.0"
 okhttp = "5.3.2"
-fruit = "1.0.4"
 markwon = "4.6.2"
 googleServices = "4.4.4"
 crashlytics = "3.0.6"
 ksp = "2.3.2"
 appcompat = "1.7.1"
 material = "1.13.0"
-firebaseBom = "34.10.0"
+firebaseBom = "34.11.0"
 workManager = "2.11.1"
 datastore = "1.2.1"
 browser = "1.9.0"
@@ -75,9 +74,9 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
-fruit = { group = "io.github.fruit", name = "fruit" }
-fruit-ksp = { group = "io.github.fruit", name = "fruit-ksp" }
-fruit-converter-retrofit = { group = "io.github.fruit", name = "fruit-converter-retrofit" }
+fruit = { group = "io.github.fruit", name = "fruit", version = "1.0.0" }
+fruit-ksp = { group = "io.github.fruit", name = "fruit-ksp", version = "1.0.0" }
+fruit-converter-retrofit = { group = "io.github.fruit", name = "fruit-converter-retrofit", version = "1.0.0" }
 eventbus = { group = "org.greenrobot", name = "eventbus", version = "3.3.1" }
 markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
 markwon-ext-strikethrough = { group = "io.noties.markwon", name = "ext-strikethrough", version.ref = "markwon" }

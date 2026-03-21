@@ -75,11 +75,11 @@ class UserViewModel @Inject constructor(
     }
 
     fun followUser() {
-        doUserAction { it.followUrl }
+        doUserAction { it.getFollowUrl() ?: ""}
     }
 
     fun blockUser() {
-        doUserAction { it.blockUrl }
+        doUserAction { it.getBlockUrl() ?: ""}
     }
 
     private fun doUserAction(actionUrl: (UserPageInfo) -> String) {

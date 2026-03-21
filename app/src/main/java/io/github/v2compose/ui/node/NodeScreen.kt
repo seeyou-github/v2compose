@@ -194,11 +194,11 @@ private fun CollapsingToolbarScope.NodeTopBar(
 ) {
     val topBarHeight = 64.dp
 
-    var favorited by remember(nodeTopicInfo) { mutableStateOf(nodeTopicInfo?.hasStared()) }
+    var favorited by remember(nodeTopicInfo) { mutableStateOf(nodeTopicInfo?.hasStared) }
     var showUnfollowDialog by remember { mutableStateOf(false) }
     val onFavoriteClickInternal = {
         nodeTopicInfo?.let {
-            val stared = it.hasStared()
+            val stared = it.hasStared
             if (favorited == stared) {
                 if (stared) {
                     showUnfollowDialog = true
@@ -384,7 +384,7 @@ private fun TopicList(
     } else null
 
     //TODO: 非登录情况下，某些节点无法访问
-    if (nodeTopicInfo != null && !nodeTopicInfo.isValid) {
+    if (nodeTopicInfo != null && !nodeTopicInfo.isValid()) {
         Log.e(TAG, "node topic info is invalid, nodeInfo = $nodeInfo")
         return
     }

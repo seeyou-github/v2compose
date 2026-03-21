@@ -1,189 +1,126 @@
-package io.github.v2compose.network.bean;
+package io.github.v2compose.network.bean
 
-
-import android.text.TextUtils;
-
-import androidx.compose.runtime.Stable;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import io.github.v2compose.util.AvatarUtils;
-import io.github.v2compose.util.Check;
-import io.github.v2compose.util.UriUtils;
-import io.github.fruit.annotations.Pick;
-
+import androidx.compose.runtime.Stable
+import io.github.v2compose.util.AvatarUtils
+import io.github.v2compose.util.UriUtils
+import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
+import java.io.Serializable
 
 /**
  * Created by ghui on 04/04/2017.
  */
-
 @Stable
-@Pick("div#Wrapper")
-public class NewsInfo extends BaseInfo {
+@Pulp("div#Wrapper")
+class NewsInfo : BaseInfo() {
     @Pick("div.box a[href*=mission/daily]")
-    private String checkInTips;
+    private val checkInTips: String = ""
+
     @Pick(value = "input.super.special.button", attr = "value")
-    private String unread;
+    private val unread: String = ""
+
     @Pick("div.cell.item")
-    private List<Item> items;
+    val items: List<Item> = listOf()
+
     @Pick("form[action=/2fa]")
-    private String twoStepStr;
+    private val twoStepStr: String = ""
 
     @Pick("a.balance_area")
-    private String balance;
+    private val balance: String = ""
 
-    public boolean hasCheckingInTips() {
-        return !Check.isEmpty(checkInTips);
-    }
+    fun hasCheckingInTips(): Boolean = checkInTips.isNotEmpty()
 
-    private boolean isTwoStepError() {
-        return Check.notEmpty(twoStepStr) && twoStepStr.contains("两步验证");
-    }
+    private val isTwoStepError: Boolean
+        get() = twoStepStr.isNotEmpty() && twoStepStr.contains("两步验证")
 
-    public int getUnreadCount() {
-        if (Check.isEmpty(unread)) return 0;
-        else {
-            return Integer.parseInt(unread.split(" ")[0]);
-        }
-    }
-
-    public List<Item> getItems() {
-        return items != null ? items : Collections.emptyList();
-    }
-
-    public int getBalanceGold() {
-        return getBalancePart(0);
-    }
-
-    public int getBalanceSilver() {
-        return getBalancePart(1);
-    }
-
-    public int getBalanceBronze() {
-        return getBalancePart(2);
-    }
-
-    private int getBalancePart(int partIndex) {
-        if (balance == null) {
-            return 0;
-        }
-        try {
-            String[] itemTexts = balance.split(" ");
-            int index = itemTexts.length - 3 + partIndex;
-            if (index >= 0) {
-                return Integer.parseInt(itemTexts[index]);
+    val unreadCount: Int
+        get() {
+            if (unread.isEmpty()) return 0
+            return try {
+                unread.split(" ").getOrNull(0)?.toInt() ?: 0
+            } catch (e: Exception) {
+                0
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return 0;
+
+    val balanceGold: Int get() = getBalancePart(0)
+    val balanceSilver: Int get() = getBalancePart(1)
+    val balanceBronze: Int get() = getBalancePart(2)
+
+    private fun getBalancePart(partIndex: Int): Int {
+        if (balance.isEmpty()) return 0
+        return try {
+            val itemTexts = balance.split(" ")
+            val index = itemTexts.size - 3 + partIndex
+            if (index >= 0) {
+                itemTexts[index].toInt()
+            } else 0
+        } catch (e: Exception) {
+            0
+        }
     }
 
-    @Override
-    public String toString() {
-        return "NewsInfo{" +
-                "items=" + items +
-                '}';
+    override fun toString(): String {
+        return "NewsInfo(items=$items)"
     }
 
-    @Override
-    public boolean isValid() {
-        if (isTwoStepError()) return false;
-        return Check.isEmpty(items) || Check.notEmpty(items.get(0).userName);
+    override fun isValid(): Boolean {
+        if (isTwoStepError) return false
+        return items.isEmpty() || items[0].userName.isNotEmpty()
     }
 
     @Stable
-    public static class Item implements Serializable {
+    @Pulp
+    class Item : Serializable {
         @Pick(value = "span.item_title > a")
-        private String title;
+        val title: String = ""
+
         @Pick(value = "span.item_title > a", attr = "href")
-        private String linkPath;
+        val linkPath: String = ""
+
         @Pick(value = "td > a > img", attr = "src")
-        private String avatar;
+        val avatar: String = ""
+
         @Pick(value = "td > a", attr = "href")
-        private String avatarLink;
+        val avatarLink: String = ""
+
         @Pick(value = "span.small.fade > strong > a")
-        private String userName;
+        val userName: String = ""
+
         @Pick(value = "span.small.fade:last-child", attr = "ownText")
-        private String time;
+        val timeText: String = ""
+
         @Pick(value = "span.small.fade > a")
-        private String tagName;
+        val tagName: String = ""
+
         @Pick(value = "span.small.fade > a", attr = "href")
-        private String tagLink;
+        private val tagLink: String = ""
+
         @Pick("a[class^=count_]")
-        private int replies;
+        val replies: Int = 0
 
-        private String id;
+        val id: String
+            get() = UriUtils.getLastSegment(linkPath)
 
-        public String getId() {
-            if (TextUtils.isEmpty(id)) {
-//                /t/638047#reply0
-                id = UriUtils.getLastSegment(linkPath);
+        val adjustedAvatar: String
+            get() = AvatarUtils.adjustAvatar(avatar)
+
+        val time: String
+            get() {
+                if (timeText.isNotEmpty() && timeText.contains("•")) {
+                    return timeText.split("•")[0].trim()
+                }
+                return timeText
             }
-            return id;
-        }
 
-        public int getReplies() {
-            return replies;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getLinkPath() {
-            return linkPath;
-        }
-
-        public String getAvatar() {
-            return AvatarUtils.adjustAvatar(avatar);
-        }
-
-        public String getAvatarLink() {
-            return avatarLink;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public String getTime() {
-            if (!Check.isEmpty(time) && time.contains("•")) {
-                time = time.split("•")[0];
+        val tagId: String?
+            get() {
+                if (tagLink.isEmpty()) return null
+                return tagLink.substring(tagLink.lastIndexOf("/") + 1)
             }
-            return time;
-        }
 
-        public String getTagName() {
-            return tagName;
+        override fun toString(): String {
+            return "Item(title='$title', linkPath='$linkPath', avatar='$avatar', avatarLink='$avatarLink', userName='$userName', timeText='$timeText', tagName='$tagName', tagLink='$tagLink', replies=$replies)"
         }
-
-        public String getTagId() {
-            if (Check.isEmpty(tagLink)) return null;
-            return tagLink.substring(tagLink.lastIndexOf("/") + 1);
-        }
-
-        public String getTagLink() {
-            return tagLink;
-        }
-
-        @Override
-        public String toString() {
-            return "Item{" +
-                    "title='" + title + '\'' +
-                    ", linkPath='" + linkPath + '\'' +
-                    ", avatar='" + avatar + '\'' +
-                    ", avatarLink='" + avatarLink + '\'' +
-                    ", userName='" + userName + '\'' +
-                    ", time='" + time + '\'' +
-                    ", tagName='" + tagName + '\'' +
-                    ", tagLink='" + tagLink + '\'' +
-                    ", replies=" + replies +
-                    '}';
-        }
-
     }
-
 }

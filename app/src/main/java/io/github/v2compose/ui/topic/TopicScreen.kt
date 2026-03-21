@@ -389,7 +389,7 @@ private fun TopicList(
         pagingRefreshItem(topicItems)
 
         if (topicInfo.topic != null) {
-            if (!topicInfo.topic.isValid) {
+            if (!topicInfo.topic.isValid()) {
                 //TODO 非登录状态，触发某些关键字（如 fg ），重定向到首页，导致解析失败
                 return@LazyColumn
             }
@@ -402,7 +402,7 @@ private fun TopicList(
                 )
             }
 
-            if (topicInfo.topic.contentInfo.content.isNotEmpty()) {
+            if (topicInfo.topic.contentInfo!!.content.isNotEmpty()) {
                 val tag = "content"
                 item(key = tag, contentType = "content") {
                     val content = topicInfo.topic.contentInfo.content
@@ -450,7 +450,7 @@ private fun TopicList(
 
             stickyHeader(key = "repliesBar", contentType = "repliesBar") {
                 TopicRepliesBar(
-                    replyNum = topicInfo.topic.headerInfo.commentNum,
+                    replyNum = topicInfo.topic.headerInfo!!.getCommentNum(),
                     repliesOrder = repliesOrder,
                     onRepliedOrderClick = {
                         onRepliedOrderClick(it)
@@ -522,11 +522,11 @@ private fun TopicList(
 @Composable
 fun rememberRepliesBarIndex(topicInfo: TopicInfoWrapper): Int {
     return remember(topicInfo) {
-        if (topicInfo.topic == null || !topicInfo.topic.isValid) {
+        if (topicInfo.topic == null || !topicInfo.topic.isValid()) {
             -1
         } else {
             var index = 0 //title
-            if (topicInfo.topic.contentInfo.content.isNotEmpty()) {
+            if (topicInfo.topic.contentInfo!!.content.isNotEmpty()) {
                 index++ //content
             }
             if (topicInfo.topic.contentInfo.supplements.isNotEmpty()) {
@@ -547,13 +547,13 @@ private fun TopicTitle(
     onUserAvatarClick: (String, String) -> Unit,
     onNodeClick: (String, String) -> Unit
 ) {
-    if (topicInfo == null) return
+    if (topicInfo == null || topicInfo.headerInfo == null) return
     SimpleTopic(userName = topicInfo.headerInfo.userName,
         userAvatar = topicInfo.headerInfo.avatar,
-        time = topicInfo.headerInfo.time,
-        replyCount = topicInfo.headerInfo.commentNum,
-        viewCount = topicInfo.headerInfo.viewCount,
-        nodeName = topicInfo.headerInfo.tagName,
+        time = topicInfo.headerInfo.getTime(),
+        replyCount = topicInfo.headerInfo.getCommentNum(),
+        viewCount = topicInfo.headerInfo.getViewCount(),
+        nodeName = topicInfo.headerInfo.getTagName(),
         nodeTitle = topicInfo.headerInfo.tag,
         title = topicInfo.headerInfo.title,
         onUserAvatarClick = {
@@ -562,7 +562,7 @@ private fun TopicTitle(
             )
         },
         onNodeClick = {
-            onNodeClick(topicInfo.headerInfo.tagName, topicInfo.headerInfo.tag)
+            onNodeClick(topicInfo.headerInfo.getTagName(), topicInfo.headerInfo.tag)
         })
 }
 

@@ -113,7 +113,7 @@ private fun NodesGrid(myNodesInfo: MyNodesInfo, onNodeClick: (MyNodesInfo.Item) 
             .fillMaxSize()
             .padding(horizontal = 16.dp),
     ) {
-        if (!myNodesInfo.isValid) return@LazyVerticalGrid
+        if (!myNodesInfo.isValid()) return@LazyVerticalGrid
         itemsIndexed(myNodesInfo.items, key = { _, item -> item.name }) { _, item ->
             NodeItem(
                 title = item.title,

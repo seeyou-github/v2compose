@@ -30,11 +30,11 @@ class AppStateStore @Inject constructor(
     }
 
     suspend fun updateNodesNavInfoWithNewsInfo(newsInfo: NewsInfo) {
-        if (newsInfo.isValid && _nodesNavInfo.value != null) {
+        if (newsInfo.isValid() && _nodesNavInfo.value != null) {
             return
         }
-        val newNodesNavInfo = fruit.fromHtml(newsInfo.rawResponse, NodesNavInfo::class.java)
-        if (newNodesNavInfo.isValid) {
+        val newNodesNavInfo = fruit.fromHtml(newsInfo.getResponse(), NodesNavInfo::class.java)
+        if (newNodesNavInfo?.isValid() == true) {
             _nodesNavInfo.emit(newNodesNavInfo)
         }
     }

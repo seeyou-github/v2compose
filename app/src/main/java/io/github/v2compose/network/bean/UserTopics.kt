@@ -1,10 +1,12 @@
 package io.github.v2compose.network.bean
 
-import io.github.fruit.Attrs
+import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 
-@Pick("div#Wrapper")
+@Pulp("div#Wrapper")
 class UserTopics : BaseInfo() {
+
     @Pick("div.header strong.gray")
     val total: Int = -1
 
@@ -41,7 +43,7 @@ class UserTopics : BaseInfo() {
                 ")"
     }
 
-
+    @Pulp
     class Item {
 
         @Pick(value = "span.item_title a", attr = Attrs.HREF)

@@ -4,10 +4,12 @@ import androidx.compose.runtime.Stable
 import io.github.v2compose.util.AvatarUtils
 import io.github.v2compose.util.UriUtils.getLastSegment
 import io.github.fruit.annotations.Pick
+import io.github.fruit.annotations.Pulp
 import java.io.Serializable
 
-@Pick("div#Wrapper")
+@Pulp("div#Wrapper")
 class RecentTopics : BaseInfo() {
+
     @Pick("div.header span.fade")
     private val totalText: String = ""
 
@@ -51,6 +53,7 @@ class RecentTopics : BaseInfo() {
     }
 
     @Stable
+    @Pulp
     class Item : Serializable {
 
         @Pick(value = "span.item_title > a")
