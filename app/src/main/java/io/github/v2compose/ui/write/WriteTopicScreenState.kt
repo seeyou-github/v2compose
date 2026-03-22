@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import io.github.v2compose.R
-import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.shared.bean.TopicNode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

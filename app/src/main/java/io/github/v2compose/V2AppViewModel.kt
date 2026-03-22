@@ -3,8 +3,8 @@ package io.github.v2compose
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.v2compose.bean.Account
-import io.github.v2compose.bean.AppSettings
+import io.github.v2compose.shared.bean.Account
+import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.SharingStarted

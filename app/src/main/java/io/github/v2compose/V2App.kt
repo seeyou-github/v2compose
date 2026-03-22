@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import io.github.v2compose.bean.DarkMode
+import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.ui.common.keyboardAsState
 import io.github.v2compose.ui.theme.V2composeTheme
 

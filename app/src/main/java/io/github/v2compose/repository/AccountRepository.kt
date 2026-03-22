@@ -1,7 +1,7 @@
 package io.github.v2compose.repository
 
 import androidx.paging.PagingData
-import io.github.v2compose.bean.Account
+import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.network.bean.DailyInfo
 import io.github.v2compose.network.bean.HomePageInfo
 import io.github.v2compose.network.bean.LoginParam

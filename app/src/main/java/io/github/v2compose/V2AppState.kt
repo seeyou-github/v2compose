@@ -18,7 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import io.github.v2compose.bean.RedirectEvent
+import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.core.extension.fullUrl
 import io.github.v2compose.core.extension.tryParse
 import io.github.v2compose.core.openInBrowser

@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.R
-import io.github.v2compose.bean.ContentFormat
+import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog

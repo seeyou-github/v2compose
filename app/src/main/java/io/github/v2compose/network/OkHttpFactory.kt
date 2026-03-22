@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.Constants
-import io.github.v2compose.bean.RedirectEvent
+import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.network.NetConstants.keyUserAgent
 import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector

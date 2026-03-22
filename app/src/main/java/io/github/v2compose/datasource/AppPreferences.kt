@@ -7,11 +7,10 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.github.v2compose.bean.AppSettings
-import io.github.v2compose.bean.DarkMode
-import io.github.v2compose.bean.ProxyInfo
+import io.github.v2compose.shared.bean.AppSettings
+import io.github.v2compose.shared.bean.DarkMode
+import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.core.extension.toJson
 import io.github.v2compose.core.extension.toStringList
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +26,6 @@ private val Context.appDataStore: DataStore<Preferences> by preferencesDataStore
 @Singleton
 class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val moshi: Moshi,
 ) {
 
     companion object {
@@ -53,14 +51,14 @@ class AppPreferences @Inject constructor(
             topicTitleOverview = it[KeyTopicTitleOverview] ?: true,
             ignoredReleaseName = it[KeyIgnoredReleaseName],
             autoCheckIn = it[KeyAutoCheckIn] ?: false,
-            searchKeywords = it[KeySearchKeywords]?.toStringList(moshi) ?: listOf(),
+            searchKeywords = it[KeySearchKeywords]?.toStringList() ?: listOf(),
             highlightOpReply = it[KeyHighlightOpReply] ?: false,
             replyWithFloor = it[KeyReplyWithFloor] ?: true,
         )
     }.distinctUntilChanged()
 
     val proxyInfo: Flow<ProxyInfo> = context.appDataStore.data.map {
-        it[KeyProxyInfo]?.let { value -> ProxyInfo.fromJson(moshi, value) } ?: ProxyInfo.Default
+        it[KeyProxyInfo]?.let { value -> ProxyInfo.fromJson(value) } ?: ProxyInfo.Default
     }
 
     suspend fun toggleTopicRepliesOrder() {
@@ -107,7 +105,7 @@ class AppPreferences @Inject constructor(
 
     suspend fun searchKeywords(value: List<String>) {
         context.appDataStore.edit {
-            it[KeySearchKeywords] = value.toJson(moshi)
+            it[KeySearchKeywords] = value.toJson()
         }
     }
 
@@ -119,7 +117,7 @@ class AppPreferences @Inject constructor(
 
     suspend fun proxyInfo(proxy: ProxyInfo) {
         context.appDataStore.edit {
-            it[KeyProxyInfo] = proxy.toJson(moshi)
+            it[KeyProxyInfo] = proxy.toJson()
         }
     }
 

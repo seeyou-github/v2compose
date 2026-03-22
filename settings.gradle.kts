@@ -18,3 +18,4 @@ rootProject.name = "V2compose"
 includeBuild("../fruit-kt")
 include(":app")
 include(":htmlText")
+include(":shared")

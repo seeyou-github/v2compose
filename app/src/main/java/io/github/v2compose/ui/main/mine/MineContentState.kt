@@ -8,7 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import io.github.v2compose.LocalSnackbarHostState
 import io.github.v2compose.R
-import io.github.v2compose.bean.Account
+import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.ui.BaseScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

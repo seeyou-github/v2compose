@@ -6,12 +6,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.v2compose.bean.ContentFormat
-import io.github.v2compose.bean.DraftTopic
+import io.github.v2compose.shared.bean.ContentFormat
+import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.network.bean.CreateTopicPageInfo
-import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.usecase.LoadNodesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

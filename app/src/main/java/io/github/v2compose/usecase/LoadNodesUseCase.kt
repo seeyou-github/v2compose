@@ -1,7 +1,7 @@
 package io.github.v2compose.usecase
 
 import androidx.compose.runtime.Stable
-import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.repository.TopicRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

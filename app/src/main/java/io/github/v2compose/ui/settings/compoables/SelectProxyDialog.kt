@@ -38,8 +38,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import io.github.v2compose.R
-import io.github.v2compose.bean.ProxyInfo
-import io.github.v2compose.bean.ProxyType
+import io.github.v2compose.shared.bean.ProxyInfo
+import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.util.InetValidator
 
 @Composable

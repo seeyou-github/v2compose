@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
@@ -73,6 +74,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared"))
+    implementation(libs.kotlinx.serialization.json)
     implementation(project(":htmlText"))
 
     // Jetpack

@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.v2compose.bean.ContentFormat
+import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.core.extension.redirectLocation
 import io.github.v2compose.datasource.AccountPreferences

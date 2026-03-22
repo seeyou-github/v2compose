@@ -60,10 +60,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.R
-import io.github.v2compose.bean.ContentFormat
-import io.github.v2compose.bean.DraftTopic
+import io.github.v2compose.shared.bean.ContentFormat
+import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.network.bean.CreateTopicPageInfo
-import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.ListDivider

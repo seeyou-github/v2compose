@@ -3,7 +3,7 @@ package io.github.v2compose.repository.def
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import io.github.v2compose.bean.AccountBalance
+import io.github.v2compose.shared.bean.AccountBalance
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.RecentTopicsPagingSource

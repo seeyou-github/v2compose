@@ -40,7 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.v2compose.R
-import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.shared.bean.TopicNode
 
 @Composable
 fun SelectNode(

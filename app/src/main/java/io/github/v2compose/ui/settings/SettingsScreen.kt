@@ -42,10 +42,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.Constants
 import io.github.v2compose.R
-import io.github.v2compose.bean.AppSettings
-import io.github.v2compose.bean.DarkMode
-import io.github.v2compose.bean.ProxyInfo
-import io.github.v2compose.bean.ProxyType
+import io.github.v2compose.shared.bean.AppSettings
+import io.github.v2compose.shared.bean.DarkMode
+import io.github.v2compose.shared.bean.ProxyInfo
+import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.core.NotificationCenter
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.ui.common.BackIcon

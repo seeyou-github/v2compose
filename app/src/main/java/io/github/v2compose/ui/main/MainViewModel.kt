@@ -7,7 +7,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.R
-import io.github.v2compose.bean.ProxyInfo
+import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.Release

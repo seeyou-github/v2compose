@@ -47,7 +47,7 @@ import androidx.core.view.children
 import androidx.core.view.setPadding
 import coil.imageLoader
 import io.github.v2compose.R
-import io.github.v2compose.bean.ContentFormat
+import io.github.v2compose.shared.bean.ContentFormat
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin

@@ -48,7 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import io.github.cooaer.htmltext.HtmlText
 import io.github.v2compose.R
-import io.github.v2compose.bean.Account
+import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.core.extension.isBeforeTodayByUTC
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.ListDivider

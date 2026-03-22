@@ -21,7 +21,7 @@ import io.github.v2compose.network.bean.ReplyTopicResultInfo
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 import io.github.v2compose.network.bean.ThxResponseInfo
 import io.github.v2compose.network.bean.TopicInfo
-import io.github.v2compose.network.bean.TopicNode
+import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.network.bean.UserInfo
 import io.github.v2compose.network.bean.UserPageInfo

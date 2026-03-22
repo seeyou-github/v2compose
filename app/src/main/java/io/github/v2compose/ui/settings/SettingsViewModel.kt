@@ -7,9 +7,9 @@ import coil.annotation.ExperimentalCoilApi
 import coil.disk.DiskCache
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.github.v2compose.bean.AppSettings
-import io.github.v2compose.bean.DarkMode
-import io.github.v2compose.bean.ProxyInfo
+import io.github.v2compose.shared.bean.AppSettings
+import io.github.v2compose.shared.bean.DarkMode
+import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.network.di.V2ProxySelector

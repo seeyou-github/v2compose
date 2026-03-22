@@ -1,4 +1,4 @@
-package io.github.v2compose.bean
+package io.github.v2compose.shared.bean
 
 data class AppSettings(
     val topicRepliesReversed: Boolean = true,

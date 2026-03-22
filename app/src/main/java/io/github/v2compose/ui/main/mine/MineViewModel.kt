@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.R
-import io.github.v2compose.bean.Account
+import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.usecase.CheckInUseCase

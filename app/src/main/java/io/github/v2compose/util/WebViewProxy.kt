@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.webkit.ProxyConfig
 import androidx.webkit.ProxyController
 import androidx.webkit.WebViewFeature
-import io.github.v2compose.bean.ProxyInfo
-import io.github.v2compose.bean.ProxyType
+import io.github.v2compose.shared.bean.ProxyInfo
+import io.github.v2compose.shared.bean.ProxyType
 import java.util.concurrent.ExecutorService
 
 private const val TAG = "WebViewProxy"

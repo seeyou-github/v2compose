@@ -8,11 +8,10 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.squareup.moshi.Moshi
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.github.v2compose.bean.Account
-import io.github.v2compose.bean.AccountBalance
-import io.github.v2compose.bean.DraftTopic
+import io.github.v2compose.shared.bean.Account
+import io.github.v2compose.shared.bean.AccountBalance
+import io.github.v2compose.shared.bean.DraftTopic
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -27,7 +26,6 @@ private val Context.accountDataStore: DataStore<Preferences> by preferencesDataS
 @Singleton
 class AccountPreferences @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val moshi: Moshi,
 ) {
 
     companion object {
@@ -41,13 +39,13 @@ class AccountPreferences @Inject constructor(
 
     val account: Flow<Account> = context.accountDataStore.data.map { preferences ->
         preferences[KeyAccount].let {
-            if (it.isNullOrEmpty()) Account.Empty else Account.fromJson(moshi, it)
+            if (it.isNullOrEmpty()) Account.Empty else Account.fromJson(it)
         }
     }.distinctUntilChanged()
 
     val draftTopic: Flow<DraftTopic> = context.accountDataStore.data.map { preferences ->
         preferences[KeyDraftTopic].let {
-            if (it.isNullOrEmpty()) DraftTopic.Empty else DraftTopic.fromJson(moshi, it)
+            if (it.isNullOrEmpty()) DraftTopic.Empty else DraftTopic.fromJson(it)
         }
     }
 
@@ -65,7 +63,7 @@ class AccountPreferences @Inject constructor(
 
     suspend fun account(value: Account) {
         context.accountDataStore.edit {
-            it[KeyAccount] = value.toJson(moshi)
+            it[KeyAccount] = value.toJson()
         }
     }
 
@@ -94,7 +92,7 @@ class AccountPreferences @Inject constructor(
 
     suspend fun draftTopic(value: DraftTopic) {
         context.accountDataStore.edit {
-            it[KeyDraftTopic] = value.toJson(moshi)
+            it[KeyDraftTopic] = value.toJson()
         }
     }
 

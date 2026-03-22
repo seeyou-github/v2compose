@@ -1,8 +1,8 @@
 package io.github.v2compose.network.di
 
 import android.text.TextUtils
-import io.github.v2compose.bean.ProxyInfo
-import io.github.v2compose.bean.ProxyType
+import io.github.v2compose.shared.bean.ProxyInfo
+import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.util.InetValidator
 import kotlinx.coroutines.flow.first

@@ -1,18 +1,13 @@
 package io.github.v2compose.core.extension
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
-fun List<String>.toJson(moshi: Moshi): String {
-    val stringListType = Types.newParameterizedType(List::class.java, String::class.java)
-    val adapter: JsonAdapter<List<String>> = moshi.adapter(stringListType)
-    return adapter.toJson(this)
+fun List<String>.toJson(): String {
+    return Json.encodeToString(this)
 }
 
-fun String.toStringList(moshi: Moshi): List<String>? {
-    val stringListType = Types.newParameterizedType(List::class.java, String::class.java)
-    val adapter: JsonAdapter<List<String>> = moshi.adapter(stringListType)
-    return adapter.fromJson(this)
+fun String.toStringList(): List<String>? {
+    return runCatching { Json.decodeFromString<List<String>>(this) }.getOrNull()
 }
