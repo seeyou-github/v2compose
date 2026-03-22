@@ -51,6 +51,7 @@ import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.network.GithubService
 import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.repository.AppRepository
@@ -106,7 +107,8 @@ val appModule = module {
 val networkModule = module {
     single<com.google.gson.Gson> { OkHttpFactory.createGson() }
     single<io.github.fruit.Fruit> { OkHttpFactory.createFruit() }
-    single<okhttp3.CookieJar> { OkHttpFactory.createCookieManager() }
+    single { OkHttpFactory.createCookieManager() }
+    single<okhttp3.CookieJar> { get<WebkitCookieManager>() }
     singleOf(::V2ProxySelector)
 
     single<OkHttpClient>(named("CommonOkHttpClient")) {
