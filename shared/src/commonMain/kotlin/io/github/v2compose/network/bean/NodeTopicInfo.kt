@@ -10,13 +10,13 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class NodeTopicInfo : BaseInfo() {
     @Pick("span.topic-count strong")
-    val totalText: String = ""
+    var totalText: String = ""
 
     @Pick(value = "a[href*=favorite/] ", attr = Attrs.HREF)
-    val favoriteLink: String = ""
+    var favoriteLink: String = ""
 
     @Pick("div.box div.cell:has(table)")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     fun total(): Int {
         if (totalText.isEmpty()) return 0
@@ -36,7 +36,7 @@ class NodeTopicInfo : BaseInfo() {
     val once: String?
         get() {
             if (favoriteLink.isEmpty()) return null
-            val regex = Regex("once=([^&]+)")
+            var regex = Regex("once=([^&]+)")
             return regex.find(favoriteLink)?.groupValues?.getOrNull(1)
         }
 
@@ -52,26 +52,26 @@ class NodeTopicInfo : BaseInfo() {
     @Pulp
     class Item {
         @Pick(value = "img.avatar", attr = Attrs.SRC)
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick("span.item_title")
-        val title: String = ""
+        var title: String = ""
 
         @Pick("span.small.fade strong")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick(value = "span.small.fade", attr = Attrs.OWN_TEXT)
-        private val clickedAndContentLength: String = ""
+        var clickedAndContentLength: String = ""
 
         @Pick("a[class^=count_]")
-        val commentNum: Int = 0
+        var commentNum: Int = 0
 
         @Pick(value = "span.item_title a", attr = Attrs.HREF)
-        private val topicLinkText: String = ""
+        var topicLinkText: String = ""
 
         val topicId: String
             get() {
-                val end = topicLinkText.indexOf('#')
+                var end = topicLinkText.indexOf('#')
                 return if (end > 3) topicLinkText.substring(3, end) else ""
             }
 
@@ -85,7 +85,7 @@ class NodeTopicInfo : BaseInfo() {
             get() {
                 if (clickedAndContentLength.isEmpty()) return 0
                 return try {
-                    val result =
+                    var result =
                         clickedAndContentLength.substring(clickedAndContentLength.lastIndexOf("•") + 1)
                     result.replace("[^0-9]".toRegex(), "").toInt()
                 } catch (e: Exception) {
@@ -97,8 +97,8 @@ class NodeTopicInfo : BaseInfo() {
             get() {
                 if (clickedAndContentLength.isEmpty()) return 0
                 return try {
-                    val trimmed = clickedAndContentLength.trim()
-                    val result = trimmed.substring(0, trimmed.lastIndexOf("•")).trim()
+                    var trimmed = clickedAndContentLength.trim()
+                    var result = trimmed.substring(0, trimmed.lastIndexOf("•")).trim()
                     result.split(" ")[1].trim().toInt()
                 } catch (e: Exception) {
                     0

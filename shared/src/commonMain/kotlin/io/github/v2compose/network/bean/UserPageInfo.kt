@@ -7,22 +7,22 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class UserPageInfo : BaseInfo() {
     @Pick("h1")
-    val userName: String = ""
+    var userName: String = ""
 
     @Pick(value = "img.avatar", attr = Attrs.SRC)
-    val avatar: String = ""
+    var avatar: String = ""
 
     @Pick("td[valign=top] > span.gray")
-    val desc: String = ""
+    var desc: String = ""
 
     @Pick("strong.online")
-    val online: String = ""
+    var online: String = ""
 
     @Pick(value = "div.fr input", attr = "onclick")
-    val followOnClick: String = ""
+    var followOnClick: String = ""
 
     @Pick(value = "div.fr input[value*=lock]", attr = "onclick")
-    val blockOnClick: String = ""
+    var blockOnClick: String = ""
 
     fun hadFollowed(): Boolean {
         return followOnClick.isNotEmpty() && followOnClick.contains("取消")
@@ -42,9 +42,9 @@ class UserPageInfo : BaseInfo() {
 
     private fun getUrl(url: String?): String? {
         if (!url.isNullOrEmpty()) {
-            val reg = "{ location.href = '"
-            val start = url.indexOf(reg) + reg.length
-            val end = url.lastIndexOf("'")
+            var reg = "{ location.href = '"
+            var start = url.indexOf(reg) + reg.length
+            var end = url.lastIndexOf("'")
             if (start in 0 until end) {
                 return url.substring(start, end)
             }

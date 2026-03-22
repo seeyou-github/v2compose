@@ -10,10 +10,10 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class MyFollowingInfo : BaseInfo() {
     @Pick(value = "input.page_input", attr = "max")
-    val totalPageCount: Int = 0
+    var totalPageCount: Int = 0
 
     @Pick("div.cell.item")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     override fun isValid(): Boolean {
         if (items.isEmpty()) return true
@@ -27,36 +27,36 @@ class MyFollowingInfo : BaseInfo() {
     @Pulp
     class Item {
         @Pick(value = "img.avatar", attr = Attrs.SRC)
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick("strong a[href^=/member/]")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick(value = "span[title]", attr = Attrs.OWN_TEXT)
-        val time: String = ""
+        var time: String = ""
 
         @Pick("span.item_title a[href^=/t/]")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "span.item_title a[href^=/t/]", attr = Attrs.HREF)
-        val link: String = ""
+        var link: String = ""
 
         @Pick("a[class^=count_]")
-        val commentNum: Int = 0
+        var commentNum: Int = 0
 
         @Pick("a.node")
-        val tagTitle: String = ""
+        var tagTitle: String = ""
 
         @Pick(value = "a.node", attr = Attrs.HREF)
-        val tagLink: String = ""
+        var tagLink: String = ""
 
-        private var _id: String = ""
-        private var _tagName: String = ""
+        var _id: String = ""
+        var _tagName: String = ""
 
         fun getId(): String {
             if (_id.isNotEmpty()) return _id
             if (link.startsWith("/t/")) {
-                val end = link.indexOf('#')
+                var end = link.indexOf('#')
                 _id = if (end > 0) {
                     link.substring("/t/".length, end)
                 } else {

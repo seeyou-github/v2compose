@@ -7,13 +7,13 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class NotificationInfo : BaseInfo() {
     @Pick("div#Main div.box div.fr.f12 strong")
-    val total: Int = 0
+    var total: Int = 0
 
     @Pick("div#Main div.box div.cell[id^=n_]")
-    val replies: List<Reply> = listOf()
+    var replies: List<Reply> = listOf()
 
     @Pick("div#Rightbar div.box a[href*=notifications]")
-    private val unread: String = ""
+    var unread: String = ""
 
     fun unreadCount(): Int {
         if (unread.isEmpty()) return 0
@@ -36,25 +36,25 @@ class NotificationInfo : BaseInfo() {
     @Pulp
     class Reply {
         @Pick(value = "div.cell[id^=n_]", attr = "id")
-        val idText: String = ""
+        var idText: String = ""
 
         @Pick("a[href^=/member/] strong")
-        val name: String = ""
+        var name: String = ""
 
         @Pick(value = "a[href^=/member/] img", attr = Attrs.SRC)
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick(value = "span.fade")
-        val titleText: String = ""
+        var titleText: String = ""
 
         @Pick(value = "a[href^=/t/]", attr = Attrs.HREF)
-        val link: String = ""
+        var link: String = ""
 
         @Pick(value = "div.payload", attr = Attrs.HTML)
-        val content: String = ""
+        var content: String = ""
 
         @Pick("span.snow")
-        val time: String = ""
+        var time: String = ""
 
         fun getId(): String = if (idText.length > 2) idText.substring(2) else ""
 

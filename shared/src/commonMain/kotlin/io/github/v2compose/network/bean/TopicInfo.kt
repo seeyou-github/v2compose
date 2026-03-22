@@ -7,34 +7,34 @@ import io.github.fruit.annotations.Pulp
 @Pulp
 class TopicInfo : BaseInfo() {
     @Pick("div#Wrapper")
-    val headerInfo: HeaderInfo? = null
+    var headerInfo: HeaderInfo? = null
 
     @Pick("div.content div.box")
-    val contentInfo: ContentInfo? = null
+    var contentInfo: ContentInfo? = null
 
     @Pick("div.problem")
-    val problem: Problem? = null
+    var problem: Problem? = null
 
     @Pick("div[id^=r_]")
-    val replies: List<Reply> = listOf()
+    var replies: List<Reply> = listOf()
 
     @Pick(value = "input[name=once]", attr = "value")
-    val once: String = ""
+    var once: String = ""
 
     @Pick(value = "meta[property=og:url]", attr = "content")
-    val topicLink: String = ""
+    var topicLink: String = ""
 
     @Pick(value = "a[onclick*=/report/topic/]", attr = "onclick")
-    private val reportLink: String = ""
+    var reportLink: String = ""
 
     @Pick(value = "div#Wrapper div.box div.inner span.fade")
-    private val hasRePortStr: String = ""
+    var hasRePortStr: String = ""
 
     @Pick(value = "a[onclick*=/fade/topic/]", attr = "onclick")
-    private val fadeStr: String = ""
+    var fadeStr: String = ""
 
     @Pick(value = "a[onclick*=/sticky/topic/]", attr = "onclick")
-    private val stickyStr: String = ""
+    var stickyStr: String = ""
 
     fun canSticky(): Boolean = stickyUrl().isNotEmpty()
     fun canFade(): Boolean = fadeUrl().isNotEmpty()
@@ -45,15 +45,15 @@ class TopicInfo : BaseInfo() {
 
     fun fadeUrl(): String {
         if (fadeStr.isEmpty()) return ""
-        val sIndex = fadeStr.indexOf("/fade/topic/")
-        val eIndex = fadeStr.lastIndexOf("'")
+        var sIndex = fadeStr.indexOf("/fade/topic/")
+        var eIndex = fadeStr.lastIndexOf("'")
         return if (sIndex >= 0 && eIndex > sIndex) fadeStr.substring(sIndex, eIndex) else ""
     }
 
     fun stickyUrl(): String {
         if (stickyStr.isEmpty()) return ""
-        val sIndex = stickyStr.indexOf("/sticky/topic/")
-        val eIndex = stickyStr.lastIndexOf("'")
+        var sIndex = stickyStr.indexOf("/sticky/topic/")
+        var eIndex = stickyStr.lastIndexOf("'")
         return if (sIndex >= 0 && eIndex > sIndex) stickyStr.substring(sIndex, eIndex) else ""
     }
 
@@ -74,10 +74,10 @@ class TopicInfo : BaseInfo() {
     @Pulp
     class Problem {
         @Pick(attr = Attrs.OWN_TEXT)
-        val title: String = ""
+        var title: String = ""
 
         @Pick("ul li")
-        val tips: List<String> = listOf()
+        var tips: List<String> = listOf()
 
         fun isEmpty(): Boolean = tips.isEmpty() && title.isEmpty()
 
@@ -89,23 +89,18 @@ class TopicInfo : BaseInfo() {
     @Pulp
     class ContentInfo : BaseInfo() {
         @Pick(attr = Attrs.HTML)
-        private val html: String = ""
+        var html: String = ""
 
         @Pick(value = "div.cell div.topic_content", attr = Attrs.HTML)
-        val content: String = ""
+        var content: String = ""
 
         @Pick("div.subtle")
-        val supplements: List<Supplement> = listOf()
+        var supplements: List<Supplement> = listOf()
 
-        private var formattedHtml: String? = null
-
-        /**
-         * 简化版 HTML 格式化：移除 header/inner class 的标签内容。
-         * 原实现依赖 Jsoup，这里用正则做基础清理。
-         * TODO: 迁移 ksoup 后可恢复完整 DOM 操作。
-         */
-        fun getFormattedHtml(): String? {
-            if (formattedHtml != null) return formattedHtml
+        private var _formattedHtml: String? = null
+        
+        fun formattedHtml(): String? {
+            if (_formattedHtml != null) return _formattedHtml
             if (html.isEmpty()) return null
             // 用正则移除 class="header" 和 class="inner" 的 div
             var cleaned = html
@@ -113,78 +108,78 @@ class TopicInfo : BaseInfo() {
                 .replace(Regex("""(?s)<div[^>]*class="inner"[^>]*>.*?</div>"""), "")
                 .trim()
             // 检查是否有实际内容
-            val textOnly = cleaned.replace(Regex("<[^>]*>"), "").trim()
-            val hasVideo = cleaned.contains("embedded_video_wrapper")
+            var textOnly = cleaned.replace(Regex("<[^>]*>"), "").trim()
+            var hasVideo = cleaned.contains("embedded_video_wrapper")
             return if (textOnly.isEmpty() && !hasVideo) {
                 null
             } else {
-                formattedHtml = cleaned
-                formattedHtml
+                _formattedHtml = cleaned
+                _formattedHtml
             }
         }
 
-        override fun isValid(): Boolean = !getFormattedHtml().isNullOrEmpty()
+        override fun isValid(): Boolean = !formattedHtml().isNullOrEmpty()
 
         @Pulp
         class Supplement {
             @Pick("span.fade")
-            val title: String = ""
+            var title: String = ""
 
             @Pick(value = "div.topic_content", attr = Attrs.HTML)
-            val content: String = ""
+            var content: String = ""
         }
     }
 
     @Pulp
     class HeaderInfo() : BaseInfo() {
         @Pick(value = "div.box img.avatar", attr = "src")
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick("div.box small.gray a")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick(value = "div.box small.gray", attr = "ownText")
-        private val timeText: String = ""
+        var timeText: String = ""
 
         @Pick("div.box a[href^=/go]")
-        val tag: String = ""
+        var tag: String = ""
 
         @Pick(value = "div.box a[href^=/go]", attr = Attrs.HREF)
-        val tagLink: String = ""
+        var tagLink: String = ""
 
         @Pick("div.cell span.gray:contains(回复)")
-        private val comment: String = ""
+        var comment: String = ""
 
         @Pick("div.box div.inner a.page_normal:last-of-type")
-        val page: Int = 0
+        var page: Int = 0
 
         @Pick("div.box div.inner span.page_current")
-        val currentPage: Int = 0
+        var currentPage: Int = 0
 
         @Pick("div.box h1")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "div.content div.box:first-child div.inner span:first-child")
-        private val favoriteText: String = ""
+        var favoriteText: String = ""
 
         @Pick(value = "div.box a[href*=favorite/]", attr = Attrs.HREF)
-        val favoriteLink: String = ""
+        var favoriteLink: String = ""
 
         @Pick(value = "div.box a[onclick*=ignore/]", attr = "onclick")
-        private val ignoreLink: String = ""
+        var ignoreLink: String = ""
 
         @Pick("div.box div[id=topic_thank]")
-        private val thankedText: String = ""
+        var thankedText: String = ""
 
         @Pick("div.box div.inner div#topic_thank")
-        private val canSendThanksText: String = ""
+        var canSendThanksText: String = ""
 
         @Pick("div.box div.header a.op")
-        private val appendTxt: String = ""
+        var appendTxt: String = ""
 
-        private var _commentNum: String = ""
-        private var _tagName: String = ""
-        private var _time: String = ""
+        var _commentNum: String = ""
+        var _tagName: String = ""
+        var _time: String = ""
 
         override fun isValid(): Boolean = userName.isNotEmpty() && tag.isNotEmpty()
 
@@ -235,7 +230,7 @@ class TopicInfo : BaseInfo() {
 
         fun getViewCount(): Int {
             return try {
-                val countStr = timeText.split("·")[1].trim()
+                var countStr = timeText.split("·")[1].trim()
                 countStr.substring(0, countStr.indexOf(" ")).toInt()
             } catch (e: Exception) {
                 0
@@ -254,28 +249,28 @@ class TopicInfo : BaseInfo() {
     @Pulp
     class Reply {
         @Pick(value = "div.reply_content", attr = Attrs.HTML)
-        val replyContent: String = ""
+        var replyContent: String = ""
 
         @Pick("strong a.dark[href^=/member]")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick(value = "img.avatar", attr = "src")
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick("span.fade.small:not(:contains(♥))")
-        val time: String = ""
+        var time: String = ""
 
         @Pick("span.small.fade:has(img)")
-        val thanksText: String = ""
+        var thanksText: String = ""
 
         @Pick("span.no")
-        val floor: Int = 0
+        var floor: Int = 0
 
         @Pick("div.thank_area.thanked")
-        val alreadyThanked: String = ""
+        var alreadyThanked: String = ""
 
         @Pick(attr = "id")
-        val replyIdText: String = ""
+        var replyIdText: String = ""
 
         fun replyId(): String = replyIdText.substringAfter("_", "")
 

@@ -7,15 +7,15 @@ import io.github.fruit.annotations.Pulp
 class RecentTopics : BaseInfo() {
 
     @Pick("div.header span.fade")
-    private val totalText: String = ""
+    var totalText: String = ""
 
     @Pick("div.box div.cell.item")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     @Pick("div.inner:last-child strong.fade")
-    private val pageInfo: String = ""
+    var pageInfo: String = ""
 
-    private var _total: Int = -1
+    var _total: Int = -1
     fun total(): Int {
         if (_total < 0) {
             _total = totalText.split(" ").getOrNull(1)?.toIntOrNull() ?: -1
@@ -23,7 +23,7 @@ class RecentTopics : BaseInfo() {
         return _total
     }
 
-    private var _currentPage: Int = -1
+    var _currentPage: Int = -1
     fun currentPage(): Int {
         if (_currentPage < 0) {
             pageInfo.split("/").getOrNull(0)?.toIntOrNull()?.let { _currentPage = it }
@@ -31,7 +31,7 @@ class RecentTopics : BaseInfo() {
         return _currentPage
     }
 
-    private var _pageCount: Int = -1
+    var _pageCount: Int = -1
     fun pageCount(): Int {
         if (_pageCount < 0) {
             pageInfo.split("/").getOrNull(1)?.toIntOrNull()?.let { _pageCount = it }
@@ -49,30 +49,30 @@ class RecentTopics : BaseInfo() {
     class Item {
 
         @Pick(value = "span.item_title > a")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "span.item_title > a", attr = "href")
-        private val linkPath: String = ""
+        var linkPath: String = ""
 
         @Pick(value = "td > a > img", attr = "src")
-        private val avatarUrl: String = ""
+        var avatarUrl: String = ""
 
         @Pick(value = "span.small.fade > strong > a")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick(value = "span.small.fade:last-child", attr = "ownText")
-        private var timeText: String = ""
+        var timeText: String = ""
 
         @Pick(value = "span.small.fade > a")
-        val nodeTitle: String = ""
+        var nodeTitle: String = ""
 
         @Pick(value = "span.small.fade > a", attr = "href")
-        private val nodeLink: String = ""
+        var nodeLink: String = ""
 
         @Pick("a[class^=count_]")
-        val replies = 0
+        var replies = 0
 
-        private var _id: String = ""
+        var _id: String = ""
         val id: String
             get() {
                 if (_id.isEmpty()) _id = linkPath.substringAfterLast("/").substringBefore("#").substringBefore("?")
@@ -82,7 +82,7 @@ class RecentTopics : BaseInfo() {
         val avatar: String
             get() = avatarUrl // TODO: AvatarUtils 迁移后恢复
 
-        private var _time: String = ""
+        var _time: String = ""
         val time: String
             get() {
                 if (_time.isEmpty() && timeText.contains("•")) {
@@ -91,7 +91,7 @@ class RecentTopics : BaseInfo() {
                 return _time
             }
 
-        private var _nodeName: String = ""
+        var _nodeName: String = ""
         val nodeName: String
             get() {
                 if (_nodeName.isEmpty()) {

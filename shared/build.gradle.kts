@@ -60,11 +60,14 @@ kotlin {
 
 dependencies {
     add("kspCommonMainMetadata", libs.fruit.ksp)
-    add("kspAndroid", libs.fruit.ksp)
-    add("kspIosArm64", libs.fruit.ksp)
-    add("kspIosSimulatorArm64", libs.fruit.ksp)
 }
 
-tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
-    dependsOn("kspCommonMainKotlinMetadata")
+// 解决 KMP 下手动引入 KSP 源码导致的 Task 依赖校验问题
+tasks.configureEach {
+    if (name.startsWith("compileKotlin") || name.startsWith("ksp")) {
+        if (name != "kspCommonMainKotlinMetadata") {
+            dependsOn("kspCommonMainKotlinMetadata")
+        }
+    }
 }
+

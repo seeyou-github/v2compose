@@ -7,10 +7,10 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class CreateTopicPageInfo : BaseInfo() {
     @Pick(value = "input[name=once]", attr = "value")
-    val once: String = ""
+    var once: String = ""
 
     @Pick("div.problem")
-    val problem: Problem? = null
+    var problem: Problem? = null
 
     override fun isValid(): Boolean {
         return once.isNotEmpty()
@@ -23,13 +23,13 @@ class CreateTopicPageInfo : BaseInfo() {
     @Pulp
     class Problem {
         @Pick(attr = Attrs.HTML)
-        val html: String = ""
+        var html: String = ""
 
         @Pick(attr = Attrs.OWN_TEXT)
-        val title: String = ""
+        var title: String = ""
 
         @Pick("ul li")
-        val tips: List<String> = listOf()
+        var tips: List<String> = listOf()
 
         fun isEmpty(): Boolean {
             return tips.isEmpty() && title.isEmpty()

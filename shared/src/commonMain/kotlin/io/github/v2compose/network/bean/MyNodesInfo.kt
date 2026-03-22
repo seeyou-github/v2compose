@@ -10,7 +10,7 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#my-nodes")
 class MyNodesInfo : BaseInfo() {
     @Pick("a.fav-node")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     override fun isValid(): Boolean {
         if (items.isEmpty()) return true
@@ -20,18 +20,18 @@ class MyNodesInfo : BaseInfo() {
     @Pulp
     class Item {
         @Pick(value = "img", attr = Attrs.SRC)
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick(value = "span.fav-node-name", attr = Attrs.OWN_TEXT)
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "span.fade.f12")
-        val topicNum: Int = 0
+        var topicNum: Int = 0
 
         @Pick(attr = Attrs.HREF)
-        val link: String = ""
+        var link: String = ""
 
-        private var _name: String = ""
+        var _name: String = ""
 
         fun avatarUrl(): String = avatar
 

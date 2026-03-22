@@ -10,12 +10,12 @@ import io.github.fruit.annotations.Pulp
  */
 @Pulp("div.box:last-child div > table")
 class NodesNavInfo : MutableList<NodesNavInfo.Item> by mutableListOf(), IBase {
-    private var responseBody: String = ""
+    var responseBody: String = ""
 
     override fun getResponse(): String = responseBody
 
-    override fun setResponse(response: String) {
-        responseBody = response
+    override fun setResponse(html: String) {
+        responseBody = html
     }
 
     override fun isValid(): Boolean {
@@ -26,10 +26,10 @@ class NodesNavInfo : MutableList<NodesNavInfo.Item> by mutableListOf(), IBase {
     @Pulp
     class Item {
         @Pick("span.fade")
-        val category: String = ""
+        var category: String = ""
 
         @Pick("a")
-        val nodes: List<NodeItem> = listOf()
+        var nodes: List<NodeItem> = listOf()
 
         override fun toString(): String {
             return "Item(category='$category', nodes=$nodes)"
@@ -38,10 +38,10 @@ class NodesNavInfo : MutableList<NodesNavInfo.Item> by mutableListOf(), IBase {
         @Pulp
         class NodeItem {
             @Pick
-            val title: String = ""
+            var title: String = ""
 
             @Pick(attr = Attrs.HREF)
-            val link: String = ""
+            var link: String = ""
 
             val name: String
                 get() = if (link.length > 4) link.substring(4) else ""

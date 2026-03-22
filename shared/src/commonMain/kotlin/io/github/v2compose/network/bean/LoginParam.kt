@@ -6,19 +6,19 @@ import io.github.fruit.annotations.Pulp
 @Pulp
 class LoginParam : BaseInfo() {
     @Pick(value = "input.sl[type=text]", attr = "name")
-    val nameParam: String = ""
+    var nameParam: String = ""
 
     @Pick(value = "input[type=password]", attr = "name")
-    val pswParam: String = ""
+    var pswParam: String = ""
 
     @Pick(value = "input[name=once]", attr = "value")
-    val once: String = ""
+    var once: String = ""
 
     @Pick(value = "input[placeholder*=验证码]", attr = "name")
-    val captchaParam: String = ""
+    var captchaParam: String = ""
 
     @Pick(value = "div.problem", attr = io.github.fruit.annotations.Attrs.HTML)
-    val problem: String = ""
+    var problem: String = ""
 
     override fun toString(): String {
         return "LoginParam(nameParam='$nameParam', pswParam='$pswParam', once='$once', captchaParam='$captchaParam', problem='$problem')"

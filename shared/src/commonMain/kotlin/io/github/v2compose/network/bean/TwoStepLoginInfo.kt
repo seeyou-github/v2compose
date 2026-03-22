@@ -8,19 +8,19 @@ import io.github.fruit.annotations.Pulp
 @Pulp
 class TwoStepLoginInfo : BaseInfo() {
     @Pick(value = "[href^=/member]", attr = "href")
-    private val userLink: String = ""
+    var userLink: String = ""
 
     @Pick(value = "img[src*=avatar/]", attr = "src")
-    private val avatar: String = ""
+    var avatar: String = ""
 
     @Pick(value = "div.problem", attr = Attrs.HTML)
-    val problem: String = ""
+    var problem: String = ""
 
     @Pick("tr:first-child")
-    val title: String = ""
+    var title: String = ""
 
     @Pick(value = "input[type=hidden]", attr = "value")
-    val once: String = ""
+    var once: String = ""
 
     val userName: String?
         get() {

@@ -8,16 +8,16 @@ import io.github.fruit.annotations.Pulp
 class UserTopics : BaseInfo() {
 
     @Pick("div.header strong.gray")
-    val total: Int = -1
+    var total: Int = -1
 
     @Pick("div.box div.cell.item")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     @Pick("div.inner:last-child strong.fade")
-    private val pageInfo: String = ""
+    var pageInfo: String = ""
 
     @Pick("div.cell .topic_content")
-    val visibility: String = ""
+    var visibility: String = ""
 
     fun currentPage(): Int = pageInfo.split("/").getOrNull(0)?.toIntOrNull() ?: -1
 
@@ -39,25 +39,25 @@ class UserTopics : BaseInfo() {
     class Item {
 
         @Pick(value = "span.item_title a", attr = Attrs.HREF)
-        val link: String = ""
+        var link: String = ""
 
         @Pick("strong > a[href^=/member/]:first-child")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick("span.item_title")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "a.node", attr = Attrs.HREF)
-        val nodeLink: String = ""
+        var nodeLink: String = ""
 
         @Pick("a.node")
-        val nodeTitle: String = ""
+        var nodeTitle: String = ""
 
         @Pick("span.small.fade:last-child")
-        val lastReply: String = ""
+        var lastReply: String = ""
 
         @Pick("a[class^=count_]")
-        val repliesNum: Int = 0
+        var repliesNum: Int = 0
 
         override fun toString(): String {
             return "Item(link='$link', userName='$userName', title='$title', nodeLink='$nodeLink', nodeTitle='$nodeTitle', lastReply='$lastReply', repliesNum=$repliesNum)"

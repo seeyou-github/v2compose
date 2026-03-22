@@ -10,10 +10,10 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class MyTopicsInfo : BaseInfo() {
     @Pick(value = "input.page_input", attr = "max")
-    private val totalPageCountText: String = ""
+    var totalPageCountText: String = ""
 
     @Pick("div.cell.item")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     fun totalPageCount(): Int = totalPageCountText.toIntOrNull() ?: 0
 
@@ -29,38 +29,38 @@ class MyTopicsInfo : BaseInfo() {
     @Pulp
     class Item {
         @Pick(value = "td>a[href^=/member]", attr = Attrs.HREF)
-        val userLink: String = ""
+        var userLink: String = ""
 
         @Pick(value = "img.avatar", attr = Attrs.SRC)
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick("span.item_title")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "span.item_title a", attr = Attrs.HREF)
-        val link: String = ""
+        var link: String = ""
 
         @Pick("a[class^=count_]")
-        val commentNum: Int = 0
+        var commentNum: Int = 0
 
         @Pick("a.node")
-        val tagTitle: String = ""
+        var tagTitle: String = ""
 
         @Pick(value = "a.node", attr = Attrs.HREF)
-        val tagLink: String = ""
+        var tagLink: String = ""
 
         @Pick(value = "span[title]", attr = Attrs.OWN_TEXT)
-        val time: String = ""
+        var time: String = ""
 
-        private var _id: String = ""
-        private var _userName: String = ""
-        private var _tagName: String = ""
+        var _id: String = ""
+        var _userName: String = ""
+        var _tagName: String = ""
 
         val id: String
             get() {
                 if (_id.isNotEmpty()) return _id
                 if (link.startsWith("/t/")) {
-                    val end = link.indexOf('#')
+                    var end = link.indexOf('#')
                     _id = if (end > 0) {
                         link.substring("/t/".length, end)
                     } else {

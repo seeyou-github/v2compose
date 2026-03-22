@@ -8,18 +8,18 @@ import io.github.fruit.annotations.Pulp
 class UserReplies : BaseInfo() {
 
     @Pick("div.header strong.gray")
-    val total: Int = -1
+    var total: Int = -1
 
     @Pick("div.box:last-child > div.dock_area")
-    private val dockItems: List<ReplyDockItem> = listOf()
+    var dockItems: List<ReplyDockItem> = listOf()
 
     @Pick("div.box:last-child div.reply_content")
-    private val replyContentItems: List<ReplyContentItem> = listOf()
+    var replyContentItems: List<ReplyContentItem> = listOf()
 
     fun items(): List<Item> = dockItems.zip(replyContentItems) { dock, content -> Item(dock, content) }
 
     @Pick("div.inner:last-child strong.fade")
-    private val pageInfo: String = ""
+    var pageInfo: String = ""
 
     fun currentPage(): Int = pageInfo.split("/").getOrNull(0)?.toIntOrNull() ?: -1
 
@@ -41,13 +41,13 @@ class UserReplies : BaseInfo() {
     @Pulp
     class ReplyDockItem {
         @Pick("span.gray")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "span.gray > a", attr = Attrs.HREF)
-        val link: String = ""
+        var link: String = ""
 
         @Pick("span.fade")
-        val time: String = ""
+        var time: String = ""
 
         override fun toString(): String {
             return "ReplyDockItem{" +
@@ -61,7 +61,7 @@ class UserReplies : BaseInfo() {
     @Pulp
     class ReplyContentItem {
         @Pick(attr = Attrs.HTML)
-        val content: String = ""
+        var content: String = ""
 
         override fun toString(): String {
             return "ReplyContentItem{" +
@@ -70,5 +70,5 @@ class UserReplies : BaseInfo() {
         }
     }
 
-    data class Item(val dock: ReplyDockItem, val content: ReplyContentItem)
+    data class Item(var dock: ReplyDockItem, var content: ReplyContentItem)
 }

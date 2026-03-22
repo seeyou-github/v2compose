@@ -6,19 +6,19 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class NewsInfo : BaseInfo() {
     @Pick("div.box a[href*=mission/daily]")
-    private val checkInTips: String = ""
+    var checkInTips: String = ""
 
     @Pick(value = "input.super.special.button", attr = "value")
-    private val unread: String = ""
+    var unread: String = ""
 
     @Pick("div.cell.item")
-    val items: List<Item> = listOf()
+    var items: List<Item> = listOf()
 
     @Pick("form[action=/2fa]")
-    private val twoStepStr: String = ""
+    var twoStepStr: String = ""
 
     @Pick("a.balance_area")
-    private val balance: String = ""
+    var balance: String = ""
 
     fun hasCheckingInTips(): Boolean = checkInTips.isNotEmpty()
 
@@ -41,8 +41,8 @@ class NewsInfo : BaseInfo() {
     private fun getBalancePart(partIndex: Int): Int {
         if (balance.isEmpty()) return 0
         return try {
-            val itemTexts = balance.split(" ")
-            val index = itemTexts.size - 3 + partIndex
+            var itemTexts = balance.split(" ")
+            var index = itemTexts.size - 3 + partIndex
             if (index >= 0) {
                 itemTexts[index].toInt()
             } else 0
@@ -63,33 +63,33 @@ class NewsInfo : BaseInfo() {
     @Pulp
     class Item {
         @Pick(value = "span.item_title > a")
-        val title: String = ""
+        var title: String = ""
 
         @Pick(value = "span.item_title > a", attr = "href")
-        val linkPath: String = ""
+        var linkPath: String = ""
 
         @Pick(value = "td > a > img", attr = "src")
-        val avatar: String = ""
+        var avatar: String = ""
 
         @Pick(value = "td > a", attr = "href")
-        val avatarLink: String = ""
+        var avatarLink: String = ""
 
         @Pick(value = "span.small.fade > strong > a")
-        val userName: String = ""
+        var userName: String = ""
 
         @Pick(value = "span.small.fade:last-child", attr = "ownText")
-        val timeText: String = ""
+        var timeText: String = ""
 
         @Pick(value = "span.small.fade > a")
-        val tagName: String = ""
+        var tagName: String = ""
 
         @Pick(value = "span.small.fade > a", attr = "href")
-        private val tagLink: String = ""
+        var tagLink: String = ""
 
         @Pick("a[class^=count_]")
-        val replies: Int = 0
+        var replies: Int = 0
 
-        private var _id: String = ""
+        var _id: String = ""
         val id: String
             get() {
                 if (_id.isBlank()) {

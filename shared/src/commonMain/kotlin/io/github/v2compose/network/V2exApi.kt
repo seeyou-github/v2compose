@@ -1,6 +1,31 @@
 package io.github.v2compose.network
 
-import io.github.v2compose.network.bean.*
+import io.github.v2compose.network.bean.AppendTopicPageInfo
+import io.github.v2compose.network.bean.CreateTopicPageInfo
+import io.github.v2compose.network.bean.DailyInfo
+import io.github.v2compose.network.bean.HomePageInfo
+import io.github.v2compose.network.bean.LoginParam
+import io.github.v2compose.network.bean.MyFollowingInfo
+import io.github.v2compose.network.bean.MyNodesInfo
+import io.github.v2compose.network.bean.MyTopicsInfo
+import io.github.v2compose.network.bean.NewsInfo
+import io.github.v2compose.network.bean.Node
+import io.github.v2compose.network.bean.NodeInfo
+import io.github.v2compose.network.bean.NodeTopicInfo
+import io.github.v2compose.network.bean.NodesInfo
+import io.github.v2compose.network.bean.NodesNavInfo
+import io.github.v2compose.network.bean.NotificationInfo
+import io.github.v2compose.network.bean.RecentTopics
+import io.github.v2compose.network.bean.ReplyTopicResultInfo
+import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
+import io.github.v2compose.network.bean.ThxResponseInfo
+import io.github.v2compose.network.bean.TopicInfo
+import io.github.v2compose.network.bean.TwoStepLoginInfo
+import io.github.v2compose.network.bean.UserInfo
+import io.github.v2compose.network.bean.UserPageInfo
+import io.github.v2compose.network.bean.UserReplies
+import io.github.v2compose.network.bean.UserTopics
+import io.github.v2compose.network.bean.V2exResult
 import io.github.v2compose.shared.bean.TopicNode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -65,9 +90,7 @@ class V2exApi(private val client: HttpClient) {
         client.get("/t/$topicId") { parameter("p", page) }.body()
 
     suspend fun notifications(page: Int): NotificationInfo =
-        client.get("/notifications") {
-            parameter("p", page)
-        }.body()
+        client.get("/notifications") { parameter("p", page) }.body()
 
     suspend fun myFollowingInfo(page: Int, userAgent: String): MyFollowingInfo =
         client.get("/my/following") {
@@ -131,25 +154,45 @@ class V2exApi(private val client: HttpClient) {
     suspend fun thxMoney(): ThxResponseInfo =
         client.post("/ajax/money").body()
 
-    suspend fun getTopicAction(referer: String, action: String, topicId: String, once: String): V2exResult =
+    suspend fun getTopicAction(
+        referer: String,
+        action: String,
+        topicId: String,
+        once: String
+    ): V2exResult =
         client.get("/$action/topic/$topicId") {
             header(HttpHeaders.Referrer, referer)
             parameter("once", once)
         }.body()
 
-    suspend fun postTopicAction(referer: String, action: String, topicId: String, once: String): V2exResult =
+    suspend fun postTopicAction(
+        referer: String,
+        action: String,
+        topicId: String,
+        once: String
+    ): V2exResult =
         client.post("/$action/topic/$topicId") {
             header(HttpHeaders.Referrer, referer)
             parameter("once", once)
         }.body()
 
-    suspend fun getReplyAction(referer: String, action: String, replyId: String, once: String): V2exResult =
+    suspend fun getReplyAction(
+        referer: String,
+        action: String,
+        replyId: String,
+        once: String
+    ): V2exResult =
         client.get("/$action/reply/$replyId") {
             header(HttpHeaders.Referrer, referer)
             parameter("once", once)
         }.body()
 
-    suspend fun postReplyAction(referer: String, action: String, replyId: String, once: String): V2exResult =
+    suspend fun postReplyAction(
+        referer: String,
+        action: String,
+        replyId: String,
+        once: String
+    ): V2exResult =
         client.post("/$action/reply/$replyId") {
             header(HttpHeaders.Referrer, referer)
             parameter("once", once)

@@ -7,25 +7,25 @@ import io.github.fruit.annotations.Pulp
 @Pulp("div#Wrapper")
 class HomePageInfo : BaseInfo() {
     @Pick("h1")
-    val userName: String = ""
+    var userName: String = ""
 
     @Pick(value = "img.avatar", attr = Attrs.SRC)
-    private val avatar: String = ""
+    var avatar: String = ""
 
     @Pick("td[valign=top] > span.gray")
-    val desc: String = ""
+    var desc: String = ""
 
     @Pick("strong.online")
-    private val online: String = ""
+    var online: String = ""
 
     @Pick("a[href=/my/nodes] span.bigger")
-    val nodes: Int = 0
+    var nodes: Int = 0
 
     @Pick("a[href=/my/topics] span.bigger")
-    val topics: Int = 0
+    var topics: Int = 0
 
     @Pick("a[href=/my/following] span.bigger")
-    val following: Int = 0
+    var following: Int = 0
 
     fun getAdjustedAvatar(): String = avatar // TODO: AvatarUtils 迁移后恢复
 
