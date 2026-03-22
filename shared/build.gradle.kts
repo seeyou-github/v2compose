@@ -64,3 +64,7 @@ dependencies {
     add("kspIosArm64", libs.fruit.ksp)
     add("kspIosSimulatorArm64", libs.fruit.ksp)
 }
+
+tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
+}

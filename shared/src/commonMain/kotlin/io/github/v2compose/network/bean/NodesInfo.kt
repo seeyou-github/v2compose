@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 /**
  * https://v2ex.com/api/nodes/s2.json
  */
-class NodesInfo(private val delegate: MutableList<Node> = mutableListOf()) : MutableList<NodesInfo.Node> by delegate, IBase {
+class NodesInfo : MutableList<NodesInfo.Node> by mutableListOf(), IBase {
     private var responseBody: String = ""
 
     override fun isValid(): Boolean {

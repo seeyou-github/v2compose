@@ -8,8 +8,8 @@ import io.github.fruit.annotations.Pulp
  * https://www.v2ex.com/
  * bottom box
  */
-@Pulp("div#Main > div.box:last-of-type table")
-class NodesNavInfo(private val delegate: MutableList<Item> = mutableListOf()) : MutableList<NodesNavInfo.Item> by delegate, IBase {
+@Pulp("div.box:last-child div > table")
+class NodesNavInfo : MutableList<NodesNavInfo.Item> by mutableListOf(), IBase {
     private var responseBody: String = ""
 
     override fun getResponse(): String = responseBody
