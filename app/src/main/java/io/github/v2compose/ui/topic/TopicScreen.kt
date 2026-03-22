@@ -465,14 +465,14 @@ private fun TopicList(
         pagingPrependMoreItem(lazyPagingItems = topicItems)
 
         items(topicItems.itemCount,
-            key = { index -> topicItems[index].let { if (it is Reply) it.replyId else "item#$index" } }) { index ->
+            key = { index -> topicItems[index].let { if (it is Reply) it.replyId() else "item#$index" } }) { index ->
             val item = topicItems[index] ?: return@items
             if (item is Reply) {
-                val replyWrapper = replyWrappers[item.replyId]
+                val replyWrapper = replyWrappers[item.replyId()]
                 if (replyWrapper?.ignored == true) {
                     return@items
                 }
-                val tag = "reply#${item.replyId}"
+                val tag = "reply#${item.replyId()}"
                 TopicReply(
                     index = index,
                     reply = item,

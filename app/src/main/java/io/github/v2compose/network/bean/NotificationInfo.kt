@@ -8,9 +8,7 @@ import io.github.v2compose.network.NetConstants
 import io.github.v2compose.util.AvatarUtils
 import java.io.Serializable
 
-/**
- * Created by ghui on 10/05/2017.
- */
+
 @Stable
 @Pulp("div#Wrapper")
 class NotificationInfo : BaseInfo() {
@@ -23,15 +21,14 @@ class NotificationInfo : BaseInfo() {
     @Pick("div#Rightbar div.box a[href*=notifications]")
     private val unread: String = ""
 
-    val unreadCount: Int
-        get() {
-            if (unread.isEmpty()) return 0
-            return try {
-                unread.split(" ").getOrNull(0)?.toInt() ?: 0
-            } catch (e: Exception) {
-                0
-            }
+    fun unreadCount(): Int {
+        if (unread.isEmpty()) return 0
+        return try {
+            unread.split(" ").getOrNull(0)?.toInt() ?: 0
+        } catch (e: Exception) {
+            0
         }
+    }
 
     override fun isValid(): Boolean {
         if (replies.isEmpty()) return true

@@ -8,9 +8,7 @@ import io.github.fruit.annotations.Pulp
 import org.jsoup.Jsoup
 import java.io.Serializable
 
-/**
- * Created by ghui on 04/05/2017.
- */
+
 @Stable
 @Pulp
 class TopicInfo : BaseInfo() {
@@ -44,33 +42,28 @@ class TopicInfo : BaseInfo() {
     @Pick(value = "a[onclick*=/sticky/topic/]", attr = "onclick")
     private val stickyStr: String = ""
 
-    val canSticky: Boolean get() = stickyUrl.isNotEmpty()
-    val canFade: Boolean get() = fadeUrl.isNotEmpty()
+    fun canSticky(): Boolean = stickyUrl().isNotEmpty()
+    fun canFade(): Boolean = fadeUrl().isNotEmpty()
 
-    val hasReported: Boolean
-        get() = hasRePortStr.isNotEmpty() && hasRePortStr.contains("已对本主题进行了报告")
+    fun hasReported(): Boolean = hasRePortStr.isNotEmpty() && hasRePortStr.contains("已对本主题进行了报告")
 
-    val hasReportPermission: Boolean
-        get() = hasReported || reportLink.isNotEmpty()
+    fun hasReportPermission(): Boolean = hasReported() || reportLink.isNotEmpty()
 
-    val fadeUrl: String
-        get() {
-            if (fadeStr.isEmpty()) return ""
-            val sIndex = fadeStr.indexOf("/fade/topic/")
-            val eIndex = fadeStr.lastIndexOf("'")
-            return if (sIndex >= 0 && eIndex > sIndex) fadeStr.substring(sIndex, eIndex) else ""
-        }
+    fun fadeUrl(): String {
+        if (fadeStr.isEmpty()) return ""
+        val sIndex = fadeStr.indexOf("/fade/topic/")
+        val eIndex = fadeStr.lastIndexOf("'")
+        return if (sIndex >= 0 && eIndex > sIndex) fadeStr.substring(sIndex, eIndex) else ""
+    }
 
-    val stickyUrl: String
-        get() {
-            if (stickyStr.isEmpty()) return ""
-            val sIndex = stickyStr.indexOf("/sticky/topic/")
-            val eIndex = stickyStr.lastIndexOf("'")
-            return if (sIndex >= 0 && eIndex > sIndex) stickyStr.substring(sIndex, eIndex) else ""
-        }
+    fun stickyUrl(): String {
+        if (stickyStr.isEmpty()) return ""
+        val sIndex = stickyStr.indexOf("/sticky/topic/")
+        val eIndex = stickyStr.lastIndexOf("'")
+        return if (sIndex >= 0 && eIndex > sIndex) stickyStr.substring(sIndex, eIndex) else ""
+    }
 
-    val totalPage: Int
-        get() = headerInfo?.getTotalPage() ?: 0
+    fun totalPage(): Int = headerInfo?.getTotalPage() ?: 0
 
     fun toReplyMap(content: String): Map<String, String> {
         return mapOf("once" to once, "content" to content)
@@ -288,18 +281,16 @@ class TopicInfo : BaseInfo() {
         @Pick(attr = "id")
         val replyIdText: String = ""
 
-        val replyId: String
-            get() = replyIdText.substringAfter("_", "")
+        fun replyId(): String = replyIdText.substringAfter("_", "")
 
-        val hadThanked: Boolean get() = alreadyThanked.isNotEmpty()
+        fun hadThanked(): Boolean = alreadyThanked.isNotEmpty()
 
-        val adjustedAvatar: String get() = AvatarUtils.adjustAvatar(avatar)
+        fun getAdjustedAvatar(): String = AvatarUtils.adjustAvatar(avatar)
 
-        val thanksCount: Int
-            get() = thanksText.toIntOrNull() ?: 0
+        fun thanksCount(): Int = thanksText.toIntOrNull() ?: 0
 
         override fun toString(): String {
-            return "Reply(userName='$userName', floor=$floor, thanksCount=$thanksCount)"
+            return "Reply(userName='$userName', floor=$floor, thanksCount=${thanksCount()})"
         }
     }
 }

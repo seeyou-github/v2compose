@@ -5,9 +5,7 @@ import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 import java.io.Serializable
 
-/**
- * Created by ghui on 01/05/2017.
- */
+
 @Pulp
 class LoginParam : BaseInfo(), Serializable {
     @Pick(value = "input.sl[type=text]", attr = "name")
@@ -29,9 +27,7 @@ class LoginParam : BaseInfo(), Serializable {
         return "LoginParam(nameParam='$nameParam', pswParam='$pswParam', once='$once', captchaParam='$captchaParam', problem='$problem')"
     }
 
-    fun needCaptcha(): Boolean {
-        return captchaParam.isNotEmpty()
-    }
+    fun needCaptcha(): Boolean = captchaParam.isNotEmpty()
 
     fun toMap(userName: String, psw: String, captcha: String): Map<String, String> {
         return mapOf(

@@ -3,7 +3,7 @@ package io.github.v2compose.util;
 import java.util.List;
 
 /**
- * Created by ghui on 30/10/2017.
+
  */
 
 public class Check {

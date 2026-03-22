@@ -65,8 +65,8 @@ private fun UserReplyList(
     LazyColumn(
         contentPadding = PaddingValues(bottom = 8.dp), modifier = Modifier.fillMaxWidth()
     ) {
-        itemsIndexed(items = userReplies, key = { _, item -> item.replyId }) { index, item ->
-            val tag = item.replyId
+        itemsIndexed(items = userReplies, key = { _, item -> item.replyId() }) { index, item ->
+            val tag = item.replyId()
             UserTopicReply(
                 index,
                 reply = item,

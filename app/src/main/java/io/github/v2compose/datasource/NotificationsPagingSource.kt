@@ -28,7 +28,7 @@ class NotificationsPagingSource(
         val page = params.key ?: FirstPageIndex
         return try {
             val result = v2exService.notifications(page)
-            accountPreferences.unreadNotifications(result.unreadCount)
+            accountPreferences.unreadNotifications(result.unreadCount())
 
             val pageCount = ceil(result.total.toFloat() / ItemCountOfPage).toInt()
             val prevKey = if (page > FirstPageIndex) page - 1 else null

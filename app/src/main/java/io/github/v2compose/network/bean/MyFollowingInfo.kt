@@ -57,35 +57,32 @@ class MyFollowingInfo : BaseInfo() {
         private var _avatar: String = ""
         private var _tagName: String = ""
 
-        val id: String
-            get() {
-                if (_id.isNotEmpty()) return _id
-                if (link.startsWith("/t/")) {
-                    val end = link.indexOf('#')
-                    _id = if (end > 0) {
-                        link.substring("/t/".length, end)
-                    } else {
-                        link.substring("/t/".length)
-                    }
+        fun getId(): String {
+            if (_id.isNotEmpty()) return _id
+            if (link.startsWith("/t/")) {
+                val end = link.indexOf('#')
+                _id = if (end > 0) {
+                    link.substring("/t/".length, end)
+                } else {
+                    link.substring("/t/".length)
                 }
-                return _id
             }
+            return _id
+        }
 
-        val adjustedAvatar: String
-            get() {
-                if (_avatar.isNotEmpty()) return _avatar
-                _avatar = AvatarUtils.adjustAvatar(avatar)
-                return _avatar
-            }
+        fun getAdjustedAvatar(): String {
+            if (_avatar.isNotEmpty()) return _avatar
+            _avatar = AvatarUtils.adjustAvatar(avatar)
+            return _avatar
+        }
 
-        val tagName: String
-            get() {
-                if (_tagName.isNotEmpty()) return _tagName
-                if (tagLink.startsWith("/go/")) {
-                    _tagName = tagLink.substring("/go/".length)
-                }
-                return _tagName
+        fun getTagName(): String {
+            if (_tagName.isNotEmpty()) return _tagName
+            if (tagLink.startsWith("/go/")) {
+                _tagName = tagLink.substring("/go/".length)
             }
+            return _tagName
+        }
 
         override fun toString(): String {
             return "Item(userName='$userName', title='$title', link='$link')"

@@ -155,7 +155,7 @@ fun V2AppNavGraph(
         )
         myFollowingScreen(
             onBackClick = appState::back,
-            onTopicClick = { navController.navigateToTopic(it.id) },
+            onTopicClick = { navController.navigateToTopic(it.getId()) },
             onNodeClick = navController::navigateToNode,
             onUserAvatarClick = navController::navigateToUser,
         )

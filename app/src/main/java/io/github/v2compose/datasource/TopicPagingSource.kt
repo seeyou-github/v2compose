@@ -32,11 +32,11 @@ class TopicPagingSource constructor(
             Log.d(TAG, "load, page = $page")
             val topicInfo = v2exService.topicDetails(topicId, page)
             if (page == startPageReversed) {
-                startPage = topicInfo.totalPage
+                startPage = topicInfo.totalPage()
                 page = startPage
             }
 
-            val largerPage = if (page < topicInfo.totalPage) page + 1 else null
+            val largerPage = if (page < topicInfo.totalPage()) page + 1 else null
             val smallerPage = if (page <= firstPageIndex) null else page - 1
             val prevPage = if (reversed) largerPage else smallerPage
             val nextPage = if (reversed) smallerPage else largerPage

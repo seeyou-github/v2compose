@@ -1,9 +1,9 @@
 package io.github.v2compose.network.bean
 
-import io.github.v2compose.util.AvatarUtils
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
+import io.github.v2compose.util.AvatarUtils
 import java.io.Serializable
 
 /**
@@ -18,16 +18,15 @@ class MyTopicsInfo : BaseInfo() {
     @Pick("div.cell.item")
     val items: List<Item> = listOf()
 
-    val totalPageCount: Int
-        get() = totalPageCountText.toIntOrNull() ?: 0
-
-    override fun toString(): String {
-        return "MyTopicsInfo(total=$totalPageCount, items=$items)"
-    }
+    fun totalPageCount(): Int = totalPageCountText.toIntOrNull() ?: 0
 
     override fun isValid(): Boolean {
         if (items.isEmpty()) return true
         return items[0].title.isNotEmpty()
+    }
+
+    override fun toString(): String {
+        return "MyTopicsInfo(totalPageCountText='$totalPageCountText', items=$items)"
     }
 
     @Pulp

@@ -25,7 +25,7 @@ class UserTopicsDataSource(private val userName: String, private val v2exService
             val page = params.key ?: FIRST_PAGE
             val userTopics = v2exService.userTopics(userName, page)
             val prevKey = if (page == FIRST_PAGE) null else page - 1
-            val nextKey = if (page < userTopics.pageCount) page + 1 else null
+            val nextKey = if (page < userTopics.pageCount()) page + 1 else null
             if (userTopics.visibility.isNotEmpty()) {
                 LoadResult.Error(VisibilityError(userTopics.visibility))
             } else {

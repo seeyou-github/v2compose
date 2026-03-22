@@ -4,9 +4,7 @@ import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 
-/**
- * Created by ghui on 16/08/2017.
- */
+
 @Pulp
 class TwoStepLoginInfo : BaseInfo() {
     @Pick(value = "[href^=/member]", attr = "href")

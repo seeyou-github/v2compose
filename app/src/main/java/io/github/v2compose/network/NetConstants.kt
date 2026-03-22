@@ -3,7 +3,7 @@ package io.github.v2compose.network
 import android.os.Build
 
 /**
- * Created by ghui on 25/03/2017.
+
  */
 object NetConstants {
     const val HTTPS_SCHEME = "https:"

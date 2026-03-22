@@ -150,7 +150,7 @@ private fun TopicTopBarActions(
                     add(if (topicInfo.isThanked) TopicMenuItem.Thanked else TopicMenuItem.Thanks)
                 }
                 add(if (topicInfo.isIgnored) TopicMenuItem.Ignored else TopicMenuItem.Ignore)
-                if (topicInfo.topic?.hasReportPermission == true) {
+                if (topicInfo.topic?.hasReportPermission() == true) {
                     add(if (topicInfo.isReported) TopicMenuItem.Reported else TopicMenuItem.Report)
                 }
             }

@@ -37,7 +37,7 @@ class NodePagingSource(private val nodeName: String, private val v2exService: V2
             Log.d(TAG, "load, result, nodeTopicInfo = $nodeInfo")
             if (page == FirstPageIndex) {
                 pageCount =
-                    if (nodeInfo.items.isEmpty()) 0 else nodeInfo.total / nodeInfo.items.size
+                    if (nodeInfo.items.isEmpty()) 0 else nodeInfo.total() / nodeInfo.items.size
             }
             val data = nodeInfo.items.toMutableList<Any>().apply {
                 if (page == FirstPageIndex) add(0, nodeInfo)

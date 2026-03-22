@@ -1,7 +1,6 @@
 package io.github.v2compose.network.bean
 
 import android.os.Parcelable
-import io.github.v2compose.util.Check
 import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
@@ -18,8 +17,8 @@ class NodesInfo : ArrayList<NodesInfo.Node>(), IBase, Serializable {
 
     override fun getResponse(): String = responseBody
 
-    override fun setResponse(response: String) {
-        responseBody = response
+    override fun setResponse(html: String) {
+        responseBody = html
     }
 
     @Parcelize

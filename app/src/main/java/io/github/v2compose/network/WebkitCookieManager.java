@@ -15,9 +15,7 @@ import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 
-/**
- * Created by ghui on 10/07/2017.
- */
+
 
 public class WebkitCookieManager implements CookieJar {
 

@@ -290,7 +290,7 @@ class TopicViewModel @Inject constructor(
             try {
                 val result = topicRepository.ignoreReply(
                     topicId = topicArgs.topicId,
-                    replyId = reply.replyId,
+                    replyId = reply.replyId(),
                     once = topic.once
                 )
                 if (result) {
@@ -325,7 +325,7 @@ class TopicViewModel @Inject constructor(
                     action = action,
                     method = method,
                     topicId = topicArgs.topicId,
-                    replyId = reply.replyId,
+                    replyId = reply.replyId(),
                     once = topic.once
                 )
                 if (result.success) {
@@ -376,14 +376,14 @@ class TopicViewModel @Inject constructor(
         ignored: Boolean? = null,
     ) {
         viewModelScope.launch {
-            val replyWrapper = _replyWrappers[reply.replyId]?.let {
+            val replyWrapper = _replyWrappers[reply.replyId()]?.let {
                 it.copy(
                     reply = reply,
                     thanked = thanked ?: it.thanked,
                     ignored = ignored ?: it.ignored,
                 )
             } ?: ReplyWrapper(reply, thanked, ignored)
-            _replyWrappers[reply.replyId] = replyWrapper
+            _replyWrappers[reply.replyId()] = replyWrapper
         }
     }
 

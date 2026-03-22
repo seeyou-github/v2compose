@@ -17,21 +17,14 @@ class UserReplies : BaseInfo() {
     @Pick("div.box:last-child div.reply_content")
     private val replyContentItems: List<ReplyContentItem> = listOf()
 
-    val items: List<Item>
-        get() = dockItems.zip(replyContentItems) { dock, content -> Item(dock, content) }
+    fun items(): List<Item> = dockItems.zip(replyContentItems) { dock, content -> Item(dock, content) }
 
     @Pick("div.inner:last-child strong.fade")
     private val pageInfo: String = ""
 
-    val currentPage: Int
-        get() {
-            return pageInfo.split("/").getOrNull(0)?.toIntOrNull() ?: -1
-        }
+    fun currentPage(): Int = pageInfo.split("/").getOrNull(0)?.toIntOrNull() ?: -1
 
-    val pageCount: Int
-        get() {
-            return pageInfo.split("/").getOrNull(1)?.toIntOrNull() ?: -1
-        }
+    fun pageCount(): Int = pageInfo.split("/").getOrNull(1)?.toIntOrNull() ?: -1
 
     override fun isValid(): Boolean {
         return total >= 0
@@ -42,10 +35,7 @@ class UserReplies : BaseInfo() {
                 "total=$total, " +
                 "dockItems=$dockItems, " +
                 "replyContentItems=$replyContentItems, " +
-                "items=$items, " +
                 "pageInfo='$pageInfo', " +
-                "currentPage=$currentPage, " +
-                "pageCount=$pageCount" +
                 ")"
     }
 

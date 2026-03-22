@@ -39,9 +39,6 @@ class NodeInfo : BaseInfo(), Serializable {
     @SerializedName("avatar_large")
     val avatar: String = ""
 
-    val adjustedAvatar: String
-        get() = AvatarUtils.adjustAvatar(avatar)
-
     override fun toString(): String {
         return "NodeInfo(id=$id, name='$name', url='$url', title='$title', topics=$topics, stars=$stars, header='$header', created=$created, avatar='$avatar')"
     }

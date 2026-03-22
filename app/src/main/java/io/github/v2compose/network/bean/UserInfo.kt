@@ -5,9 +5,7 @@ import io.github.v2compose.util.Check
 import org.json.JSONObject
 import java.io.Serializable
 
-/**
- * Created by ghui on 03/05/2017.
- */
+
 class UserInfo : BaseInfo(), Serializable {
     @SerializedName("status")
     var status: String = ""
@@ -66,40 +64,37 @@ class UserInfo : BaseInfo(), Serializable {
         }
     }
 
-    val avatarUrl: String
-        get() {
-            var result = if (!avatar.startsWith("http")) "https:$avatar" else avatar
-            if (!result.contains("large.png")) {
-                if (result.contains("mini.png")) {
-                    result = result.replace("mini.png", "large.png")
-                } else if (result.contains("normal.png")) {
-                    result = result.replace("normal.png", "large.png")
-                }
+    fun avatarUrl(): String {
+        var result = if (!avatar.startsWith("http")) "https:$avatar" else avatar
+        if (!result.contains("large.png")) {
+            if (result.contains("mini.png")) {
+                result = result.replace("mini.png", "large.png")
+            } else if (result.contains("normal.png")) {
+                result = result.replace("normal.png", "large.png")
             }
-            return result
         }
+        return result
+    }
 
-    val largestAvatar: String
-        get() {
-            if (avatarXxx.isNotEmpty()) return avatarXxx
-            if (avatarXx.isNotEmpty()) return avatarXx
-            if (avatarX.isNotEmpty()) return avatarX
-            return avatarUrl
-        }
+    fun largestAvatar(): String {
+        if (avatarXxx.isNotEmpty()) return avatarXxx
+        if (avatarXx.isNotEmpty()) return avatarXx
+        if (avatarX.isNotEmpty()) return avatarX
+        return avatarUrl()
+    }
 
     override fun isValid(): Boolean {
         return id.isNotEmpty()
     }
 
-    val userBasicInfo: String?
-        get() {
-            return try {
-                JSONObject().apply {
-                    put("id", id)
-                    put("name", userName)
-                }.toString()
-            } catch (e: Exception) {
-                null
-            }
+    fun userBasicInfo(): String? {
+        return try {
+            JSONObject().apply {
+                put("id", id)
+                put("name", userName)
+            }.toString()
+        } catch (e: Exception) {
+            null
         }
+    }
 }

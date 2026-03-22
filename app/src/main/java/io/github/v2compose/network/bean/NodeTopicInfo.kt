@@ -24,16 +24,15 @@ class NodeTopicInfo : BaseInfo() {
     @Pick("div.box div.cell:has(table)")
     val items: List<Item> = listOf()
 
-    val total: Int
-        get() {
-            if (totalText.isEmpty()) return 0
-            return try {
-                totalText.replace(",", "").toInt()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-                0
-            }
+    fun total(): Int {
+        if (totalText.isEmpty()) return 0
+        return try {
+            totalText.replace(",", "").toInt()
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
+            0
         }
+    }
 
     val fullFavoriteLink: String
         get() = NetConstants.BASE_URL + favoriteLink

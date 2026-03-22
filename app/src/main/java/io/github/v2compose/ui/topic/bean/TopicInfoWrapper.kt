@@ -32,6 +32,6 @@ data class TopicInfoWrapper(
         get() = ignored ?: topic?.headerInfo?.hadIgnored() ?: false
 
     val isReported: Boolean
-        get() = reported ?: topic?.hasReported ?: false
+        get() = reported ?: topic?.hasReported() ?: false
 }
 

@@ -3,9 +3,7 @@ package io.github.v2compose.util
 import android.net.Uri
 import java.net.URL
 
-/**
- * Created by ghui on 02/06/2017.
- */
+
 object UriUtils {
 
     @JvmStatic

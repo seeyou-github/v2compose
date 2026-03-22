@@ -5,9 +5,7 @@ import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 import java.io.Serializable
 
-/**
- * Created by ghui on 05/06/2017.
- */
+
 @Pulp("div#Wrapper")
 class CreateTopicPageInfo : BaseInfo() {
     @Pick(value = "input[name=once]", attr = "value")
@@ -15,15 +13,6 @@ class CreateTopicPageInfo : BaseInfo() {
 
     @Pick("div.problem")
     val problem: Problem? = null
-
-    fun toPostMap(title: String, content: String, nodeName: String): Map<String, String> {
-        return mapOf(
-            "title" to title,
-            "content" to content,
-            "node_name" to nodeName,
-            "once" to once
-        )
-    }
 
     override fun isValid(): Boolean {
         return once.isNotEmpty()

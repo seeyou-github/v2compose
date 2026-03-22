@@ -19,15 +19,9 @@ class UserTopics : BaseInfo() {
     @Pick("div.cell .topic_content")
     val visibility: String = ""
 
-    val currentPage: Int
-        get() {
-            return pageInfo.split("/").getOrNull(0)?.toIntOrNull() ?: -1
-        }
+    fun currentPage(): Int = pageInfo.split("/").getOrNull(0)?.toIntOrNull() ?: -1
 
-    val pageCount: Int
-        get() {
-            return pageInfo.split("/").getOrNull(1)?.toIntOrNull() ?: -1
-        }
+    fun pageCount(): Int = pageInfo.split("/").getOrNull(1)?.toIntOrNull() ?: -1
 
     override fun isValid(): Boolean {
         return total >= 0
@@ -38,8 +32,6 @@ class UserTopics : BaseInfo() {
                 "total=$total, " +
                 "items=$items, " +
                 "pageInfo='$pageInfo', " +
-                "currentPage=$currentPage, " +
-                "pageCount=$pageCount" +
                 ")"
     }
 

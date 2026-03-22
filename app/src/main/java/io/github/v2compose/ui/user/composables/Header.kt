@@ -152,7 +152,7 @@ private fun UserTopAppBarTitle(userPageInfo: UserPageInfo, modifier: Modifier = 
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(4.dp))
-            val online = userPageInfo.isOnline
+            val online = userPageInfo.isOnline()
             val colorScheme = MaterialTheme.colorScheme
             Text(
                 text = stringResource(id = if (online) R.string.user_online else R.string.user_offline),
@@ -226,7 +226,7 @@ private fun UserInfo(
             Text(userPageInfo?.userName ?: "", style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.width(4.dp))
             userPageInfo?.let {
-                val online = userPageInfo.isOnline
+                val online = userPageInfo.isOnline()
                 Text(
                     text = stringResource(id = if (online) R.string.user_online else R.string.user_offline),
                     style = MaterialTheme.typography.labelMedium,

@@ -22,7 +22,7 @@ class MyTopicsPagingSource @Inject constructor(private val v2exService: V2exServ
             val page = params.key ?: 1
             val result = v2exService.myTopicsInfo(page, NetConstants.systemUserAgent)
             val prevKey = if (page == 1) null else page - 1
-            val nextKey = if (page < result.totalPageCount) page + 1 else null
+            val nextKey = if (page < result.totalPageCount()) page + 1 else null
             LoadResult.Page(result.items, prevKey, nextKey)
         } catch (e: Exception) {
             e.printStackTrace()

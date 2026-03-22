@@ -22,12 +22,12 @@ class DefaultNewsRepository @Inject constructor(
 
     override suspend fun getHomeNews(tab: String): NewsInfo {
         return v2exService.homeNews(tab).also {
-            accountPreferences.unreadNotifications(it.unreadCount)
+            accountPreferences.unreadNotifications(it.unreadCount())
             accountPreferences.updateAccount(
                 balance = AccountBalance(
-                    it.balanceGold,
-                    it.balanceSilver,
-                    it.balanceBronze,
+                    it.balanceGold(),
+                    it.balanceSilver(),
+                    it.balanceBronze(),
                 )
             )
             appStateStore.updateHasCheckingInTips(it.hasCheckingInTips())

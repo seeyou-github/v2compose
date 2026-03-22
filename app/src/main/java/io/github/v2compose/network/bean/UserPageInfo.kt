@@ -2,15 +2,10 @@ package io.github.v2compose.network.bean
 
 import androidx.compose.runtime.Stable
 import io.github.v2compose.util.AvatarUtils
-import io.github.v2compose.util.Check
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 
-/**
- * Created by ghui on 01/06/2017.
- * https://www.v2ex.com/member/ghui
- */
 @Stable
 @Pulp("div#Wrapper")
 class UserPageInfo : BaseInfo() {
@@ -48,23 +43,21 @@ class UserPageInfo : BaseInfo() {
         return getUrl(blockOnClick)
     }
 
-    private fun getUrl(onclick: String?): String? {
-        if (!onclick.isNullOrEmpty()) {
+    private fun getUrl(url: String?): String? {
+        if (!url.isNullOrEmpty()) {
             val reg = "{ location.href = '"
-            val start = onclick.indexOf(reg) + reg.length
-            val end = onclick.lastIndexOf("'")
+            val start = url.indexOf(reg) + reg.length
+            val end = url.lastIndexOf("'")
             if (start in 0 until end) {
-                return onclick.substring(start, end)
+                return url.substring(start, end)
             }
         }
         return null
     }
 
-    val isOnline: Boolean
-        get() = online.isNotEmpty() && online == "ONLINE"
+    fun isOnline(): Boolean = online.isNotEmpty() && online == "ONLINE"
 
-    val adjustedAvatar: String
-        get() = AvatarUtils.adjustAvatar(avatar)
+    fun getAdjustedAvatar(): String = AvatarUtils.adjustAvatar(avatar)
 
     override fun toString(): String {
         return "UserPageInfo(" +

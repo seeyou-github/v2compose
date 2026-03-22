@@ -28,11 +28,9 @@ class HomePageInfo : BaseInfo() {
     @Pick("a[href=/my/following] span.bigger")
     val following: Int = 0
 
-    val adjustedAvatar: String
-        get() = AvatarUtils.adjustAvatar(avatar)
+    fun getAdjustedAvatar(): String = AvatarUtils.adjustAvatar(avatar)
 
-    val isOnline: Boolean
-        get() = online.isNotEmpty() && online == "ONLINE"
+    fun isOnline(): Boolean = online.isNotEmpty() && online == "ONLINE"
 
     override fun toString(): String {
         return "HomePageInfo(userName='$userName', avatar='$avatar', desc='$desc', online='$online')"

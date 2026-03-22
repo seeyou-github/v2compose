@@ -35,8 +35,7 @@ class MyNodesInfo : BaseInfo() {
 
         private var _name: String = ""
 
-        val avatarUrl: String
-            get() = avatar
+        fun avatarUrl(): String = avatar
 
         val name: String
             get() {

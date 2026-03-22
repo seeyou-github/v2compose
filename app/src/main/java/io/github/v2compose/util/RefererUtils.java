@@ -3,9 +3,7 @@ package io.github.v2compose.util;
 
 import io.github.v2compose.network.NetConstants;
 
-/**
- * Created by ghui on 14/06/2017.
- */
+
 
 public interface RefererUtils {
 

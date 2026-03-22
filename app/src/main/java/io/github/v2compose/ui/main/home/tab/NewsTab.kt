@@ -120,7 +120,7 @@ private fun NewsList(
 
         LazyColumn(state = lazyListState) {
             items(newsInfo.items, key = { it.id }) { item ->
-                val tagId = item.tagId
+                val tagId = item.tagId()
                 if(tagId.isNullOrBlank()){
                     L.e("topic's item, tagId is null or blank, item = $item")
                     return@items

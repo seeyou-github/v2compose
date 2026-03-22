@@ -2,9 +2,7 @@ package io.github.v2compose.util;
 
 import io.github.v2compose.network.NetConstants;
 
-/**
- * Created by ghui on 23/06/2017.
- */
+
 
 public class AvatarUtils {
     public static String adjustAvatar(String avatar) {

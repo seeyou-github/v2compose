@@ -105,7 +105,7 @@ class DefaultAccountRepository @Inject constructor(
 
         accountPreferences.updateAccount(
             userName = homePageInfo.userName,
-            userAvatar = userInfo.largestAvatar,
+            userAvatar = userInfo.largestAvatar(),
             description = homePageInfo.desc,
             nodes = homePageInfo.nodes,
             topics = homePageInfo.topics,

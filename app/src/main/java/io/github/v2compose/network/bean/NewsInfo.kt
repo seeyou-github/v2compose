@@ -1,15 +1,13 @@
 package io.github.v2compose.network.bean
 
 import androidx.compose.runtime.Stable
-import io.github.v2compose.util.AvatarUtils
-import io.github.v2compose.util.UriUtils
 import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
+import io.github.v2compose.util.AvatarUtils
+import io.github.v2compose.util.UriUtils
 import java.io.Serializable
 
-/**
- * Created by ghui on 04/04/2017.
- */
+
 @Stable
 @Pulp("div#Wrapper")
 class NewsInfo : BaseInfo() {
@@ -30,22 +28,21 @@ class NewsInfo : BaseInfo() {
 
     fun hasCheckingInTips(): Boolean = checkInTips.isNotEmpty()
 
-    private val isTwoStepError: Boolean
-        get() = twoStepStr.isNotEmpty() && twoStepStr.contains("两步验证")
+    private fun isTwoStepError(): Boolean =
+        twoStepStr.isNotEmpty() && twoStepStr.contains("两步验证")
 
-    val unreadCount: Int
-        get() {
-            if (unread.isEmpty()) return 0
-            return try {
-                unread.split(" ").getOrNull(0)?.toInt() ?: 0
-            } catch (e: Exception) {
-                0
-            }
+    fun unreadCount(): Int {
+        if (unread.isEmpty()) return 0
+        return try {
+            unread.split(" ").getOrNull(0)?.toInt() ?: 0
+        } catch (e: Exception) {
+            0
         }
+    }
 
-    val balanceGold: Int get() = getBalancePart(0)
-    val balanceSilver: Int get() = getBalancePart(1)
-    val balanceBronze: Int get() = getBalancePart(2)
+    fun balanceGold(): Int = getBalancePart(0)
+    fun balanceSilver(): Int = getBalancePart(1)
+    fun balanceBronze(): Int = getBalancePart(2)
 
     private fun getBalancePart(partIndex: Int): Int {
         if (balance.isEmpty()) return 0
@@ -65,7 +62,7 @@ class NewsInfo : BaseInfo() {
     }
 
     override fun isValid(): Boolean {
-        if (isTwoStepError) return false
+        if (isTwoStepError()) return false
         return items.isEmpty() || items[0].userName.isNotEmpty()
     }
 
@@ -99,11 +96,14 @@ class NewsInfo : BaseInfo() {
         @Pick("a[class^=count_]")
         val replies: Int = 0
 
+        private var _id: String = ""
         val id: String
-            get() = UriUtils.getLastSegment(linkPath)
-
-        val adjustedAvatar: String
-            get() = AvatarUtils.adjustAvatar(avatar)
+            get() {
+                if (_id.isBlank()) {
+                    _id = UriUtils.getLastSegment(linkPath)
+                }
+                return _id
+            }
 
         val time: String
             get() {
@@ -113,11 +113,10 @@ class NewsInfo : BaseInfo() {
                 return timeText
             }
 
-        val tagId: String?
-            get() {
-                if (tagLink.isEmpty()) return null
-                return tagLink.substring(tagLink.lastIndexOf("/") + 1)
-            }
+        fun tagId(): String? {
+            if (tagLink.isEmpty()) return null
+            return tagLink.substring(tagLink.lastIndexOf("/") + 1)
+        }
 
         override fun toString(): String {
             return "Item(title='$title', linkPath='$linkPath', avatar='$avatar', avatarLink='$avatarLink', userName='$userName', timeText='$timeText', tagName='$tagName', tagLink='$tagLink', replies=$replies)"

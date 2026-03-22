@@ -4,9 +4,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-/**
- * Created by ghui on 01/04/2017.
- */
+
 
 public class Utils {
     public static int listSize(List list) {

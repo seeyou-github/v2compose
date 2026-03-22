@@ -20,36 +20,33 @@ class RecentTopics : BaseInfo() {
     private val pageInfo: String = ""
 
     private var _total: Int = -1
-    val total: Int
-        get() {
-            if (_total < 0) {
-                _total = totalText.split(" ").getOrNull(1)?.toIntOrNull() ?: -1
-            }
-            return _total
+    fun total(): Int {
+        if (_total < 0) {
+            _total = totalText.split(" ").getOrNull(1)?.toIntOrNull() ?: -1
         }
+        return _total
+    }
 
     private var _currentPage: Int = -1
-    val currentPage: Int
-        get() {
-            if (_currentPage < 0) {
-                pageInfo.split("/").getOrNull(0)?.toIntOrNull()?.let { _currentPage = it }
-            }
-            return _currentPage
+    fun currentPage(): Int {
+        if (_currentPage < 0) {
+            pageInfo.split("/").getOrNull(0)?.toIntOrNull()?.let { _currentPage = it }
         }
+        return _currentPage
+    }
 
     private var _pageCount: Int = -1
-    val pageCount: Int
-        get() {
-            if (_pageCount < 0) {
-                pageInfo.split("/").getOrNull(1)?.toIntOrNull()?.let { _pageCount = it }
-            }
-            return _pageCount
+    fun pageCount(): Int {
+        if (_pageCount < 0) {
+            pageInfo.split("/").getOrNull(1)?.toIntOrNull()?.let { _pageCount = it }
         }
+        return _pageCount
+    }
 
-    override fun isValid() = total >= 0
+    override fun isValid() = total() >= 0
 
     override fun toString(): String {
-        return "RecentTopics(totalText='$totalText', items=$items, pageInfo='$pageInfo', total=$total, currentPage=$currentPage, pageCount=$pageCount)"
+        return "RecentTopics(totalText='$totalText', items=$items, pageInfo='$pageInfo', total=${total()}, currentPage=${currentPage()}, pageCount=${pageCount()})"
     }
 
     @Stable
@@ -113,7 +110,7 @@ class RecentTopics : BaseInfo() {
             }
 
         override fun toString(): String {
-            return "Item(title='$title', linkPath='$linkPath', avatarUrl='$avatarUrl', userName='$userName', timeText='$timeText', nodeTitle='$nodeTitle', nodeLink='$nodeLink', replies=$replies, id='$id', avatar='$avatar', time='$time', nodeName='$nodeName')"
+            return "Item(title='$title', linkPath='$linkPath', avatarUrl='$avatarUrl', userName='$userName', timeText='$timeText', nodeTitle='$nodeTitle', nodeLink='$nodeLink', replies=$replies, avatar='${avatar}', time='${time}', nodeName='${nodeName}')"
         }
 
     }

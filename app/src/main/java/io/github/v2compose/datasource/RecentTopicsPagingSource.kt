@@ -26,7 +26,7 @@ class RecentTopicsPagingSource(private val v2exService: V2exService) :
             val page = params.key ?: FIRST_PAGE
             val topics = v2exService.recentTopics(page)
             val prevKey = if (page <= FIRST_PAGE) null else page - 1
-            val nextKey = if (page < topics.pageCount) page + 1 else null
+            val nextKey = if (page < topics.pageCount()) page + 1 else null
             val data = topics.items.filterNot { currentIds.contains(it.id) }
             currentIds.addAll(data.map { it.id })
             LoadResult.Page(data, prevKey, nextKey)

@@ -16,13 +16,6 @@ class AppendTopicPageInfo : BaseInfo() {
     @Pick("div.problem")
     val problem: Problem? = null
 
-    fun toPostMap(content: String): Map<String, String> {
-        return mapOf(
-            "once" to once,
-            "content" to content
-        )
-    }
-
     override fun isValid(): Boolean {
         return once.isNotEmpty() && tips.size > 1
     }

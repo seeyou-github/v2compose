@@ -24,8 +24,8 @@ class UserRepliesDataSource(private val userName: String, private val v2exServic
             val page = params.key ?: FIRST_PAGE
             val userReplies = v2exService.userReplies(userName, page)
             val prevKey = if (page == FIRST_PAGE) null else page - 1
-            val nextKey = if (page < userReplies.pageCount) page + 1 else null
-            LoadResult.Page(userReplies.items, prevKey, nextKey)
+            val nextKey = if (page < userReplies.pageCount()) page + 1 else null
+            LoadResult.Page(userReplies.items(), prevKey, nextKey)
         } catch (e: Exception) {
             e.printStackTrace()
             LoadResult.Error(e)
