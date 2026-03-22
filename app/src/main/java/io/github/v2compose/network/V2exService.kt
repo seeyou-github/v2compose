@@ -141,6 +141,7 @@ interface V2exService {
     suspend fun myNodesInfo(@Header("user-agent") userAgent: String): MyNodesInfo
 
     @Html
+    @Headers("user-agent: " + NetConstants.webUserAgent)
     @GET("/")
     suspend fun nodesNavInfo(): NodesNavInfo
 
