@@ -2,7 +2,6 @@ package io.github.v2compose.ui.main.mine
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.repository.AccountRepository
@@ -17,10 +16,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MineViewModel @Inject constructor(
+class MineViewModel constructor(
     application: Application,
     private val checkIn: CheckInUseCase,
     private val accountRepository: AccountRepository,

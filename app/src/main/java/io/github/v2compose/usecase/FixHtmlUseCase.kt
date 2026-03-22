@@ -7,7 +7,6 @@ import coil.request.ImageRequest
 import coil.request.ImageResult
 import coil.size.Scale
 import coil.size.Size
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
 import io.github.v2compose.util.CfEmailUtils
@@ -18,12 +17,11 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import javax.inject.Inject
 import kotlin.math.ceil
 
 private const val TAG = "FixedHtmlImageUseCase"
 
-class FixHtmlUseCase @Inject constructor(@ApplicationContext private val context: Context) {
+class FixHtmlUseCase constructor(private val context: Context) {
 
     companion object {
         const val LoadImagesCountEveryTime = 4

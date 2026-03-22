@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.core.CheckInWorker
@@ -27,10 +26,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.ExecutorService
-import javax.inject.Inject
 
-@HiltViewModel
-class MainViewModel @Inject constructor(
+class MainViewModel constructor(
     application: Application,
     private val checkForUpdates: CheckForUpdatesUseCase,
     private val checkIn: CheckInUseCase,

@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.GalleryImage
 
@@ -25,7 +25,7 @@ private const val TAG = "GalleryScreen"
 @Composable
 fun GalleryScreenRoute(
     onBackClick: () -> Unit,
-    viewModel: GalleryViewModel = hiltViewModel(),
+    viewModel: GalleryViewModel = koinViewModel(),
 ) {
     val screenArgs = viewModel.screenArgs
 

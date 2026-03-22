@@ -34,7 +34,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
@@ -49,7 +49,7 @@ fun AddSupplementScreenRoute(
     onCloseClick: () -> Unit,
     onAddSupplementSuccess: (String) -> Unit,
     openUri: (String) -> Unit,
-    viewModel: AddSupplementViewModel = hiltViewModel(),
+    viewModel: AddSupplementViewModel = koinViewModel(),
     screenState: AddSupplementScreenState = rememberAddSupplementScreenState(),
 ) {
     val topicId = viewModel.args.topicId

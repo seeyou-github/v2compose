@@ -56,7 +56,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -75,7 +75,7 @@ private const val TAG = "SearchScreen"
 fun SearchScreenRoute(
     goBack: () -> Unit,
     onTopicClick: (SoV2EXSearchResultInfo.Hit) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = koinViewModel()
 ) {
     val keyword by viewModel.keyword.collectAsStateWithLifecycle()
     val topics = viewModel.topics.collectAsLazyPagingItems()

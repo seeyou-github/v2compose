@@ -5,9 +5,8 @@ import androidx.paging.PagingState
 import io.github.v2compose.network.NetConstants
 import io.github.v2compose.network.V2exService
 import io.github.v2compose.network.bean.MyFollowingInfo
-import javax.inject.Inject
 
-class MyFollowingPagingSource @Inject constructor(private val v2exService: V2exService) :
+class MyFollowingPagingSource constructor(private val v2exService: V2exService) :
     PagingSource<Int, MyFollowingInfo.Item>() {
     override fun getRefreshKey(state: PagingState<Int, MyFollowingInfo.Item>): Int? {
         return state.anchorPosition?.let { anchorPosition ->

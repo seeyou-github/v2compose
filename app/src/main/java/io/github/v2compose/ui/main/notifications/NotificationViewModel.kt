@@ -4,17 +4,14 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.usecase.FixHtmlUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NotificationViewModel @Inject constructor(
+class NotificationViewModel constructor(
     private val accountRepository: AccountRepository,
     private val fixedHtmlImage: FixHtmlUseCase,
 ) : ViewModel() {

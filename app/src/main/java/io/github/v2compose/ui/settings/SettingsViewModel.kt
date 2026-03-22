@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.annotation.ExperimentalCoilApi
 import coil.disk.DiskCache
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
@@ -23,13 +21,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okhttp3.Cache
 import java.util.concurrent.ExecutorService
-import javax.inject.Inject
 
 private const val TAG = "SettingsViewModel"
 
-@HiltViewModel
-class SettingsViewModel @Inject constructor(
-    @ApplicationContext context: Context,
+class SettingsViewModel constructor(
+    context: Context,
     private val appPreferences: AppPreferences,
     val checkForUpdates: CheckForUpdatesUseCase,
     private val accountRepository: AccountRepository,

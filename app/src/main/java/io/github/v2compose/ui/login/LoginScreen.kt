@@ -53,7 +53,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
@@ -72,7 +72,7 @@ fun LoginScreenRoute(
     onCloseClick: () -> Unit,
     onSignInWithGoogleClick: (String) -> Unit,
     redirect: String? = null,
-    viewModel: LoginViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = koinViewModel(),
     loginScreenState: LoginScreenState = rememberLoginScreenState(),
 ) {
     val loginParamState by viewModel.loginParam.collectAsStateWithLifecycle()

@@ -8,7 +8,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.shared.bean.AccountBalance
 import io.github.v2compose.shared.bean.DraftTopic
@@ -16,16 +15,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TAG = "AccountSettingsDataSource"
 
 private val Context.accountDataStore: DataStore<Preferences> by preferencesDataStore(name = "account")
 
-@Singleton
-class AccountPreferences @Inject constructor(
-    @ApplicationContext private val context: Context,
+class AccountPreferences constructor(
+    private val context: Context,
 ) {
 
     companion object {

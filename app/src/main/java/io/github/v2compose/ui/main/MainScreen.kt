@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.R
 import io.github.v2compose.network.bean.NewsInfo
@@ -70,7 +70,7 @@ fun MainScreenRoute(
     onSettingsClick: () -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
-    viewModel: MainViewModel = hiltViewModel(),
+    viewModel: MainViewModel = koinViewModel(),
     screenState: MainScreenState = rememberMainScreenState()
 ) {
     val unreadNotifications by viewModel.unreadNotifications.collectAsStateWithLifecycle()

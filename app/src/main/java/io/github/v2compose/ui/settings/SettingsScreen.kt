@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.Constants
@@ -63,7 +63,7 @@ fun SettingsScreenRoute(
     onBackClick: () -> Unit,
     openUri: (String) -> Unit,
     onLogoutSuccess: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: SettingsViewModel = koinViewModel(),
     settingsScreenState: SettingsScreenState = rememberSettingsScreenState()
 ) {
     val context = LocalContext.current

@@ -27,9 +27,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class DefaultAccountRepository @Inject constructor(
+class DefaultAccountRepository constructor(
     private val v2exService: V2exService,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,

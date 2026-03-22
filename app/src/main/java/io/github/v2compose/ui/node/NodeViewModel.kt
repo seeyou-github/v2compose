@@ -6,7 +6,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.R
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.network.bean.NodeInfo
@@ -21,12 +20,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val TAG = "NodeViewModel"
 
-@HiltViewModel
-class NodeViewModel @Inject constructor(
+class NodeViewModel constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,

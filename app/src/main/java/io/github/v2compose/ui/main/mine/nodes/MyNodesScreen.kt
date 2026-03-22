@@ -36,7 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import io.github.cooaer.htmltext.fullUrl
@@ -51,7 +51,7 @@ import io.github.v2compose.ui.common.Loading
 fun MyNodesScreenRoute(
     onBackClick: () -> Unit,
     onNodeClick: (MyNodesInfo.Item) -> Unit,
-    viewModel: MyNodesViewModel = hiltViewModel(),
+    viewModel: MyNodesViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

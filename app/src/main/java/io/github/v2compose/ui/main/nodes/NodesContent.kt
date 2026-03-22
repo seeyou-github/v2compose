@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.Node
 import io.github.v2compose.ui.common.LoadMore
@@ -49,7 +49,7 @@ import kotlin.math.floor
 fun NodesContent(
     onNodeClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: NodesViewModel = hiltViewModel(),
+    viewModel: NodesViewModel = koinViewModel(),
 ) {
     val nodesUiState by viewModel.nodesUiState.collectAsStateWithLifecycle()
 

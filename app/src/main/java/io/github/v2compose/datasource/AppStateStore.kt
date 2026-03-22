@@ -7,11 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import io.github.fruit.Fruit
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AppStateStore @Inject constructor(
+class AppStateStore constructor(
     private val fruit: Fruit,
 ) {
 

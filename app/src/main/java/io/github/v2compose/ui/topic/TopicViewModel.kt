@@ -10,7 +10,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.R
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.extension.isRedirect
@@ -39,13 +38,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
-import javax.inject.Inject
 import kotlin.math.ceil
 
 private const val TAG = "TopicViewModel"
 
-@HiltViewModel
-class TopicViewModel @Inject constructor(
+class TopicViewModel constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,

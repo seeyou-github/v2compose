@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kevinnzou.web.LoadingState
 import com.kevinnzou.web.WebView
@@ -33,7 +33,7 @@ fun GoogleLoginScreenRoute(
     once: String,
     onCloseClick: () -> Unit,
     onLoginSuccess: () -> Unit,
-    viewModel: GoogleLoginViewModel = hiltViewModel()
+    viewModel: GoogleLoginViewModel = koinViewModel()
 ) {
     val account by viewModel.account.collectAsStateWithLifecycle()
     if (account.isValid()) {

@@ -56,7 +56,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -100,7 +100,7 @@ fun TopicScreenRoute(
     onAddSupplementClick: (String) -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
-    viewModel: TopicViewModel = hiltViewModel(),
+    viewModel: TopicViewModel = koinViewModel(),
     screenState: TopicScreenState = rememberTopicScreenState(),
 ) {
     val args = viewModel.topicArgs

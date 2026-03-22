@@ -32,7 +32,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -62,7 +62,7 @@ fun NotificationsContent(
     onUserAvatarClick: (String, String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
     modifier: Modifier = Modifier,
-    viewModel: NotificationViewModel = hiltViewModel()
+    viewModel: NotificationViewModel = koinViewModel()
 ) {
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val unreadNotifications by viewModel.unreadNotifications.collectAsStateWithLifecycle()

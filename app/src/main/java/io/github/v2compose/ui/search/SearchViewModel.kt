@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.repository.TopicRepository
@@ -18,10 +17,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+class SearchViewModel constructor(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val topicRepository: TopicRepository,

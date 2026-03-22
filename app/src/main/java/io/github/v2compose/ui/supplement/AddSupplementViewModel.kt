@@ -4,7 +4,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.core.extension.redirectLocation
@@ -16,10 +15,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-@HiltViewModel
-class AddSupplementViewModel @Inject constructor(
+class AddSupplementViewModel constructor(
     savedStateHandle: SavedStateHandle,
     private val topicRepository: TopicRepository,
     private val accountPreferences: AccountPreferences,

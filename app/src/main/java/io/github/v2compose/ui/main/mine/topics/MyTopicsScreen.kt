@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -36,7 +36,7 @@ fun MyTopicsScreenRoute(
     onTopicClick: (MyTopicsInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
-    viewModel: MyTopicsViewModel = hiltViewModel(),
+    viewModel: MyTopicsViewModel = koinViewModel(),
 ) {
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
     val myTopics = viewModel.myTopics.collectAsLazyPagingItems()

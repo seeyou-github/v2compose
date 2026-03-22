@@ -43,7 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import io.github.cooaer.htmltext.HtmlText
@@ -64,7 +64,7 @@ fun MineContent(
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MineViewModel = hiltViewModel(),
+    viewModel: MineViewModel = koinViewModel(),
     mineContentState: MineContentState = rememberMineContentState(),
 ) {
     val account by viewModel.account.collectAsStateWithLifecycle()

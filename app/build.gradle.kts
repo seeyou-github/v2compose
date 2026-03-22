@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
 }
@@ -87,9 +86,11 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    // Dependency Injection
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.workmanager)
 
     implementation(libs.androidx.core.splashscreen)
 
@@ -102,8 +103,6 @@ dependencies {
     implementation(libs.androidx.startup.runtime)
 
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.androidx.hilt.work)
-    ksp(libs.androidx.hilt.compiler)
 
     // compose
     implementation(platform(libs.androidx.compose.bom))

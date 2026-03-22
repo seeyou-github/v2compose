@@ -23,11 +23,10 @@ import io.github.v2compose.repository.ActionMethod
 import io.github.v2compose.repository.TopicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 private const val TAG = "DefaultTopic"
 
-class DefaultTopicRepository @Inject constructor(
+class DefaultTopicRepository constructor(
     private val v2exService: V2exService,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,

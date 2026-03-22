@@ -1,7 +1,6 @@
 package io.github.v2compose
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -9,23 +8,21 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.FormatStrategy
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import dagger.hilt.android.HiltAndroidApp
 import io.github.v2compose.core.NotificationCenter
 import io.github.v2compose.core.analytics.IAnalytics
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.workmanager.koin.workManagerFactory
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.context.startKoin
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
-import javax.inject.Inject
 
-@HiltAndroidApp
-class App : Application(), ImageLoaderFactory, Configuration.Provider {
-    @Inject
-    lateinit var imageLoader: ImageLoader
+class App : Application(), ImageLoaderFactory, Configuration.Provider, KoinComponent {
 
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    @Inject
-    lateinit var analytics: IAnalytics
+    val imageLoader: ImageLoader by inject()
+    val analytics: IAnalytics by inject()
 
     companion object {
         private const val TAG = "APP"
@@ -36,6 +33,14 @@ class App : Application(), ImageLoaderFactory, Configuration.Provider {
         beforeOnCreate()
         super.onCreate()
         instance = this
+        
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            workManagerFactory()
+            modules(io.github.v2compose.di.allModules)
+        }
+        
         init()
     }
 
@@ -66,7 +71,7 @@ class App : Application(), ImageLoaderFactory, Configuration.Provider {
     override fun newImageLoader(): ImageLoader = imageLoader
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
+        get() = Configuration.Builder().build() // Koin's workManagerFactory injects workers automatically
 
     private fun resetScrollableTabRowMinimumTabWidth() {
         try {

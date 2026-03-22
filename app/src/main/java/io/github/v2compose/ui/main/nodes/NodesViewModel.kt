@@ -3,7 +3,6 @@ package io.github.v2compose.ui.main.nodes
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.network.bean.Node
 import io.github.v2compose.repository.NodeRepository
@@ -12,10 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NodesViewModel @Inject constructor(private val nodeRepository: NodeRepository) : ViewModel() {
+class NodesViewModel constructor(private val nodeRepository: NodeRepository) : ViewModel() {
 
     companion object {
         private const val minRequestMills = 500L

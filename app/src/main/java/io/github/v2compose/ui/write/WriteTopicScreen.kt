@@ -57,7 +57,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
@@ -76,7 +76,7 @@ fun WriteTopicScreenRoute(
     onCloseClick: () -> Unit,
     openUri: (String) -> Unit,
     onCreateTopicSuccess: (topicId: String) -> Unit,
-    viewModel: WriteTopicViewModel = hiltViewModel(),
+    viewModel: WriteTopicViewModel = koinViewModel(),
     screenState: WriteTopicScreenState = rememberWriteTopicScreenState(),
 ) {
     val loadNodesState by viewModel.loadNodes.state.collectAsStateWithLifecycle()

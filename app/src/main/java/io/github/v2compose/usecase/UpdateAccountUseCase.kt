@@ -8,9 +8,8 @@ import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.first
 import io.github.fruit.Fruit
 import retrofit2.HttpException
-import javax.inject.Inject
 
-class UpdateAccountUseCase @Inject constructor(
+class UpdateAccountUseCase constructor(
     private val fruit: Fruit,
     private val accountPreferences: AccountPreferences,
     private val accountRepository: AccountRepository,

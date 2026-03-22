@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -77,7 +77,7 @@ fun UserScreenRoute(
     onNodeClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
-    viewModel: UserViewModel = hiltViewModel(),
+    viewModel: UserViewModel = koinViewModel(),
     screenState: UserScreenState = rememberUserScreenState(),
 ) {
     val context = LocalContext.current

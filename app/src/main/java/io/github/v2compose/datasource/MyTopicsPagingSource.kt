@@ -5,9 +5,8 @@ import androidx.paging.PagingState
 import io.github.v2compose.network.NetConstants
 import io.github.v2compose.network.V2exService
 import io.github.v2compose.network.bean.MyTopicsInfo
-import javax.inject.Inject
 
-class MyTopicsPagingSource @Inject constructor(private val v2exService: V2exService) :
+class MyTopicsPagingSource constructor(private val v2exService: V2exService) :
     PagingSource<Int, MyTopicsInfo.Item>() {
 
     override fun getRefreshKey(state: PagingState<Int, MyTopicsInfo.Item>): Int? {

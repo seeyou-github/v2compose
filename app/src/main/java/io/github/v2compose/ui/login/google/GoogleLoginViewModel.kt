@@ -2,15 +2,12 @@ package io.github.v2compose.ui.login.google
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class GoogleLoginViewModel @Inject constructor(
+class GoogleLoginViewModel constructor(
     private val accountRepository: AccountRepository,
 ) : ViewModel() {
 

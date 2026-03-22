@@ -12,7 +12,6 @@ import io.github.v2compose.R
 import io.github.v2compose.network.bean.Release
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import javax.inject.Inject
 
 @Composable
 fun rememberSettingsScreenState(
@@ -25,7 +24,7 @@ fun rememberSettingsScreenState(
 }
 
 @Stable
-class SettingsScreenState @Inject constructor(
+class SettingsScreenState constructor(
     private val context: Context,
     val snackbarHostState: SnackbarHostState,
 ) {

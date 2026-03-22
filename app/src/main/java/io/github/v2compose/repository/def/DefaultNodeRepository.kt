@@ -13,9 +13,8 @@ import io.github.v2compose.network.bean.NodeTopicInfo
 import io.github.v2compose.network.bean.NodesNavInfo
 import io.github.v2compose.repository.NodeRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class DefaultNodeRepository @Inject constructor(
+class DefaultNodeRepository constructor(
     private val v2exService: V2exService,
     private val appStateStore: AppStateStore,
 ) : NodeRepository {

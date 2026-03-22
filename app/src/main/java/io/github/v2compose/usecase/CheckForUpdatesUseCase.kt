@@ -7,9 +7,8 @@ import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.repository.AppRepository
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 
-class CheckForUpdatesUseCase @Inject constructor(
+class CheckForUpdatesUseCase constructor(
     private val appRepository: AppRepository,
     private val appPreferences: AppPreferences,
 ) {

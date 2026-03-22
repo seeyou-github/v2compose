@@ -2,17 +2,14 @@ package io.github.v2compose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class V2AppViewModel @Inject constructor(
+class V2AppViewModel constructor(
     private val appPreferences: AppPreferences,
     private val accountRepository: AccountRepository,
 ) : ViewModel() {

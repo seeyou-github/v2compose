@@ -5,9 +5,8 @@ import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.repository.TopicRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 
-class LoadNodesUseCase @Inject constructor(private val topicRepository: TopicRepository) {
+class LoadNodesUseCase constructor(private val topicRepository: TopicRepository) {
 
     private val _state = MutableStateFlow<LoadNodesState>(LoadNodesState.Idle)
     val state: StateFlow<LoadNodesState> = _state

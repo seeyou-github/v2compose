@@ -34,7 +34,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
-import javax.inject.Inject
 
 private const val TAG = "AppState"
 
@@ -59,7 +58,7 @@ fun rememberV2AppState(
 }
 
 
-class V2AppState @Inject constructor(
+class V2AppState constructor(
     context: Context,
     private val navHostController: NavHostController,
     coroutineScope: CoroutineScope,

@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.ui.common.LoadMore
@@ -32,10 +33,11 @@ fun NewsTab(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
 ) {
-    val viewModel: NewsViewModel = hiltViewModel<NewsViewModel, NewsViewModel.Factory>(
-        key = newsTabInfo.value, // 关键：不同的 key 会创建不同的实例
-        creationCallback = { factory -> factory.create(newsTabInfo.value) }
-    )
+    val viewModel: NewsViewModel = koinViewModel(
+        key = newsTabInfo.value
+    ) {
+        parametersOf(newsTabInfo.value)
+    }
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
 
     val newsUiState by viewModel.newsUiState.collectAsStateWithLifecycle()

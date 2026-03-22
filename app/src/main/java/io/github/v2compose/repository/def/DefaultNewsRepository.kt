@@ -12,9 +12,8 @@ import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class DefaultNewsRepository @Inject constructor(
+class DefaultNewsRepository constructor(
     private val v2exService: V2exService,
     private val accountPreferences: AccountPreferences,
     private val appStateStore: AppStateStore,

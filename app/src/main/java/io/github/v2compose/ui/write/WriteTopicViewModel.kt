@@ -5,7 +5,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.core.StringDecoder
@@ -20,10 +19,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
-import javax.inject.Inject
 
-@HiltViewModel
-class WriteTopicViewModel @Inject constructor(
+class WriteTopicViewModel constructor(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val topicRepository: TopicRepository,

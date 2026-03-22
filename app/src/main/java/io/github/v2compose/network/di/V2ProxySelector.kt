@@ -14,11 +14,8 @@ import java.net.Proxy
 import java.net.ProxySelector
 import java.net.SocketAddress
 import java.net.URI
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class V2ProxySelector @Inject constructor(appPreferences: AppPreferences) : ProxySelector() {
+class V2ProxySelector constructor(appPreferences: AppPreferences) : ProxySelector() {
 
     private lateinit var proxyInfo: ProxyInfo
     private lateinit var delegation: ProxySelector
