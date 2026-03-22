@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -28,6 +29,9 @@ kotlin {
     }
 
     sourceSets {
+        commonMain {
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(libs.kotlinx.serialization.json)
@@ -40,7 +44,8 @@ kotlin {
             implementation(libs.ktor.client.auth)
             
             // Fruit-KT KMP
-            implementation(libs.fruit)
+            api(libs.fruit)
+            implementation("com.fleeksoft.ksoup:ksoup:0.2.6")
         }
         
         androidMain.dependencies {
@@ -51,4 +56,11 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", libs.fruit.ksp)
+    add("kspAndroid", libs.fruit.ksp)
+    add("kspIosArm64", libs.fruit.ksp)
+    add("kspIosSimulatorArm64", libs.fruit.ksp)
 }
