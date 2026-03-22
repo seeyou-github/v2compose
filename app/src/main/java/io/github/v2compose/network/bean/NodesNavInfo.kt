@@ -6,11 +6,10 @@ import io.github.fruit.annotations.Pulp
 import java.io.Serializable
 
 /**
- * Created by ghui on 21/05/2017.
  * https://www.v2ex.com/
  * bottom box
  */
-@Pulp("div.box:last-child div > table")
+@Pulp("div#Main > div.box:last-of-type table")
 class NodesNavInfo : ArrayList<NodesNavInfo.Item>(), IBase {
     private var responseBody: String = ""
 

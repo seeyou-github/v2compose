@@ -1,15 +1,14 @@
 package io.github.v2compose.network.bean
 
 import androidx.compose.runtime.Stable
-import io.github.v2compose.network.NetConstants
-import io.github.v2compose.util.UriUtils
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
+import io.github.v2compose.network.NetConstants
+import io.github.v2compose.util.UriUtils
 import java.io.Serializable
 
 /**
- * Created by ghui on 27/05/2017.
  * https://www.v2ex.com/go/python
  */
 @Stable
@@ -41,7 +40,10 @@ class NodeTopicInfo : BaseInfo() {
         get() = favoriteLink.isNotEmpty() && favoriteLink.contains("/unfavorite/node/")
 
     val once: String?
-        get() = if (favoriteLink.isNotEmpty()) UriUtils.getParamValue(favoriteLink, "once") else null
+        get() = if (favoriteLink.isNotEmpty()) UriUtils.getParamValue(
+            favoriteLink,
+            "once"
+        ) else null
 
     override fun toString(): String {
         return "NodeTopicInfo(favoriteLink='$favoriteLink', totalText='$totalText', items=$items)"
@@ -89,7 +91,8 @@ class NodeTopicInfo : BaseInfo() {
             get() {
                 if (clickedAndContentLength.isEmpty()) return 0
                 return try {
-                    val result = clickedAndContentLength.substring(clickedAndContentLength.lastIndexOf("•") + 1)
+                    val result =
+                        clickedAndContentLength.substring(clickedAndContentLength.lastIndexOf("•") + 1)
                     result.replace("[^0-9]".toRegex(), "").toInt()
                 } catch (e: Exception) {
                     0

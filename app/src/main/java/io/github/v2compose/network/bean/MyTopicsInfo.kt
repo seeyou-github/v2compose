@@ -7,7 +7,6 @@ import io.github.v2compose.util.AvatarUtils
 import java.io.Serializable
 
 /**
- * Created by ghui on 17/05/2017.
  * https://www.v2ex.com/my/topics
  */
 @Pulp("div#Wrapper")

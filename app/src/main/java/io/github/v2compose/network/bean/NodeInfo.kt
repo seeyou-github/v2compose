@@ -6,7 +6,6 @@ import io.github.v2compose.util.AvatarUtils
 import java.io.Serializable
 
 /**
- * Created by ghui on 27/05/2017.
  * 节点详情
  * https://www.v2ex.com/api/nodes/show.json?name=qna
  */

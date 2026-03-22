@@ -6,7 +6,6 @@ import io.github.fruit.annotations.Pulp
 import java.io.Serializable
 
 /**
- * Created by ghui on 18/05/2017.
  * https://www.v2ex.com/my/nodes
  */
 @Pulp("div#my-nodes")
