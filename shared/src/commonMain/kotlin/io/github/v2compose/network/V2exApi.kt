@@ -92,6 +92,9 @@ class V2exApi(private val client: HttpClient) {
     suspend fun nodesInfo(node: String, page: Int): NodeTopicInfo =
         client.get("/go/$node") { parameter("p", page) }.body()
 
+    suspend fun homePageInfo(username: String): HomePageInfo =
+        client.get("/member/$username").body()
+
     suspend fun userPageInfo(username: String): UserPageInfo =
         client.get("/member/$username").body()
 

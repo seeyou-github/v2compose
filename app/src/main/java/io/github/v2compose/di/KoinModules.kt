@@ -50,7 +50,7 @@ import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.network.GithubService
 import io.github.v2compose.network.OkHttpFactory
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.repository.AccountRepository
@@ -120,8 +120,12 @@ val networkModule = module {
 
     single<okhttp3.Cache> { OkHttpFactory.createCache(get<android.content.Context>()) }
 
-    single<V2exService> {
-        V2exService.createV2exService(get<OkHttpClient>(named("CommonOkHttpClient")), get<io.github.fruit.Fruit>(), get<com.google.gson.Gson>())
+    single<V2exApi> {
+        val client = io.github.v2compose.network.createAndroidV2Client(
+            okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")),
+            fruit = get<io.github.fruit.Fruit>()
+        )
+        V2exApi(client.httpClient)
     }
 
     single<GithubService> {

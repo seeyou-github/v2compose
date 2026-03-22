@@ -2,12 +2,12 @@ package io.github.v2compose.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.NotificationInfo
 import kotlin.math.ceil
 
 class NotificationsPagingSource(
-    private val v2exService: V2exService,
+    private val v2exService: V2exApi,
     private val accountPreferences: AccountPreferences,
 ) :
     PagingSource<Int, NotificationInfo.Reply>() {

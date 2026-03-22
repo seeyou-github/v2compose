@@ -2,10 +2,10 @@ package io.github.v2compose.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 
-class SearchPagingSource(private val keyword: String, private val v2exService: V2exService) :
+class SearchPagingSource(private val keyword: String, private val v2exService: V2exApi) :
     PagingSource<Int, SoV2EXSearchResultInfo.Hit>() {
 
     override fun getRefreshKey(state: PagingState<Int, SoV2EXSearchResultInfo.Hit>): Int? {

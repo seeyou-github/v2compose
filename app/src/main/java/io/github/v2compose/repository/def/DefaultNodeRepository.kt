@@ -7,7 +7,7 @@ import io.github.v2compose.V2exUri
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.NodePagingSource
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
 import io.github.v2compose.network.bean.NodesNavInfo
@@ -15,7 +15,7 @@ import io.github.v2compose.repository.NodeRepository
 import kotlinx.coroutines.flow.Flow
 
 class DefaultNodeRepository constructor(
-    private val v2exService: V2exService,
+    private val v2exService: V2exApi,
     private val appStateStore: AppStateStore,
 ) : NodeRepository {
 

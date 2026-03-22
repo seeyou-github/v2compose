@@ -402,10 +402,11 @@ private fun TopicList(
                 )
             }
 
-            if (topicInfo.topic.contentInfo!!.content.isNotEmpty()) {
+            val contentInfo = topicInfo.topic.contentInfo ?: return@LazyColumn
+            if (contentInfo.content.isNotEmpty()) {
                 val tag = "content"
                 item(key = tag, contentType = "content") {
-                    val content = topicInfo.topic.contentInfo.content
+                    val content = contentInfo.content
                     TopicContent(
                         content = sizedHtmls[tag] ?: content,
                         openUri = openUri,
@@ -415,8 +416,8 @@ private fun TopicList(
                 }
             }
 
-            if (topicInfo.topic.contentInfo.supplements.isNotEmpty()) {
-                val supplements = topicInfo.topic.contentInfo.supplements
+            if (contentInfo.supplements.isNotEmpty()) {
+                val supplements = contentInfo.supplements
                 itemsIndexed(items = supplements,
                     key = { supplementIndex, _ -> "supplement:$supplementIndex" },
                     contentType = { _, _ -> "supplement" }) { supplementIndex, item ->
@@ -440,7 +441,7 @@ private fun TopicList(
                 }
             }
 
-            if (topicInfo.topic.contentInfo.content.isNotEmpty() && topicInfo.topic.contentInfo.supplements.isEmpty()) {
+            if (contentInfo.content.isNotEmpty() && contentInfo.supplements.isEmpty()) {
                 item(key = "divider#onRepliesBar", contentType = "divider") {
                     ListDivider(
                         modifier = Modifier.padding(end = 16.dp),
@@ -525,14 +526,15 @@ fun rememberRepliesBarIndex(topicInfo: TopicInfoWrapper): Int {
         if (topicInfo.topic == null || !topicInfo.topic.isValid()) {
             -1
         } else {
+            val contentInfo = topicInfo.topic.contentInfo ?: return@remember -1
             var index = 0 //title
-            if (topicInfo.topic.contentInfo!!.content.isNotEmpty()) {
+            if (contentInfo.content.isNotEmpty()) {
                 index++ //content
             }
-            if (topicInfo.topic.contentInfo.supplements.isNotEmpty()) {
-                index += topicInfo.topic.contentInfo.supplements.size //supplements
+            if (contentInfo.supplements.isNotEmpty()) {
+                index += contentInfo.supplements.size //supplements
             }
-            if (topicInfo.topic.contentInfo.content.isNotEmpty() && topicInfo.topic.contentInfo.supplements.isEmpty()) {
+            if (contentInfo.content.isNotEmpty() && contentInfo.supplements.isEmpty()) {
                 index++ //divider
             }
             ++index//repliesBar
@@ -547,22 +549,22 @@ private fun TopicTitle(
     onUserAvatarClick: (String, String) -> Unit,
     onNodeClick: (String, String) -> Unit
 ) {
-    if (topicInfo == null || topicInfo.headerInfo == null) return
-    SimpleTopic(userName = topicInfo.headerInfo.userName,
-        userAvatar = topicInfo.headerInfo.avatar,
-        time = topicInfo.headerInfo.getTime(),
-        replyCount = topicInfo.headerInfo.getCommentNum(),
-        viewCount = topicInfo.headerInfo.getViewCount(),
-        nodeName = topicInfo.headerInfo.getTagName(),
-        nodeTitle = topicInfo.headerInfo.tag,
-        title = topicInfo.headerInfo.title,
+    val headerInfo = topicInfo?.headerInfo ?: return
+    SimpleTopic(userName = headerInfo.userName,
+        userAvatar = headerInfo.avatar,
+        time = headerInfo.getTime(),
+        replyCount = headerInfo.getCommentNum(),
+        viewCount = headerInfo.getViewCount(),
+        nodeName = headerInfo.getTagName(),
+        nodeTitle = headerInfo.tag,
+        title = headerInfo.title,
         onUserAvatarClick = {
             onUserAvatarClick(
-                topicInfo.headerInfo.userName, topicInfo.headerInfo.avatar
+                headerInfo.userName, headerInfo.avatar
             )
         },
         onNodeClick = {
-            onNodeClick(topicInfo.headerInfo.getTagName(), topicInfo.headerInfo.tag)
+            onNodeClick(headerInfo.getTagName(), headerInfo.tag)
         })
 }
 

@@ -11,7 +11,7 @@ import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.SearchPagingSource
 import io.github.v2compose.datasource.TopicPagingSource
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.network.bean.ReplyTopicResultInfo
@@ -21,13 +21,14 @@ import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.network.bean.V2exResult
 import io.github.v2compose.repository.ActionMethod
 import io.github.v2compose.repository.TopicRepository
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 private const val TAG = "DefaultTopic"
 
 class DefaultTopicRepository constructor(
-    private val v2exService: V2exService,
+    private val v2exService: V2exApi,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,
 ) : TopicRepository {
@@ -104,7 +105,7 @@ class DefaultTopicRepository constructor(
         once: String
     ): Boolean {
         val topicUrl = V2exUri.topicUrl(topicId)
-        return v2exService.ignoreReply(topicUrl, replyId, once).isSuccessful
+        return v2exService.ignoreReply(topicUrl, replyId, once).status.isSuccess()
     }
 
     override suspend fun replyTopic(

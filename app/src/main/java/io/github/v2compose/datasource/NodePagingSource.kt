@@ -3,11 +3,11 @@ package io.github.v2compose.datasource
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 
 private const val TAG = "NodePagingSource"
 
-class NodePagingSource(private val nodeName: String, private val v2exService: V2exService) :
+class NodePagingSource(private val nodeName: String, private val v2exService: V2exApi) :
     PagingSource<Int, Any>() {
 
     companion object {

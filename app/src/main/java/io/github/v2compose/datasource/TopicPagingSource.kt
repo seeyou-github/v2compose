@@ -3,12 +3,12 @@ package io.github.v2compose.datasource
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 
 private const val TAG = "TopicPagingSource"
 
 class TopicPagingSource constructor(
-    private val v2exService: V2exService,
+    private val v2exService: V2exApi,
     private val topicId: String,
     private val reversed: Boolean
 ) : PagingSource<Int, Any>() {

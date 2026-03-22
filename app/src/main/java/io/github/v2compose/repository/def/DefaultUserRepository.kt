@@ -7,14 +7,14 @@ import io.github.v2compose.V2exUri
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.datasource.UserRepliesDataSource
 import io.github.v2compose.datasource.UserTopicsDataSource
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
-class DefaultUserRepository constructor(private val v2exService: V2exService) :
+class DefaultUserRepository constructor(private val v2exService: V2exApi) :
     UserRepository {
     override suspend fun getUserPageInfo(userName: String): UserPageInfo {
         return v2exService.userPageInfo(userName)

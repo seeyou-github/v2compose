@@ -20,7 +20,7 @@ class UpdateAccountUseCase constructor(
             return
         }
         val loginResultInfo: LoginResultInfo? =
-            fruit.fromHtml(newsInfo.rawResponse, LoginResultInfo::class.java)
+            fruit.fromHtml(newsInfo.rawResponse, LoginResultInfo::class)
         if (loginResultInfo == null || !loginResultInfo.isValid()) {
             return
         }

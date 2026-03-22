@@ -11,7 +11,7 @@ import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.NotificationsPagingSource
 import io.github.v2compose.network.NetConstants
-import io.github.v2compose.network.V2exService
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.bean.DailyInfo
 import io.github.v2compose.network.bean.HomePageInfo
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DefaultAccountRepository constructor(
-    private val v2exService: V2exService,
+    private val v2exService: V2exApi,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,
     private val cookieManager: WebkitCookieManager,

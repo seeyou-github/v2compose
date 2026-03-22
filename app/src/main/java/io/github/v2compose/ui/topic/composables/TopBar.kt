@@ -144,7 +144,8 @@ private fun TopicTopBarActions(
         mutableListOf<TopicMenuItem>().apply {
             if (isLoggedIn) {
                 if (topicInfo.topic != null) {
-                    if (topicInfo.topic.headerInfo != null && topicInfo.topic.headerInfo.canAppend()) {
+                    val headerInfo = topicInfo.topic.headerInfo
+                    if (headerInfo != null && headerInfo.canAppend()) {
                         add(TopicMenuItem.Append)
                     }
                     add(if (topicInfo.isThanked) TopicMenuItem.Thanked else TopicMenuItem.Thanks)
