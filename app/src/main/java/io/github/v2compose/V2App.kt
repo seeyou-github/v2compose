@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.navigation.compose.rememberNavController
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.ui.common.keyboardAsState
@@ -32,7 +32,7 @@ val LocalImageSaver = compositionLocalOf<ImageSaver> { error("LocalImageSaver no
 private val BottomAppBarHeight = 72.dp
 
 @Composable
-fun V2App(viewModel: V2AppViewModel = viewModel()) {
+fun V2App(viewModel: V2AppViewModel = koinViewModel()) {
     val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
     val keyboardState by keyboardAsState()
 
