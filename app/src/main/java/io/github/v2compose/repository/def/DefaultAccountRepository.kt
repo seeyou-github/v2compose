@@ -3,14 +3,12 @@ package io.github.v2compose.repository.def
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.NotificationsPagingSource
-import io.github.v2compose.network.NetConstants
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.bean.DailyInfo
@@ -22,6 +20,7 @@ import io.github.v2compose.network.bean.MyTopicsInfo
 import io.github.v2compose.network.bean.NotificationInfo
 import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.Account
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -141,6 +140,6 @@ class DefaultAccountRepository constructor(
         get() = Pager(PagingConfig(10)) { MyFollowingPagingSource(v2exService) }.flow
 
     override suspend fun getMyNodes(): MyNodesInfo {
-        return v2exService.myNodesInfo(NetConstants.systemUserAgent)
+        return v2exService.myNodesInfo()
     }
 }

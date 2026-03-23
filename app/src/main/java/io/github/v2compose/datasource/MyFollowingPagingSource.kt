@@ -18,7 +18,7 @@ class MyFollowingPagingSource constructor(private val v2exService: V2exApi) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MyFollowingInfo.Item> {
         return try {
             val page = params.key ?: 1
-            val result = v2exService.myFollowingInfo(page, NetConstants.systemUserAgent)
+            val result = v2exService.myFollowingInfo(page)
             val prevKey = if (page == 1) null else page - 1
             val nextKey = if (page < result.totalPageCount) page + 1 else null
             LoadResult.Page(result.items, prevKey, nextKey)

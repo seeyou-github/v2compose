@@ -1,19 +1,15 @@
-package io.github.v2compose.util;
+package io.github.v2compose.utils
 
+import io.github.v2compose.network.NetConstants
 
-import io.github.v2compose.network.NetConstants;
+object RefererUtils {
+    val TINY_REFER: String = NetConstants.BASE_URL + "/mission/daily"
 
-
-
-public interface RefererUtils {
-
-    String TINY_REFER = NetConstants.BASE_URL + "/mission/daily";
-
-    public static String topicReferer(String topicId) {
-        return NetConstants.BASE_URL + "/t/" + topicId;
+    fun topicReferer(topicId: String?): String {
+        return NetConstants.BASE_URL + "/t/" + topicId
     }
 
-    public static String userReferer(String username) {
-        return NetConstants.BASE_URL + "/member/" + username;
+    fun userReferer(username: String?): String {
+        return NetConstants.BASE_URL + "/member/" + username
     }
 }

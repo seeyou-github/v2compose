@@ -1,36 +1,35 @@
-package io.github.v2compose.util;
+package io.github.v2compose.utils
 
-import io.github.v2compose.network.NetConstants;
+import io.github.v2compose.network.NetConstants
 
-
-
-public class AvatarUtils {
-    public static String adjustAvatar(String avatar) {
-        if (Check.isEmpty(avatar)) return null;
+object AvatarUtils {
+    fun adjustAvatar(avatar: String?): String? {
+        var newAvatar = avatar
+        if (newAvatar.isNullOrBlank()) return null
         //1.
-        if (!avatar.startsWith(NetConstants.HTTPS_SCHEME) && !avatar.startsWith(NetConstants.HTTP_SCHEME)) {
-            if (avatar.startsWith("//")) {
-                avatar = NetConstants.HTTPS_SCHEME + avatar;
-            } else if (avatar.startsWith("/")) {
-                avatar = NetConstants.BASE_URL + avatar;
+        if (!newAvatar.startsWith(NetConstants.HTTPS_SCHEME) && !newAvatar.startsWith(NetConstants.HTTP_SCHEME)) {
+            if (newAvatar.startsWith("//")) {
+                newAvatar = NetConstants.HTTPS_SCHEME + newAvatar
+            } else if (newAvatar.startsWith("/")) {
+                newAvatar = NetConstants.BASE_URL + newAvatar
             }
         }
 
         //2.
-        if (avatar.contains("_normal.png")) {
-            avatar = avatar.replace("_normal.png", "_large.png");
-        } else if (avatar.contains("_mini.png")) {
-            avatar = avatar.replace("_mini.png", "_large.png");
+        if (newAvatar.contains("_normal.png")) {
+            newAvatar = newAvatar.replace("_normal.png", "_large.png")
+        } else if (newAvatar.contains("_mini.png")) {
+            newAvatar = newAvatar.replace("_mini.png", "_large.png")
         }
 
-        if (avatar.contains("_xxlarge.png")) {
-            avatar = avatar.replace("_xxlarge.png", "_large.png");
+        if (newAvatar.contains("_xxlarge.png")) {
+            newAvatar = newAvatar.replace("_xxlarge.png", "_large.png")
         }
 
         //3. del param
 //        if (avatar.contains("?")) {
 //            avatar = avatar.substring(0, avatar.indexOf("?"));
 //        }
-        return avatar;
+        return newAvatar
     }
 }

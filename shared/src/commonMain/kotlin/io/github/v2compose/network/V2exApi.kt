@@ -1,5 +1,6 @@
 package io.github.v2compose.network
 
+import io.github.v2compose.network.NetConstants.systemUserAgent
 import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.network.bean.DailyInfo
@@ -90,23 +91,26 @@ class V2exApi(private val client: HttpClient) {
         client.get("/t/$topicId") { parameter("p", page) }.body()
 
     suspend fun notifications(page: Int): NotificationInfo =
-        client.get("/notifications") { parameter("p", page) }.body()
+        client.get("/notifications") {
+            parameter("p", page)
+            header(HttpHeaders.UserAgent, NetConstants.webUserAgent)
+        }.body()
 
-    suspend fun myFollowingInfo(page: Int, userAgent: String): MyFollowingInfo =
+    suspend fun myFollowingInfo(page: Int): MyFollowingInfo =
         client.get("/my/following") {
             parameter("p", page)
-            header(HttpHeaders.UserAgent, userAgent)
+            header(HttpHeaders.UserAgent, systemUserAgent)
         }.body()
 
-    suspend fun myTopicsInfo(page: Int, userAgent: String): MyTopicsInfo =
+    suspend fun myTopicsInfo(page: Int): MyTopicsInfo =
         client.get("/my/topics") {
             parameter("p", page)
-            header(HttpHeaders.UserAgent, userAgent)
+            header(HttpHeaders.UserAgent, systemUserAgent)
         }.body()
 
-    suspend fun myNodesInfo(userAgent: String): MyNodesInfo =
+    suspend fun myNodesInfo(): MyNodesInfo =
         client.get("/my/nodes") {
-            header(HttpHeaders.UserAgent, userAgent)
+            header(HttpHeaders.UserAgent, systemUserAgent)
         }.body()
 
     suspend fun nodesNavInfo(): NodesNavInfo =

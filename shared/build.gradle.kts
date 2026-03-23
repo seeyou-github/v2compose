@@ -45,11 +45,12 @@ kotlin {
             
             // Fruit-KT KMP
             api(libs.fruit)
-            implementation("com.fleeksoft.ksoup:ksoup:0.2.6")
+            implementation(libs.ksoup)
         }
         
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.slf4j.android)
         }
         
         iosMain.dependencies {

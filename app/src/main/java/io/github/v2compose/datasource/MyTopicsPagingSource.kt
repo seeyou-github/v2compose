@@ -2,11 +2,10 @@ package io.github.v2compose.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.v2compose.network.NetConstants
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.MyTopicsInfo
 
-class MyTopicsPagingSource constructor(private val v2exService: V2exApi) :
+class MyTopicsPagingSource(private val v2exService: V2exApi) :
     PagingSource<Int, MyTopicsInfo.Item>() {
 
     override fun getRefreshKey(state: PagingState<Int, MyTopicsInfo.Item>): Int? {
@@ -19,7 +18,7 @@ class MyTopicsPagingSource constructor(private val v2exService: V2exApi) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MyTopicsInfo.Item> {
         return try {
             val page = params.key ?: 1
-            val result = v2exService.myTopicsInfo(page, NetConstants.systemUserAgent)
+            val result = v2exService.myTopicsInfo(page)
             val prevKey = if (page == 1) null else page - 1
             val nextKey = if (page < result.totalPageCount()) page + 1 else null
             LoadResult.Page(result.items, prevKey, nextKey)

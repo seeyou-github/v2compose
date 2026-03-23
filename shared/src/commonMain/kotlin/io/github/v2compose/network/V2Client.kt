@@ -2,13 +2,18 @@ package io.github.v2compose.network
 
 import io.github.fruit.Fruit
 import io.github.fruit.ktor.fruit
-import io.ktor.client.*
-import io.ktor.client.engine.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
+import io.ktor.http.HttpHeaders
+import io.ktor.http.URLProtocol
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 /**
@@ -20,7 +25,7 @@ class V2Client(
 ) {
     val httpClient = HttpClient(engine ?: createHttpClientEngine()) {
         expectSuccess = true
-        
+
         install(ContentNegotiation) {
             // 支持 JSON 解析 (针对 V2EX API)
             json(Json {
@@ -37,10 +42,15 @@ class V2Client(
                 protocol = URLProtocol.HTTPS
                 host = "www.v2ex.com"
             }
-            header(HttpHeaders.UserAgent, "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1")
+            if (!headers.contains(NetConstants.keyUserAgent)) {
+                header(HttpHeaders.UserAgent, NetConstants.wapUserAgent)
+            }
         }
-        
+
         // 日志 (可选)
-        // install(Logging) { ... }
+        install(Logging) {
+            logger = Logger.DEFAULT
+            level = LogLevel.HEADERS
+        }
     }
 }
