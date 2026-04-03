@@ -1,9 +1,7 @@
 package io.github.v2compose.core
 
-actual fun httpAgent(): String? {
-    TODO("Not yet implemented")
-}
+import platform.UIKit.UIDevice
 
-actual fun deviceModel(): String? {
-    TODO("Not yet implemented")
-}
+actual fun httpAgent(): String? = "V2compose/iOS ${UIDevice.currentDevice.systemVersion}"
+
+actual fun deviceModel(): String = UIDevice.currentDevice.model
