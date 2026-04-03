@@ -2,7 +2,7 @@ package io.github.v2compose.ui.main.home
 
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel constructor() : ViewModel() {
+class HomeViewModel () : ViewModel() {
     private val tabNames =
         arrayOf(
             "全部",

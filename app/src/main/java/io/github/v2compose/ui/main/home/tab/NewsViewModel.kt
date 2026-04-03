@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class NewsViewModel constructor(
+class NewsViewModel (
     val tab: String,
     private val newsRepository: NewsRepository,
     private val topicRepository: TopicRepository,

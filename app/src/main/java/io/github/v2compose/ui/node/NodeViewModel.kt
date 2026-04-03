@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "NodeViewModel"
 
-class NodeViewModel constructor(
+class NodeViewModel (
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,

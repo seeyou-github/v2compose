@@ -13,7 +13,7 @@ import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 
-class DefaultNewsRepository constructor(
+class DefaultNewsRepository (
     private val v2exService: V2exApi,
     private val accountPreferences: AccountPreferences,
     private val appStateStore: AppStateStore,

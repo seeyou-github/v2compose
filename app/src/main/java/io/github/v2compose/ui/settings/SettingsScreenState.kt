@@ -24,7 +24,7 @@ fun rememberSettingsScreenState(
 }
 
 @Stable
-class SettingsScreenState constructor(
+class SettingsScreenState (
     private val context: Context,
     val snackbarHostState: SnackbarHostState,
 ) {

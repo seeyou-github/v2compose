@@ -4,7 +4,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import javax.inject.Inject
 
-class VendorAnalytics @Inject constructor() : IAnalytics {
+class VendorAnalytics @Inject () : IAnalytics {
 
     private val analytics = Firebase.analytics
 

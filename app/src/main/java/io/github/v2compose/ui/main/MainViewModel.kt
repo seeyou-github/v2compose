@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.ExecutorService
 
-class MainViewModel constructor(
+class MainViewModel (
     application: Application,
     private val checkForUpdates: CheckForUpdatesUseCase,
     private val checkIn: CheckInUseCase,

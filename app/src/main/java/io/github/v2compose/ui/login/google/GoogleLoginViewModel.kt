@@ -7,7 +7,7 @@ import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class GoogleLoginViewModel constructor(
+class GoogleLoginViewModel (
     private val accountRepository: AccountRepository,
 ) : ViewModel() {
 

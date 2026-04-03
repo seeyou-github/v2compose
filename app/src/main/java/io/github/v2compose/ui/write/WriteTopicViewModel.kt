@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
-class WriteTopicViewModel constructor(
+class WriteTopicViewModel (
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val topicRepository: TopicRepository,

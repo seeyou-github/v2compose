@@ -12,7 +12,7 @@ import io.github.v2compose.usecase.CheckInUseCase
 private const val TAG = "CheckInWorker"
 private const val NotificationIdCheckIn: Int = 1001
 
-class CheckInWorker constructor(
+class CheckInWorker (
     appContext: Context,
     workerParameters: WorkerParameters,
     private val checkIn: CheckInUseCase,

@@ -5,7 +5,7 @@ import io.github.v2compose.network.GithubService
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.repository.AppRepository
 
-class DefaultAppRepository constructor(private val githubService: GithubService) :
+class DefaultAppRepository (private val githubService: GithubService) :
     AppRepository {
 
     override suspend fun getAppLatestRelease(): Release {

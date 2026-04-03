@@ -7,7 +7,7 @@ import io.github.v2compose.network.V2exApi
 
 private const val TAG = "TopicPagingSource"
 
-class TopicPagingSource constructor(
+class TopicPagingSource (
     private val v2exService: V2exApi,
     private val topicId: String,
     private val reversed: Boolean

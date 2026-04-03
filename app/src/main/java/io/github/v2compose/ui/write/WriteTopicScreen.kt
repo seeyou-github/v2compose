@@ -42,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,12 +58,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.R
+import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.shared.bean.DraftTopic
-import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
@@ -70,6 +70,7 @@ import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.SelectNode
 import io.github.v2compose.ui.common.TextEditor
 import io.github.v2compose.usecase.LoadNodesState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WriteTopicScreenRoute(
@@ -122,7 +123,16 @@ private fun WriteTopicScreen(
     var title by rememberSaveable { mutableStateOf(initialDraftTopic.title) }
     var content by rememberSaveable { mutableStateOf(initialDraftTopic.content) }
     var contentFormat by rememberSaveable { mutableStateOf(initialDraftTopic.contentFormat) }
-    var node by rememberSaveable() { mutableStateOf(initialDraftTopic.node) }
+    var node by rememberSaveable(
+        stateSaver = listSaver(
+            save = { listOf(it?.name, it?.title, it?.topics, it?.aliases) },
+            restore = {
+                TopicNode(
+                    it[0] as String, it[1] as String, it[2] as Int,
+                    it[3] as List<String>
+                )
+            }
+        )) { mutableStateOf(initialDraftTopic.node) }
 
     var showNodes by remember { mutableStateOf(false) }
     val hasNodes = loadNodesState is LoadNodesState.Success && loadNodesState.data.isNotEmpty()

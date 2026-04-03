@@ -4,7 +4,7 @@ import io.github.v2compose.V2exUri
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.repository.AccountRepository
 
-class CheckInUseCase constructor(
+class CheckInUseCase (
     private val accountRepository: AccountRepository,
 ) {
 

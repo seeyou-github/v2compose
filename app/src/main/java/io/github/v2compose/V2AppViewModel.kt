@@ -9,7 +9,7 @@ import io.github.v2compose.repository.AccountRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class V2AppViewModel constructor(
+class V2AppViewModel(
     private val appPreferences: AppPreferences,
     private val accountRepository: AccountRepository,
 ) : ViewModel() {

@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 
 private const val TAG = "DefaultTopic"
 
-class DefaultTopicRepository constructor(
+class DefaultTopicRepository (
     private val v2exService: V2exApi,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,

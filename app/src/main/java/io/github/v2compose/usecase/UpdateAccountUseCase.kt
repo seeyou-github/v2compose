@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
 import io.github.fruit.Fruit
 import retrofit2.HttpException
 
-class UpdateAccountUseCase constructor(
+class UpdateAccountUseCase (
     private val fruit: Fruit,
     private val accountPreferences: AccountPreferences,
     private val accountRepository: AccountRepository,

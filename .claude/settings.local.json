@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs sed:*)",
+      "Bash(xargs -0 sed -i '' 's/constructor\\(/\\('/g ')"
+    ]
+  }
+}

@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class UserViewModel constructor(
+class UserViewModel (
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,

@@ -388,12 +388,13 @@ private val imageFormats = listOf("png", "jpg", "jpeg", "webp", "gif")
 @Composable
 private fun HtmlElementsScope.A(element: Element, textStyle: TextStyle) {
     val href: String? = element.attr("href")
-    Box(modifier = Modifier
-        .padding(vertical = 4.dp)
-        .clickable(enabled = !href.isNullOrEmpty()) {
-            Log.d(TAG, "A, click, href = $href")
-            onLinkClick?.invoke(href!!)
-        }) {
+    Box(
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .clickable(enabled = !href.isNullOrEmpty()) {
+                Log.d(TAG, "A, click, href = $href")
+                onLinkClick?.invoke(href!!)
+            }) {
 
         val isImageUrl = Uri.parse(href)?.let { uri ->
             imageFormats.any { format -> uri.lastPathSegment?.endsWith(".$format", true) == true }
@@ -550,7 +551,7 @@ private fun rememberInlineNodes(
         //消除nodes中第一个和最后一个的多余的换行
         inlineNodes.firstOrNull()?.let { node ->
             if (prevNode != null && !prevNode.isBlock() && node.nodeName().lowercase() == "br") {
-                inlineNodes.removeFirst()
+                inlineNodes.removeAt(0)
             } else if (node is TextNode) {
                 node.text(node.text().trimStart())
             }
@@ -558,7 +559,7 @@ private fun rememberInlineNodes(
         }
         inlineNodes.lastOrNull()?.let { node ->
             if (nextNode != null && !nextNode.isBlock() && node.nodeName().lowercase() == "br") {
-                inlineNodes.removeLast()
+                inlineNodes.removeAt(inlineNodes.lastIndex)
             } else if (node is TextNode) {
                 node.text(node.text().trimEnd())
             }

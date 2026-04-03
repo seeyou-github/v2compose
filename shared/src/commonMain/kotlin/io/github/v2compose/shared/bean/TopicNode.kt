@@ -8,4 +8,7 @@ data class TopicNode(
     val title: String = "",
     val topics: Int = 0,
     val aliases: List<String> = listOf(),
-)
+) {
+    companion object {
+    }
+}

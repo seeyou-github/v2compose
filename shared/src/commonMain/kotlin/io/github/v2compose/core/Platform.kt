@@ -1,5 +1,5 @@
 package io.github.v2compose.core
 
-expect fun httpAgent():String?
+expect fun httpAgent(): String?
 
-expect fun deviceModel(): String?
+expect fun deviceModel(): String

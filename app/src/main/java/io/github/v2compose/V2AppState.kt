@@ -58,7 +58,7 @@ fun rememberV2AppState(
 }
 
 
-class V2AppState constructor(
+class V2AppState (
     context: Context,
     private val navHostController: NavHostController,
     coroutineScope: CoroutineScope,

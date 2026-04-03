@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AddSupplementViewModel constructor(
+class AddSupplementViewModel (
     savedStateHandle: SavedStateHandle,
     private val topicRepository: TopicRepository,
     private val accountPreferences: AccountPreferences,

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import io.github.fruit.Fruit
 
-class AppStateStore constructor(
+class AppStateStore (
     private val fruit: Fruit,
 ) {
 

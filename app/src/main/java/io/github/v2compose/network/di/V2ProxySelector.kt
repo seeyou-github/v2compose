@@ -15,7 +15,7 @@ import java.net.ProxySelector
 import java.net.SocketAddress
 import java.net.URI
 
-class V2ProxySelector constructor(appPreferences: AppPreferences) : ProxySelector() {
+class V2ProxySelector (appPreferences: AppPreferences) : ProxySelector() {
 
     private lateinit var proxyInfo: ProxyInfo
     private lateinit var delegation: ProxySelector

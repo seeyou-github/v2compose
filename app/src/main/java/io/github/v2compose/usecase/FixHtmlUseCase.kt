@@ -19,9 +19,9 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import kotlin.math.ceil
 
-private const val TAG = "FixedHtmlImageUseCase"
+private const val TAG = "FixHtmlImageUseCase"
 
-class FixHtmlUseCase constructor(private val context: Context) {
+class FixHtmlUseCase(private val context: Context) {
 
     companion object {
         const val LoadImagesCountEveryTime = 4

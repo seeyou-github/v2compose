@@ -20,7 +20,7 @@ private const val TAG = "AppSettingsDataSource"
 
 private val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class AppPreferences constructor(
+class AppPreferences (
     private val context: Context,
 ) {
 

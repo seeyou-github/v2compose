@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class RecentViewModel constructor(
+class RecentViewModel (
     newsRepository: NewsRepository,
     appPreferences: AppPreferences
 ) : ViewModel() {

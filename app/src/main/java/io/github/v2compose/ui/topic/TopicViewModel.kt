@@ -42,7 +42,7 @@ import kotlin.math.ceil
 
 private const val TAG = "TopicViewModel"
 
-class TopicViewModel constructor(
+class TopicViewModel (
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,

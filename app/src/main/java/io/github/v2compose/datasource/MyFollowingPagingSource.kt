@@ -6,7 +6,7 @@ import io.github.v2compose.network.NetConstants
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.MyFollowingInfo
 
-class MyFollowingPagingSource constructor(private val v2exService: V2exApi) :
+class MyFollowingPagingSource (private val v2exService: V2exApi) :
     PagingSource<Int, MyFollowingInfo.Item>() {
     override fun getRefreshKey(state: PagingState<Int, MyFollowingInfo.Item>): Int? {
         return state.anchorPosition?.let { anchorPosition ->

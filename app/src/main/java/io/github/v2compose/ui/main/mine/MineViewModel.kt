@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class MineViewModel constructor(
+class MineViewModel (
     application: Application,
     private val checkIn: CheckInUseCase,
     private val accountRepository: AccountRepository,
