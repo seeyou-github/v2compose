@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(xargs sed:*)",
-      "Bash(xargs -0 sed -i '' 's/constructor\\(/\\('/g ')"
+      "Bash(xargs -0 sed -i '' 's/constructor\\(/\\('/g ')",
+      "Bash(grep -E \"\\\\.kt$\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

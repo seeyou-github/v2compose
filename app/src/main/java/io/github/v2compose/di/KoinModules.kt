@@ -13,6 +13,10 @@ import io.github.v2compose.V2AppViewModel
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
+import io.github.v2compose.datasource.createAccountDataStore
+import io.github.v2compose.datasource.createAppDataStore
+import io.github.v2compose.datasource.androidContext
+import org.koin.android.ext.koin.androidContext as koinAndroidContext
 import io.github.v2compose.ui.gallery.GalleryViewModel
 import io.github.v2compose.ui.login.LoginViewModel
 import io.github.v2compose.ui.login.google.GoogleLoginViewModel
@@ -76,6 +80,17 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 val appModule = module {
+    // Initialize androidContext for DataStore
+    single { koinAndroidContext() }
+    single {
+        androidContext = get()
+        androidContext
+    }
+
+    // DataStore instances
+    single(named("Account")) { createAccountDataStore() }
+    single(named("App")) { createAppDataStore() }
+
     // Core/App
     single<com.squareup.moshi.Moshi> { Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build() }
     single<DiskCache> {
@@ -141,9 +156,9 @@ val dataModule = module {
     singleOf(::DefaultUserRepository) { bind<UserRepository>() }
     singleOf(::DefaultAccountRepository) { bind<AccountRepository>() }
 
-    // DataSources
-    singleOf(::AppPreferences)
-    singleOf(::AccountPreferences)
+    // DataSources - DataStore instances are created in appModule
+    single { AppPreferences(get()) }
+    single { AccountPreferences(get(named("Account"))) }
     singleOf(::AppStateStore)
 }
 

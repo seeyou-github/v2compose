@@ -98,7 +98,6 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.browser)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.startup.runtime)
 

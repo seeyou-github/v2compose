@@ -1,27 +1,21 @@
 package io.github.v2compose.datasource
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
-import io.github.v2compose.core.extension.toJson
-import io.github.v2compose.core.extension.toStringList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-private const val TAG = "AppSettingsDataSource"
+private const val TAG = "AppPreferences"
 
-private val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-class AppPreferences (
-    private val context: Context,
+class AppPreferences(
+    private val dataStore: DataStore<Preferences>
 ) {
 
     companion object {
@@ -38,7 +32,7 @@ class AppPreferences (
         private val KeyProxyInfo = stringPreferencesKey("proxy_info")
     }
 
-    val appSettings: Flow<AppSettings> = context.appDataStore.data.map {
+    val appSettings: Flow<AppSettings> = dataStore.data.map {
         AppSettings(
             topicRepliesReversed = it[KeyTopicRepliesReversed] ?: true,
             openInInternalBrowser = it[KeyOpenInInternalBrowser] ?: true,
@@ -47,75 +41,73 @@ class AppPreferences (
             topicTitleOverview = it[KeyTopicTitleOverview] ?: true,
             ignoredReleaseName = it[KeyIgnoredReleaseName],
             autoCheckIn = it[KeyAutoCheckIn] ?: false,
-            searchKeywords = it[KeySearchKeywords]?.toStringList() ?: listOf(),
+            searchKeywords = it[KeySearchKeywords]?.split(",") ?: listOf(),
             highlightOpReply = it[KeyHighlightOpReply] ?: false,
             replyWithFloor = it[KeyReplyWithFloor] ?: true,
         )
     }.distinctUntilChanged()
 
-    val proxyInfo: Flow<ProxyInfo> = context.appDataStore.data.map {
+    val proxyInfo: Flow<ProxyInfo> = dataStore.data.map {
         it[KeyProxyInfo]?.let { value -> ProxyInfo.fromJson(value) } ?: ProxyInfo.Default
     }
 
     suspend fun toggleTopicRepliesOrder() {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyTopicRepliesReversed] = !(it[KeyTopicRepliesReversed] ?: true)
         }
     }
 
     suspend fun openInInternalBrowser(value: Boolean) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyOpenInInternalBrowser] = value
         }
     }
 
     suspend fun darkMode(value: DarkMode) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyDarkMode] = value.name
         }
     }
 
     suspend fun topicTitleOverview(value: Boolean) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyTopicTitleOverview] = value
         }
     }
 
     suspend fun ignoredReleaseName(value: String) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyIgnoredReleaseName] = value
         }
     }
 
     suspend fun autoCheckIn(value: Boolean) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyAutoCheckIn] = value
         }
     }
 
     suspend fun replyWithFloor(value: Boolean) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyReplyWithFloor] = value
         }
     }
 
     suspend fun searchKeywords(value: List<String>) {
-        context.appDataStore.edit {
-            it[KeySearchKeywords] = value.toJson()
+        dataStore.edit {
+            it[KeySearchKeywords] = value.joinToString(",")
         }
     }
 
     suspend fun highlightOpReply(value: Boolean) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyHighlightOpReply] = value
         }
     }
 
     suspend fun proxyInfo(proxy: ProxyInfo) {
-        context.appDataStore.edit {
+        dataStore.edit {
             it[KeyProxyInfo] = proxy.toJson()
         }
     }
-
 }
-
