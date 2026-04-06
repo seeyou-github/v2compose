@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.children
 import androidx.core.view.setPadding
-import coil.imageLoader
+import coil3.imageLoader
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
 import io.noties.markwon.Markwon
@@ -236,7 +236,8 @@ fun rememberMarkwon(): Markwon {
         Markwon.builder(context).usePlugin(StrikethroughPlugin.create())
             .usePlugin(TablePlugin.create(context))
             .usePlugin(HtmlPlugin.create())
-            .usePlugin(CoilImagesPlugin.create(context, context.imageLoader))
+            // TODO: Replace Markwon with a KMP-compatible Markdown library to support images with Coil 3
+            // .usePlugin(CoilImagesPlugin.create(context, context.imageLoader))
             .usePlugin(MarkwonInlineParserPlugin.create())
             .build()
     }

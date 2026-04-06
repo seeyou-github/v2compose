@@ -61,10 +61,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -653,8 +653,7 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
 
     SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(img.src.fullUrl(baseUrl))
-            .setParameter("retryTimes", retryTimes)
+            .data(img.src.fullUrl(baseUrl) + if (retryTimes > 0) "?retry=$retryTimes" else "")
             .build(),
         contentDescription = img.alt,
         modifier = modifier,
@@ -662,7 +661,7 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
             val imgModifier =
                 Modifier.clickable(enabled = onImageClick != null) { onImageClick?.invoke(img) }
             Image(
-                painter = rememberAsyncImagePainter(model = it.result.drawable),
+                painter = it.painter,
                 contentDescription = img.alt,
                 modifier = imgModifier,
             )
@@ -679,12 +678,11 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
             )
         },
         onSuccess = {
-            with(it.result.drawable) {
-                Log.d(
-                    TAG,
-                    "load image success, url = ${img.src}, width = ${intrinsicWidth}, height = $intrinsicHeight"
-                )
-            }
+            val size = it.painter.intrinsicSize
+            Log.d(
+                TAG,
+                "load image success, url = ${img.src}, width = ${size.width}, height = ${size.height}"
+            )
         },
         onError = {
             Log.d(TAG, "load image error, url = ${img.src}, error = ${it.result.throwable}")

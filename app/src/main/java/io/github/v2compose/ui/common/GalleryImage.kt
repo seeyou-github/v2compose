@@ -38,9 +38,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.transition.CrossfadeTransition
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import io.github.v2compose.LocalImageSaver
 import io.github.v2compose.R
 import kotlinx.coroutines.delay
@@ -138,7 +138,7 @@ fun GalleryImage(
 
         AsyncImage(
             model = ImageRequest.Builder(context).data(imageUrl)
-                .transitionFactory(CrossfadeTransition.Factory()).build(),
+                .crossfade(true).build(),
             contentDescription = "current image",
             contentScale = ContentScale.Fit,
             alpha = currentAlpha,
@@ -173,14 +173,3 @@ fun GalleryImage(
         }
     }
 }
-
-//@Composable
-//fun LightSystemBarIcons() {
-//    val systemUiController = rememberSystemUiController()
-//    DisposableEffect(systemUiController) {
-//        systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = false)
-//        onDispose {
-//            systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
-//        }
-//    }
-//}

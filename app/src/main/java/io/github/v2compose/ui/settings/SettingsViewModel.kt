@@ -3,8 +3,8 @@ package io.github.v2compose.ui.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.annotation.ExperimentalCoilApi
-import coil.disk.DiskCache
+import coil3.annotation.ExperimentalCoilApi
+import coil3.disk.DiskCache
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo

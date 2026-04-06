@@ -5,6 +5,7 @@
 ## 交互协议
 - **语言**: 除非特别要求，否则使用中文回复。
 - **代码提交**: 每当完成重要的代码修改或功能实现后，请主动执行 `git commit` 保存进度。
+- **任务验证**: 每次执行任务完毕，都要进行验证，不仅仅是验证受影响最大的 module，而是整个项目是否可以正确构建。
 
 ## 项目概览
 V2compose 是一个现代化的 V2EX Android 客户端，完全采用 **Jetpack Compose** 和 **Material You** (Material 3) 设计原则构建。项目正在迁移至 **Compose Multiplatform**，以支持 iOS 平台。

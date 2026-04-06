@@ -2,11 +2,12 @@ package io.github.v2compose.usecase
 
 import android.content.Context
 import android.util.Log
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.request.ImageResult
-import coil.size.Scale
-import coil.size.Size
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.request.ImageResult
+import coil3.request.SuccessResult
+import coil3.size.Scale
+import coil3.size.Size
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
 import io.github.v2compose.util.CfEmailUtils
@@ -80,8 +81,8 @@ class FixHtmlUseCase(private val context: Context) {
 //        val size = if (srcUri?.lastPathSegment?.endsWith("svg") == true) {
 //            Size.ORIGINAL
 //        } else {
-//            Size(coil.size.Dimension.Undefined, coil.size.Dimension.Undefined)
-////            Size(screenWidth, coil.size.Dimension.Undefined)
+//            Size(coil3.size.Dimension.Undefined, coil3.size.Dimension.Undefined)
+////            Size(screenWidth, coil3.size.Dimension.Undefined)
 //        }
 
         return ImageRequest.Builder(context)
@@ -109,16 +110,16 @@ class FixHtmlUseCase(private val context: Context) {
     }
 
     private fun fillElement(element: Element, result: ImageResult?) {
+        val image = if (result is SuccessResult) result.image else null
         Log.d(
             TAG, "fillElement, src = ${element.attr("src")}, " +
-                    "result width = ${result?.drawable?.intrinsicWidth}, " +
-                    "resultHeight = ${result?.drawable?.intrinsicHeight}"
+                    "result width = ${image?.width}, " +
+                    "resultHeight = ${image?.height}"
         )
 
-        if (result?.drawable != null) {
-            val drawable = result.drawable!!
-            element.attr("width", drawable.intrinsicWidth.toString())
-            element.attr("height", drawable.intrinsicHeight.toString())
+        if (image != null) {
+            element.attr("width", image.width.toString())
+            element.attr("height", image.height.toString())
             element.attr("loadState", "success")
         } else {
             element.attr("loadState", "error")

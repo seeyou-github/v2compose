@@ -147,6 +147,7 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.coil.svg)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // ui composables
     implementation(libs.ssjetpack.progress.button)

@@ -52,7 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
 import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull

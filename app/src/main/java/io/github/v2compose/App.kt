@@ -2,8 +2,7 @@ package io.github.v2compose
 
 import android.app.Application
 import androidx.work.Configuration
-import coil.ImageLoader
-import coil.ImageLoaderFactory
+import coil3.ImageLoader
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.FormatStrategy
 import com.orhanobut.logger.Logger
@@ -19,7 +18,7 @@ import org.koin.core.context.startKoin
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
-class App : Application(), ImageLoaderFactory, Configuration.Provider, KoinComponent {
+class App : Application(), Configuration.Provider, KoinComponent {
 
     val imageLoader: ImageLoader by inject()
     val analytics: IAnalytics by inject()
@@ -67,8 +66,6 @@ class App : Application(), ImageLoaderFactory, Configuration.Provider, KoinCompo
             }
         })
     }
-
-    override fun newImageLoader(): ImageLoader = imageLoader
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().build() // Koin's workManagerFactory injects workers automatically

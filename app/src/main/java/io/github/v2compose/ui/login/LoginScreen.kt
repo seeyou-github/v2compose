@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonType
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSJetPackComposeProgressButton

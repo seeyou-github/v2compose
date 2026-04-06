@@ -38,7 +38,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.network.bean.UserPageInfo

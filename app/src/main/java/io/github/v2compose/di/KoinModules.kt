@@ -1,11 +1,13 @@
 package io.github.v2compose.di
 
 import android.os.Build
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.decode.SvgDecoder
-import coil.disk.DiskCache
+import coil3.ImageLoader
+import coil3.gif.AnimatedImageDecoder
+import coil3.gif.GifDecoder
+import coil3.svg.SvgDecoder
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.v2compose.V2AppState
@@ -91,16 +93,17 @@ val appModule = module {
     }
     single<ImageLoader> {
         ImageLoader.Builder(get<android.content.Context>())
-            .okHttpClient(get<OkHttpClient>(named("ImageOkHttpClient")))
-            .diskCache(get<DiskCache>())
             .components {
+                add(OkHttpNetworkFetcherFactory(get<OkHttpClient>(named("ImageOkHttpClient"))))
                 if (Build.VERSION.SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
+                    add(AnimatedImageDecoder.Factory())
                 } else {
                     add(GifDecoder.Factory())
                 }
                 add(SvgDecoder.Factory())
-            }.build()
+            }
+            .diskCache(get<DiskCache>())
+            .build()
     }
     single<ExecutorService> { Executors.newFixedThreadPool(4) }
 
