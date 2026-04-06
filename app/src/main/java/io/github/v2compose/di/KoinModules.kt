@@ -70,6 +70,8 @@ import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
+import io.github.v2compose.core.CheckInWorker
+import org.koin.androidx.workmanager.dsl.workerOf
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
@@ -216,6 +218,10 @@ val pagingModule = module {
     factoryOf(::MyFollowingPagingSource)
 }
 
+val workerModule = module {
+    workerOf(::CheckInWorker)
+}
+
 val allModules = listOf(
-    appModule, networkModule, dataModule, useCaseModule, viewModelModule, pagingModule
+    appModule, networkModule, dataModule, useCaseModule, viewModelModule, pagingModule, workerModule
 )

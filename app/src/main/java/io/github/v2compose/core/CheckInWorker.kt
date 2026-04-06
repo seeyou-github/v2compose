@@ -31,6 +31,7 @@ class CheckInWorker (
     private fun createNotification(): Notification {
         return Notification.Builder(applicationContext, NotificationCenter.ChannelAutoCheckIn)
             .setContentTitle(applicationContext.getString(R.string.auto_checking_in))
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .build()
     }
 
