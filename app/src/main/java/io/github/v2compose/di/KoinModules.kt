@@ -10,13 +10,35 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.v2compose.V2AppState
 import io.github.v2compose.V2AppViewModel
+import io.github.v2compose.core.StringDecoder
+import io.github.v2compose.core.UriDecoder
+import io.github.v2compose.core.analytics.IAnalytics
+import io.github.v2compose.core.analytics.VendorAnalytics
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
+import io.github.v2compose.datasource.MyFollowingPagingSource
+import io.github.v2compose.datasource.MyTopicsPagingSource
+import io.github.v2compose.datasource.androidContext
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
-import io.github.v2compose.datasource.androidContext
-import org.koin.android.ext.koin.androidContext as koinAndroidContext
+import io.github.v2compose.network.GithubService
+import io.github.v2compose.network.OkHttpFactory
+import io.github.v2compose.network.V2exApi
+import io.github.v2compose.network.WebkitCookieManager
+import io.github.v2compose.network.di.V2ProxySelector
+import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.repository.AppRepository
+import io.github.v2compose.repository.NewsRepository
+import io.github.v2compose.repository.NodeRepository
+import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.repository.UserRepository
+import io.github.v2compose.repository.def.DefaultAccountRepository
+import io.github.v2compose.repository.def.DefaultAppRepository
+import io.github.v2compose.repository.def.DefaultNewsRepository
+import io.github.v2compose.repository.def.DefaultNodeRepository
+import io.github.v2compose.repository.def.DefaultTopicRepository
+import io.github.v2compose.repository.def.DefaultUserRepository
 import io.github.v2compose.ui.gallery.GalleryViewModel
 import io.github.v2compose.ui.login.LoginViewModel
 import io.github.v2compose.ui.login.google.GoogleLoginViewModel
@@ -44,50 +66,28 @@ import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
-import org.koin.core.module.dsl.factoryOf
-import org.koin.androidx.viewmodel.dsl.viewModelOf
-import io.github.v2compose.core.StringDecoder
-import io.github.v2compose.core.UriDecoder
-import io.github.v2compose.core.analytics.IAnalytics
-import io.github.v2compose.core.analytics.VendorAnalytics
-import io.github.v2compose.datasource.MyTopicsPagingSource
-import io.github.v2compose.datasource.MyFollowingPagingSource
-import io.github.v2compose.network.GithubService
-import io.github.v2compose.network.OkHttpFactory
-import io.github.v2compose.network.V2exApi
-import io.github.v2compose.network.WebkitCookieManager
-import io.github.v2compose.network.di.V2ProxySelector
-import io.github.v2compose.repository.AccountRepository
-import io.github.v2compose.repository.AppRepository
-import io.github.v2compose.repository.NewsRepository
-import io.github.v2compose.repository.NodeRepository
-import io.github.v2compose.repository.TopicRepository
-import io.github.v2compose.repository.UserRepository
-import io.github.v2compose.repository.def.DefaultAccountRepository
-import io.github.v2compose.repository.def.DefaultAppRepository
-import io.github.v2compose.repository.def.DefaultNewsRepository
-import io.github.v2compose.repository.def.DefaultNodeRepository
-import io.github.v2compose.repository.def.DefaultTopicRepository
-import io.github.v2compose.repository.def.DefaultUserRepository
 import okhttp3.OkHttpClient
-import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import org.koin.android.ext.koin.androidContext as koinAndroidContext
 
 val appModule = module {
     // Initialize androidContext for DataStore
     single { koinAndroidContext() }
-    single {
+    single(createdAtStart = true) {
         androidContext = get()
         androidContext
     }
 
     // DataStore instances
+    // 使用无参方法，统一 Android 和 iOS。Android 内部会自动使用上方的 androidContext
     single(named("Account")) { createAccountDataStore() }
     single(named("App")) { createAppDataStore() }
 
@@ -127,7 +127,11 @@ val networkModule = module {
     singleOf(::V2ProxySelector)
 
     single<OkHttpClient>(named("CommonOkHttpClient")) {
-        OkHttpFactory.createHttpClient(get<okhttp3.CookieJar>(), get<okhttp3.Cache>(), get<V2ProxySelector>())
+        OkHttpFactory.createHttpClient(
+            get<okhttp3.CookieJar>(),
+            get<okhttp3.Cache>(),
+            get<V2ProxySelector>()
+        )
     }
     single<OkHttpClient>(named("ImageOkHttpClient")) {
         OkHttpFactory.createImageHttpClient(get<okhttp3.CookieJar>(), get<V2ProxySelector>())
@@ -144,7 +148,10 @@ val networkModule = module {
     }
 
     single<GithubService> {
-        GithubService.createGithubApi(get<OkHttpClient>(named("CommonOkHttpClient")), get<com.google.gson.Gson>())
+        GithubService.createGithubApi(
+            get<OkHttpClient>(named("CommonOkHttpClient")),
+            get<com.google.gson.Gson>()
+        )
     }
 }
 
@@ -157,7 +164,7 @@ val dataModule = module {
     singleOf(::DefaultAccountRepository) { bind<AccountRepository>() }
 
     // DataSources - DataStore instances are created in appModule
-    single { AppPreferences(get()) }
+    single { AppPreferences(get(named("App"))) }
     single { AccountPreferences(get(named("Account"))) }
     singleOf(::AppStateStore)
 }
