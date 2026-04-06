@@ -90,7 +90,7 @@ fun V2AppNavGraph(
         )
         searchScreen(
             goBack = appState::back,
-            onTopicClick = { item -> navController.navigateToTopic(item.source?.id ?: "") },
+            onTopicClick = { item -> navController.navigateToTopic(item.source.id.toString()) },
         )
         userScreen(
             onBackClick = appState::back,

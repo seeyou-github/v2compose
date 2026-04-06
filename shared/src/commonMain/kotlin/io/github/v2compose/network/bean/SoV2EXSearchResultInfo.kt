@@ -34,7 +34,7 @@ class SoV2EXSearchResultInfo : BaseInfo() {
         @Serializable
         class Source {
             @SerialName("id")
-            val id: String = ""
+            val id: Int = 0
 
             @SerialName("title")
             val title: String = ""
@@ -43,7 +43,7 @@ class SoV2EXSearchResultInfo : BaseInfo() {
             val content: String = ""
 
             @SerialName("node")
-            val nodeName: String = ""
+            val node: Int = 0
 
             @SerialName("replies")
             val replies: Int = 0
@@ -55,7 +55,7 @@ class SoV2EXSearchResultInfo : BaseInfo() {
             val creator: String = ""
 
             override fun toString(): String {
-                return "Source(id='$id', title='$title', content='$content', nodeName='$nodeName', replies=$replies, time='$time', creator='$creator')"
+                return "Source(id='$id', title='$title', content='$content', node='$node', replies=$replies, time='$time', creator='$creator')"
             }
         }
 
