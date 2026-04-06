@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-## Gson
+## Serialization Beans
 -keep class io.github.v2compose.bean.** { *; }
 -keep class io.github.v2compose.network.bean.** { *; }
 
