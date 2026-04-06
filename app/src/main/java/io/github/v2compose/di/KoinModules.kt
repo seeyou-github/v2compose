@@ -79,10 +79,9 @@ import java.util.concurrent.Executors
 import org.koin.android.ext.koin.androidContext as koinAndroidContext
 
 val appModule = module {
-    // 注册 PlatformContext（Android 端包装 android.content.Context）
-    single<PlatformContext> { PlatformContext(koinAndroidContext()) }
-
     // DataStore instances — 通过 PlatformContext 统一两端接口
+    // PlatformContext 在 Android 端是 android.content.Context 的 typealias
+    // startKoin { androidContext(...) } 已经将 Context 注册到 Koin，无需再手动注册
     single(named("Account")) { createAccountDataStore(get()) }
     single(named("App")) { createAppDataStore(get()) }
 

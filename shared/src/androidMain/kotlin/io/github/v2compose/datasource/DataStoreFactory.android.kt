@@ -8,12 +8,12 @@ import java.io.File
 
 actual fun createAccountDataStore(context: PlatformContext): DataStore<Preferences> {
     return PreferenceDataStoreFactory.create {
-        File(context.context.filesDir, "datastore/account.preferences_pb")
+        File(context.filesDir, "datastore/account.preferences_pb")
     }
 }
 
 actual fun createAppDataStore(context: PlatformContext): DataStore<Preferences> {
     return PreferenceDataStoreFactory.create {
-        File(context.context.filesDir, "datastore/settings.preferences_pb")
+        File(context.filesDir, "datastore/settings.preferences_pb")
     }
 }
