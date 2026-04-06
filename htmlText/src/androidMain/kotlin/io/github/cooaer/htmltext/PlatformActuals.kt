@@ -1,5 +1,6 @@
 package io.github.cooaer.htmltext
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -16,14 +17,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer as NativeYouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 private const val TAG = "VideoPlayer"
 
 @Composable
-fun YouTubePlayer(videoId: String) {
+actual fun YouTubePlayer(videoId: String) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -35,16 +36,16 @@ fun YouTubePlayer(videoId: String) {
         YouTubePlayerView(context).apply {
             enableAutomaticInitialization = false
             initialize(object : AbstractYouTubePlayerListener() {
-                override fun onReady(youTubePlayer: YouTubePlayer) {
+                override fun onReady(youTubePlayer: NativeYouTubePlayer) {
                     youTubePlayer.cueVideo(videoId, startSeconds)
                 }
 
-                override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
+                override fun onCurrentSecond(youTubePlayer: NativeYouTubePlayer, second: Float) {
                     startSeconds = second
                 }
 
                 override fun onStateChange(
-                    youTubePlayer: YouTubePlayer,
+                    youTubePlayer: NativeYouTubePlayer,
                     state: PlayerConstants.PlayerState
                 ) {
                     Log.d(TAG, "YouTubePlayer, videoId = $videoId, state = $state")
@@ -68,8 +69,20 @@ fun YouTubePlayer(videoId: String) {
     )
 }
 
-fun String.parseYouTubeVideoId(): String? {
+actual fun String.parseYouTubeVideoId(): String? {
     return toUri().pathSegments.let {
         if (it.getOrNull(0)?.lowercase() == "embed") it.getOrNull(1) else null
     }
+}
+
+actual fun logDebug(tag: String, message: String) {
+    Log.d(tag, message)
+}
+
+private val imageFormats = listOf("png", "jpg", "jpeg", "webp", "gif")
+
+actual fun String.isImageUrl(): Boolean {
+    return Uri.parse(this)?.let { uri ->
+        imageFormats.any { format -> uri.lastPathSegment?.endsWith(".$format", true) == true }
+    } ?: false
 }

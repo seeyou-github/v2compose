@@ -1,8 +1,5 @@
 package io.github.cooaer.htmltext
 
-import android.net.Uri
-import android.util.Log
-import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -62,14 +58,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.nodes.Node
-import org.jsoup.nodes.TextNode
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.nodes.Element
+import com.fleeksoft.ksoup.nodes.Node
+import com.fleeksoft.ksoup.nodes.TextNode
 
 private const val TAG = "HtmlText"
 
@@ -87,7 +84,7 @@ fun HtmlText(
     onClick: (() -> Unit)? = null,
     loadImage: ((String) -> Unit)? = null,
 ) {
-    val document = remember(html) { Jsoup.parse(html) }
+    val document = remember(html) { Ksoup.parse(html) }
     HtmlText(
         document,
         modifier,
@@ -156,8 +153,8 @@ private fun HtmlElementsScope.BlockToInlineNodes(
     while (iterator.hasNext()) {
         val node = iterator.next()
         if (node is Element) {
-            if (node.isBlock || node.onlyContainsImgs() || node.isIframe()) {
-//            if (node.isBlock || node.isIframe()) {
+            if (node.isBlock() || node.onlyContainsImgs() || node.isIframe()) {
+//            if (node.isBlock() || node.isIframe()) {
                 if (tempNodes.isNotBlank()) {
                     InlineNodes(tempNodes.toList(), prevNode, node, textStyle)
                 }
@@ -183,11 +180,11 @@ private fun HtmlElementsScope.BlockToInlineNodes(
 }
 
 private fun Collection<Node>.isNotBlank(): Boolean {
-    return this.any { it !is TextNode || !it.isBlank }
+    return this.any { it !is TextNode || !it.isBlank() }
 }
 
 private fun Collection<Node>.isLastBlock(): Boolean {
-    return this.isNotEmpty() && this.last().let { last -> last is Element && last.isBlock }
+    return this.isNotEmpty() && this.last().let { last -> last is Element && last.isBlock() }
 }
 
 //=========== Block Elements Start ============
@@ -383,8 +380,6 @@ private fun HtmlElementsScope.P(element: Element, textStyle: TextStyle) {
     BlockToInlineNodes(element, textStyle)
 }
 
-private val imageFormats = listOf("png", "jpg", "jpeg", "webp", "gif")
-
 @Composable
 private fun HtmlElementsScope.A(element: Element, textStyle: TextStyle) {
     val href: String? = element.attr("href")
@@ -392,13 +387,11 @@ private fun HtmlElementsScope.A(element: Element, textStyle: TextStyle) {
         modifier = Modifier
             .padding(vertical = 4.dp)
             .clickable(enabled = !href.isNullOrEmpty()) {
-                Log.d(TAG, "A, click, href = $href")
+                logDebug(TAG, "A, click, href = $href")
                 onLinkClick?.invoke(href!!)
             }) {
 
-        val isImageUrl = Uri.parse(href)?.let { uri ->
-            imageFormats.any { format -> uri.lastPathSegment?.endsWith(".$format", true) == true }
-        } ?: false
+        val isImageUrl = href?.isImageUrl() ?: false
 
         BlockToInlineNodes(
             element = element,
@@ -414,7 +407,7 @@ private fun HtmlElementsScope.Img(
     textStyle: TextStyle,
     clickable: Boolean,
 ) {
-    Log.d(TAG, "Img = $element")
+    logDebug(TAG, "Img = $element")
 
     BoxWithConstraints {
         val img by remember(element) { mutableStateOf(Img(element)) }
@@ -447,7 +440,7 @@ private fun rememberImageSize(img: Img, maxWidth: Dp): Pair<Dp, Dp> {
 
 @Composable
 private fun HtmlElementsScope.Iframe(element: Element) {
-    Log.d(TAG, "iframe, attrs = ${element.attributes()}")
+    logDebug(TAG, "iframe, attrs = ${element.attributes()}")
     if (element.hasClass("embedded_video")) {
         when (element.id()) {
             "ytplayer" -> {
@@ -522,14 +515,14 @@ private fun HtmlElementsScope.InlineNodes(
             },
             style = textStyle,
             onClick = { offset ->
-                Log.d(TAG, "InlineNodes, onClick, text = $annotatedString, offset = $offset")
+                logDebug(TAG, "InlineNodes, onClick, text = $annotatedString, offset = $offset")
                 val firstAnnotation = annotatedString.getStringAnnotations(
                     tag = "URL",
                     start = offset,
                     end = offset
                 ).firstOrNull()
                 if (firstAnnotation != null && onLinkClick != null) {
-                    Log.d(TAG, "InlineNodes, openUri, uri = ${firstAnnotation.item}")
+                    logDebug(TAG, "InlineNodes, openUri, uri = ${firstAnnotation.item}")
                     onLinkClick.invoke(firstAnnotation.item)
                 } else {
                     onClick?.invoke()
@@ -652,7 +645,7 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
     var retryTimes by remember { mutableIntStateOf(0) }
 
     SubcomposeAsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
+        model = ImageRequest.Builder(LocalPlatformContext.current)
             .data(img.src.fullUrl(baseUrl) + if (retryTimes > 0) "?retry=$retryTimes" else "")
             .build(),
         contentDescription = img.alt,
@@ -679,13 +672,13 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
         },
         onSuccess = {
             val size = it.painter.intrinsicSize
-            Log.d(
+            logDebug(
                 TAG,
                 "load image success, url = ${img.src}, width = ${size.width}, height = ${size.height}"
             )
         },
         onError = {
-            Log.d(TAG, "load image error, url = ${img.src}, error = ${it.result.throwable}")
+            logDebug(TAG, "load image error, url = ${img.src}, error = ${it.result.throwable}")
         }
     )
 }
@@ -807,7 +800,7 @@ private data class HtmlElementsScope(
 
 private fun Modifier.innermostBlockPadding() = this.padding(PaddingValues(vertical = 5.dp))
 
-private fun Node.isBlock(): Boolean = this is Element && this.isBlock
+private fun Node.isBlock(): Boolean = this is Element && this.isBlock()
 
 private fun Node.firstChildNode(): Node? = if (childNodeSize() == 0) null else childNode(0)
 
@@ -840,9 +833,6 @@ data class Img(
         element.attr("height").toIntOrNull(),
         element.attr("loadState"),
     )
-
-    fun size() = if (width == null || height == null) null else Size(width, height)
-
 }
 
 fun String.fullUrl(baseUrl: String? = null): String {
