@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
-import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
+import okio.Path.Companion.toPath
 
 /**
  * 创建 Account DataStore 的 iOS 实际实现
@@ -15,7 +15,7 @@ import platform.Foundation.NSUserDomainMask
  */
 @OptIn(ExperimentalForeignApi::class)
 actual fun createAccountDataStore(): DataStore<Preferences> {
-    return PreferenceDataStoreFactory.create {
+    return PreferenceDataStoreFactory.createWithPath {
         val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
             directory = NSDocumentDirectory,
             inDomain = NSUserDomainMask,
@@ -26,8 +26,7 @@ actual fun createAccountDataStore(): DataStore<Preferences> {
         requireNotNull(documentDirectory) { "Failed to get iOS document directory" }
 
         val filePath = documentDirectory.path + "/datastore/account.preferences_pb"
-        val fileURL = NSURL.fileURLWithPath(filePath)
-        fileURL
+        filePath.toPath()
     }
 }
 
@@ -37,7 +36,7 @@ actual fun createAccountDataStore(): DataStore<Preferences> {
  */
 @OptIn(ExperimentalForeignApi::class)
 actual fun createAppDataStore(): DataStore<Preferences> {
-    return PreferenceDataStoreFactory.create {
+    return PreferenceDataStoreFactory.createWithPath {
         val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
             directory = NSDocumentDirectory,
             inDomain = NSUserDomainMask,
@@ -48,7 +47,6 @@ actual fun createAppDataStore(): DataStore<Preferences> {
         requireNotNull(documentDirectory) { "Failed to get iOS document directory" }
 
         val filePath = documentDirectory.path + "/datastore/settings.preferences_pb"
-        val fileURL = NSURL.fileURLWithPath(filePath)
-        fileURL
+        filePath.toPath()
     }
 }
