@@ -129,18 +129,17 @@ dependencies {
     implementation(libs.jsoup) // 保持对 Jsoup 的依赖以兼容旧代码
     implementation("com.fleeksoft.ksoup:ksoup:0.2.6") 
     ksp(libs.fruit.ksp)
-    implementation(libs.fruit.converter.retrofit)
 
     // network
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
-    implementation(libs.google.gson)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
     implementation(libs.orhanobut.logger)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
     // coil
     implementation(libs.coil)

@@ -9,6 +9,7 @@ import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.extension.isRedirect
+import io.github.v2compose.core.extension.redirectLocation
 import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.repository.TopicRepository
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import retrofit2.HttpException
 
 class WriteTopicViewModel (
     savedStateHandle: SavedStateHandle,
@@ -84,13 +84,14 @@ class WriteTopicViewModel (
                 _createTopicState.emit(CreateTopicState.Failure(result))
             } catch (e: Exception) {
                 e.printStackTrace()
-                while (true) {
-                    if (e !is HttpException || !e.code().isRedirect) break
+                if (e.isRedirect) {
                     saveDraftTopic("", "", ContentFormat.Original, null)
-                    val location = e.response()?.raw()?.headers?.get("location") ?: break
-                    val topicId = Uri.parse(location).pathSegments.getOrNull(1) ?: break
-                    _createTopicState.emit(CreateTopicState.Success(topicId))
-                    return@launch
+                    val location = e.redirectLocation ?: ""
+                    val topicId = Uri.parse(location).pathSegments.getOrNull(1)
+                    if (topicId != null) {
+                        _createTopicState.emit(CreateTopicState.Success(topicId))
+                        return@launch
+                    }
                 }
                 _createTopicState.emit(CreateTopicState.Error(e))
             }

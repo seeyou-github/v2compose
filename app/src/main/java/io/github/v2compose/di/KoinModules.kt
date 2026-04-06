@@ -25,10 +25,11 @@ import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
 import io.github.v2compose.network.GithubApi
-import io.github.v2compose.network.GithubService
+import io.github.v2compose.network.KtorGithubApi
 import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.WebkitCookieManager
+import io.github.v2compose.network.createHttpClientEngine
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.repository.AppRepository
@@ -69,7 +70,10 @@ import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
-import okhttp3.CookieJar
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
@@ -114,7 +118,6 @@ val appModule = module {
     single<IAnalytics> { get<VendorAnalytics>() }
 }
 val networkModule = module {
-    single<com.google.gson.Gson> { OkHttpFactory.createGson() }
     single<io.github.fruit.Fruit> { OkHttpFactory.createFruit() }
 
     single { WebkitCookieManager() }
@@ -144,13 +147,17 @@ val networkModule = module {
         V2exApi(client.httpClient)
     }
 
-    single<GithubService> {
-        GithubService.createGithubApi(
-            get<OkHttpClient>(named("CommonOkHttpClient")),
-            get<com.google.gson.Gson>()
-        )
+    single<GithubApi> {
+        val client = HttpClient(createHttpClientEngine()) {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    coerceInputValues = true
+                })
+            }
+        }
+        KtorGithubApi(client)
     }
-    single<GithubApi> { get<GithubService>() }
 }
 
 val dataModule = module {

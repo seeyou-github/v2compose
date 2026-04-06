@@ -1,9 +1,6 @@
 package io.github.v2compose.network
 
 import android.content.Context
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.Constants
 import io.github.v2compose.shared.bean.RedirectEvent
@@ -24,11 +21,6 @@ import java.util.concurrent.TimeUnit
 object OkHttpFactory {
 
     private const val TIMEOUT_SECONDS: Long = 10
-
-    fun createGson(): Gson {
-        return GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create()
-    }
 
     fun createFruit(): Fruit {
         return Fruit().apply {

@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import retrofit2.HttpException
 import kotlin.math.ceil
 
 private const val TAG = "TopicViewModel"
@@ -223,7 +222,7 @@ class TopicViewModel (
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                if (e is HttpException && e.code().isRedirect) {
+                if (e.isRedirect) {
                     onSuccess?.invoke()
                     updateSnackbarMessage(context.getString(R.string.action_success, actionName))
                 } else {
