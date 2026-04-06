@@ -43,7 +43,10 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -127,7 +130,7 @@ dependencies {
     // v2er-ghui
     implementation(libs.fruit)
     implementation(libs.jsoup) // 保持对 Jsoup 的依赖以兼容旧代码
-    implementation("com.fleeksoft.ksoup:ksoup:0.2.6") 
+    implementation(libs.ksoup)
     ksp(libs.fruit.ksp)
 
     // network
