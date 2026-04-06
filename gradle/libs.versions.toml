@@ -35,7 +35,7 @@ annotation = "1.9.1"
 logger = "2.2.0"
 progressButton = "1.1.0"
 toolbarCompose = "2.3.5"
-composeWebview = "0.33.6"
+composeWebviewMultiplatform = "1.9.40"
 jsoup = "1.22.1"
 youtubePlayer = "13.0.0"
 ktor = "3.1.1"
@@ -99,7 +99,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 orhanobut-logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 ssjetpack-progress-button = { group = "com.github.SimformSolutionsPvtLtd", name = "SSJetPackComposeProgressButton", version.ref = "progressButton" }
 toolbar-compose = { group = "me.onebone", name = "toolbar-compose", version.ref = "toolbarCompose" }
-compose-webview = { group = "io.github.kevinnzou", name = "compose-webview", version.ref = "composeWebview" }
+compose-webview = { group = "io.github.kevinnzou", name = "compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }

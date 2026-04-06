@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kevinnzou.web.LoadingState
-import com.kevinnzou.web.WebView
-import com.kevinnzou.web.rememberWebViewState
+import com.multiplatform.webview.web.LoadingState
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.rememberWebViewState
 import io.github.v2compose.Constants
 import io.github.v2compose.R
 import io.github.v2compose.ui.common.CloseButton
@@ -66,7 +66,7 @@ private fun GoogleLoginScreen(
     val loadingProgress: Float = remember(loadingState) {
         when (loadingState) {
             is LoadingState.Initializing -> 0f
-            is LoadingState.Loading -> loadingState.progress / 100f
+            is LoadingState.Loading -> loadingState.progress
             is LoadingState.Finished -> 1f
         }
     }
@@ -94,8 +94,8 @@ private fun GoogleLoginScreen(
                 state = webViewState,
                 modifier = Modifier.fillMaxSize(),
                 captureBackPresses = true,
-                onCreated = {
-                    it.settings.apply {
+                onCreated = { nativeWebView ->
+                    nativeWebView.settings.apply {
                         userAgentString = System.getProperty("http.agent")
                         javaScriptEnabled = true
                         domStorageEnabled = true

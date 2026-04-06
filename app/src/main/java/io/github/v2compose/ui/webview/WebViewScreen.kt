@@ -15,15 +15,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.kevinnzou.web.LoadingState
-import com.kevinnzou.web.WebContent
-import com.kevinnzou.web.WebView
-import com.kevinnzou.web.WebViewState
+import com.multiplatform.webview.web.LoadingState
+import com.multiplatform.webview.web.WebContent
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewState
+import com.multiplatform.webview.web.rememberWebViewNavigator
 import io.github.v2compose.Constants
 import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.ui.common.CloseButton
-import io.github.v2compose.ui.webview.client.V2exWebViewClient
+import io.github.v2compose.ui.webview.client.V2exRequestInterceptor
 
 @Composable
 fun WebViewScreenRoute(url: String, onCloseClick: () -> Unit, openUri: (String) -> Unit) {
@@ -41,10 +42,16 @@ private fun WebViewScreen(url: String, onCloseClick: () -> Unit, openUri: (Strin
     val loadingProgress: Float = remember(loadingState) {
         when (loadingState) {
             is LoadingState.Initializing -> 0f
-            is LoadingState.Loading -> loadingState.progress / 100f
+            is LoadingState.Loading -> loadingState.progress
             is LoadingState.Finished -> 1f
         }
     }
+
+    val navigator = rememberWebViewNavigator(
+        requestInterceptor = remember(openUri) {
+            V2exRequestInterceptor(openUri)
+        }
+    )
 
     Scaffold(topBar = {
         WebViewTopBar(webViewState.pageTitle, onCloseClick)
@@ -52,10 +59,11 @@ private fun WebViewScreen(url: String, onCloseClick: () -> Unit, openUri: (Strin
         Box(modifier = Modifier.padding(paddingValues)) {
             WebView(
                 state = webViewState,
+                navigator = navigator,
                 modifier = Modifier.fillMaxSize(),
                 captureBackPresses = true,
-                onCreated = {
-                    it.settings.apply {
+                onCreated = { nativeWebView ->
+                    nativeWebView.settings.apply {
                         userAgentString = System.getProperty("http.agent")
                         javaScriptEnabled = true
                         domStorageEnabled = true
@@ -66,7 +74,7 @@ private fun WebViewScreen(url: String, onCloseClick: () -> Unit, openUri: (Strin
                         displayZoomControls = false
                         setSupportZoom(true)
                     }
-                }, client = remember(openUri) { V2exWebViewClient(openUri) })
+                })
             if (webViewState.isLoading) {
                 LinearProgressIndicator(progress = { loadingProgress })
             }
