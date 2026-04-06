@@ -1,6 +1,6 @@
 package io.github.v2compose.repository.def
 
-import android.util.Log
+import io.github.v2compose.util.KLogger
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -42,7 +42,7 @@ class DefaultTopicRepository (
         initialPage: Int?,
         reversed: Boolean,
     ): Flow<PagingData<Any>> {
-        Log.d(TAG, "getTopic, topicId = $topicId, initialPage = $initialPage, reversed = $reversed")
+        KLogger.d(TAG, "getTopic, topicId = $topicId, initialPage = $initialPage, reversed = $reversed")
         return Pager(PagingConfig(pageSize = 10), initialKey = initialPage) {
             TopicPagingSource(
                 v2exService,

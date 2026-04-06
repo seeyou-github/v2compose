@@ -112,8 +112,8 @@ dependencies {
 
     // firebase (flavor specific)
     "googleImplementation"(platform(libs.firebase.bom))
-    "googleImplementation"(libs.firebase.crashlytics.ktx)
-    "googleImplementation"(libs.firebase.analytics.ktx)
+    "googleImplementation"(libs.firebase.crashlytics)
+    "googleImplementation"(libs.firebase.analytics)
 
     // test
     testImplementation(libs.junit)

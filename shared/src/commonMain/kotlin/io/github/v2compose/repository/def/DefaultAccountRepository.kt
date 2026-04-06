@@ -10,7 +10,7 @@ import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.NotificationsPagingSource
 import io.github.v2compose.network.V2exApi
-import io.github.v2compose.network.WebkitCookieManager
+import io.github.v2compose.network.CookieManager
 import io.github.v2compose.network.bean.DailyInfo
 import io.github.v2compose.network.bean.HomePageInfo
 import io.github.v2compose.network.bean.LoginParam
@@ -21,6 +21,7 @@ import io.github.v2compose.network.bean.NotificationInfo
 import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.Account
+import io.github.v2compose.util.currentTimeMillis
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +32,7 @@ class DefaultAccountRepository (
     private val v2exService: V2exApi,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,
-    private val cookieManager: WebkitCookieManager,
+    private val cookieManager: CookieManager,
     private val appStateStore: AppStateStore,
 ) : AccountRepository {
 
@@ -121,7 +122,7 @@ class DefaultAccountRepository (
         return v2exService.dailyInfo().also {
             appStateStore.updateHasCheckingInTips(!it.hadCheckedIn())
             if (it.hadCheckedIn()) {
-                accountPreferences.lastCheckInTime(System.currentTimeMillis())
+                accountPreferences.lastCheckInTime(currentTimeMillis())
             }
         }
     }
@@ -129,7 +130,7 @@ class DefaultAccountRepository (
     override suspend fun checkIn(once: String): DailyInfo {
         return v2exService.checkIn(once).also {
             appStateStore.updateHasCheckingInTips(!it.hadCheckedIn())
-            accountPreferences.lastCheckInTime(System.currentTimeMillis())
+            accountPreferences.lastCheckInTime(currentTimeMillis())
         }
     }
 

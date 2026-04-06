@@ -1,6 +1,6 @@
 package io.github.v2compose.usecase
 
-import io.github.v2compose.BuildConfig
+import io.github.v2compose.BuildKonfig
 import io.github.v2compose.core.extension.newerThan
 import io.github.v2compose.core.extension.toAppVersion
 import io.github.v2compose.datasource.AppPreferences
@@ -24,7 +24,7 @@ class CheckForUpdatesUseCase (
         if (!force && appSettings.ignoredReleaseName == release.tagName) {
             return Release.Empty
         }
-        if (release.tagName.toAppVersion().newerThan(BuildConfig.VERSION_NAME.toAppVersion())) {
+        if (release.tagName.toAppVersion().newerThan(BuildKonfig.VERSION_NAME.toAppVersion())) {
             return release
         }
         return Release.Empty

@@ -21,6 +21,8 @@ import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
+import io.github.v2compose.network.CookieManager
+import io.github.v2compose.network.GithubApi
 import io.github.v2compose.network.GithubService
 import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.V2exApi
@@ -65,6 +67,7 @@ import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
+import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.bind
@@ -107,12 +110,14 @@ val appModule = module {
     singleOf(::VendorAnalytics)
     single<IAnalytics> { get<VendorAnalytics>() }
 }
-
 val networkModule = module {
     single<com.google.gson.Gson> { OkHttpFactory.createGson() }
     single<io.github.fruit.Fruit> { OkHttpFactory.createFruit() }
-    single { OkHttpFactory.createCookieManager() }
+
+    single { WebkitCookieManager() }
     single<okhttp3.CookieJar> { get<WebkitCookieManager>() }
+    single<CookieManager> { get<WebkitCookieManager>() }
+
     singleOf(::V2ProxySelector)
 
     single<OkHttpClient>(named("CommonOkHttpClient")) {
@@ -142,6 +147,7 @@ val networkModule = module {
             get<com.google.gson.Gson>()
         )
     }
+    single<GithubApi> { get<GithubService>() }
 }
 
 val dataModule = module {
@@ -150,7 +156,7 @@ val dataModule = module {
     singleOf(::DefaultNodeRepository) { bind<NodeRepository>() }
     singleOf(::DefaultTopicRepository) { bind<TopicRepository>() }
     singleOf(::DefaultUserRepository) { bind<UserRepository>() }
-    singleOf(::DefaultAccountRepository) { bind<AccountRepository>() }
+    single<AccountRepository> { DefaultAccountRepository(get(), get(), get(), get(), get()) }
 
     // DataSources - DataStore instances are created in appModule
     single { AppPreferences(get(named("App"))) }

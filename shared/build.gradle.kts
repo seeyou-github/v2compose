@@ -5,6 +5,14 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.buildkonfig)
+}
+
+buildkonfig {
+    packageName = "io.github.v2compose"
+    defaultConfigs {
+        buildConfigField(com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING, "VERSION_NAME", "\"1.0.1\"")
+    }
 }
 
 kotlin {

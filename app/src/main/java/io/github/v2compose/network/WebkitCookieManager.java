@@ -17,7 +17,7 @@ import okhttp3.HttpUrl;
 
 
 
-public class WebkitCookieManager implements CookieJar {
+public class WebkitCookieManager implements CookieJar, io.github.v2compose.network.CookieManager {
 
     private static final String TAG = WebkitCookieManager.class.getSimpleName();
     private final android.webkit.CookieManager cookieManager;

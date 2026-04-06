@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface GithubService {
+interface GithubService : GithubApi {
 
     companion object {
         private const val BaseUrl = "https://api.github.com/"
@@ -25,7 +25,7 @@ interface GithubService {
 
     //eg : https://api.github.com/repos/tachiyomiorg/tachiyomi/releases/latest
     @GET("/repos/{owner}/{repo}/releases/latest")
-    suspend fun getTheLatestRelease(
+    override suspend fun getTheLatestRelease(
         @Path("owner") owner: String,
         @Path("repo") repo: String
     ): Release

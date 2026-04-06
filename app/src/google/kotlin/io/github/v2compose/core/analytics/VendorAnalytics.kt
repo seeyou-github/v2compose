@@ -1,10 +1,9 @@
 package io.github.v2compose.core.analytics
 
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
-import javax.inject.Inject
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
-class VendorAnalytics @Inject () : IAnalytics {
+class VendorAnalytics : IAnalytics {
 
     private val analytics = Firebase.analytics
 
