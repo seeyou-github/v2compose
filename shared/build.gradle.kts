@@ -12,7 +12,7 @@ kotlin {
         namespace = "io.github.v2compose.shared"
         compileSdk = 36
         minSdk = 26
-        
+
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -48,14 +48,18 @@ kotlin {
             implementation(libs.ksoup)
 
             // DataStore KMP
-            implementation(libs.androidx.datastore.preferences)
+            api(libs.androidx.datastore.preferences)
+
+            // Paging
+            api(libs.androidx.paging.common)
+            api(libs.androidx.paging.compose)
         }
-        
+
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.slf4j.android)
         }
-        
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }

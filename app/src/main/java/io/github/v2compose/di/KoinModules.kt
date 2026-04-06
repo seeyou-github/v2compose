@@ -19,7 +19,6 @@ import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
-import io.github.v2compose.core.PlatformContext
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.GithubService
@@ -76,17 +75,13 @@ import org.koin.dsl.module
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import org.koin.android.ext.koin.androidContext as koinAndroidContext
 
 val appModule = module {
-    // DataStore instances — 通过 PlatformContext 统一两端接口
-    // PlatformContext 在 Android 端是 android.content.Context 的 typealias
-    // startKoin { androidContext(...) } 已经将 Context 注册到 Koin，无需再手动注册
     single(named("Account")) { createAccountDataStore(get()) }
     single(named("App")) { createAppDataStore(get()) }
 
     // Core/App
-    single<com.squareup.moshi.Moshi> { Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build() }
+    single<Moshi> { Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build() }
     single<DiskCache> {
         val dir = File(get<android.content.Context>().cacheDir, "image_cache")
         DiskCache.Builder().directory(dir).maxSizePercent(0.02).build()

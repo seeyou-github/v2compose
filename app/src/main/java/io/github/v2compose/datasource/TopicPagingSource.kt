@@ -1,6 +1,5 @@
 package io.github.v2compose.datasource
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import io.github.v2compose.network.V2exApi
@@ -29,7 +28,7 @@ class TopicPagingSource (
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
         return try {
             var page = params.key ?: startPage
-            Log.d(TAG, "load, page = $page")
+            println("$TAG: load, page = $page")
             val topicInfo = v2exService.topicDetails(topicId, page)
             if (page == startPageReversed) {
                 startPage = topicInfo.totalPage()

@@ -1,6 +1,5 @@
 package io.github.v2compose.datasource
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import io.github.v2compose.network.V2exApi
@@ -34,7 +33,7 @@ class NodePagingSource(private val nodeName: String, private val v2exService: V2
         return try {
             val page = params.key ?: FirstPageIndex
             val nodeInfo = v2exService.nodesInfo(node = nodeName, page = page)
-            Log.d(TAG, "load, result, nodeTopicInfo = $nodeInfo")
+            println("$TAG: load, result, nodeTopicInfo = $nodeInfo")
             if (page == FirstPageIndex) {
                 pageCount =
                     if (nodeInfo.items.isEmpty()) 0 else nodeInfo.total() / nodeInfo.items.size
