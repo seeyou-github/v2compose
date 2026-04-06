@@ -79,12 +79,6 @@ import java.util.concurrent.Executors
 import org.koin.android.ext.koin.androidContext as koinAndroidContext
 
 val appModule = module {
-    // Initialize androidContext for DataStore
-    single { koinAndroidContext() }
-    single(createdAtStart = true) {
-        androidContext = get()
-        androidContext
-    }
 
     // DataStore instances
     // 使用无参方法，统一 Android 和 iOS。Android 内部会自动使用上方的 androidContext
