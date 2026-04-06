@@ -34,8 +34,6 @@ class App : Application(), ImageLoaderFactory, Configuration.Provider, KoinCompo
         super.onCreate()
         instance = this
         
-        io.github.v2compose.datasource.androidContext = this
-        
         startKoin {
             androidLogger()
             androidContext(this@App)

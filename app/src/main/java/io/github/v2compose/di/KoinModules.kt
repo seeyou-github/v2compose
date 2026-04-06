@@ -19,7 +19,7 @@ import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
-import io.github.v2compose.datasource.androidContext
+import io.github.v2compose.core.PlatformContext
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.GithubService
@@ -79,11 +79,12 @@ import java.util.concurrent.Executors
 import org.koin.android.ext.koin.androidContext as koinAndroidContext
 
 val appModule = module {
+    // 注册 PlatformContext（Android 端包装 android.content.Context）
+    single<PlatformContext> { PlatformContext(koinAndroidContext()) }
 
-    // DataStore instances
-    // 使用无参方法，统一 Android 和 iOS。Android 内部会自动使用上方的 androidContext
-    single(named("Account")) { createAccountDataStore() }
-    single(named("App")) { createAppDataStore() }
+    // DataStore instances — 通过 PlatformContext 统一两端接口
+    single(named("Account")) { createAccountDataStore(get()) }
+    single(named("App")) { createAppDataStore(get()) }
 
     // Core/App
     single<com.squareup.moshi.Moshi> { Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build() }
