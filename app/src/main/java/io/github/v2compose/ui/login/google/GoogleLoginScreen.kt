@@ -96,7 +96,8 @@ private fun GoogleLoginScreen(
                 captureBackPresses = true,
                 onCreated = { nativeWebView ->
                     nativeWebView.settings.apply {
-                        userAgentString = System.getProperty("http.agent")
+                        val defaultAgent = userAgentString
+                        userAgentString = defaultAgent?.replace("; wv", "")
                         javaScriptEnabled = true
                         domStorageEnabled = true
                         databaseEnabled = true
