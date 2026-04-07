@@ -2,17 +2,19 @@ package io.github.v2compose.di
 
 import android.os.Build
 import coil3.ImageLoader
-import coil3.gif.AnimatedImageDecoder
-import coil3.gif.GifDecoder
-import coil3.svg.SvgDecoder
 import coil3.disk.DiskCache
 import coil3.disk.directory
-import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.gif.AnimatedImageDecoder
+import coil3.gif.GifDecoder
+import coil3.network.ktor3.KtorNetworkFetcherFactory
+import coil3.svg.SvgDecoder
+import coil3.util.DebugLogger
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import io.github.v2compose.BuildConfig
 import io.github.v2compose.V2AppState
 import io.github.v2compose.V2AppViewModel
-import io.github.v2compose.shared.core.V2EventManager
+import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.UriDecoder
 import io.github.v2compose.core.analytics.IAnalytics
@@ -30,7 +32,8 @@ import io.github.v2compose.network.KtorGithubApi
 import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.WebkitCookieManager
-import io.github.v2compose.network.createHttpClientEngine
+import io.github.v2compose.network.createAndroidGithubHttpClient
+import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.repository.AppRepository
@@ -44,6 +47,7 @@ import io.github.v2compose.repository.def.DefaultNewsRepository
 import io.github.v2compose.repository.def.DefaultNodeRepository
 import io.github.v2compose.repository.def.DefaultTopicRepository
 import io.github.v2compose.repository.def.DefaultUserRepository
+import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.gallery.GalleryViewModel
 import io.github.v2compose.ui.login.LoginViewModel
 import io.github.v2compose.ui.login.google.GoogleLoginViewModel
@@ -71,14 +75,10 @@ import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
-import io.github.v2compose.core.CheckInWorker
-import org.koin.androidx.workmanager.dsl.workerOf
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -101,7 +101,7 @@ val appModule = module {
     single<ImageLoader> {
         ImageLoader.Builder(get<android.content.Context>())
             .components {
-                add(OkHttpNetworkFetcherFactory(get<OkHttpClient>(named("ImageOkHttpClient"))))
+                add(KtorNetworkFetcherFactory(get<HttpClient>(named("ImageOkHttpClient"))))
                 if (Build.VERSION.SDK_INT >= 28) {
                     add(AnimatedImageDecoder.Factory())
                 } else {
@@ -110,6 +110,11 @@ val appModule = module {
                 add(SvgDecoder.Factory())
             }
             .diskCache(get<DiskCache>())
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    logger(DebugLogger())
+                }
+            }
             .build()
     }
     single<ExecutorService> { Executors.newFixedThreadPool(4) }
@@ -129,6 +134,7 @@ val networkModule = module {
     single<CookieManager> { get<WebkitCookieManager>() }
 
     singleOf(::V2ProxySelector)
+    single<okhttp3.Cache> { OkHttpFactory.createCache(get<android.content.Context>()) }
 
     single<OkHttpClient>(named("CommonOkHttpClient")) {
         OkHttpFactory.createHttpClient(
@@ -142,27 +148,20 @@ val networkModule = module {
         OkHttpFactory.createImageHttpClient(get<okhttp3.CookieJar>(), get<V2ProxySelector>())
     }
 
-    single<okhttp3.Cache> { OkHttpFactory.createCache(get<android.content.Context>()) }
-
-    single<V2exApi> {
-        val client = io.github.v2compose.network.createAndroidV2Client(
+    single<HttpClient>(named("V2HttpClient")) {
+        createAndroidV2HttpClient(
             okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")),
             fruit = get<io.github.fruit.Fruit>()
         )
-        V2exApi(client.httpClient)
     }
 
-    single<GithubApi> {
-        val client = HttpClient(createHttpClientEngine()) {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                    coerceInputValues = true
-                })
-            }
-        }
-        KtorGithubApi(client)
+    single<HttpClient>(named("GithubHttpClient")) {
+        createAndroidGithubHttpClient(okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")))
     }
+
+    single<V2exApi> { V2exApi(get<HttpClient>(named("V2HttpClient"))) }
+
+    single<GithubApi> { KtorGithubApi(get<HttpClient>(named("GithubHttpClient"))) }
 }
 
 val dataModule = module {
