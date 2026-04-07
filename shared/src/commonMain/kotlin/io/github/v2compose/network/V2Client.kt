@@ -20,39 +20,47 @@ import kotlinx.serialization.json.Json
 /**
  * Shared Ktor Client for V2EX
  */
-class V2Client(
+fun createV2HttpClient(
     engine: HttpClientEngine? = null,
-    private val fruit: Fruit = Fruit.createDefault()
-) {
-    val httpClient = HttpClient(engine ?: createHttpClientEngine()) {
-        expectSuccess = true
+    fruit: Fruit = Fruit.createDefault()
+): HttpClient = HttpClient(engine ?: createHttpClientEngine()) {
+    expectSuccess = true
 
+    install(ContentNegotiation) {
+        // 支持 JSON 解析 (针对 V2EX API)
+        json(Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+        })
+        // 支持 HTML 解析 (针对 V2EX 网页)
+        fruit(fruit)
+    }
+
+    // 默认配置
+    defaultRequest {
+        url {
+            protocol = URLProtocol.HTTPS
+            host = "www.v2ex.com"
+        }
+        if (!headers.contains(NetConstants.keyUserAgent)) {
+            header(HttpHeaders.UserAgent, NetConstants.wapUserAgent)
+        }
+    }
+
+    // 日志 (可选)
+    install(Logging) {
+        logger = Logger.DEFAULT
+        level = LogLevel.BODY
+        format = LoggingFormat.OkHttp
+    }
+}
+
+fun createGithubHttpClient(engine: HttpClientEngine? = null): HttpClient =
+    HttpClient(engine ?: createHttpClientEngine()) {
         install(ContentNegotiation) {
-            // 支持 JSON 解析 (针对 V2EX API)
             json(Json {
                 ignoreUnknownKeys = true
                 coerceInputValues = true
             })
-            // 支持 HTML 解析 (针对 V2EX 网页)
-            fruit(fruit)
-        }
-
-        // 默认配置
-        defaultRequest {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = "www.v2ex.com"
-            }
-            if (!headers.contains(NetConstants.keyUserAgent)) {
-                header(HttpHeaders.UserAgent, NetConstants.wapUserAgent)
-            }
-        }
-
-        // 日志 (可选)
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.BODY
-            format = LoggingFormat.OkHttp
         }
     }
-}

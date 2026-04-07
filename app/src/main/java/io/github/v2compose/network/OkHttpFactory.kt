@@ -48,7 +48,7 @@ object OkHttpFactory {
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
                 HttpLoggingInterceptor { msg: String -> L.v(msg) }
-                    .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+                    .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
         }
         return builder.build()
@@ -67,14 +67,10 @@ object OkHttpFactory {
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(
                 HttpLoggingInterceptor { msg: String -> L.v(msg) }
-                    .setLevel(HttpLoggingInterceptor.Level.BASIC)
+                    .setLevel(HttpLoggingInterceptor.Level.BODY)
             )
         }
         return builder.build()
-    }
-
-    fun createCookieManager(): WebkitCookieManager {
-        return WebkitCookieManager()
     }
 
     fun createCache(context: Context): Cache {
