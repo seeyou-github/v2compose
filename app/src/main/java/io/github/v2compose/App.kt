@@ -48,6 +48,7 @@ class App : Application(), Configuration.Provider, KoinComponent {
     }
 
     private fun init() {
+        coil3.SingletonImageLoader.setSafe { imageLoader }
         initLogger()
         if (BuildConfig.DEBUG) analytics.stopTracking()
         NotificationCenter.init(this)

@@ -101,7 +101,7 @@ val appModule = module {
     single<ImageLoader> {
         ImageLoader.Builder(get<android.content.Context>())
             .components {
-                add(KtorNetworkFetcherFactory(get<HttpClient>(named("ImageOkHttpClient"))))
+                add(KtorNetworkFetcherFactory(get<HttpClient>(named("ImageHttpClient"))))
                 if (Build.VERSION.SDK_INT >= 28) {
                     add(AnimatedImageDecoder.Factory())
                 } else {
@@ -151,6 +151,13 @@ val networkModule = module {
     single<HttpClient>(named("V2HttpClient")) {
         createAndroidV2HttpClient(
             okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")),
+            fruit = get<io.github.fruit.Fruit>()
+        )
+    }
+
+    single<HttpClient>(named("ImageHttpClient")) {
+        createAndroidV2HttpClient(
+            okHttpClient = get<OkHttpClient>(named("ImageOkHttpClient")),
             fruit = get<io.github.fruit.Fruit>()
         )
     }
