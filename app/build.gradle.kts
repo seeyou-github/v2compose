@@ -154,7 +154,6 @@ dependencies {
     // ui composables
     implementation(libs.ssjetpack.progress.button)
     implementation(libs.toolbar.compose)
-    implementation(libs.eventbus)
 
     // markdown
     implementation(libs.bundles.markwon)

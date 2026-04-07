@@ -4,6 +4,7 @@ import android.content.Context
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.Constants
 import io.github.v2compose.shared.bean.RedirectEvent
+import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.network.NetConstants.keyUserAgent
 import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector
@@ -14,7 +15,6 @@ import io.github.fruit.registerGeneratedAdapters
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.IOException
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -31,7 +31,8 @@ object OkHttpFactory {
     fun createHttpClient(
         cookieJar: CookieJar,
         cache: Cache,
-        proxySelector: V2ProxySelector
+        proxySelector: V2ProxySelector,
+        eventManager: V2EventManager,
     ): OkHttpClient {
         val builder: OkHttpClient.Builder =
             OkHttpClient.Builder()
@@ -40,7 +41,7 @@ object OkHttpFactory {
                 .cookieJar(cookieJar)
                 .retryOnConnectionFailure(true)
                 .addInterceptor(ConfigInterceptor())
-                .addInterceptor(RedirectInterceptor())
+                .addInterceptor(RedirectInterceptor(eventManager))
                 .followRedirects(false)
                 .followSslRedirects(false)
                 .proxySelector(proxySelector)
@@ -94,12 +95,12 @@ object OkHttpFactory {
         }
     }
 
-    private class RedirectInterceptor : Interceptor {
+    private class RedirectInterceptor(private val eventManager: V2EventManager) : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             val resp = chain.proceed(chain.request())
             if (resp.isRedirect && chain.request().url.host.contains(Constants.host)) {
-                resp.header("location")?.let { EventBus.getDefault().post(RedirectEvent(it)) }
+                resp.header("location")?.let { eventManager.tryPost(RedirectEvent(it)) }
             }
             return resp
         }

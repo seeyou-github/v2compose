@@ -12,6 +12,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.v2compose.V2AppState
 import io.github.v2compose.V2AppViewModel
+import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.UriDecoder
 import io.github.v2compose.core.analytics.IAnalytics
@@ -112,6 +113,7 @@ val appModule = module {
             .build()
     }
     single<ExecutorService> { Executors.newFixedThreadPool(4) }
+    singleOf(::V2EventManager)
 
     singleOf(::UriDecoder)
     single<StringDecoder> { get<UriDecoder>() }
@@ -132,7 +134,8 @@ val networkModule = module {
         OkHttpFactory.createHttpClient(
             get<okhttp3.CookieJar>(),
             get<okhttp3.Cache>(),
-            get<V2ProxySelector>()
+            get<V2ProxySelector>(),
+            get<V2EventManager>()
         )
     }
     single<OkHttpClient>(named("ImageOkHttpClient")) {

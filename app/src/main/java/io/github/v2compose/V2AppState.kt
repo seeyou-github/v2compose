@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import coil3.annotation.ExperimentalCoilApi
 import coil3.imageLoader
 import io.github.v2compose.shared.bean.RedirectEvent
+import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.core.extension.fullUrl
 import io.github.v2compose.core.extension.tryParse
 import io.github.v2compose.core.openInBrowser
@@ -30,10 +31,9 @@ import io.github.v2compose.ui.user.navigateToUser
 import io.github.v2compose.ui.webview.navigateToWebView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
+
+import org.koin.compose.koinInject
 
 private const val TAG = "AppState"
 
@@ -43,10 +43,11 @@ fun rememberV2AppState(
     context: Context = LocalContext.current,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    eventManager: V2EventManager = koinInject(),
 ): V2AppState {
-    val v2AppState = remember(navHostController, context, coroutineScope, snackbarHostState) {
-        V2AppState(context, navHostController, coroutineScope, snackbarHostState)
+    val v2AppState = remember(navHostController, context, coroutineScope, snackbarHostState, eventManager) {
+        V2AppState(context, navHostController, coroutineScope, snackbarHostState, eventManager)
     }
     DisposableEffect(lifecycleOwner, v2AppState) {
         lifecycleOwner.lifecycle.addObserver(v2AppState)
@@ -63,14 +64,20 @@ class V2AppState (
     private val navHostController: NavHostController,
     coroutineScope: CoroutineScope,
     snackbarHostState: SnackbarHostState,
+    private val eventManager: V2EventManager,
 ) : BaseScreenState(context, coroutineScope, snackbarHostState), DefaultLifecycleObserver {
 
     override fun onCreate(owner: LifecycleOwner) {
-        EventBus.getDefault().register(this)
+        coroutineScope.launch {
+            eventManager.events.collect { event ->
+                if (event is RedirectEvent) {
+                    onRedirectEvent(event)
+                }
+            }
+        }
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        EventBus.getDefault().unregister(this)
     }
 
     fun back() {
@@ -89,7 +96,6 @@ class V2AppState (
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onRedirectEvent(event: RedirectEvent) {
         Log.d(TAG, "onRedirectEvent, location = ${event.location}")
         val uri = Uri.parse(event.location)

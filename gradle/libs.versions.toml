@@ -77,7 +77,6 @@ moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.re
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 fruit = { group = "io.github.fruit", name = "fruit", version = "1.0.0" }
 fruit-ksp = { group = "io.github.fruit", name = "fruit-ksp", version = "1.0.0" }
-eventbus = { group = "org.greenrobot", name = "eventbus", version = "3.3.1" }
 markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
 markwon-ext-strikethrough = { group = "io.noties.markwon", name = "ext-strikethrough", version.ref = "markwon" }
 markwon-ext-tables = { group = "io.noties.markwon", name = "ext-tables", version.ref = "markwon" }
