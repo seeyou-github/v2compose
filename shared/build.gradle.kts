@@ -44,6 +44,18 @@ kotlin {
             implementation(compose.runtime)
             implementation(libs.kotlinx.serialization.json)
 
+            // KMP Lifecycle & Navigation
+            api(libs.jetbrains.lifecycle.viewmodel.compose)
+            api(libs.jetbrains.lifecycle.runtime.compose)
+            api(libs.jetbrains.navigation.compose)
+
+            // KMP Koin Compose
+            api(libs.koin.compose)
+            api(libs.koin.compose.viewmodel)
+
+            // Compose Multiplatform Resources
+            api(compose.components.resources)
+
             // Ktor
             api(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

@@ -83,11 +83,8 @@ dependencies {
     // Jetpack
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.annotation)
-    implementation(libs.androidx.navigation.compose)
 
     // Dependency Injection
     implementation(libs.koin.core)
