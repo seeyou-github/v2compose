@@ -9,8 +9,6 @@ import coil3.gif.GifDecoder
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.V2AppState
 import io.github.v2compose.V2AppViewModel
@@ -93,7 +91,7 @@ val appModule = module {
     single(named("App")) { createAppDataStore(get()) }
 
     // Core/App
-    single<Moshi> { Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build() }
+    single<ExecutorService> { Executors.newFixedThreadPool(4) }
     single<DiskCache> {
         val dir = File(get<android.content.Context>().cacheDir, "image_cache")
         DiskCache.Builder().directory(dir).maxSizePercent(0.02).build()

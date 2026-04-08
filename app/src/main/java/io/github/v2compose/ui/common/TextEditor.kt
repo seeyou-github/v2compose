@@ -1,7 +1,6 @@
 package io.github.v2compose.ui.common
 
-import android.widget.ScrollView
-import android.widget.TextView
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -42,18 +41,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.children
-import androidx.core.view.setPadding
+
 import coil3.imageLoader
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
-import io.noties.markwon.Markwon
-import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
-import io.noties.markwon.ext.tables.TablePlugin
-import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.coil.CoilImagesPlugin
-import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
+import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
+import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.MarkdownParser
 import kotlinx.coroutines.launch
 
 private val ContentBarHeight = 40.dp
@@ -203,44 +197,15 @@ private fun ContentEditor(
 
 @Composable
 private fun MarkdownPreview(content: String) {
-    val markdown = rememberMarkwon()
-    val contentPadding = with(LocalDensity.current) { 16.dp.roundToPx() }
-    val contentColor = LocalContentColor.current
-    val bodyLineSpacing = with(LocalDensity.current) { 6.sp.toPx() }
-    AndroidView(
-        factory = { context ->
-            val bodyView = TextView(context).apply {
-                setPadding(contentPadding)
-                setTextColor(contentColor.toArgb())
-                textSize = 15f
-                setLineSpacing(bodyLineSpacing, 1f)
-            }
-            ScrollView(context).apply {
-                addView(bodyView)
-            }
-        },
-        modifier = Modifier.fillMaxSize(),
-        update = {
-            it.setPadding(0)
-            val textView = it.children.first() as TextView
-            markdown.setMarkdown(textView, content)
-        },
-    )
-
-}
-
-@Composable
-fun rememberMarkwon(): Markwon {
-    val context = LocalContext.current
-    return remember(context) {
-        Markwon.builder(context).usePlugin(StrikethroughPlugin.create())
-            .usePlugin(TablePlugin.create(context))
-            .usePlugin(HtmlPlugin.create())
-            // TODO: Replace Markwon with a KMP-compatible Markdown library to support images with Coil 3
-            // .usePlugin(CoilImagesPlugin.create(context, context.imageLoader))
-            .usePlugin(MarkwonInlineParserPlugin.create())
-            .build()
+    val html = remember(content) {
+        val flavour = CommonMarkFlavourDescriptor()
+        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(content)
+        HtmlGenerator(content, parsedTree, flavour).generateHtml()
     }
+    HtmlContent(
+        content = html,
+        modifier = Modifier.fillMaxSize().padding(16.dp)
+    )
 }
 
 @Preview(widthDp = 440, heightDp = 960, device = "id:Nexus 5")

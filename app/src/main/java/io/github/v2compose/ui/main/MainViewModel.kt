@@ -35,7 +35,9 @@ class MainViewModel (
     private val accountRepository: AccountRepository,
     private val appExecutorService: ExecutorService,
     val loadNodes: LoadNodesUseCase,
-) : BaseViewModel(application) {
+) : BaseViewModel() {
+
+    private val context = application.applicationContext
 
     private val _newRelease = MutableStateFlow(Release.Empty)
     val newRelease = _newRelease.asStateFlow()

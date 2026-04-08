@@ -15,9 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.nodes.Element
 import kotlin.math.ceil
 
 private const val TAG = "FixHtmlImageUseCase"
@@ -93,7 +93,7 @@ class FixHtmlUseCase(private val context: Context) {
     }
 
     suspend fun loadImage(html: String, src: String): Flow<String> = flow {
-        val document = Jsoup.parse(html)
+        val document = Ksoup.parse(html)
         val loadingImages = document.select("img[src=\"$src\"]")
         loadingImages.forEach { element ->
             element.attr("loadState", "loading")
@@ -103,8 +103,8 @@ class FixHtmlUseCase(private val context: Context) {
         val imageRequest =
             ImageRequest.Builder(context).data(src).size(Size.ORIGINAL).build()
         val imageResult = context.imageLoader.execute(imageRequest)
-        loadingImages.forEach {
-            fillElement(it, imageResult)
+        loadingImages.forEach { element ->
+            fillElement(element, imageResult)
         }
         emit(document.outerHtml())
     }
@@ -137,7 +137,7 @@ class FixHtmlUseCase(private val context: Context) {
             }
         } else content
 
-        val document = Jsoup.parse(newContent)
+        val document = Ksoup.parse(newContent)
 
         //解密cloudflare对邮件名称的加密
         val encodedEmails: List<Element> = document.select(".__cf_email__")

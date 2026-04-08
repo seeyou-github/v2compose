@@ -21,7 +21,9 @@ class MineViewModel (
     application: Application,
     private val checkIn: CheckInUseCase,
     private val accountRepository: AccountRepository,
-) : BaseViewModel(application) {
+) : BaseViewModel() {
+
+    private val context = application.applicationContext
 
     val account: StateFlow<Account> = accountRepository.account
         .stateIn(

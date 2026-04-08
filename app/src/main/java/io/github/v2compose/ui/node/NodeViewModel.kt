@@ -30,7 +30,9 @@ class NodeViewModel (
     private val nodeRepository: NodeRepository,
     private val topicRepository: TopicRepository,
     private val accountRepository: AccountRepository,
-) : BaseViewModel(application) {
+) : BaseViewModel() {
+
+    private val context = application.applicationContext
 
     val nodeArgs = NodeArgs(savedStateHandle, stringDecoder)
 

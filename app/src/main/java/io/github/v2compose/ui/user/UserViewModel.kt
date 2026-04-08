@@ -30,7 +30,9 @@ class UserViewModel (
     private val topicRepository: TopicRepository,
     private val accountRepository: AccountRepository,
     private val fixedHtmlImage: FixHtmlUseCase,
-) : BaseViewModel(application) {
+) : BaseViewModel() {
+
+    private val context = application.applicationContext
 
     val userArgs = UserArgs(savedStateHandle, stringDecoder)
 

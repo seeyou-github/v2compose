@@ -126,7 +126,6 @@ dependencies {
 
     // v2er-ghui
     implementation(libs.fruit)
-    implementation(libs.jsoup) // 保持对 Jsoup 的依赖以兼容旧代码
     implementation(libs.ksoup)
     ksp(libs.fruit.ksp)
 
@@ -134,9 +133,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     implementation(libs.orhanobut.logger)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
@@ -153,7 +150,7 @@ dependencies {
     implementation(libs.toolbar.compose)
 
     // markdown
-    implementation(libs.bundles.markwon)
+    implementation(libs.jb.markdown)
 
     implementation(libs.compose.webview)
 }

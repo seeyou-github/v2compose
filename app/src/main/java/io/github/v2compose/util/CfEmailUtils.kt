@@ -1,8 +1,8 @@
 package io.github.v2compose.util
 
 import android.util.Log
-import org.jsoup.nodes.Element
-import org.jsoup.nodes.TextNode
+import com.fleeksoft.ksoup.nodes.Element
+import com.fleeksoft.ksoup.nodes.TextNode
 import kotlin.experimental.xor
 
 object CfEmailUtils {

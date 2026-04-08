@@ -48,7 +48,9 @@ class TopicViewModel (
     private val topicRepository: TopicRepository,
     private val accountRepository: AccountRepository,
     private val fixedHtmlImage: FixHtmlUseCase,
-) : BaseViewModel(application) {
+) : BaseViewModel() {
+
+    private val context = application.applicationContext
 
     companion object {
         const val topicCountPerPage = 100
@@ -140,7 +142,7 @@ class TopicViewModel (
 
     fun unThanksTopic() {
         viewModelScope.launch {
-            updateSnackbarMessage(R.string.unthanks_tips)
+            updateSnackbarMessage(context.getString(R.string.unthanks_tips))
         }
     }
 
@@ -173,7 +175,7 @@ class TopicViewModel (
 
     fun unReportTopic() {
         viewModelScope.launch {
-            updateSnackbarMessage(R.string.unreport_tips)
+            updateSnackbarMessage(context.getString(R.string.unreport_tips))
         }
     }
 
