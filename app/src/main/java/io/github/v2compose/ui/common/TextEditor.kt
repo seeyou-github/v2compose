@@ -45,9 +45,8 @@ import androidx.compose.ui.unit.sp
 import coil3.imageLoader
 import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import com.mikepenz.markdown.m3.Markdown
+import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
 import kotlinx.coroutines.launch
 
 private val ContentBarHeight = 40.dp
@@ -197,14 +196,10 @@ private fun ContentEditor(
 
 @Composable
 private fun MarkdownPreview(content: String) {
-    val html = remember(content) {
-        val flavour = CommonMarkFlavourDescriptor()
-        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(content)
-        HtmlGenerator(content, parsedTree, flavour).generateHtml()
-    }
-    HtmlContent(
-        content = html,
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+    Markdown(
+        content = content,
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        imageTransformer = Coil3ImageTransformerImpl
     )
 }
 

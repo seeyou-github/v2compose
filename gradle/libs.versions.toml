@@ -43,10 +43,12 @@ jsoup = "1.22.1"
 youtubePlayer = "13.0.0"
 ktor = "3.1.1"
 slf4j = "1.7.36"
-jb-markdown = "0.7.3"
+mikepenz-markdown = "0.39.2"
 
 [libraries]
-jb-markdown = { group = "org.jetbrains", name = "markdown", version.ref = "jb-markdown" }
+mikepenz-markdown = { group = "com.mikepenz", name = "multiplatform-markdown-renderer", version.ref = "mikepenz-markdown" }
+mikepenz-markdown-m3 = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-m3", version.ref = "mikepenz-markdown" }
+mikepenz-markdown-coil3 = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-coil3", version.ref = "mikepenz-markdown" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }

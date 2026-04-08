@@ -9,10 +9,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.runtime.remember
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import com.mikepenz.markdown.m3.Markdown
+import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
 import io.github.v2compose.R
 import io.github.v2compose.network.bean.Release
 
@@ -39,13 +37,9 @@ fun NewReleaseDialog(
 
 @Composable
 private fun NewReleaseBody(text: String) {
-    val html = remember(text) {
-        val flavour = CommonMarkFlavourDescriptor()
-        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(text)
-        HtmlGenerator(text, parsedTree, flavour).generateHtml()
-    }
-    HtmlContent(
-        content = html,
-        modifier = Modifier.fillMaxWidth()
+    Markdown(
+        content = text,
+        modifier = Modifier.fillMaxWidth(),
+        imageTransformer = Coil3ImageTransformerImpl
     )
 }
