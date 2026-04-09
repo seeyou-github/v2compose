@@ -11,40 +11,19 @@ import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.V2AppState
-import io.github.v2compose.V2AppViewModel
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.UriDecoder
 import io.github.v2compose.core.analytics.IAnalytics
 import io.github.v2compose.core.analytics.VendorAnalytics
-import io.github.v2compose.datasource.AccountPreferences
-import io.github.v2compose.datasource.AppPreferences
-import io.github.v2compose.datasource.AppStateStore
-import io.github.v2compose.datasource.MyFollowingPagingSource
-import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
-import io.github.v2compose.network.GithubApi
-import io.github.v2compose.network.KtorGithubApi
 import io.github.v2compose.network.OkHttpFactory
-import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
-import io.github.v2compose.repository.AccountRepository
-import io.github.v2compose.repository.AppRepository
-import io.github.v2compose.repository.NewsRepository
-import io.github.v2compose.repository.NodeRepository
-import io.github.v2compose.repository.TopicRepository
-import io.github.v2compose.repository.UserRepository
-import io.github.v2compose.repository.def.DefaultAccountRepository
-import io.github.v2compose.repository.def.DefaultAppRepository
-import io.github.v2compose.repository.def.DefaultNewsRepository
-import io.github.v2compose.repository.def.DefaultNodeRepository
-import io.github.v2compose.repository.def.DefaultTopicRepository
-import io.github.v2compose.repository.def.DefaultUserRepository
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.gallery.GalleryViewModel
 import io.github.v2compose.ui.login.LoginViewModel
@@ -68,15 +47,9 @@ import io.github.v2compose.ui.supplement.AddSupplementViewModel
 import io.github.v2compose.ui.topic.TopicViewModel
 import io.github.v2compose.ui.user.UserViewModel
 import io.github.v2compose.ui.write.WriteTopicViewModel
-import io.github.v2compose.usecase.CheckForUpdatesUseCase
-import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.FixHtmlUseCase
-import io.github.v2compose.usecase.LoadNodesUseCase
-import io.github.v2compose.usecase.UpdateAccountUseCase
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.workerOf
@@ -116,7 +89,6 @@ val appModule = module {
             .build()
     }
     single<ExecutorService> { Executors.newFixedThreadPool(4) }
-    singleOf(::V2EventManager)
 
     singleOf(::UriDecoder)
     single<StringDecoder> { get<UriDecoder>() }
@@ -163,36 +135,13 @@ val networkModule = module {
     single<HttpClient>(named("GithubHttpClient")) {
         createAndroidGithubHttpClient(okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")))
     }
-
-    single<V2exApi> { V2exApi(get<HttpClient>(named("V2HttpClient"))) }
-
-    single<GithubApi> { KtorGithubApi(get<HttpClient>(named("GithubHttpClient"))) }
 }
 
-val dataModule = module {
-    singleOf(::DefaultAppRepository) { bind<AppRepository>() }
-    singleOf(::DefaultNewsRepository) { bind<NewsRepository>() }
-    singleOf(::DefaultNodeRepository) { bind<NodeRepository>() }
-    singleOf(::DefaultTopicRepository) { bind<TopicRepository>() }
-    singleOf(::DefaultUserRepository) { bind<UserRepository>() }
-    single<AccountRepository> { DefaultAccountRepository(get(), get(), get(), get(), get()) }
-
-    // DataSources - DataStore instances are created in appModule
-    single { AppPreferences(get(named("App"))) }
-    single { AccountPreferences(get(named("Account"))) }
-    singleOf(::AppStateStore)
-}
-
-val useCaseModule = module {
-    singleOf(::CheckForUpdatesUseCase)
+val androidUseCaseModule = module {
     singleOf(::FixHtmlUseCase)
-    singleOf(::UpdateAccountUseCase)
-    singleOf(::CheckInUseCase)
-    singleOf(::LoadNodesUseCase)
 }
 
 val viewModelModule = module {
-    viewModelOf(::V2AppViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::TwoStepLoginViewModel)
     viewModelOf(::GoogleLoginViewModel)
@@ -220,15 +169,10 @@ val viewModelModule = module {
     singleOf(::SettingsScreenState)
 }
 
-val pagingModule = module {
-    factoryOf(::MyTopicsPagingSource)
-    factoryOf(::MyFollowingPagingSource)
-}
-
 val workerModule = module {
     workerOf(::CheckInWorker)
 }
 
 val allModules = listOf(
-    appModule, networkModule, dataModule, useCaseModule, viewModelModule, pagingModule, workerModule
+    appModule, networkModule, androidUseCaseModule, viewModelModule, workerModule
 )

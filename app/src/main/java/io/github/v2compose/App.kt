@@ -9,12 +9,12 @@ import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.v2compose.core.NotificationCenter
 import io.github.v2compose.core.analytics.IAnalytics
+import io.github.v2compose.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.context.startKoin
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
@@ -33,12 +33,14 @@ class App : Application(), Configuration.Provider, KoinComponent {
         super.onCreate()
         instance = this
 
-        startKoin {
+        initKoin(
+            appDeclaration = {
             androidLogger()
             androidContext(this@App)
             workManagerFactory()
-            modules(io.github.v2compose.di.allModules)
-        }
+            },
+            platformModules = io.github.v2compose.di.allModules
+        )
 
         init()
     }

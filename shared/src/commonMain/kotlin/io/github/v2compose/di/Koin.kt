@@ -1,21 +1,98 @@
 package io.github.v2compose.di
 
+import io.github.v2compose.V2AppViewModel
+import io.github.v2compose.datasource.AccountPreferences
+import io.github.v2compose.datasource.AppPreferences
+import io.github.v2compose.datasource.AppStateStore
+import io.github.v2compose.datasource.MyFollowingPagingSource
+import io.github.v2compose.datasource.MyTopicsPagingSource
+import io.github.v2compose.network.GithubApi
+import io.github.v2compose.network.KtorGithubApi
+import io.github.v2compose.network.V2exApi
+import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.repository.AppRepository
+import io.github.v2compose.repository.NewsRepository
+import io.github.v2compose.repository.NodeRepository
+import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.repository.UserRepository
+import io.github.v2compose.repository.def.DefaultAccountRepository
+import io.github.v2compose.repository.def.DefaultAppRepository
+import io.github.v2compose.repository.def.DefaultNewsRepository
+import io.github.v2compose.repository.def.DefaultNodeRepository
+import io.github.v2compose.repository.def.DefaultTopicRepository
+import io.github.v2compose.repository.def.DefaultUserRepository
+import io.github.v2compose.shared.core.V2EventManager
+import io.github.v2compose.usecase.CheckForUpdatesUseCase
+import io.github.v2compose.usecase.CheckInUseCase
+import io.github.v2compose.usecase.LoadNodesUseCase
+import io.github.v2compose.usecase.UpdateAccountUseCase
+import io.ktor.client.HttpClient
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.module
+
+val sharedCoreModule = module {
+    singleOf(::V2EventManager)
+}
+
+val sharedNetworkModule = module {
+    single<V2exApi> { V2exApi(get<HttpClient>(named("V2HttpClient"))) }
+    single<GithubApi> { KtorGithubApi(get<HttpClient>(named("GithubHttpClient"))) }
+}
+
+val sharedDataModule = module {
+    singleOf(::DefaultAppRepository) { bind<AppRepository>() }
+    singleOf(::DefaultNewsRepository) { bind<NewsRepository>() }
+    singleOf(::DefaultNodeRepository) { bind<NodeRepository>() }
+    singleOf(::DefaultTopicRepository) { bind<TopicRepository>() }
+    singleOf(::DefaultUserRepository) { bind<UserRepository>() }
+    single<AccountRepository> { DefaultAccountRepository(get(), get(), get(), get(), get()) }
+
+    single { AppPreferences(get(named("App"))) }
+    single { AccountPreferences(get(named("Account"))) }
+    singleOf(::AppStateStore)
+}
+
+val sharedUseCaseModule = module {
+    singleOf(::CheckForUpdatesUseCase)
+    singleOf(::UpdateAccountUseCase)
+    singleOf(::CheckInUseCase)
+    singleOf(::LoadNodesUseCase)
+}
+
+val sharedPagingModule = module {
+    factoryOf(::MyTopicsPagingSource)
+    factoryOf(::MyFollowingPagingSource)
+}
+
+val sharedViewModelModule = module {
+    viewModelOf(::V2AppViewModel)
+}
+
+fun sharedModules(): List<Module> = listOf(
+    sharedCoreModule,
+    sharedNetworkModule,
+    sharedDataModule,
+    sharedUseCaseModule,
+    sharedPagingModule,
+    sharedViewModelModule,
+)
 
 /**
  * 跨平台 Koin 初始化入口
  */
 fun initKoin(
     appDeclaration: KoinAppDeclaration = {},
-    platformModule: Module
+    platformModules: List<Module> = emptyList()
 ) {
     startKoin {
         appDeclaration()
-        modules(
-            platformModule,
-            // sharedModule, // 待后续将共享模块逻辑移入此处
-        )
+        modules(sharedModules() + platformModules)
     }
 }

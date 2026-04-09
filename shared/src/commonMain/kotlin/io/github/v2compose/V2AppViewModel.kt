@@ -25,5 +25,4 @@ class V2AppViewModel(
         SharingStarted.WhileSubscribed(),
         Account.Empty
     )
-
 }
