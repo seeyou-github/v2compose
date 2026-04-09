@@ -35,7 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,11 +44,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import coil3.imageLoader
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
 import com.mikepenz.markdown.m3.Markdown
 import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
 import kotlinx.coroutines.launch
+import v2compose.shared.generated.resources.*
 
 private val ContentBarHeight = 40.dp
 
@@ -63,9 +64,9 @@ fun TextEditor(
 ) {
     val tabTitles = remember(contentFormat) {
         if (contentFormat == ContentFormat.Markdown) {
-            listOf(R.string.content_body, R.string.content_preview)
+            listOf(Res.string.content_body, Res.string.content_preview)
         } else {
-            listOf(R.string.content_body)
+            listOf(Res.string.content_body)
         }
     }
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
@@ -96,7 +97,7 @@ fun TextEditor(
 
 @Composable
 private fun ContentBar(
-    tabTitles: List<Int>,
+    tabTitles: List<StringResource>,
     contentFormat: ContentFormat,
     pagerState: PagerState,
     onContentFormatChanged: (ContentFormat) -> Unit
@@ -126,7 +127,7 @@ private fun ContentBar(
                     },
                     modifier = Modifier.height(ContentBarHeight),
                 ) {
-                    Text(stringResource(id = title))
+                    Text(stringResource(title))
                 }
             }
         }
@@ -145,8 +146,8 @@ private fun ContentBar(
             modifier = Modifier.sizeIn(maxWidth = 192.dp),
         ) {
             val segmentResId = when (it) {
-                ContentFormat.Original -> R.string.content_format_original
-                ContentFormat.Markdown -> R.string.content_format_markdown
+                ContentFormat.Original -> Res.string.content_format_original
+                ContentFormat.Markdown -> Res.string.content_format_markdown
             }
             Text(stringResource(segmentResId), style = MaterialTheme.typography.bodyMedium)
         }

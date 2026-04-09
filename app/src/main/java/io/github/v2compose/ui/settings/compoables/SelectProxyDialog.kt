@@ -30,17 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.util.InetValidator
+import org.jetbrains.compose.resources.StringResource
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun SelectProxyDialog(
@@ -55,8 +56,8 @@ fun SelectProxyDialog(
     val inputEnabled =
         remember(proxyType) { proxyType != ProxyType.System && proxyType != ProxyType.Direct }
 
-    var proxyAddressError by remember { mutableStateOf("") }
-    var proxyPortError by remember { mutableStateOf("") }
+    var proxyAddressError by remember { mutableStateOf<StringResource?>(null) }
+    var proxyPortError by remember { mutableStateOf<StringResource?>(null) }
 
     val adressFocusRequester = remember { FocusRequester() }
     val portFocusRequester = remember { FocusRequester() }
@@ -70,22 +71,22 @@ fun SelectProxyDialog(
 
             val address = proxyAddress.trim()
             if (address.isEmpty()) {
-                proxyAddressError = context.getString(R.string.settings_proxy_hostOrIp_empty)
+                proxyAddressError = Res.string.settings_proxy_hostOrIp_empty
                 break
             }
             if (!InetValidator.isValidHostOrIp(address)) {
-                proxyAddressError = context.getString(R.string.settings_proxy_hostOrIp_format_error)
+                proxyAddressError = Res.string.settings_proxy_hostOrIp_format_error
                 break
             }
 
             val port = proxyPort.trim()
             val portInt = port.toIntOrNull() ?: -1
             if (port.isEmpty()) {
-                proxyPortError = context.getString(R.string.settings_proxy_port_empty)
+                proxyPortError = Res.string.settings_proxy_port_empty
                 break
             }
             if (!InetValidator.isValidInetPort(portInt)) {
-                proxyPortError = context.getString(R.string.settings_proxy_port_error)
+                proxyPortError = Res.string.settings_proxy_port_error
                 break
             }
             onProxySelected(ProxyInfo(proxyType, address, portInt))
@@ -94,7 +95,7 @@ fun SelectProxyDialog(
     }
 
     AlertDialog(onDismissRequest = onDismiss,
-        title = { Text(stringResource(id = R.string.settings_proxy)) },
+        title = { Text(stringResource(Res.string.settings_proxy)) },
         text = {
             Column {
                 SelectProxyType(proxyType, onProxyTypeSelected = { proxyType = it })
@@ -103,17 +104,17 @@ fun SelectProxyDialog(
                     value = TextFieldValue(proxyAddress, TextRange(proxyAddress.length)),
                     onValueChange = {
                         proxyAddress = it.text
-                        proxyAddressError = ""
+                        proxyAddressError = null
                     },
                     modifier = Modifier.focusRequester(adressFocusRequester),
-                    label = { Text(stringResource(id = R.string.settings_proxy_hostOrIp)) },
+                    label = { Text(stringResource(Res.string.settings_proxy_hostOrIp)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Uri,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(onNext = { portFocusRequester.requestFocus() }),
-                    isError = proxyAddressError.isNotEmpty(),
-                    supportingText = { Text(proxyAddressError) },
+                    isError = proxyAddressError != null,
+                    supportingText = { proxyAddressError?.let { Text(stringResource(it)) } },
                     singleLine = true,
                     enabled = inputEnabled,
                 )
@@ -122,17 +123,17 @@ fun SelectProxyDialog(
                     value = TextFieldValue(proxyPort, TextRange(proxyPort.length)),
                     onValueChange = {
                         proxyPort = it.text
-                        proxyPortError = ""
+                        proxyPortError = null
                     },
                     modifier = Modifier.focusRequester(portFocusRequester),
-                    label = { Text(stringResource(id = R.string.settings_proxy_port)) },
+                    label = { Text(stringResource(Res.string.settings_proxy_port)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(onDone = { checkProxyInfo() }),
-                    isError = proxyPortError.isNotEmpty(),
-                    supportingText = { Text(proxyPortError) },
+                    isError = proxyPortError != null,
+                    supportingText = { proxyPortError?.let { Text(stringResource(it)) } },
                     singleLine = true,
                     enabled = inputEnabled,
                 )
@@ -144,7 +145,7 @@ fun SelectProxyDialog(
         },
         confirmButton = {
             TextButton(onClick = checkProxyInfo) {
-                Text(stringResource(id = R.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         })
 }
@@ -159,7 +160,7 @@ private fun SelectProxyType(proxyType: ProxyType, onProxyTypeSelected: (ProxyTyp
             .padding(start = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(id = proxyType.titleResId))
+        Text(stringResource(proxyType.titleRes))
         Spacer(modifier = Modifier.weight(1f))
         IconButton(onClick = { showProxyTypeDropdown = true }) {
             Icon(Icons.Rounded.ArrowDropDown, "drop down")
@@ -173,7 +174,7 @@ private fun SelectProxyType(proxyType: ProxyType, onProxyTypeSelected: (ProxyTyp
             listOf(ProxyType.Direct, ProxyType.Http, ProxyType.Socks).forEach {
                 DropdownMenuItem(
                     text = {
-                        Text(stringResource(id = it.titleResId))
+                        Text(stringResource(it.titleRes))
                     },
                     onClick = {
                         showProxyTypeDropdown = false
@@ -185,10 +186,10 @@ private fun SelectProxyType(proxyType: ProxyType, onProxyTypeSelected: (ProxyTyp
     }
 }
 
-val ProxyType.titleResId
+val ProxyType.titleRes: StringResource
     get() = when (this) {
-        ProxyType.System -> R.string.settings_proxy_system
-        ProxyType.Direct -> R.string.settings_proxy_direct
-        ProxyType.Http -> R.string.settings_proxy_http
-        ProxyType.Socks -> R.string.settings_proxy_socks
+        ProxyType.System -> Res.string.settings_proxy_system
+        ProxyType.Direct -> Res.string.settings_proxy_direct
+        ProxyType.Http -> Res.string.settings_proxy_http
+        ProxyType.Socks -> Res.string.settings_proxy_socks
     }

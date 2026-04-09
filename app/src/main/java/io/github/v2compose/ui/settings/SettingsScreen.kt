@@ -35,7 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,8 +55,9 @@ import io.github.v2compose.ui.common.SingleChoiceListDialog
 import io.github.v2compose.ui.common.TextAlertDialog
 import io.github.v2compose.ui.settings.compoables.SelectProxyDialog
 import io.github.v2compose.ui.settings.compoables.checkAndRequestNotificationPermission
-import io.github.v2compose.ui.settings.compoables.titleResId
+import io.github.v2compose.ui.settings.compoables.titleRes
 import kotlinx.coroutines.launch
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun SettingsScreenRoute(
@@ -153,59 +154,59 @@ private fun SettingsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            PreferenceGroupTitle(title = stringResource(id = R.string.settings_common))
+            PreferenceGroupTitle(title = stringResource(Res.string.settings_common))
             ClearCachePreference(cacheSize, onClearCacheClick)
             AutoCheckInPreference(appSettings, onAutoCheckInChanged)
             SwitchPreference(
-                title = stringResource(id = R.string.settings_reply_with_floor),
-                summary = stringResource(id = R.string.settings_reply_with_floor_description),
+                title = stringResource(Res.string.settings_reply_with_floor),
+                summary = stringResource(Res.string.settings_reply_with_floor_description),
                 checked = appSettings.replyWithFloor,
                 onCheckedChange = onReplyWithFloorChanged,
             )
-            PreferenceGroupTitle(title = stringResource(id = R.string.settings_appearance))
+            PreferenceGroupTitle(title = stringResource(Res.string.settings_appearance))
             DropdownPreference(
-                title = stringResource(id = R.string.settings_dark_mode),
+                title = stringResource(Res.string.settings_dark_mode),
                 entries = listOf(
-                    stringResource(id = R.string.settings_dark_mode_follow_system),
-                    stringResource(id = R.string.settings_dark_mode_off),
-                    stringResource(id = R.string.settings_dark_mode_on),
+                    stringResource(Res.string.settings_dark_mode_follow_system),
+                    stringResource(Res.string.settings_dark_mode_off),
+                    stringResource(Res.string.settings_dark_mode_on),
                 ),
                 selectedIndex = appSettings.darkMode.ordinal,
                 onEntryClick = { index -> onDarkModeChanged(DarkMode.values()[index]) },
             )
             SwitchPreference(
-                title = stringResource(id = R.string.settings_topic_title_overview),
-                summary = stringResource(id = R.string.settings_topic_title_overview_summary),
+                title = stringResource(Res.string.settings_topic_title_overview),
+                summary = stringResource(Res.string.settings_topic_title_overview_summary),
                 checked = appSettings.topicTitleOverview,
                 onCheckedChange = onTopicTitleTwoLineMaxChanged,
             )
             SwitchPreference(
-                title = stringResource(id = R.string.settings_highlight_op_reply),
-                summary = stringResource(id = R.string.settings_highlight_op_reply_summary),
+                title = stringResource(Res.string.settings_highlight_op_reply),
+                summary = stringResource(Res.string.settings_highlight_op_reply_summary),
                 checked = appSettings.highlightOpReply,
                 onCheckedChange = onHighlightOpReplyChanged,
             )
-            PreferenceGroupTitle(title = stringResource(id = R.string.settings_advanced))
+            PreferenceGroupTitle(title = stringResource(Res.string.settings_advanced))
             ProxyPreference(
-                title = stringResource(id = R.string.settings_proxy),
+                title = stringResource(Res.string.settings_proxy),
                 proxyInfo = proxyInfo,
                 onProxyChanged = onProxyChanged
             )
-            PreferenceGroupTitle(title = stringResource(id = R.string.settings_other))
-            ClickablePreference(title = stringResource(id = R.string.settings_open_source),
+            PreferenceGroupTitle(title = stringResource(Res.string.settings_other))
+            ClickablePreference(title = stringResource(Res.string.settings_open_source),
                 summary = Constants.source,
                 onPreferenceClick = { onSourceClick(Constants.source) })
-            ClickablePreference(title = stringResource(id = R.string.settings_issues),
+            ClickablePreference(title = stringResource(Res.string.settings_issues),
                 summary = Constants.issues,
                 onPreferenceClick = { onIssuesClick(Constants.issues) })
             ClickablePreference(
-                title = stringResource(id = R.string.settings_version),
+                title = stringResource(Res.string.settings_version),
                 summary = BuildConfig.VERSION_NAME,
                 onPreferenceClick = onVersionClick
             )
             ClickablePreference(
-                title = stringResource(id = R.string.settings_check_for_updates),
-                summary = stringResource(id = R.string.settings_check_for_updates_summary),
+                title = stringResource(Res.string.settings_check_for_updates),
+                summary = stringResource(Res.string.settings_check_for_updates_summary),
                 onPreferenceClick = onCheckForUpdatesClick,
             )
             if (isLoggedIn) {
@@ -220,8 +221,8 @@ private fun SettingsScreen(
 private fun ClearCachePreference(cacheSize: Long, onClearCacheClick: () -> Unit) {
     var showClearCacheDialog by remember { mutableStateOf(false) }
     if (showClearCacheDialog) {
-        TextAlertDialog(title = stringResource(id = R.string.settings_clear_cache),
-            message = stringResource(id = R.string.clear_cache_tips),
+        TextAlertDialog(title = stringResource(Res.string.settings_clear_cache),
+            message = stringResource(Res.string.clear_cache_tips),
             onConfirm = {
                 showClearCacheDialog = false
                 onClearCacheClick()
@@ -230,8 +231,8 @@ private fun ClearCachePreference(cacheSize: Long, onClearCacheClick: () -> Unit)
     }
 
     ClickablePreference(
-        title = stringResource(id = R.string.settings_clear_cache),
-        summary = stringResource(id = R.string.settings_clear_cache_summary, cacheSize),
+        title = stringResource(Res.string.settings_clear_cache),
+        summary = stringResource(Res.string.settings_clear_cache_summary, cacheSize),
         onPreferenceClick = { showClearCacheDialog = true },
     )
 }
@@ -267,8 +268,8 @@ private fun AutoCheckInPreference(
 
     if (showRequestNotificationPermissionRationale) {
         TextAlertDialog(
-            title = stringResource(id = R.string.request_notification_permission),
-            message = stringResource(id = R.string.request_notification_permission_message),
+            title = androidx.compose.ui.res.stringResource(id = io.github.v2compose.R.string.request_notification_permission),
+            message = androidx.compose.ui.res.stringResource(id = io.github.v2compose.R.string.request_notification_permission_message),
             onDismiss = {
                 showRequestNotificationPermissionRationale = false
                 currentChecked = false
@@ -284,8 +285,8 @@ private fun AutoCheckInPreference(
     }
 
     SwitchPreference(
-        title = stringResource(R.string.settings_auto_check_in),
-        summary = stringResource(R.string.settings_auto_check_in_description),
+        title = stringResource(Res.string.settings_auto_check_in),
+        summary = stringResource(Res.string.settings_auto_check_in_description),
         checked = currentChecked,
         onCheckedChange = {
             currentChecked = it
@@ -309,7 +310,7 @@ private fun SettingsTopBar(onBackClick: () -> Unit) {
         navigationIcon = { BackIcon(onBackClick = onBackClick) },
         title = {
             Text(
-                stringResource(R.string.settings), style = MaterialTheme.typography.titleLarge
+                stringResource(Res.string.settings), style = MaterialTheme.typography.titleLarge
             )
         },
     )
@@ -320,19 +321,19 @@ private fun Logout(onLogout: () -> Unit) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     if (showLogoutDialog) {
         AlertDialog(onDismissRequest = { showLogoutDialog = false },
-            title = { Text(stringResource(id = R.string.logout)) },
-            text = { Text(stringResource(id = R.string.logout_tips)) },
+            title = { Text(stringResource(Res.string.logout)) },
+            text = { Text(stringResource(Res.string.logout_tips)) },
             confirmButton = {
                 TextButton(onClick = {
                     showLogoutDialog = false
                     onLogout()
                 }) {
-                    Text(stringResource(id = R.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showLogoutDialog = false }) {
-                    Text(stringResource(id = R.string.cancel))
+                    Text(stringResource(Res.string.cancel))
                 }
             })
     }
@@ -342,7 +343,7 @@ private fun Logout(onLogout: () -> Unit) {
         .height(72.dp)
         .clickable { showLogoutDialog = true }) {
         Text(
-            stringResource(id = R.string.logout),
+            stringResource(Res.string.logout),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.error,
             modifier = Modifier.align(Alignment.Center)
@@ -449,8 +450,8 @@ private fun ProxyPreference(
     var showSelectProxyDialog by remember { mutableStateOf(false) }
     var currentProxy by remember(proxyInfo) { mutableStateOf(proxyInfo) }
 
-    val summary = remember(proxyInfo) {
-        val typeText = context.getString(currentProxy.type.titleResId)
+    val typeText = stringResource(currentProxy.type.titleRes)
+    val summary = remember(proxyInfo, typeText) {
         val addressText =
             if (proxyInfo.type == ProxyType.Http || proxyInfo.type == ProxyType.Socks) {
                 proxyInfo.address + ":" + proxyInfo.port

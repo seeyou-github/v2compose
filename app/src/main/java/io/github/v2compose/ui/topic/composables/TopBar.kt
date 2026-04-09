@@ -40,28 +40,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.StringResource
 import androidx.compose.ui.unit.sp
-import io.github.v2compose.R
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
+import v2compose.shared.generated.resources.*
 
 
-enum class TopicMenuItem(val icon: ImageVector, @StringRes val textResId: Int) {
-    Append(Icons.AutoMirrored.Rounded.NoteAdd, R.string.topic_menu_item_append),
-    Favorite(Icons.Rounded.BookmarkAdd, R.string.topic_menu_item_favorite),
-    Favorited(Icons.Rounded.BookmarkAdded, R.string.topic_menu_item_unfavorite),
-    More(Icons.Rounded.MoreVert, R.string.topic_menu_item_more),
-    Thanks(Icons.Rounded.FavoriteBorder, R.string.menu_item_thank),
-    Thanked(Icons.Rounded.Favorite, R.string.menu_item_unthank),
-    Ignore(Icons.Rounded.VisibilityOff, R.string.topic_menu_item_ignore),
-    Ignored(Icons.Rounded.Visibility, R.string.topic_menu_item_unignore),
-    Report(Icons.Rounded.Report, R.string.topic_menu_item_report),
-    Reported(Icons.Outlined.Report, R.string.topic_menu_item_reported),
-    Share(Icons.Rounded.Share, R.string.topic_menu_item_share),
-    OpenInBrowser(Icons.Rounded.OpenInBrowser, R.string.topic_menu_item_open_in_browser),
+enum class TopicMenuItem(val icon: ImageVector, val label: StringResource) {
+    Append(Icons.AutoMirrored.Rounded.NoteAdd, Res.string.topic_menu_item_append),
+    Favorite(Icons.Rounded.BookmarkAdd, Res.string.topic_menu_item_favorite),
+    Favorited(Icons.Rounded.BookmarkAdded, Res.string.topic_menu_item_unfavorite),
+    More(Icons.Rounded.MoreVert, Res.string.topic_menu_item_more),
+    Thanks(Icons.Rounded.FavoriteBorder, Res.string.menu_item_thank),
+    Thanked(Icons.Rounded.Favorite, Res.string.menu_item_unthank),
+    Ignore(Icons.Rounded.VisibilityOff, Res.string.topic_menu_item_ignore),
+    Ignored(Icons.Rounded.Visibility, Res.string.topic_menu_item_unignore),
+    Report(Icons.Rounded.Report, Res.string.topic_menu_item_report),
+    Reported(Icons.Outlined.Report, Res.string.topic_menu_item_reported),
+    Share(Icons.Rounded.Share, Res.string.topic_menu_item_share),
+    OpenInBrowser(Icons.Rounded.OpenInBrowser, Res.string.topic_menu_item_open_in_browser),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +79,7 @@ fun TopicTopBar(
         title = {
             Text(
                 text = with(topicInfo.topic?.headerInfo?.title) {
-                    if (showTopicTitle && this != null) this else stringResource(R.string.topic)
+                    if (showTopicTitle && this != null) this else stringResource(Res.string.topic)
                 },
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 18.sp,
@@ -160,7 +161,7 @@ private fun TopicTopBarActions(
     }
     DropdownMenu(expanded = moreExpanded, onDismissRequest = { moreExpanded = false }) {
         topicMenuItems.forEach { menuItem ->
-            DropdownMenuItem(text = { Text(stringResource(id = menuItem.textResId)) },
+            DropdownMenuItem(text = { Text(stringResource(menuItem.label)) },
                 leadingIcon = {
                     Icon(menuItem.icon, menuItem.name)
                 },

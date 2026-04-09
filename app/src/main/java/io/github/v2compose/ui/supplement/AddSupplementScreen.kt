@@ -32,17 +32,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.TextAlertDialog
 import io.github.v2compose.ui.common.TextEditor
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun AddSupplementScreenRoute(
@@ -84,7 +84,7 @@ private fun AddSupplementScreen(
         topBar = {
             TopAppBar(
                 navigationIcon = { CloseButton(onClick = onCloseClick) },
-                title = { Text(stringResource(id = R.string.add_supplement)) },
+                title = { Text(stringResource(Res.string.add_supplement)) },
                 actions = {
                     AddSupplementButton(addSupplementState) {
                         onAddSupplementClick(supplement, contentFormat)
@@ -106,7 +106,7 @@ private fun AddSupplementScreen(
 //            )
             TextEditor(
                 content = supplement,
-                placeholder = stringResource(id = R.string.add_supplement_tips),
+                placeholder = stringResource(Res.string.add_supplement_tips),
                 contentFormat = contentFormat,
                 onContentChanged = { supplement = it },
                 onContentFormatChanged = { contentFormat = it },
@@ -158,7 +158,7 @@ fun WriteSupplementField(
         ),
         placeholder = {
             Text(
-                stringResource(id = R.string.add_supplement_tips),
+                stringResource(Res.string.add_supplement_tips),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
@@ -178,7 +178,7 @@ private fun AddSupplementBackHandler(supplement: String, onCloseClick: () -> Uni
 
     if (showBackTips) {
         TextAlertDialog(
-            message = stringResource(id = R.string.add_supplement_back_tips),
+            message = stringResource(Res.string.add_supplement_back_tips),
             onConfirm = { onCloseClick() },
             onDismiss = { showBackTips = false })
     }
@@ -205,10 +205,11 @@ private fun HandleAddSupplementState(
             onAddSupplementSuccess(topicId)
         }
     } else if (addSupplementState is AddSupplementState.Error) {
+        val defaultMessage = stringResource(Res.string.add_supplement_fail_tips)
         LaunchedEffect(addSupplementState) {
             addSupplementState.error?.message.let {
                 if (it.isNullOrEmpty()) {
-                    screenState.showMessage(R.string.add_supplement_fail_tips)
+                    screenState.showMessage(defaultMessage)
                 } else {
                     screenState.showMessage(it)
                 }

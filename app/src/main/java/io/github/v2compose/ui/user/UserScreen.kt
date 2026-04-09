@@ -37,7 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
@@ -46,7 +46,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import io.github.v2compose.Constants
-import io.github.v2compose.R
 import io.github.v2compose.V2exUri
 import io.github.v2compose.core.share
 import io.github.v2compose.network.bean.UserReplies
@@ -67,6 +66,7 @@ import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "UserScreen"
 
@@ -233,7 +233,7 @@ fun UserPager(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 })
-    val tabNames = listOf(stringResource(R.string.user_topic), stringResource(R.string.user_reply))
+    val tabNames = listOf(stringResource(Res.string.user_topic), stringResource(Res.string.user_reply))
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(

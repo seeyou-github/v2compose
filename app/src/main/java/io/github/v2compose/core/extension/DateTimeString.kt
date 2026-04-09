@@ -1,10 +1,10 @@
 package io.github.v2compose.core.extension
 
-import android.content.Context
-import io.github.v2compose.R
+import org.jetbrains.compose.resources.stringResource
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import v2compose.shared.generated.resources.*
 
 private const val UTC_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"
 
@@ -13,7 +13,8 @@ fun String.toDateTime(): Date? {
 }
 
 
-fun String.toTimeText(context: Context): String {
+@androidx.compose.runtime.Composable
+fun String.toTimeText(): String {
     val timeMills = toDateTime()?.time ?: return this
 
     val timeDelta = System.currentTimeMillis() - timeMills
@@ -26,13 +27,13 @@ fun String.toTimeText(context: Context): String {
         return newFormatter.format(Date(timeMills))
     }
     if (timeDelta >= dayMills) {
-        return context.getString(R.string.n_days_ago, timeDelta / dayMills)
+        return stringResource(Res.string.n_days_ago, timeDelta / dayMills)
     }
     if (timeDelta >= hourMills) {
-        return context.getString(R.string.n_hours_ago, timeDelta / hourMills)
+        return stringResource(Res.string.n_hours_ago, timeDelta / hourMills)
     }
     if (timeDelta >= minMills) {
-        return context.getString(R.string.n_minutes_ago, timeDelta / minMills)
+        return stringResource(Res.string.n_minutes_ago, timeDelta / minMills)
     }
-    return context.getString(R.string.just_now)
+    return stringResource(Res.string.just_now)
 }

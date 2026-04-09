@@ -8,7 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import io.github.v2compose.R
+import org.jetbrains.compose.resources.StringResource
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun rememberLoginScreenState(context: Context = LocalContext.current): LoginScreenState {
@@ -20,33 +21,33 @@ fun rememberLoginScreenState(context: Context = LocalContext.current): LoginScre
 @Stable
 class LoginScreenState(private val context: Context) {
 
-    var userNameError by mutableStateOf("")
+    var userNameError by mutableStateOf<StringResource?>(null)
         private set
-    var passwordError by mutableStateOf("")
+    var passwordError by mutableStateOf<StringResource?>(null)
         private set
-    var captchaError by mutableStateOf("")
+    var captchaError by mutableStateOf<StringResource?>(null)
         private set
 
     fun checkValid(userName: String, password: String, captcha: String): Boolean {
         userNameError =
-            if (userName.isBlank()) context.getString(R.string.login_username_blank) else ""
+            if (userName.isBlank()) Res.string.login_username_blank else null
         passwordError =
-            if (password.isBlank()) context.getString(R.string.login_password_blank) else ""
+            if (password.isBlank()) Res.string.login_password_blank else null
         captchaError =
-            if (captcha.isBlank()) context.getString(R.string.login_captcha_blank) else ""
-        return userNameError.isEmpty() && passwordError.isEmpty() && captchaError.isEmpty()
+            if (captcha.isBlank()) Res.string.login_captcha_blank else null
+        return userNameError == null && passwordError == null && captchaError == null
     }
 
     fun resetUserNameError() {
-        userNameError = ""
+        userNameError = null
     }
 
     fun resetPasswordError() {
-        passwordError = ""
+        passwordError = null
     }
 
     fun resetCaptchaError() {
-        captchaError = ""
+        captchaError = null
     }
 
 }

@@ -51,7 +51,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -59,7 +59,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.shared.bean.DraftTopic
@@ -71,6 +70,7 @@ import io.github.v2compose.ui.common.SelectNode
 import io.github.v2compose.ui.common.TextEditor
 import io.github.v2compose.usecase.LoadNodesState
 import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun WriteTopicScreenRoute(
@@ -176,7 +176,7 @@ private fun WriteTopicScreen(
                     Box(modifier = Modifier.weight(1f)) {
                         TextEditor(
                             content = content,
-                            placeholder = stringResource(R.string.topic_content_placeholder),
+                            placeholder = stringResource(Res.string.topic_content_placeholder),
                             contentFormat = contentFormat,
                             onContentChanged = {
                                 content = it
@@ -268,7 +268,7 @@ private fun TopicTitleField(
             errorPlaceholderColor = placeholderColor,
             disabledPlaceholderColor = placeholderColor,
         ),
-        placeholder = { Text(stringResource(id = R.string.topic_title)) },
+        placeholder = { Text(stringResource(Res.string.topic_title)) },
         textStyle = MaterialTheme.typography.bodyLarge,
     )
 
@@ -305,7 +305,7 @@ fun TopicContentField(
             errorPlaceholderColor = placeholderColor,
             disabledPlaceholderColor = placeholderColor,
         ),
-        placeholder = { Text(stringResource(R.string.topic_content_placeholder)) },
+        placeholder = { Text(stringResource(Res.string.topic_content_placeholder)) },
         textStyle = MaterialTheme.typography.bodyMedium.copy(
             fontSize = 15.sp,
             lineHeight = 22.sp,
@@ -321,7 +321,7 @@ private fun TopBar(
     createTopicState: CreateTopicState, onCloseClick: () -> Unit, onSendClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
-        title = { Text(stringResource(id = R.string.create_topic)) },
+        title = { Text(stringResource(Res.string.create_topic)) },
         navigationIcon = { CloseButton(onClick = onCloseClick) },
         actions = {
             SendButton(
@@ -356,12 +356,13 @@ private fun HandleLoadNodesState(
     loadNodesState: LoadNodesState, screenState: WriteTopicScreenState
 ) {
     if (loadNodesState is LoadNodesState.Error) {
+        val defaultMessage = stringResource(Res.string.load_nodes_failure)
         LaunchedEffect(loadNodesState) {
             val message = loadNodesState.error?.message
             if (message != null) {
                 screenState.showMessage(message)
             } else {
-                screenState.showMessage(R.string.load_nodes_failure)
+                screenState.showMessage(defaultMessage)
             }
         }
     }
@@ -376,12 +377,13 @@ private fun HandleCreateTopicState(
 ) {
     when (createTopicState) {
         is CreateTopicState.Error -> {
+            val defaultMessage = stringResource(Res.string.load_nodes_failure)
             LaunchedEffect(createTopicState) {
                 val message = createTopicState.error?.message
                 if (message != null) {
                     screenState.showMessage(message)
                 } else {
-                    screenState.showMessage(R.string.load_nodes_failure)
+                    screenState.showMessage(defaultMessage)
                 }
             }
         }
@@ -438,7 +440,7 @@ private fun TopicNodeField(
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                if (node?.title.isNullOrEmpty()) stringResource(R.string.select_node) else node?.title!!,
+                if (node?.title.isNullOrEmpty()) stringResource(Res.string.select_node) else node?.title!!,
                 color = contentColor,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,

@@ -54,13 +54,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.StringResource
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.ContentInfo.Supplement
 import io.github.v2compose.network.bean.TopicInfo.Reply
@@ -89,6 +89,7 @@ import io.github.v2compose.ui.topic.composables.UserRepliesDialog
 import io.github.v2compose.ui.topic.composables.fabSizeWithMargin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "TopicScreen"
 
@@ -622,12 +623,12 @@ private fun TopicSupplement(
     }
 }
 
-enum class RepliesOrder(@StringRes val textResId: Int) {
+enum class RepliesOrder(val label: StringResource) {
     //最新的回复排在最前面
-    Negative(R.string.replies_order_negative),
+    Negative(Res.string.replies_order_negative),
 
     //最早的回复排在最前面
-    Positive(R.string.replies_order_positive),
+    Positive(Res.string.replies_order_positive),
 }
 
 @Composable
@@ -641,7 +642,7 @@ private fun TopicRepliesBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            stringResource(R.string.n_comment, replyNum),
+            stringResource(Res.string.n_comment, replyNum),
             style = MaterialTheme.typography.titleMedium,
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -654,7 +655,7 @@ private fun TopicRepliesBar(
         ) { order ->
             val textColorAlpha = if (repliesOrder == order) 1f else 0.6f
             Text(
-                stringResource(order.textResId),
+                stringResource(order.label),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = textColorAlpha)
             )

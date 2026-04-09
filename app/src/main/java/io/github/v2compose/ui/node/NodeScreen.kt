@@ -42,7 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,7 +54,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
-import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
@@ -74,6 +73,7 @@ import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.CollapsingToolbarScope
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "NodeScreen"
 
@@ -212,7 +212,7 @@ private fun CollapsingToolbarScope.NodeTopBar(
 
     if (showUnfollowDialog) {
         TextAlertDialog(
-            message = stringResource(R.string.node_unfavorite_tips),
+            message = stringResource(Res.string.node_unfavorite_tips),
             onConfirm = {
                 favorited = false
                 onFavoriteClick()
@@ -279,7 +279,7 @@ private fun CollapsingToolbarScope.NodeTopBar(
                     },
                     label = {
                         Text(
-                            stringResource(if (it) R.string.node_favorited else R.string.node_favorite),
+                            stringResource(if (it) Res.string.node_favorited else Res.string.node_favorite),
                             color = contentColor
                         )
                     },
@@ -313,14 +313,14 @@ private fun NodeTitle(
         Spacer(modifier = Modifier.width(8.dp))
         Column(verticalArrangement = Arrangement.Center, modifier = Modifier.weight(1f)) {
             Text(
-                nodeTitle ?: stringResource(id = R.string.node),
+                nodeTitle ?: stringResource(Res.string.node),
                 style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
                 color = MaterialTheme.colorScheme.onBackground,
             )
             nodeInfo?.let {
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    stringResource(id = R.string.node_topics_and_favorites, it.topics, it.stars),
+                    stringResource(Res.string.node_topics_and_favorites, it.topics, it.stars),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 )
@@ -460,13 +460,13 @@ private fun NodeTopic(
 
                     Row {
                         Text(
-                            stringResource(id = R.string.node_click_times, item.clickNum),
+                            stringResource(Res.string.node_click_times, item.clickNum),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            stringResource(R.string.n_comment, item.commentNum),
+                            stringResource(Res.string.n_comment, item.commentNum),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                         )

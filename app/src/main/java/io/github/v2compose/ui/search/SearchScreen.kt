@@ -43,8 +43,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -62,12 +62,12 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import io.github.v2compose.R
 import io.github.v2compose.core.extension.toTimeText
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "SearchScreen"
 
@@ -179,7 +179,7 @@ private fun SearchBar(keyword: String?, onCloseClick: () -> Unit, onSearchClick:
             singleLine = true,
             placeholder = {
                 Icon(
-                    painter = painterResource(id = R.drawable.logo_sov2ex),
+                    painter = painterResource(Res.drawable.logo_sov2ex),
                     contentDescription = "sov2ex logo",
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 )
@@ -223,7 +223,7 @@ private fun SearchHistoryKeywords(
     Column(modifier = modifier) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
-                stringResource(id = R.string.history_keywords),
+                stringResource(Res.string.history_keywords),
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 16.dp)
@@ -347,9 +347,9 @@ private fun SearchTopic(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 stringResource(
-                    id = R.string.search_user_time_replies,
+                    Res.string.search_user_time_replies,
                     topic.source.creator,
-                    topic.source.time.toTimeText(LocalContext.current),
+                    topic.source.time.toTimeText(),
                     topic.source.replies,
                 ),
                 style = MaterialTheme.typography.labelSmall,

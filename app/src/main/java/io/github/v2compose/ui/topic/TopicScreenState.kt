@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import io.github.v2compose.LocalSnackbarHostState
-import io.github.v2compose.R
 import io.github.v2compose.V2exUri
 import io.github.v2compose.core.openInBrowser
 import io.github.v2compose.core.share
@@ -18,6 +17,9 @@ import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.ui.BaseScreenState
 import io.github.v2compose.ui.topic.composables.TopicMenuItem
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun rememberTopicScreenState(
@@ -70,7 +72,9 @@ class TopicScreenState(
                 reply.replyContent
             )
         )
-        showMessage(R.string.copy_comment_success_tips)
+        coroutineScope.launch {
+            showMessage(getString(Res.string.copy_comment_success_tips))
+        }
     }
 
 

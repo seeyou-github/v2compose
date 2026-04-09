@@ -17,7 +17,7 @@ object NotificationCenter {
             ?: return
         manager.createNotificationChannel(
             ChannelAutoCheckIn,
-            context.getString(R.string.notification_channel_auto_check_in),
+            context.getString(io.github.v2compose.R.string.notification_channel_auto_check_in),
             NotificationManager.IMPORTANCE_DEFAULT
         )
     }

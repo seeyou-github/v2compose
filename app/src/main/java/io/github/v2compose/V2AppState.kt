@@ -34,6 +34,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 import org.koin.compose.koinInject
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "AppState"
 
@@ -123,10 +125,10 @@ class V2AppState (
             val newFile = File(appImageDir, imageName)
             snapshot.data.toFile().copyTo(newFile, overwrite = true)
             snapshot.close()
-            showMessage(R.string.save_image_success)
+            showMessage(getString(Res.string.save_image_success))
             return@launch
         }
-        showMessage(R.string.save_image_failed)
+        showMessage(getString(Res.string.save_image_failed))
         return@launch
     }
 

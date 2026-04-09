@@ -36,11 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.TopicNode
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun SelectNode(
@@ -90,7 +90,7 @@ fun SelectNode(
                                 .focusRequester(focusRequester)
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            placeholder = { Text(text = stringResource(id = R.string.search_all_nodes)) },
+                            placeholder = { Text(text = stringResource(Res.string.search_all_nodes)) },
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
                                 errorContainerColor = Color.Transparent,

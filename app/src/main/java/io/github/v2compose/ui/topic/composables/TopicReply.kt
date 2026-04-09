@@ -46,12 +46,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import io.github.v2compose.R
+import org.jetbrains.compose.resources.StringResource
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.Reply
 import io.github.v2compose.ui.common.HtmlContent
@@ -59,6 +59,7 @@ import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.OnHtmlImageClick
 import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.topic.bean.ReplyWrapper
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun TopicReply(
@@ -231,7 +232,7 @@ private fun TopicReplyActions(
 @Composable
 fun OpLabel() {
     Text(
-        stringResource(id = R.string.op),
+        stringResource(Res.string.op),
         color = MaterialTheme.colorScheme.primary,
         style = MaterialTheme.typography.labelSmall,
         modifier = Modifier
@@ -302,20 +303,20 @@ private fun PublishedTime(time: String, modifier: Modifier = Modifier) {
 @Composable
 private fun ReplyFloor(floor: Int, modifier: Modifier = Modifier) {
     Text(
-        stringResource(id = R.string.n_floor, floor),
+        stringResource(Res.string.n_floor, floor),
         modifier = modifier,
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
-enum class ReplyMenuItem(val icon: ImageVector, @StringRes val labelResId: Int) {
-    Thank(Icons.Rounded.FavoriteBorder, R.string.menu_item_thank),
-    Thanked(Icons.Rounded.Favorite, R.string.menu_item_unthank),
-    Reply(Icons.AutoMirrored.Rounded.Reply, R.string.reply_comment),
-    Copy(Icons.Rounded.ContentCopy, R.string.copy_comment),
-    Ignore(Icons.Rounded.VisibilityOff, R.string.ignore_comment),
-    HomePage(Icons.Rounded.Person, R.string.user_home_page),
+enum class ReplyMenuItem(val icon: ImageVector, val label: StringResource) {
+    Thank(Icons.Rounded.FavoriteBorder, Res.string.menu_item_thank),
+    Thanked(Icons.Rounded.Favorite, Res.string.menu_item_unthank),
+    Reply(Icons.AutoMirrored.Rounded.Reply, Res.string.reply_comment),
+    Copy(Icons.Rounded.ContentCopy, Res.string.copy_comment),
+    Ignore(Icons.Rounded.VisibilityOff, Res.string.ignore_comment),
+    HomePage(Icons.Rounded.Person, Res.string.user_home_page),
 }
 
 @Composable
@@ -396,7 +397,7 @@ fun ReplySheetItem(item: ReplyMenuItem, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                stringResource(id = item.labelResId),
+                stringResource(item.label),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium
             )

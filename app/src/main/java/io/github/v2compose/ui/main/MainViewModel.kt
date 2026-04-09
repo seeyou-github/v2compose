@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.datasource.AppPreferences
@@ -26,6 +25,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.util.concurrent.ExecutorService
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 class MainViewModel (
     application: Application,
@@ -84,7 +85,7 @@ class MainViewModel (
             result.message?.let { updateSnackbarMessage(it) }
         } else {
             updateSnackbarMessage(
-                result.message ?: context.getString(R.string.daily_mission_failure)
+                result.message ?: getString(Res.string.daily_mission_failure)
             )
         }
     }

@@ -8,8 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
-import io.github.v2compose.R
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.*
 
 
 @Composable
@@ -28,7 +28,7 @@ fun HtmlAlertDialog(
             },
             confirmButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text(stringResource(id = R.string.ok))
+                    Text(stringResource(Res.string.ok))
                 }
             })
     }

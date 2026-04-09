@@ -6,7 +6,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import io.github.v2compose.R
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
@@ -20,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "NodeViewModel"
 
@@ -92,12 +93,12 @@ class NodeViewModel (
                 val result = nodeRepository.doNodeAction(nodeArgs.nodeName, url)
                 _nodeTopicInfo.emit(result)
 //                val successTips =
-//                    if (result.hasStared()) R.string.node_favorite_success_tips else R.string.node_unfavorite_success_tips
-//                updateSnackbarMessage(context.getString(successTips))
+//                    if (result.hasStared()) Res.string.node_favorite_success_tips else Res.string.node_unfavorite_success_tips
+//                updateSnackbarMessage(getString(successTips))
             } catch (e: Exception) {
                 e.printStackTrace()
                 updateSnackbarMessage(
-                    e.message ?: context.getString(R.string.node_action_failure_tips)
+                    e.message ?: getString(Res.string.node_action_failure_tips)
                 )
             }
         }

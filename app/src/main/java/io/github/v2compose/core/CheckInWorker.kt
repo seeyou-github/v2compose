@@ -8,6 +8,8 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import io.github.v2compose.R
 import io.github.v2compose.usecase.CheckInUseCase
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "CheckInWorker"
 private const val NotificationIdCheckIn: Int = 1001
@@ -28,9 +30,9 @@ class CheckInWorker (
         return ForegroundInfo(NotificationIdCheckIn, createNotification())
     }
 
-    private fun createNotification(): Notification {
+    private suspend fun createNotification(): Notification {
         return Notification.Builder(applicationContext, NotificationCenter.ChannelAutoCheckIn)
-            .setContentTitle(applicationContext.getString(R.string.auto_checking_in))
+            .setContentTitle(getString(Res.string.auto_checking_in))
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .build()
     }

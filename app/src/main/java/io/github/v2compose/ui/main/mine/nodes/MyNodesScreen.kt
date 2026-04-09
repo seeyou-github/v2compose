@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,11 +41,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.MyNodesInfo
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.LoadError
 import io.github.v2compose.ui.common.Loading
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun MyNodesScreenRoute(
@@ -76,7 +76,7 @@ private fun MyNodesScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(id = R.string.my_nodes)) },
+                title = { Text(text = stringResource(Res.string.my_nodes)) },
                 navigationIcon = { BackIcon(onBackClick = onBackClick) },
                 scrollBehavior = scrollBehavior
             )

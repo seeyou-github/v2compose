@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import io.github.v2compose.R
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.repository.AccountRepository
@@ -21,6 +20,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 class UserViewModel (
     application: Application,
@@ -91,10 +92,10 @@ class UserViewModel (
             try {
                 val result = userRepository.doUserAction(userPageInfo.userName, url)
                 _userUiState.emit(UserUiState.Success(result))
-//                updateSnackbarMessage(R.string.user_action_success)
+//                updateSnackbarMessage(Res.string.user_action_success)
             } catch (e: Exception) {
                 e.printStackTrace()
-                updateSnackbarMessage(e.message ?: context.getString(R.string.user_action_failure))
+                updateSnackbarMessage(e.message ?: getString(Res.string.user_action_failure))
             }
         }
     }

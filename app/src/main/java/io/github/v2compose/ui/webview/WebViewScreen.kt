@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebContent
@@ -21,10 +21,10 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import io.github.v2compose.Constants
-import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.webview.client.V2exRequestInterceptor
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun WebViewScreenRoute(url: String, onCloseClick: () -> Unit, openUri: (String) -> Unit) {
@@ -91,7 +91,7 @@ private fun WebViewTopBar(
     TopAppBar(
         title = {
             Text(
-                text = pageTitle ?: stringResource(id = R.string.v2ex),
+                text = pageTitle ?: stringResource(Res.string.v2ex),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )

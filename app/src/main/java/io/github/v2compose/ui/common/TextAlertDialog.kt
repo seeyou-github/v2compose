@@ -5,8 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import io.github.v2compose.R
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.*
 
 
 @Composable
@@ -25,12 +25,12 @@ fun TextAlertDialog(
                 onDismiss()
                 onConfirm()
             }) {
-                Text(stringResource(id = R.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = { onDismiss() }) {
-                Text(stringResource(id = R.string.cancel))
+                Text(stringResource(Res.string.cancel))
             }
         },
     )

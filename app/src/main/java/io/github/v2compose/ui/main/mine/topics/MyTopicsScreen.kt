@@ -14,19 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.MyTopicsInfo
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "MyFollowingScreen"
 
@@ -66,7 +66,7 @@ private fun MyTopicsScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(id = R.string.my_topics)) },
+                title = { Text(text = stringResource(Res.string.my_topics)) },
                 navigationIcon = { BackIcon(onBackClick = onBackClick) },
                 scrollBehavior = scrollBehavior
             )

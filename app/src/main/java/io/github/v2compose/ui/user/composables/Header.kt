@@ -36,10 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import io.github.v2compose.R
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.ui.common.BackIcon
@@ -48,6 +47,7 @@ import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.user.UserUiState
 import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.CollapsingToolbarScope
+import v2compose.shared.generated.resources.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,7 +120,7 @@ private fun FollowIcon(
 
     if (showUnfollowDialog) {
         TextAlertDialog(
-            message = stringResource(R.string.user_unfollow_tips),
+            message = stringResource(Res.string.user_unfollow_tips),
             onConfirm = {
                 currentFollowed = false
                 onFollowClick()
@@ -155,7 +155,7 @@ private fun UserTopAppBarTitle(userPageInfo: UserPageInfo, modifier: Modifier = 
             val online = userPageInfo.isOnline()
             val colorScheme = MaterialTheme.colorScheme
             Text(
-                text = stringResource(id = if (online) R.string.user_online else R.string.user_offline),
+                text = stringResource(if (online) Res.string.user_online else Res.string.user_offline),
                 style = MaterialTheme.typography.labelSmall,
                 color = if (online) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
                 modifier = Modifier
@@ -228,7 +228,7 @@ private fun UserInfo(
             userPageInfo?.let {
                 val online = userPageInfo.isOnline()
                 Text(
-                    text = stringResource(id = if (online) R.string.user_online else R.string.user_offline),
+                    text = stringResource(if (online) Res.string.user_online else Res.string.user_offline),
                     style = MaterialTheme.typography.labelMedium,
                     color = if (online) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -288,7 +288,7 @@ private fun BlockButton(
     }
     if (showBlockDialog) {
         TextAlertDialog(
-            message = stringResource(R.string.user_block_tips, userPageInfo.userName),
+            message = stringResource(Res.string.user_block_tips, userPageInfo.userName),
             onConfirm = {
                 blocked = true
                 onBlockClick()
@@ -306,7 +306,7 @@ private fun BlockButton(
         },
         label = {
             Text(
-                stringResource(if (blocked) R.string.user_unblock else R.string.user_block),
+                stringResource(if (blocked) Res.string.user_unblock else Res.string.user_block),
                 color = blockColor
             )
         },
@@ -335,7 +335,7 @@ private fun FollowButton(
     }
     if (showUnfollowDialog) {
         TextAlertDialog(
-            message = stringResource(R.string.user_unfollow_tips),
+            message = stringResource(Res.string.user_unfollow_tips),
             onConfirm = {
                 followed = false
                 onFollowClick()
@@ -353,7 +353,7 @@ private fun FollowButton(
         },
         label = {
             Text(
-                stringResource(if (followed) R.string.user_unfollow else R.string.user_follow),
+                stringResource(if (followed) Res.string.user_unfollow else Res.string.user_follow),
                 color = followColor,
             )
         },

@@ -1,31 +1,30 @@
 package io.github.v2compose.ui.settings
 
-import android.content.Context
+
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+
 import io.github.v2compose.LocalSnackbarHostState
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.Release
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun rememberSettingsScreenState(
-    context: Context = LocalContext.current,
     snackbarHostState: SnackbarHostState = LocalSnackbarHostState.current,
 ): SettingsScreenState {
-    return remember(context, snackbarHostState) {
-        SettingsScreenState(context, snackbarHostState)
+    return remember(snackbarHostState) {
+        SettingsScreenState(snackbarHostState)
     }
 }
 
 @Stable
 class SettingsScreenState (
-    private val context: Context,
     val snackbarHostState: SnackbarHostState,
 ) {
 
@@ -36,7 +35,7 @@ class SettingsScreenState (
         val showSnackbar =
             async {
                 snackbarHostState.showSnackbar(
-                    context.getString(R.string.checking_for_updates),
+                    getString(Res.string.checking_for_updates),
                     duration = SnackbarDuration.Short,
                 )
             }
@@ -47,7 +46,7 @@ class SettingsScreenState (
             onNewRelease(release)
         } else {
             snackbarHostState.showSnackbar(
-                context.getString(R.string.no_updates),
+                getString(Res.string.no_updates),
                 duration = SnackbarDuration.Short,
             )
         }
@@ -56,7 +55,7 @@ class SettingsScreenState (
     suspend fun logout(logout: suspend () -> Unit) {
         logout()
         snackbarHostState.showSnackbar(
-            context.getString(R.string.logout_success),
+            getString(Res.string.logout_success),
             duration = SnackbarDuration.Short
         )
     }

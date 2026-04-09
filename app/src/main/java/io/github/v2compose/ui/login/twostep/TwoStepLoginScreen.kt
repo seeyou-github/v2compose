@@ -31,7 +31,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,11 +45,11 @@ import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonType
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSJetPackComposeProgressButton
 import io.github.v2compose.LocalSnackbarHostState
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.LoadError
 import io.github.v2compose.ui.common.Loading
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun TwoStepLoginScreenRoute(
@@ -68,7 +70,7 @@ fun TwoStepLoginScreenRoute(
 
     if (problem.isNotEmpty()) {
         LaunchedEffect(problem) {
-            snackbarHostState.showSnackbar(context.getString(R.string.captcha_error))
+            snackbarHostState.showSnackbar(getString(Res.string.captcha_error))
         }
     }
 
@@ -102,7 +104,7 @@ private fun TwoStepLoginScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(stringResource(id = R.string.two_step_login)) },
+                title = { Text(stringResource(Res.string.two_step_login)) },
                 navigationIcon = { CloseButton { onCloseClick() } })
         }
     ) {
@@ -141,11 +143,11 @@ private fun LoginContent(
 
     val focusRequester = remember { FocusRequester() }
     var code by remember { mutableStateOf("") }
-    var error by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<StringResource?>(null) }
 
     val onLoginClick = {
         if (code.isBlank()) {
-            error = context.getString(R.string.tfa_code_empty)
+            error = Res.string.tfa_code_empty
         } else {
             focusRequester.freeFocus()
             onLogin(code)
@@ -157,7 +159,7 @@ private fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            twoStepLoginInfo.title.ifEmpty { stringResource(id = R.string.two_step_login_desc) },
+            twoStepLoginInfo.title.ifEmpty { stringResource(Res.string.two_step_login_desc) },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -166,8 +168,8 @@ private fun LoginContent(
 
         TfaCode(code = code, onValueChanged = {
             code = it
-            error = ""
-        }, onNextClick = onLoginClick, modifier = Modifier.focusRequester(focusRequester))
+            error = null
+        }, onNextClick = onLoginClick, modifier = Modifier.focusRequester(focusRequester), error = error)
 
         Spacer(Modifier.height(8.dp))
 
@@ -180,7 +182,7 @@ private fun LoginContent(
         Spacer(Modifier.height(8.dp))
 
         Text(
-            stringResource(id = R.string.two_step_login_tips),
+            stringResource(Res.string.two_step_login_tips),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
         )
@@ -197,15 +199,15 @@ private fun TfaCode(
     onValueChanged: (String) -> Unit,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
-    error: String? = null,
+    error: StringResource? = null,
 ) {
     OutlinedTextField(
         value = code,
         onValueChange = onValueChanged,
-        label = { Text(stringResource(id = R.string.tfa_code)) },
+        label = { Text(stringResource(Res.string.tfa_code)) },
         supportingText = {
-            if (!error.isNullOrEmpty()) {
-                Text(error)
+            if (error != null) {
+                Text(stringResource(error))
             }
         },
         keyboardOptions = KeyboardOptions(
@@ -213,7 +215,7 @@ private fun TfaCode(
             keyboardType = KeyboardType.Number,
         ),
         keyboardActions = KeyboardActions(onDone = { onNextClick() }),
-        isError = !error.isNullOrEmpty(),
+        isError = error != null,
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
     )
@@ -242,7 +244,7 @@ private fun LoginButton(loginState: LoginState, enabled: Boolean, onLoginClick: 
         failureIconTintColor = MaterialTheme.colorScheme.onPrimary,
         buttonState = buttonState,
         enabled = enabled,
-        text = stringResource(id = R.string.login),
+        text = stringResource(Res.string.login),
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold,
         speedMillis = 400,

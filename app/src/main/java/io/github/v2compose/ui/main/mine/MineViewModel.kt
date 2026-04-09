@@ -2,7 +2,6 @@ package io.github.v2compose.ui.main.mine
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.ui.BaseViewModel
@@ -16,6 +15,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 class MineViewModel (
     application: Application,
@@ -86,7 +87,7 @@ class MineViewModel (
                 result.message?.let { updateSnackbarMessage(it) }
             } else {
                 updateSnackbarMessage(
-                    result.message ?: context.getString(R.string.daily_mission_failure)
+                    result.message ?: getString(Res.string.daily_mission_failure)
                 )
             }
             _checkingIn.emit(false)

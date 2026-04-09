@@ -7,11 +7,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import io.github.v2compose.LocalSnackbarHostState
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.ui.BaseScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun rememberMineContentState(
@@ -32,7 +33,7 @@ class MineContentState(
 
     fun notImplemented() {
         coroutineScope.launch {
-            val message = context.getString(R.string.function_not_implemented)
+            val message = getString(Res.string.function_not_implemented)
             snackbarHostState.showSnackbar(message = message)
         }
     }
@@ -41,7 +42,9 @@ class MineContentState(
         if (account.isValid()) {
             action()
         } else {
-            showMessage(R.string.login_first)
+            coroutineScope.launch {
+                showMessage(getString(Res.string.login_first))
+            }
         }
     }
 

@@ -35,11 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.ui.HandleSnackbarMessage
@@ -53,6 +49,14 @@ import io.github.v2compose.ui.main.mine.MineContent
 import io.github.v2compose.ui.main.nodes.NodesContent
 import io.github.v2compose.ui.main.notifications.NotificationsContent
 import io.github.v2compose.usecase.LoadNodesState
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.main_home
+import v2compose.shared.generated.resources.main_mine
+import v2compose.shared.generated.resources.main_nodes
+import v2compose.shared.generated.resources.main_notifications
 
 @Composable
 fun MainScreenRoute(
@@ -231,7 +235,12 @@ private fun MainTopBar(
     currentNavBarIndex: Int,
     onMenuItemClick: (MenuItem) -> Unit,
 ) {
-    val navBarItemNames = stringArrayResource(R.array.main_navigation_items)
+    val navBarItemNames = listOf(
+        stringResource(Res.string.main_home),
+        stringResource(Res.string.main_nodes),
+        stringResource(Res.string.main_notifications),
+        stringResource(Res.string.main_mine)
+    )
     val menuItem = remember(currentNavBarIndex) {
         when (currentNavBarIndex) {
             3 -> MenuItem.Settings
@@ -326,9 +335,14 @@ fun MainBottomNavigation(
     }
 }
 
-enum class MainBottomTab(val title: Int, val icon: ImageVector) {
-    Home(R.string.main_home, Icons.Outlined.Home),
-    Nodes(R.string.main_nodes, Icons.AutoMirrored.Outlined.List),
-    Notifications(R.string.main_notifications, Icons.Outlined.Notifications),
-    Mine(R.string.main_mine, Icons.Outlined.Person)
+enum class MainBottomTab(val title: StringResource, val icon: ImageVector) {
+    Home(Res.string.main_home, Icons.Outlined.Home), Nodes(
+        Res.string.main_nodes,
+        Icons.AutoMirrored.Outlined.List
+    ),
+    Notifications(
+        Res.string.main_notifications,
+        Icons.Outlined.Notifications
+    ),
+    Mine(Res.string.main_mine, Icons.Outlined.Person)
 }

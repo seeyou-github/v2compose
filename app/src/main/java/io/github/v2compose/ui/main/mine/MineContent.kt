@@ -39,19 +39,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.cooaer.htmltext.HtmlText
-import io.github.v2compose.R
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.core.extension.isBeforeTodayByUTC
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.ListDivider
+import v2compose.shared.generated.resources.*
 
 
 @Composable
@@ -129,7 +130,7 @@ private fun MineContainer(
             Spacer(Modifier.height(8.dp))
             MineEntry(
                 leadingIcon = Icons.Rounded.Edit,
-                title = stringResource(id = R.string.create_topic),
+                title = stringResource(Res.string.create_topic),
                 onEntryClick = onCreateTopicClick,
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             )
@@ -137,7 +138,7 @@ private fun MineContainer(
             Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
                 MineEntry(
                     leadingIcon = Icons.Rounded.Category,
-                    title = stringResource(id = R.string.my_nodes),
+                    title = stringResource(Res.string.my_nodes),
                     subtitle = account.nodes.toString(),
                     onEntryClick = onMyNodesClick,
                     modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
@@ -145,7 +146,7 @@ private fun MineContainer(
                 ListDivider()
                 MineEntry(
                     leadingIcon = Icons.Rounded.Topic,
-                    title = stringResource(id = R.string.my_topics),
+                    title = stringResource(Res.string.my_topics),
                     subtitle = account.topics.toString(),
                     onEntryClick = onMyTopicsClick,
                     modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
@@ -153,7 +154,7 @@ private fun MineContainer(
                 ListDivider()
                 MineEntry(
                     leadingIcon = Icons.Rounded.People,
-                    title = stringResource(id = R.string.my_following),
+                    title = stringResource(Res.string.my_following),
                     subtitle = account.following.toString(),
                     onEntryClick = onMyFollowingClick,
                     modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
@@ -162,7 +163,7 @@ private fun MineContainer(
             Spacer(Modifier.height(8.dp))
             MineEntry(
                 leadingIcon = Icons.Rounded.Settings,
-                title = stringResource(id = R.string.settings),
+                title = stringResource(Res.string.settings),
                 onEntryClick = onSettingsClick,
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             )
@@ -204,7 +205,7 @@ private fun MineHeader(
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
-                    if (account.isValid()) account.userName else stringResource(id = R.string.login),
+                    if (account.isValid()) account.userName else stringResource(Res.string.login),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .padding(horizontal = 0.dp)
@@ -212,9 +213,9 @@ private fun MineHeader(
                 )
                 if (account.isValid()) {
                     Spacer(Modifier.width(16.dp))
-                    AccountBalanceItem(num = account.balance.gold, icon = R.drawable.gold)
-                    AccountBalanceItem(num = account.balance.silver, icon = R.drawable.silver)
-                    AccountBalanceItem(num = account.balance.bronze, icon = R.drawable.bronze)
+                    AccountBalanceItem(num = account.balance.gold, icon = Res.drawable.gold)
+                    AccountBalanceItem(num = account.balance.silver, icon = Res.drawable.silver)
+                    AccountBalanceItem(num = account.balance.bronze, icon = Res.drawable.bronze)
                 }
             }
             if (account.isValid()) {
@@ -236,7 +237,7 @@ private fun MineHeader(
 }
 
 @Composable
-fun AccountBalanceItem(num: Int, @DrawableRes icon: Int) {
+fun AccountBalanceItem(num: Int, icon: DrawableResource) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(horizontal = 2.dp, vertical = 3.dp)
@@ -260,11 +261,11 @@ private fun CheckInButton(
 ) {
     val canCheckIn = hasCheckingInTips || lastCheckInTime.isBeforeTodayByUTC()
     val checkInText = if (checkingIn) {
-        R.string.checking_in
+        Res.string.checking_in
     } else if (canCheckIn) {
-        R.string.daily_mission
+        Res.string.daily_mission
     } else {
-        R.string.daily_mission_ok
+        Res.string.daily_mission_ok
     }
     AssistChip(
         onClick = onCheckInClick,

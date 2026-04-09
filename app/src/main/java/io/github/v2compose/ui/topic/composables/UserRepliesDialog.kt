@@ -17,14 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import io.github.v2compose.R
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.ui.common.OnHtmlImageClick
 import io.github.v2compose.ui.common.TopicUserAvatar
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun UserRepliesDialog(
@@ -97,7 +97,7 @@ private fun UserRepliesTitle(
                 onUserAvatarClick = { onUserAvatarClick(userName, avatar) })
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                stringResource(id = R.string.user_previous_replies, userName),
+                stringResource(Res.string.user_previous_replies, userName),
                 maxLines = 1,
                 style = MaterialTheme.typography.titleMedium,
             )

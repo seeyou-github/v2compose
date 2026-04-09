@@ -1,7 +1,6 @@
 package io.github.v2compose.ui.topic
 
 import android.app.Application
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
@@ -10,7 +9,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import io.github.v2compose.R
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.core.extension.redirectLocation
@@ -37,11 +35,28 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.action_failure
+import v2compose.shared.generated.resources.action_success
+import v2compose.shared.generated.resources.ignore_comment
+import v2compose.shared.generated.resources.menu_item_thank
+import v2compose.shared.generated.resources.reply
+import v2compose.shared.generated.resources.thanks_fail_is_self
+import v2compose.shared.generated.resources.thanks_fail_just_joined
+import v2compose.shared.generated.resources.topic_menu_item_favorite
+import v2compose.shared.generated.resources.topic_menu_item_ignore
+import v2compose.shared.generated.resources.topic_menu_item_report
+import v2compose.shared.generated.resources.topic_menu_item_unfavorite
+import v2compose.shared.generated.resources.topic_menu_item_unignore
+import v2compose.shared.generated.resources.unreport_tips
+import v2compose.shared.generated.resources.unthanks_tips
 import kotlin.math.ceil
 
 private const val TAG = "TopicViewModel"
 
-class TopicViewModel (
+class TopicViewModel(
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
@@ -49,8 +64,6 @@ class TopicViewModel (
     private val accountRepository: AccountRepository,
     private val fixedHtmlImage: FixHtmlUseCase,
 ) : BaseViewModel() {
-
-    private val context = application.applicationContext
 
     companion object {
         const val topicCountPerPage = 100
@@ -114,7 +127,7 @@ class TopicViewModel (
     fun favoriteTopic() {
         doTopicAction(
             action = "favorite",
-            actionNameResId = R.string.topic_menu_item_favorite,
+            actionNameRes = Res.string.topic_menu_item_favorite,
             method = ActionMethod.Get,
             onSuccess = { updateTopicInfoWrapper(favorited = true) },
         )
@@ -123,7 +136,7 @@ class TopicViewModel (
     fun unFavoriteTopic() {
         doTopicAction(
             action = "unfavorite",
-            actionNameResId = R.string.topic_menu_item_unfavorite,
+            actionNameRes = Res.string.topic_menu_item_unfavorite,
             method = ActionMethod.Get,
             onSuccess = { updateTopicInfoWrapper(favorited = false) },
         )
@@ -134,7 +147,7 @@ class TopicViewModel (
         if (!checkCanThanks(userName)) return
         doTopicAction(
             action = "thank",
-            actionNameResId = R.string.menu_item_thank,
+            actionNameRes = Res.string.menu_item_thank,
             method = ActionMethod.Post,
             onSuccess = { updateTopicInfoWrapper(thanked = true) },
         )
@@ -142,14 +155,14 @@ class TopicViewModel (
 
     fun unThanksTopic() {
         viewModelScope.launch {
-            updateSnackbarMessage(context.getString(R.string.unthanks_tips))
+            updateSnackbarMessage(getString(Res.string.unthanks_tips))
         }
     }
 
     fun ignoreTopic() {
         doTopicAction(
             action = "ignore",
-            actionNameResId = R.string.topic_menu_item_ignore,
+            actionNameRes = Res.string.topic_menu_item_ignore,
             method = ActionMethod.Get,
             onSuccess = { updateTopicInfoWrapper(ignored = true) },
         )
@@ -158,7 +171,7 @@ class TopicViewModel (
     fun unIgnoreTopic() {
         doTopicAction(
             action = "unignore",
-            actionNameResId = R.string.topic_menu_item_unignore,
+            actionNameRes = Res.string.topic_menu_item_unignore,
             method = ActionMethod.Get,
             onSuccess = { updateTopicInfoWrapper(ignored = false) },
         )
@@ -167,7 +180,7 @@ class TopicViewModel (
     fun reportTopic() {
         doTopicAction(
             action = "report",
-            actionNameResId = R.string.topic_menu_item_report,
+            actionNameRes = Res.string.topic_menu_item_report,
             method = ActionMethod.Get,
             onSuccess = { updateTopicInfoWrapper(reported = true) },
         )
@@ -175,21 +188,21 @@ class TopicViewModel (
 
     fun unReportTopic() {
         viewModelScope.launch {
-            updateSnackbarMessage(context.getString(R.string.unreport_tips))
+            updateSnackbarMessage(getString(Res.string.unreport_tips))
         }
     }
 
     private fun doTopicAction(
         action: String,
-        @StringRes actionNameResId: Int,
+        actionNameRes: StringResource,
         method: ActionMethod,
         onSuccess: (() -> Unit)? = null,
         onFailure: ((String) -> Unit)? = null,
         onError: ((Throwable?) -> Unit)? = null
     ) {
         val topic = topicInfoWrapper.value.topic ?: return
-        val actionName = context.getString(actionNameResId)
         viewModelScope.launch {
+            val actionName = getString(actionNameRes)
             try {
                 val result = topicRepository.doTopicAction(
                     action = action,
@@ -203,8 +216,8 @@ class TopicViewModel (
                         updateSnackbarMessage(result.message)
                     } else {
                         updateSnackbarMessage(
-                            context.getString(
-                                R.string.action_success,
+                            getString(
+                                Res.string.action_success,
                                 actionName
                             )
                         )
@@ -215,8 +228,8 @@ class TopicViewModel (
                         updateSnackbarMessage(result.message)
                     } else {
                         updateSnackbarMessage(
-                            context.getString(
-                                R.string.action_failure,
+                            getString(
+                                Res.string.action_failure,
                                 actionName
                             )
                         )
@@ -226,11 +239,11 @@ class TopicViewModel (
                 e.printStackTrace()
                 if (e.isRedirect) {
                     onSuccess?.invoke()
-                    updateSnackbarMessage(context.getString(R.string.action_success, actionName))
+                    updateSnackbarMessage(getString(Res.string.action_success, actionName))
                 } else {
                     onError?.invoke(e)
                     updateSnackbarMessage(
-                        e.message ?: context.getString(R.string.action_failure, actionName)
+                        e.message ?: getString(Res.string.action_failure, actionName)
                     )
                 }
 
@@ -276,15 +289,15 @@ class TopicViewModel (
         doReplyAction(
             reply,
             "thank",
-            R.string.menu_item_thank,
+            Res.string.menu_item_thank,
             ActionMethod.Post,
             onSuccess = { updateReplyWrapper(reply = reply, thanked = true) })
     }
 
     fun ignoreReply(reply: Reply) {
         val topic = topicInfoWrapper.value.topic ?: return
-        val actionName = context.getString(R.string.ignore_comment)
         viewModelScope.launch {
+            val actionName = getString(Res.string.ignore_comment)
             try {
                 val result = topicRepository.ignoreReply(
                     topicId = topicArgs.topicId,
@@ -293,14 +306,14 @@ class TopicViewModel (
                 )
                 if (result) {
                     updateReplyWrapper(reply, ignored = true)
-                    updateSnackbarMessage(context.getString(R.string.action_success, actionName))
+                    updateSnackbarMessage(getString(Res.string.action_success, actionName))
                 } else {
-                    updateSnackbarMessage(context.getString(R.string.action_failure, actionName))
+                    updateSnackbarMessage(getString(Res.string.action_failure, actionName))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 updateSnackbarMessage(
-                    e.message ?: context.getString(R.string.action_failure, actionName)
+                    e.message ?: getString(Res.string.action_failure, actionName)
                 )
             }
         }
@@ -309,15 +322,15 @@ class TopicViewModel (
     private fun doReplyAction(
         reply: Reply,
         action: String,
-        @StringRes actionNameResId: Int,
+        actionNameRes: StringResource,
         method: ActionMethod,
         onSuccess: (() -> Unit)? = null,
         onFailure: ((String) -> Unit)? = null,
         onError: ((Throwable?) -> Unit)? = null
     ) {
         val topic = topicInfoWrapper.value.topic ?: return
-        val actionName = context.getString(actionNameResId)
         viewModelScope.launch {
+            val actionName = getString(actionNameRes)
             try {
                 val result = topicRepository.doReplyAction(
                     action = action,
@@ -332,8 +345,8 @@ class TopicViewModel (
                         updateSnackbarMessage(result.message)
                     } else {
                         updateSnackbarMessage(
-                            context.getString(
-                                R.string.action_success,
+                            getString(
+                                Res.string.action_success,
                                 actionName
                             )
                         )
@@ -344,8 +357,8 @@ class TopicViewModel (
                         updateSnackbarMessage(result.message)
                     } else {
                         updateSnackbarMessage(
-                            context.getString(
-                                R.string.action_failure,
+                            getString(
+                                Res.string.action_failure,
                                 actionName
                             )
                         )
@@ -356,11 +369,11 @@ class TopicViewModel (
                 e.printStackTrace()
                 if (e.isRedirect) {
                     onSuccess?.invoke()
-                    updateSnackbarMessage(context.getString(R.string.action_success, actionName))
+                    updateSnackbarMessage(getString(Res.string.action_success, actionName))
                 } else {
                     onError?.invoke(e)
                     updateSnackbarMessage(
-                        e.message ?: context.getString(R.string.action_failure, actionName)
+                        e.message ?: getString(Res.string.action_failure, actionName)
                     )
                 }
 
@@ -392,7 +405,7 @@ class TopicViewModel (
         viewModelScope.launch {
             _replyTopicState.emit(ReplyTopicState.Idle)
             val topic = topicInfoWrapper.value.topic ?: return@launch
-            val actionName = context.getString(R.string.reply)
+            val actionName = getString(Res.string.reply)
 
             _replyTopicState.emit(ReplyTopicState.Loading)
             try {
@@ -403,10 +416,10 @@ class TopicViewModel (
                 if (e.isRedirect) {
                     val location = e.redirectLocation ?: ""
                     _replyTopicState.emit(ReplyTopicState.Success(location))
-                    updateSnackbarMessage(context.getString(R.string.action_success, actionName))
+                    updateSnackbarMessage(getString(Res.string.action_success, actionName))
                 } else {
                     _replyTopicState.emit(ReplyTopicState.Error(e))
-                    val errorMsg = context.getString(R.string.action_failure, actionName)
+                    val errorMsg = getString(Res.string.action_failure, actionName)
                     updateSnackbarMessage(e.message ?: errorMsg)
                 }
             }
@@ -418,14 +431,14 @@ class TopicViewModel (
         val account = runBlocking { accountRepository.account.first() }
         if (userName == account.userName) {
             viewModelScope.launch {
-                updateSnackbarMessage(context.getString(R.string.thanks_fail_is_self))
+                updateSnackbarMessage(getString(Res.string.thanks_fail_is_self))
             }
             return false
         }
         _topicInfoWrapper.value.topic?.headerInfo?.let {
             if (!it.canSendThanks()) {
                 viewModelScope.launch {
-                    updateSnackbarMessage(context.getString(R.string.thanks_fail_just_joined))
+                    updateSnackbarMessage(getString(Res.string.thanks_fail_just_joined))
                 }
                 return false
             }

@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +38,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import io.github.v2compose.R
 import io.github.v2compose.V2exUri
 import io.github.v2compose.network.bean.NotificationInfo
 import io.github.v2compose.ui.common.HtmlContent
@@ -52,6 +51,7 @@ import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "NotificationsContent"
 
@@ -81,7 +81,7 @@ fun NotificationsContent(
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
             ElevatedButton(onClick = onLoginClick, modifier = Modifier.align(Alignment.Center)) {
-                Text(stringResource(id = R.string.login))
+                Text(stringResource(Res.string.login))
             }
         }
     }

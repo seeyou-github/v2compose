@@ -15,6 +15,7 @@ buildkonfig {
     }
 }
 
+
 kotlin {
     android {
         namespace = "io.github.v2compose.shared"
@@ -94,6 +95,12 @@ dependencies {
     add("kspCommonMainMetadata", libs.fruit.ksp)
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "v2compose.shared.generated.resources"
+    generateResClass = always
+}
+
 // 解决 KMP 下手动引入 KSP 源码导致的 Task 依赖校验问题
 tasks.configureEach {
     if (name.startsWith("compileKotlin") || name.startsWith("ksp")) {
@@ -103,3 +110,25 @@ tasks.configureEach {
     }
 }
 
+
+
+
+
+// Wire the copied assets Directory to the KMP Android library's compilation
+kotlin {
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+    android { // this is AndroidTarget
+        // We can't access AGP assets directly in experimental KMP plugin via standard properties yet,
+        // so we inject it into the app's merge assets task below if needed.
+    }
+}
+
+// Fix for missing outputDirectory in copyAndroidMainComposeResourcesToAndroidAssets when using android.kotlin.multiplatform.library
+tasks.configureEach {
+    if (name == "copyAndroidMainComposeResourcesToAndroidAssets") {
+        try {
+            val dirProp = this.property("outputDirectory") as org.gradle.api.file.DirectoryProperty
+            dirProp.set(layout.buildDirectory.dir("intermediates/compose_fake_assets"))
+        } catch (e: Exception) {}
+    }
+}

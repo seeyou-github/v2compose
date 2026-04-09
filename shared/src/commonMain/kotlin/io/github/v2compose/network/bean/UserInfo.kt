@@ -9,28 +9,28 @@ class UserInfo : BaseInfo() {
     var status: String = ""
 
     @SerialName("id")
-    var id: String = ""
+    var id: Int = 0
 
     @SerialName("username")
     var userName: String = ""
 
     @SerialName("website")
-    var website: String = ""
+    var website: String? = null
 
     @SerialName("twitter")
-    var twitter: String = ""
+    var twitter: String? = null
 
     @SerialName("psn")
-    var psn: String = ""
+    var psn: String? = null
 
     @SerialName("github")
-    var github: String = ""
+    var github: String? = null
 
     @SerialName("btc")
-    var btc: String = ""
+    var btc: String? = null
 
     @SerialName("location")
-    var location: String = ""
+    var location: String? = null
 
     @SerialName("tagline")
     var tagline: String = ""
@@ -51,7 +51,7 @@ class UserInfo : BaseInfo() {
     var avatarXxx: String = ""
 
     @SerialName("created")
-    var created: String = ""
+    var created: Long = 0
 
     companion object {
         fun build(userName: String, avatar: String): UserInfo {
@@ -81,9 +81,7 @@ class UserInfo : BaseInfo() {
         return avatarUrl()
     }
 
-    override fun isValid(): Boolean {
-        return id.isNotEmpty()
-    }
+    override fun isValid(): Boolean = id > 0
 
     fun userBasicInfo(): String? {
         return try {

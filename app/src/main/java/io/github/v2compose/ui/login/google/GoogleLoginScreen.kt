@@ -15,15 +15,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
 import io.github.v2compose.Constants
-import io.github.v2compose.R
 import io.github.v2compose.ui.common.CloseButton
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "GoogleLogin"
 private const val googleLoginUrlRefer = "${Constants.baseUrl}/signin?next=/mission/daily"
@@ -86,7 +86,7 @@ private fun GoogleLoginScreen(
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
-            title = { Text(text = stringResource(id = R.string.sign_in_with_google)) },
+            title = { Text(text = stringResource(Res.string.sign_in_with_google)) },
             navigationIcon = { CloseButton(onCloseClick) })
     }) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {

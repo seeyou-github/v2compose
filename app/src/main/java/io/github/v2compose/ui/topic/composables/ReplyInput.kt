@@ -25,11 +25,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import io.github.v2compose.R
+import v2compose.shared.generated.resources.*
 
 private val fabSize = 56.dp
 private val borderPadding = 16.dp
@@ -99,7 +99,7 @@ fun ReplyInput(
                     textFieldValueState = it
                     onValueChanged(it.text)
                 },
-                placeholder = { Text(text = stringResource(id = R.string.reply)) },
+                placeholder = { Text(text = stringResource(Res.string.reply)) },
                 modifier = Modifier
                     .focusRequester(focusRequester)
                     .align(Alignment.BottomEnd)

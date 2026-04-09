@@ -1,5 +1,6 @@
 package io.github.v2compose.core
 
+import io.github.v2compose.R
 import androidx.annotation.AnimRes
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -15,7 +16,6 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import io.github.v2compose.R
 
 fun NavController.navigateWithAnimation(
     route: String,

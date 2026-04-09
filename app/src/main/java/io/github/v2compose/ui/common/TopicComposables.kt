@@ -19,13 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
-import io.github.v2compose.R
+import v2compose.shared.generated.resources.*
 
 @Composable
 fun SimpleTopic(
@@ -73,14 +73,14 @@ fun SimpleTopic(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            stringResource(R.string.n_comment, replyCount.ifBlank { "0" }),
+                            stringResource(Res.string.n_comment, replyCount.ifBlank { "0" }),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         viewCount?.let {
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                stringResource(R.string.n_views, viewCount.toString()),
+                                stringResource(Res.string.n_views, viewCount.toString()),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

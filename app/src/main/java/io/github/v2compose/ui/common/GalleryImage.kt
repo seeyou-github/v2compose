@@ -36,15 +36,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import io.github.v2compose.LocalImageSaver
-import io.github.v2compose.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "GalleryImage"
 
@@ -165,7 +165,7 @@ fun GalleryImage(
             .defaultMinSize(minWidth = 72.dp, minHeight = 32.dp)
             .padding(horizontal = 8.dp)) {
             Text(
-                stringResource(id = R.string.save_image),
+                stringResource(Res.string.save_image),
                 modifier = Modifier.align(Alignment.Center),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

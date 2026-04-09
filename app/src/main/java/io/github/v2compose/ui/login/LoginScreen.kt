@@ -44,8 +44,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -60,10 +61,10 @@ import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonType
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSJetPackComposeProgressButton
 import io.github.v2compose.Constants
-import io.github.v2compose.R
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.autofill
+import v2compose.shared.generated.resources.*
 
 private const val TAG = "LoginScreen"
 
@@ -127,7 +128,7 @@ private fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoginTopBar(onCloseClick: () -> Unit) {
-    CenterAlignedTopAppBar(title = { Text(stringResource(id = R.string.login)) },
+    CenterAlignedTopAppBar(title = { Text(stringResource(Res.string.login)) },
         navigationIcon = { CloseButton { onCloseClick() } })
 }
 
@@ -221,22 +222,22 @@ private fun UserName(
     onValueChanged: (String) -> Unit,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
-    error: String? = null,
+    error: StringResource? = null,
 ) {
     OutlinedTextField(
         value = userName,
         onValueChange = onValueChanged,
-        label = { Text(stringResource(id = R.string.login_username)) },
+        label = { Text(stringResource(Res.string.login_username)) },
         supportingText = {
-            if (!error.isNullOrEmpty()) {
-                Text(error)
+            if (error != null) {
+                Text(stringResource(error))
             }
         },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next, keyboardType = KeyboardType.Text
         ),
         keyboardActions = KeyboardActions(onNext = { onNextClick() }),
-        isError = !error.isNullOrEmpty(),
+        isError = error != null,
         modifier = modifier
             .fillMaxWidth()
             .autofill(autofillTypes = listOf(AutofillType.Username), onFill = onValueChanged),
@@ -251,16 +252,16 @@ private fun Password(
     onValueChanged: (String) -> Unit,
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
-    error: String? = null,
+    error: StringResource? = null,
 ) {
     val visualTransformation = remember { PasswordVisualTransformation() }
     OutlinedTextField(
         value = password,
         onValueChange = onValueChanged,
-        label = { Text(stringResource(id = R.string.login_password)) },
+        label = { Text(stringResource(Res.string.login_password)) },
         supportingText = {
-            if (!error.isNullOrEmpty()) {
-                Text(error)
+            if (error != null) {
+                Text(stringResource(error))
             }
         },
         keyboardOptions = KeyboardOptions(
@@ -268,7 +269,7 @@ private fun Password(
             keyboardType = KeyboardType.Password,
         ),
         keyboardActions = KeyboardActions(onNext = { onNextClick() }),
-        isError = !error.isNullOrEmpty(),
+        isError = error != null,
         modifier = modifier
             .fillMaxWidth()
             .autofill(autofillTypes = listOf(AutofillType.Password), onFill = onValueChanged),
@@ -285,16 +286,16 @@ private fun Captcha(
     reloadLoginParam: () -> Unit,
     modifier: Modifier = Modifier,
     onGoClick: (() -> Unit)? = null,
-    error: String? = null,
+    error: StringResource? = null,
 ) {
     Row(verticalAlignment = Alignment.Top, modifier = modifier) {
         OutlinedTextField(
             value = text,
             onValueChange = onValueChanged,
-            label = { Text(stringResource(id = R.string.login_captcha)) },
+            label = { Text(stringResource(Res.string.login_captcha)) },
             supportingText = {
-                if (!error.isNullOrEmpty()) {
-                    Text(error)
+                if (error != null) {
+                    Text(stringResource(error))
                 }
             },
             keyboardOptions = KeyboardOptions(
@@ -303,7 +304,7 @@ private fun Captcha(
                 capitalization = KeyboardCapitalization.Characters,
             ),
             keyboardActions = KeyboardActions(onNext = { onGoClick?.invoke() }),
-            isError = !error.isNullOrEmpty(),
+            isError = error != null,
             modifier = Modifier.weight(1f),
             singleLine = true,
         )
@@ -347,7 +348,7 @@ private fun Captcha(
                             .clickable { reloadLoginParam() },
                     ) {
                         Text(
-                            stringResource(id = R.string.load_failed),
+                            stringResource(Res.string.load_failed),
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.labelMedium,
                             modifier = Modifier.align(Alignment.Center)
@@ -383,7 +384,7 @@ private fun LoginButton(loginState: LoginState, enabled: Boolean, onLoginClick: 
         failureIconTintColor = MaterialTheme.colorScheme.onPrimary,
         buttonState = buttonState,
         enabled = enabled,
-        text = stringResource(id = R.string.login),
+        text = stringResource(Res.string.login),
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold,
         speedMillis = 400,
@@ -406,13 +407,13 @@ private fun SignInWithGoogle(
         modifier = modifier.height(48.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.googleg_standard_color),
+            painter = painterResource(Res.drawable.googleg_standard_color),
             contentDescription = "google branding",
             modifier = Modifier.size(24.dp)
         )
         Spacer(Modifier.width(8.dp))
         Text(
-            stringResource(id = R.string.sign_in_with_google),
+            stringResource(Res.string.sign_in_with_google),
             style = MaterialTheme.typography.titleMedium,
         )
     }

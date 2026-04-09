@@ -13,10 +13,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.github.v2compose.R
+import v2compose.shared.generated.resources.*
 
 
 @Composable
@@ -30,7 +30,7 @@ fun SingleChoiceListDialog(
     AlertDialog(onDismissRequest = onCancel,
         confirmButton = {
             TextButton(onClick = { onCancel() }) {
-                Text(stringResource(id = R.string.ok))
+                Text(stringResource(Res.string.ok))
             }
         },
         title = {

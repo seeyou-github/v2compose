@@ -21,12 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import io.github.v2compose.R
 import kotlinx.coroutines.delay
+import v2compose.shared.generated.resources.*
 
 fun <T : Any> LazyListScope.pagingRefreshItem(
     lazyPagingItems: LazyPagingItems<T>,
@@ -126,10 +126,10 @@ fun LoadError(error: Throwable?, onRetryClick: () -> Unit, modifier: Modifier = 
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.then(LoadModifier),
     ) {
-        Text(error?.message ?: stringResource(R.string.load_failed))
+        Text(error?.message ?: stringResource(Res.string.load_failed))
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = onRetryClick) {
-            Text(text = stringResource(id = R.string.retry))
+            Text(text = stringResource(Res.string.retry))
         }
     }
 }
@@ -143,6 +143,6 @@ fun Loading(modifier: Modifier = Modifier) {
     ) {
         CircularProgressIndicator()
 //        Spacer(modifier = Modifier.width(8.dp))
-//        Text(stringResource(id = R.string.loading))
+//        Text(stringResource(Res.string.loading))
     }
 }
