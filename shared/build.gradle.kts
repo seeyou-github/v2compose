@@ -43,6 +43,8 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
             implementation(libs.kotlinx.serialization.json)
 
             // KMP Lifecycle & Navigation
