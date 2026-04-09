@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MyNodesViewModel(private val accountRepository: AccountRepository) :
-    ViewModel() {
+class MyNodesViewModel(private val accountRepository: AccountRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MyNodesUiState>(MyNodesUiState.Loading)
     val uiState = _uiState.asStateFlow()

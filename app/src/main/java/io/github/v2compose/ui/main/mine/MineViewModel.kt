@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main.mine
 
-import android.app.Application
 import androidx.lifecycle.viewModelScope
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.Account
@@ -20,12 +19,9 @@ import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.daily_mission_failure
 
 class MineViewModel(
-    application: Application,
     private val checkIn: CheckInUseCase,
     private val accountRepository: AccountRepository,
 ) : BaseViewModel() {
-
-    private val context = application.applicationContext
 
     val account: StateFlow<Account> = accountRepository.account
         .stateIn(

@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutorService
 private const val TAG = "SettingsViewModel"
 
 class SettingsViewModel(
-    context: Context,
     private val appPreferences: AppPreferences,
     val checkForUpdates: CheckForUpdatesUseCase,
     private val accountRepository: AccountRepository,

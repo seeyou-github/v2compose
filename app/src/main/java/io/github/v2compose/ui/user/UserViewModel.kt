@@ -25,7 +25,6 @@ import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.user_action_failure
 
 class UserViewModel(
-    application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val userRepository: UserRepository,
@@ -33,8 +32,6 @@ class UserViewModel(
     private val accountRepository: AccountRepository,
     private val fixedHtmlImage: FixHtmlUseCase,
 ) : BaseViewModel() {
-
-    private val context = application.applicationContext
 
     val userArgs = UserArgs(savedStateHandle, stringDecoder)
 

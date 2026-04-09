@@ -26,15 +26,12 @@ import v2compose.shared.generated.resources.node_action_failure_tips
 private const val TAG = "NodeViewModel"
 
 class NodeViewModel(
-    application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val nodeRepository: NodeRepository,
     private val topicRepository: TopicRepository,
     private val accountRepository: AccountRepository,
 ) : BaseViewModel() {
-
-    private val context = application.applicationContext
 
     val nodeArgs = NodeArgs(savedStateHandle, stringDecoder)
 
