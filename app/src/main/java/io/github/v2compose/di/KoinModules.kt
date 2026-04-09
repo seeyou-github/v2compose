@@ -75,11 +75,11 @@ import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
-import org.koin.androidx.viewmodel.dsl.viewModelOf
-import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
