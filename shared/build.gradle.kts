@@ -11,7 +11,11 @@ plugins {
 buildkonfig {
     packageName = "io.github.v2compose"
     defaultConfigs {
-        buildConfigField(com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING, "VERSION_NAME", "\"1.0.1\"")
+        buildConfigField(
+            com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            "VERSION_NAME",
+            "\"1.0.1\""
+        )
     }
 }
 
@@ -42,9 +46,9 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
+            implementation(libs.runtime)
+            implementation(libs.foundation)
+            implementation(libs.material3)
             implementation(libs.kotlinx.serialization.json)
 
             // KMP Lifecycle & Navigation
@@ -113,9 +117,6 @@ tasks.configureEach {
 }
 
 
-
-
-
 // Wire the copied assets Directory to the KMP Android library's compilation
 kotlin {
     @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -131,6 +132,7 @@ tasks.configureEach {
         try {
             val dirProp = this.property("outputDirectory") as org.gradle.api.file.DirectoryProperty
             dirProp.set(layout.buildDirectory.dir("intermediates/compose_fake_assets"))
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 }

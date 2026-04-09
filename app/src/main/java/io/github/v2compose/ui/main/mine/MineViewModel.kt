@@ -2,8 +2,8 @@ package io.github.v2compose.ui.main.mine
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
-import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.usecase.CheckInUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,9 +16,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.daily_mission_failure
 
-class MineViewModel (
+class MineViewModel(
     application: Application,
     private val checkIn: CheckInUseCase,
     private val accountRepository: AccountRepository,

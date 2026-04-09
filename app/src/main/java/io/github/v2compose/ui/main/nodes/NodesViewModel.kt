@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class NodesViewModel (private val nodeRepository: NodeRepository) : ViewModel() {
+class NodesViewModel(private val nodeRepository: NodeRepository) : ViewModel() {
 
     companion object {
         private const val minRequestMills = 500L

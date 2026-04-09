@@ -158,14 +158,12 @@ dependencies {
 }
 
 
-
-
-
-
 // Workaround: Add Compose Resources generated in shared KMP module correctly structured to app assets
 android {
     sourceSets.getByName("main") {
-        val sharedDir = project(":shared").layout.buildDirectory.dir("intermediates/compose_fake_assets").get().asFile.absolutePath
+        val sharedDir =
+            project(":shared").layout.buildDirectory.dir("intermediates/compose_fake_assets")
+                .get().asFile.absolutePath
         assets.srcDirs(sharedDir)
     }
 }

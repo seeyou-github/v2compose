@@ -4,19 +4,19 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.core.extension.redirectLocation
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.shared.bean.ContentFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class AddSupplementViewModel (
+class AddSupplementViewModel(
     savedStateHandle: SavedStateHandle,
     private val topicRepository: TopicRepository,
     private val accountPreferences: AccountPreferences,

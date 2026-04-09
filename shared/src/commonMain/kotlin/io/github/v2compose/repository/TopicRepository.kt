@@ -1,15 +1,15 @@
 package io.github.v2compose.repository
 
 import androidx.paging.PagingData
-import io.github.v2compose.shared.bean.ContentFormat
-import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.network.bean.ReplyTopicResultInfo
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 import io.github.v2compose.network.bean.TopicInfo
-import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.network.bean.V2exResult
+import io.github.v2compose.shared.bean.ContentFormat
+import io.github.v2compose.shared.bean.DraftTopic
+import io.github.v2compose.shared.bean.TopicNode
 import kotlinx.coroutines.flow.Flow
 
 interface TopicRepository {

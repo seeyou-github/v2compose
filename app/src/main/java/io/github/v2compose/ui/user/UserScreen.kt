@@ -37,10 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalContext
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -66,7 +64,11 @@ import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.user_reply
+import v2compose.shared.generated.resources.user_topic
 
 private const val TAG = "UserScreen"
 
@@ -146,7 +148,8 @@ private fun UserScreen(
             .background(color = MaterialTheme.colorScheme.background)
             .systemBarsPadding(),
     ) {
-        CollapsingToolbarScaffold(modifier = Modifier.fillMaxSize(),
+        CollapsingToolbarScaffold(
+            modifier = Modifier.fillMaxSize(),
             state = scaffoldState,
             scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
             enabled = true,
@@ -233,7 +236,8 @@ fun UserPager(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 })
-    val tabNames = listOf(stringResource(Res.string.user_topic), stringResource(Res.string.user_reply))
+    val tabNames =
+        listOf(stringResource(Res.string.user_topic), stringResource(Res.string.user_reply))
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(
@@ -315,9 +319,10 @@ fun UserTopicItem(
     onTopicClick: (String) -> Unit,
     onNodeClick: (String, String) -> Unit,
 ) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .clickable { onTopicClick(topic.link) }) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onTopicClick(topic.link) }) {
         Column(Modifier.padding(16.dp)) {
             Row {
                 Text(
@@ -387,9 +392,10 @@ fun UserReplyItem(
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .clickable { onTopicClick(reply.dock.link) }) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { onTopicClick(reply.dock.link) }) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
             Text(
                 reply.dock.title,

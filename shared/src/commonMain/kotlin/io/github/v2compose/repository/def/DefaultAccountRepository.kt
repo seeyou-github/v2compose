@@ -9,8 +9,8 @@ import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
 import io.github.v2compose.datasource.NotificationsPagingSource
-import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.CookieManager
+import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.DailyInfo
 import io.github.v2compose.network.bean.HomePageInfo
 import io.github.v2compose.network.bean.LoginParam
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-class DefaultAccountRepository (
+class DefaultAccountRepository(
     private val v2exService: V2exApi,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,

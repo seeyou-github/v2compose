@@ -42,12 +42,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -73,7 +71,16 @@ import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.CollapsingToolbarScope
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.n_comment
+import v2compose.shared.generated.resources.node
+import v2compose.shared.generated.resources.node_click_times
+import v2compose.shared.generated.resources.node_favorite
+import v2compose.shared.generated.resources.node_favorited
+import v2compose.shared.generated.resources.node_topics_and_favorites
+import v2compose.shared.generated.resources.node_unfavorite_tips
 
 private const val TAG = "NodeScreen"
 

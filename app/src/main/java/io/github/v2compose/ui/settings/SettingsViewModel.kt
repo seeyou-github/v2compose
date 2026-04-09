@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.annotation.ExperimentalCoilApi
 import coil3.disk.DiskCache
-import io.github.v2compose.shared.bean.AppSettings
-import io.github.v2compose.shared.bean.DarkMode
-import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.AppSettings
+import io.github.v2compose.shared.bean.DarkMode
+import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService
 
 private const val TAG = "SettingsViewModel"
 
-class SettingsViewModel (
+class SettingsViewModel(
     context: Context,
     private val appPreferences: AppPreferences,
     val checkForUpdates: CheckForUpdatesUseCase,

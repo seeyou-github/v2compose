@@ -2,12 +2,12 @@ package io.github.v2compose.ui.login.google
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.Account
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class GoogleLoginViewModel (
+class GoogleLoginViewModel(
     private val accountRepository: AccountRepository,
 ) : ViewModel() {
 

@@ -36,11 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.v2compose.shared.bean.TopicNode
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.search_all_nodes
 
 @Composable
 fun SelectNode(
@@ -67,12 +68,13 @@ fun SelectNode(
         color = Color.Transparent,
         contentColor = contentColorFor(MaterialTheme.colorScheme.surface),
     ) {
-        Box(modifier = Modifier
-            .clickable { onDismiss() }
-            .background(color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.6f))
-            .systemBarsPadding()
-            .imePadding()
-            .padding(32.dp)) {
+        Box(
+            modifier = Modifier
+                .clickable { onDismiss() }
+                .background(color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.6f))
+                .systemBarsPadding()
+                .imePadding()
+                .padding(32.dp)) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

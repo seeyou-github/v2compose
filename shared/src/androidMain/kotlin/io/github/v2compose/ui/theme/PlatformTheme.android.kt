@@ -23,6 +23,7 @@ actual fun PlatformTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         androidTheme -> if (darkTheme) DarkAndroidColorScheme else LightAndroidColorScheme
         darkTheme -> DarkDefaultColorScheme
         else -> LightDefaultColorScheme

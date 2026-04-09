@@ -14,8 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -26,7 +24,10 @@ import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.my_following
 
 private const val TAG = "MyTopicsScreen"
 

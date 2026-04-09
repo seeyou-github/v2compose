@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.github.v2compose.core.extension.castOrNull
@@ -47,7 +46,16 @@ import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.user.UserUiState
 import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.CollapsingToolbarScope
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.user_block
+import v2compose.shared.generated.resources.user_block_tips
+import v2compose.shared.generated.resources.user_follow
+import v2compose.shared.generated.resources.user_offline
+import v2compose.shared.generated.resources.user_online
+import v2compose.shared.generated.resources.user_unblock
+import v2compose.shared.generated.resources.user_unfollow
+import v2compose.shared.generated.resources.user_unfollow_tips
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -8,7 +8,7 @@ import io.github.v2compose.network.bean.Release
 import io.github.v2compose.repository.AppRepository
 import kotlinx.coroutines.flow.first
 
-class CheckForUpdatesUseCase (
+class CheckForUpdatesUseCase(
     private val appRepository: AppRepository,
     private val appPreferences: AppPreferences,
 ) {

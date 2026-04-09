@@ -9,7 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import org.jetbrains.compose.resources.stringResource
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.ok
 
 
 @Composable
@@ -21,7 +22,8 @@ fun HtmlAlertDialog(
     var showDialog by remember(content) { mutableStateOf(content.isNotEmpty()) }
 
     if (showDialog) {
-        AlertDialog(onDismissRequest = { showDialog = false },
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
             title = { title?.let { Text(title) } },
             text = {
                 HtmlContent(content = content, onUriClick = onUriClick)

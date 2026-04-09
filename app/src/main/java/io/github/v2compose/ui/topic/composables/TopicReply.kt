@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.topic.composables
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -46,12 +45,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import org.jetbrains.compose.resources.StringResource
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.Reply
 import io.github.v2compose.ui.common.HtmlContent
@@ -59,7 +56,17 @@ import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.OnHtmlImageClick
 import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.topic.bean.ReplyWrapper
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.copy_comment
+import v2compose.shared.generated.resources.ignore_comment
+import v2compose.shared.generated.resources.menu_item_thank
+import v2compose.shared.generated.resources.menu_item_unthank
+import v2compose.shared.generated.resources.n_floor
+import v2compose.shared.generated.resources.op
+import v2compose.shared.generated.resources.reply_comment
+import v2compose.shared.generated.resources.user_home_page
 
 @Composable
 fun TopicReply(

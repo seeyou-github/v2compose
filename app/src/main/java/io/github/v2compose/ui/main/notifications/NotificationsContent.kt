@@ -26,13 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -51,7 +49,10 @@ import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.login
 
 private const val TAG = "NotificationsContent"
 

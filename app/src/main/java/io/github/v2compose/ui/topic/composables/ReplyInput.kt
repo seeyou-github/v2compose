@@ -25,11 +25,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.reply
 
 private val fabSize = 56.dp
 private val borderPadding = 16.dp

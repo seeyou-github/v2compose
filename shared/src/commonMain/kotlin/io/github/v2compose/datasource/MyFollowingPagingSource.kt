@@ -2,11 +2,10 @@ package io.github.v2compose.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import io.github.v2compose.network.NetConstants
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.MyFollowingInfo
 
-class MyFollowingPagingSource (private val v2exService: V2exApi) :
+class MyFollowingPagingSource(private val v2exService: V2exApi) :
     PagingSource<Int, MyFollowingInfo.Item>() {
     override fun getRefreshKey(state: PagingState<Int, MyFollowingInfo.Item>): Int? {
         return state.anchorPosition?.let { anchorPosition ->

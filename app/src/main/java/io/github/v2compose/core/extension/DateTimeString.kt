@@ -1,10 +1,14 @@
 package io.github.v2compose.core.extension
 
 import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.just_now
+import v2compose.shared.generated.resources.n_days_ago
+import v2compose.shared.generated.resources.n_hours_ago
+import v2compose.shared.generated.resources.n_minutes_ago
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import v2compose.shared.generated.resources.*
 
 private const val UTC_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"
 

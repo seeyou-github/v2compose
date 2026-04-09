@@ -37,6 +37,8 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.v2compose.ui.common.TabRowDefaults.Divider
+import io.github.v2compose.ui.common.TabRowDefaults.Indicator
 import io.github.v2compose.ui.common.TabRowDefaults.tabIndicatorOffset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

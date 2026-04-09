@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class TwoStepLoginViewModel (
+class TwoStepLoginViewModel(
     private val accountRepository: AccountRepository,
     private val updateAccount: UpdateAccountUseCase,
 ) : ViewModel() {

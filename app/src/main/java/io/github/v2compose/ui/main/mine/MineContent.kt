@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main.mine
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,20 +38,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.cooaer.htmltext.HtmlText
-import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.core.extension.isBeforeTodayByUTC
+import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.ListDivider
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.bronze
+import v2compose.shared.generated.resources.checking_in
+import v2compose.shared.generated.resources.create_topic
+import v2compose.shared.generated.resources.daily_mission
+import v2compose.shared.generated.resources.daily_mission_ok
+import v2compose.shared.generated.resources.gold
+import v2compose.shared.generated.resources.login
+import v2compose.shared.generated.resources.my_following
+import v2compose.shared.generated.resources.my_nodes
+import v2compose.shared.generated.resources.my_topics
+import v2compose.shared.generated.resources.settings
+import v2compose.shared.generated.resources.silver
 
 
 @Composable

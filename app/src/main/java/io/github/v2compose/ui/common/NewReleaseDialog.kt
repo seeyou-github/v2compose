@@ -3,16 +3,18 @@ package io.github.v2compose.ui.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.stringResource
-import com.mikepenz.markdown.m3.Markdown
 import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
+import com.mikepenz.markdown.m3.Markdown
 import io.github.v2compose.network.bean.Release
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.goto_update
+import v2compose.shared.generated.resources.has_new_updates
+import v2compose.shared.generated.resources.ignore_this_release
 
 
 @Composable

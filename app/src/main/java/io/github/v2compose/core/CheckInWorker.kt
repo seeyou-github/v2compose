@@ -9,12 +9,13 @@ import androidx.work.WorkerParameters
 import io.github.v2compose.R
 import io.github.v2compose.usecase.CheckInUseCase
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.auto_checking_in
 
 private const val TAG = "CheckInWorker"
 private const val NotificationIdCheckIn: Int = 1001
 
-class CheckInWorker (
+class CheckInWorker(
     appContext: Context,
     workerParameters: WorkerParameters,
     private val checkIn: CheckInUseCase,

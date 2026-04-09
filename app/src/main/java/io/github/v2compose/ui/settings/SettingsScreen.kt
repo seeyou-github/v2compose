@@ -35,19 +35,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.BuildConfig
 import io.github.v2compose.Constants
-import io.github.v2compose.R
+import io.github.v2compose.core.NotificationCenter
+import io.github.v2compose.network.bean.Release
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
-import io.github.v2compose.core.NotificationCenter
-import io.github.v2compose.network.bean.Release
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.NewReleaseDialog
@@ -57,7 +54,39 @@ import io.github.v2compose.ui.settings.compoables.SelectProxyDialog
 import io.github.v2compose.ui.settings.compoables.checkAndRequestNotificationPermission
 import io.github.v2compose.ui.settings.compoables.titleRes
 import kotlinx.coroutines.launch
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.cancel
+import v2compose.shared.generated.resources.clear_cache_tips
+import v2compose.shared.generated.resources.logout
+import v2compose.shared.generated.resources.logout_tips
+import v2compose.shared.generated.resources.ok
+import v2compose.shared.generated.resources.settings
+import v2compose.shared.generated.resources.settings_advanced
+import v2compose.shared.generated.resources.settings_appearance
+import v2compose.shared.generated.resources.settings_auto_check_in
+import v2compose.shared.generated.resources.settings_auto_check_in_description
+import v2compose.shared.generated.resources.settings_check_for_updates
+import v2compose.shared.generated.resources.settings_check_for_updates_summary
+import v2compose.shared.generated.resources.settings_clear_cache
+import v2compose.shared.generated.resources.settings_clear_cache_summary
+import v2compose.shared.generated.resources.settings_common
+import v2compose.shared.generated.resources.settings_dark_mode
+import v2compose.shared.generated.resources.settings_dark_mode_follow_system
+import v2compose.shared.generated.resources.settings_dark_mode_off
+import v2compose.shared.generated.resources.settings_dark_mode_on
+import v2compose.shared.generated.resources.settings_highlight_op_reply
+import v2compose.shared.generated.resources.settings_highlight_op_reply_summary
+import v2compose.shared.generated.resources.settings_issues
+import v2compose.shared.generated.resources.settings_open_source
+import v2compose.shared.generated.resources.settings_other
+import v2compose.shared.generated.resources.settings_proxy
+import v2compose.shared.generated.resources.settings_reply_with_floor
+import v2compose.shared.generated.resources.settings_reply_with_floor_description
+import v2compose.shared.generated.resources.settings_topic_title_overview
+import v2compose.shared.generated.resources.settings_topic_title_overview_summary
+import v2compose.shared.generated.resources.settings_version
 
 @Composable
 fun SettingsScreenRoute(
@@ -92,7 +121,8 @@ fun SettingsScreenRoute(
         })
     }
 
-    SettingsScreen(isLoggedIn = isLoggedIn,
+    SettingsScreen(
+        isLoggedIn = isLoggedIn,
         cacheSize = cacheSize,
         appSettings = appSettings,
         proxyInfo = proxyInfo,
@@ -193,10 +223,12 @@ private fun SettingsScreen(
                 onProxyChanged = onProxyChanged
             )
             PreferenceGroupTitle(title = stringResource(Res.string.settings_other))
-            ClickablePreference(title = stringResource(Res.string.settings_open_source),
+            ClickablePreference(
+                title = stringResource(Res.string.settings_open_source),
                 summary = Constants.source,
                 onPreferenceClick = { onSourceClick(Constants.source) })
-            ClickablePreference(title = stringResource(Res.string.settings_issues),
+            ClickablePreference(
+                title = stringResource(Res.string.settings_issues),
                 summary = Constants.issues,
                 onPreferenceClick = { onIssuesClick(Constants.issues) })
             ClickablePreference(
@@ -221,7 +253,8 @@ private fun SettingsScreen(
 private fun ClearCachePreference(cacheSize: Long, onClearCacheClick: () -> Unit) {
     var showClearCacheDialog by remember { mutableStateOf(false) }
     if (showClearCacheDialog) {
-        TextAlertDialog(title = stringResource(Res.string.settings_clear_cache),
+        TextAlertDialog(
+            title = stringResource(Res.string.settings_clear_cache),
             message = stringResource(Res.string.clear_cache_tips),
             onConfirm = {
                 showClearCacheDialog = false
@@ -291,7 +324,8 @@ private fun AutoCheckInPreference(
         onCheckedChange = {
             currentChecked = it
             if (it) {
-                checkAndRequestNotificationPermission(context,
+                checkAndRequestNotificationPermission(
+                    context,
                     notificationPermissionLauncher,
                     showRationale = { showRequestNotificationPermissionRationale = true },
                     onDenied = { showRequestNotificationPermissionRationale = true },
@@ -320,7 +354,8 @@ private fun SettingsTopBar(onBackClick: () -> Unit) {
 private fun Logout(onLogout: () -> Unit) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     if (showLogoutDialog) {
-        AlertDialog(onDismissRequest = { showLogoutDialog = false },
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
             title = { Text(stringResource(Res.string.logout)) },
             text = { Text(stringResource(Res.string.logout_tips)) },
             confirmButton = {
@@ -338,10 +373,11 @@ private fun Logout(onLogout: () -> Unit) {
             })
     }
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(72.dp)
-        .clickable { showLogoutDialog = true }) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .clickable { showLogoutDialog = true }) {
         Text(
             stringResource(Res.string.logout),
             style = MaterialTheme.typography.titleMedium,

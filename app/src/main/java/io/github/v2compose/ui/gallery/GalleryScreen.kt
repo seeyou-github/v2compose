@@ -16,9 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import org.koin.androidx.compose.koinViewModel
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.GalleryImage
+import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "GalleryScreen"
 

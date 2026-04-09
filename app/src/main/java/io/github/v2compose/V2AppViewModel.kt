@@ -2,10 +2,10 @@ package io.github.v2compose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.v2compose.shared.bean.Account
-import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.Account
+import io.github.v2compose.shared.bean.AppSettings
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 

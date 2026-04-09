@@ -44,9 +44,6 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -54,7 +51,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
@@ -64,7 +60,18 @@ import io.github.v2compose.Constants
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.autofill
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.googleg_standard_color
+import v2compose.shared.generated.resources.load_failed
+import v2compose.shared.generated.resources.login
+import v2compose.shared.generated.resources.login_captcha
+import v2compose.shared.generated.resources.login_password
+import v2compose.shared.generated.resources.login_username
+import v2compose.shared.generated.resources.sign_in_with_google
 
 private const val TAG = "LoginScreen"
 
@@ -128,7 +135,8 @@ private fun LoginScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoginTopBar(onCloseClick: () -> Unit) {
-    CenterAlignedTopAppBar(title = { Text(stringResource(Res.string.login)) },
+    CenterAlignedTopAppBar(
+        title = { Text(stringResource(Res.string.login)) },
         navigationIcon = { CloseButton { onCloseClick() } })
 }
 

@@ -3,7 +3,6 @@ package io.github.v2compose.repository.def
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import io.github.v2compose.shared.bean.AccountBalance
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.RecentTopicsPagingSource
@@ -11,9 +10,10 @@ import io.github.v2compose.network.V2exApi
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.repository.NewsRepository
+import io.github.v2compose.shared.bean.AccountBalance
 import kotlinx.coroutines.flow.Flow
 
-class DefaultNewsRepository (
+class DefaultNewsRepository(
     private val v2exService: V2exApi,
     private val accountPreferences: AccountPreferences,
     private val appStateStore: AppStateStore,

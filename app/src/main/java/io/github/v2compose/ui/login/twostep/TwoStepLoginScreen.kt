@@ -31,15 +31,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.getString
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonState
 import com.simform.ssjetpackcomposeprogressbuttonlibrary.SSButtonType
@@ -49,7 +45,18 @@ import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.LoadError
 import io.github.v2compose.ui.common.Loading
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.captcha_error
+import v2compose.shared.generated.resources.login
+import v2compose.shared.generated.resources.tfa_code
+import v2compose.shared.generated.resources.tfa_code_empty
+import v2compose.shared.generated.resources.two_step_login
+import v2compose.shared.generated.resources.two_step_login_desc
+import v2compose.shared.generated.resources.two_step_login_tips
 
 @Composable
 fun TwoStepLoginScreenRoute(
@@ -166,10 +173,16 @@ private fun LoginContent(
 
         Spacer(Modifier.height(8.dp))
 
-        TfaCode(code = code, onValueChanged = {
-            code = it
-            error = null
-        }, onNextClick = onLoginClick, modifier = Modifier.focusRequester(focusRequester), error = error)
+        TfaCode(
+            code = code,
+            onValueChanged = {
+                code = it
+                error = null
+            },
+            onNextClick = onLoginClick,
+            modifier = Modifier.focusRequester(focusRequester),
+            error = error
+        )
 
         Spacer(Modifier.height(8.dp))
 

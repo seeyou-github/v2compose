@@ -75,7 +75,8 @@ class RecentTopics : BaseInfo() {
         var _id: String = ""
         val id: String
             get() {
-                if (_id.isEmpty()) _id = linkPath.substringAfterLast("/").substringBefore("#").substringBefore("?")
+                if (_id.isEmpty()) _id =
+                    linkPath.substringAfterLast("/").substringBefore("#").substringBefore("?")
                 return _id
             }
 

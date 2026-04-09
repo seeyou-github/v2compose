@@ -8,6 +8,9 @@ import coil3.request.ImageResult
 import coil3.request.SuccessResult
 import coil3.size.Scale
 import coil3.size.Size
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.nodes.Element
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
 import io.github.v2compose.util.CfEmailUtils
@@ -15,9 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import com.fleeksoft.ksoup.Ksoup
-import com.fleeksoft.ksoup.nodes.Document
-import com.fleeksoft.ksoup.nodes.Element
 import kotlin.math.ceil
 
 private const val TAG = "FixHtmlImageUseCase"

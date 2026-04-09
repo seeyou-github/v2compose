@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class MyTopicsViewModel (
+class MyTopicsViewModel(
     private val accountRepository: AccountRepository,
     private val appPreferences: AppPreferences,
 ) : ViewModel() {

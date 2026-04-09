@@ -51,7 +51,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
@@ -69,8 +68,14 @@ import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.SelectNode
 import io.github.v2compose.ui.common.TextEditor
 import io.github.v2compose.usecase.LoadNodesState
+import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.create_topic
+import v2compose.shared.generated.resources.load_nodes_failure
+import v2compose.shared.generated.resources.select_node
+import v2compose.shared.generated.resources.topic_content_placeholder
+import v2compose.shared.generated.resources.topic_title
 
 @Composable
 fun WriteTopicScreenRoute(

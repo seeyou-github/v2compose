@@ -1,7 +1,6 @@
 package io.github.v2compose.ui.common
 
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -32,23 +30,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-import coil3.imageLoader
-import io.github.v2compose.shared.bean.ContentFormat
-import com.mikepenz.markdown.m3.Markdown
 import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
+import com.mikepenz.markdown.m3.Markdown
+import io.github.v2compose.shared.bean.ContentFormat
 import kotlinx.coroutines.launch
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.content_body
+import v2compose.shared.generated.resources.content_format_markdown
+import v2compose.shared.generated.resources.content_format_original
+import v2compose.shared.generated.resources.content_preview
 
 private val ContentBarHeight = 40.dp
 
@@ -199,7 +196,9 @@ private fun ContentEditor(
 private fun MarkdownPreview(content: String) {
     Markdown(
         content = content,
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         imageTransformer = Coil3ImageTransformerImpl
     )
 }

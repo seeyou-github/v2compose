@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -44,7 +43,9 @@ import coil3.request.crossfade
 import io.github.v2compose.LocalImageSaver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.save_image
 
 private const val TAG = "GalleryImage"
 
@@ -86,7 +87,8 @@ fun GalleryImage(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = currentAlpha))
-            .combinedClickable(interactionSource = remember { MutableInteractionSource() },
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {
                     coroutineScope.launch {
@@ -154,16 +156,17 @@ fun GalleryImage(
         )
 
         val saveImage = LocalImageSaver.current
-        Box(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(16.dp)
-            .clickable { saveImage(imageUrl) }
-            .background(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shape = RoundedCornerShape(4.dp),
-            )
-            .defaultMinSize(minWidth = 72.dp, minHeight = 32.dp)
-            .padding(horizontal = 8.dp)) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .clickable { saveImage(imageUrl) }
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = RoundedCornerShape(4.dp),
+                )
+                .defaultMinSize(minWidth = 72.dp, minHeight = 32.dp)
+                .padding(horizontal = 8.dp)) {
             Text(
                 stringResource(Res.string.save_image),
                 modifier = Modifier.align(Alignment.Center),

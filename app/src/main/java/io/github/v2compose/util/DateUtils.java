@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Locale;
 
 
-
 public class DateUtils {
 
     public static String parseDate(long time) {

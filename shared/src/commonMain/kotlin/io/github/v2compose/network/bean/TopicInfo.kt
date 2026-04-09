@@ -39,7 +39,8 @@ class TopicInfo : BaseInfo() {
     fun canSticky(): Boolean = stickyUrl().isNotEmpty()
     fun canFade(): Boolean = fadeUrl().isNotEmpty()
 
-    fun hasReported(): Boolean = hasRePortStr.isNotEmpty() && hasRePortStr.contains("已对本主题进行了报告")
+    fun hasReported(): Boolean =
+        hasRePortStr.isNotEmpty() && hasRePortStr.contains("已对本主题进行了报告")
 
     fun hasReportPermission(): Boolean = hasReported() || reportLink.isNotEmpty()
 
@@ -98,7 +99,7 @@ class TopicInfo : BaseInfo() {
         var supplements: List<Supplement> = listOf()
 
         private var _formattedHtml: String? = null
-        
+
         fun formattedHtml(): String? {
             if (_formattedHtml != null) return _formattedHtml
             if (html.isEmpty()) return null

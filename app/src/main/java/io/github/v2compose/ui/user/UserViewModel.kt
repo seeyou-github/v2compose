@@ -21,9 +21,10 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.user_action_failure
 
-class UserViewModel (
+class UserViewModel(
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
@@ -75,11 +76,11 @@ class UserViewModel (
     }
 
     fun followUser() {
-        doUserAction { it.getFollowUrl() ?: ""}
+        doUserAction { it.getFollowUrl() ?: "" }
     }
 
     fun blockUser() {
-        doUserAction { it.getBlockUrl() ?: ""}
+        doUserAction { it.getBlockUrl() ?: "" }
     }
 
     private fun doUserAction(actionUrl: (UserPageInfo) -> String) {

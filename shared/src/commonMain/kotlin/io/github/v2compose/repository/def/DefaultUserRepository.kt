@@ -14,7 +14,7 @@ import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 
-class DefaultUserRepository (private val v2exService: V2exApi) :
+class DefaultUserRepository(private val v2exService: V2exApi) :
     UserRepository {
     override suspend fun getUserPageInfo(userName: String): UserPageInfo {
         return v2exService.userPageInfo(userName)

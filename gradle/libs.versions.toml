@@ -1,6 +1,8 @@
 [versions]
 agp = "9.1.0"
+componentsResources = "1.10.3"
 composeMultiplatform = "1.10.3"
+foundation = "1.10.3"
 kotlinxSerialization = "1.10.0"
 kotlin = "2.3.20"
 coreKtx = "1.18.0"
@@ -11,14 +13,13 @@ ksoup = "0.2.6"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 composeBom = "2026.03.00"
-navigationCompose = "2.9.7"
 koin = "3.5.3"
 jetbrains-lifecycle = "2.8.4"
-jetbrains-navigation = "2.8.0-alpha10"
+jetbrains-navigation = "2.8.0"
 koin-kmp = "4.0.0"
+material3 = "1.9.0"
 paging = "3.4.2"
 coil = "3.4.0"
-moshi = "1.15.2"
 okhttp = "5.3.2"
 markwon = "4.6.2"
 googleServices = "4.4.4"
@@ -28,6 +29,9 @@ buildkonfig = "0.15.1"
 appcompat = "1.7.1"
 material = "1.13.0"
 firebaseBom = "34.11.0"
+runtime = "1.10.3"
+ui = "1.10.3"
+uiToolingPreview = "1.10.3"
 workManager = "2.11.1"
 datastore = "1.1.4"
 browser = "1.9.0"
@@ -39,13 +43,15 @@ logger = "2.2.0"
 progressButton = "1.1.0"
 toolbarCompose = "2.3.5"
 composeWebviewMultiplatform = "1.9.40"
-jsoup = "1.22.1"
 youtubePlayer = "13.0.0"
 ktor = "3.1.1"
 slf4j = "1.7.36"
 mikepenz-markdown = "0.39.2"
 
 [libraries]
+components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }
+foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "foundation" }
+material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 mikepenz-markdown = { group = "com.mikepenz", name = "multiplatform-markdown-renderer", version.ref = "mikepenz-markdown" }
 mikepenz-markdown-m3 = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-m3", version.ref = "mikepenz-markdown" }
 mikepenz-markdown-coil3 = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-coil3", version.ref = "mikepenz-markdown" }
@@ -56,8 +62,6 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -66,7 +70,6 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -77,17 +80,8 @@ coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", v
 ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 fruit = { group = "io.github.fruit", name = "fruit", version = "1.0.0" }
 fruit-ksp = { group = "io.github.fruit", name = "fruit-ksp", version = "1.0.0" }
-markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
-markwon-ext-strikethrough = { group = "io.noties.markwon", name = "ext-strikethrough", version.ref = "markwon" }
-markwon-ext-tables = { group = "io.noties.markwon", name = "ext-tables", version.ref = "markwon" }
-markwon-html = { group = "io.noties.markwon", name = "html", version.ref = "markwon" }
-markwon-image-coil = { group = "io.noties.markwon", name = "image-coil", version.ref = "markwon" }
-markwon-inline-parser = { group = "io.noties.markwon", name = "inline-parser", version.ref = "markwon" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
@@ -101,10 +95,12 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 orhanobut-logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
+runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "runtime" }
 ssjetpack-progress-button = { group = "com.github.SimformSolutionsPvtLtd", name = "SSJetPackComposeProgressButton", version.ref = "progressButton" }
 toolbar-compose = { group = "me.onebone", name = "toolbar-compose", version.ref = "toolbarCompose" }
 compose-webview = { group = "io.github.kevinnzou", name = "compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
-jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "ui" }
+ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
@@ -125,9 +121,6 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 slf4j-android = { group = "org.slf4j", name = "slf4j-android", version.ref = "slf4j" }
-
-[bundles]
-markwon = ["markwon-core", "markwon-ext-strikethrough", "markwon-ext-tables", "markwon-html", "markwon-image-coil", "markwon-inline-parser"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

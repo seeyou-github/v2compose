@@ -6,13 +6,15 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
-
 import io.github.v2compose.LocalSnackbarHostState
 import io.github.v2compose.network.bean.Release
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.checking_for_updates
+import v2compose.shared.generated.resources.logout_success
+import v2compose.shared.generated.resources.no_updates
 
 @Composable
 fun rememberSettingsScreenState(
@@ -24,7 +26,7 @@ fun rememberSettingsScreenState(
 }
 
 @Stable
-class SettingsScreenState (
+class SettingsScreenState(
     val snackbarHostState: SnackbarHostState,
 ) {
 

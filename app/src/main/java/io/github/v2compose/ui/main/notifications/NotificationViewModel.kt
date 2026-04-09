@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class NotificationViewModel (
+class NotificationViewModel(
     private val accountRepository: AccountRepository,
     private val fixedHtmlImage: FixHtmlUseCase,
 ) : ViewModel() {

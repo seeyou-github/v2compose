@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.ui.common.LoadMore
@@ -20,8 +18,9 @@ import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.main.composables.ClickHandler
 import io.github.v2compose.ui.main.home.NewsTabInfo
 import io.github.v2compose.util.L
-import io.github.v2compose.util.Logf
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 private const val TAG = "NewTab"
 
@@ -123,7 +122,7 @@ private fun NewsList(
         LazyColumn(state = lazyListState) {
             items(newsInfo.items, key = { it.id }) { item ->
                 val tagId = item.tagId()
-                if(tagId.isNullOrBlank()){
+                if (tagId.isNullOrBlank()) {
                     L.e("topic's item, tagId is null or blank, item = $item")
                     return@items
                 }

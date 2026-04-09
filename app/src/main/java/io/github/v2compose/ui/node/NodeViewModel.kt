@@ -20,11 +20,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.node_action_failure_tips
 
 private const val TAG = "NodeViewModel"
 
-class NodeViewModel (
+class NodeViewModel(
     application: Application,
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,

@@ -32,14 +32,14 @@ class App : Application(), Configuration.Provider, KoinComponent {
         beforeOnCreate()
         super.onCreate()
         instance = this
-        
+
         startKoin {
             androidLogger()
             androidContext(this@App)
             workManagerFactory()
             modules(io.github.v2compose.di.allModules)
         }
-        
+
         init()
     }
 
@@ -69,7 +69,8 @@ class App : Application(), Configuration.Provider, KoinComponent {
     }
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder().build() // Koin's workManagerFactory injects workers automatically
+        get() = Configuration.Builder()
+            .build() // Koin's workManagerFactory injects workers automatically
 
     private fun resetScrollableTabRowMinimumTabWidth() {
         try {

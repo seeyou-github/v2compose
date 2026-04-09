@@ -5,11 +5,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
@@ -23,12 +23,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.daily_mission_failure
 import java.time.Duration
 import java.util.concurrent.ExecutorService
-import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
 
-class MainViewModel (
+class MainViewModel(
     application: Application,
     private val checkForUpdates: CheckForUpdatesUseCase,
     private val checkIn: CheckInUseCase,

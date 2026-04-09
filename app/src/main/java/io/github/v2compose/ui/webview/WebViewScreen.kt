@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebContent
@@ -24,7 +23,9 @@ import io.github.v2compose.Constants
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.webview.client.V2exRequestInterceptor
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.v2ex
 
 @Composable
 fun WebViewScreenRoute(url: String, onCloseClick: () -> Unit, openUri: (String) -> Unit) {

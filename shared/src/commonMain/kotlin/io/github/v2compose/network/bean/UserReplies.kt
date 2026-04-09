@@ -16,7 +16,8 @@ class UserReplies : BaseInfo() {
     @Pick("div.box:last-child div.reply_content")
     var replyContentItems: List<ReplyContentItem> = listOf()
 
-    fun items(): List<Item> = dockItems.zip(replyContentItems) { dock, content -> Item(dock, content) }
+    fun items(): List<Item> =
+        dockItems.zip(replyContentItems) { dock, content -> Item(dock, content) }
 
     @Pick("div.inner:last-child strong.fade")
     var pageInfo: String = ""

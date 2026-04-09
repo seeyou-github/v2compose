@@ -14,7 +14,7 @@ import io.github.v2compose.network.bean.NodesNavInfo
 import io.github.v2compose.repository.NodeRepository
 import kotlinx.coroutines.flow.Flow
 
-class DefaultNodeRepository (
+class DefaultNodeRepository(
     private val v2exService: V2exApi,
     private val appStateStore: AppStateStore,
 ) : NodeRepository {

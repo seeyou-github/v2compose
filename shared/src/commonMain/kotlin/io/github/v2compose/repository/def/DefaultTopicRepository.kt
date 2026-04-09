@@ -1,12 +1,9 @@
 package io.github.v2compose.repository.def
 
-import io.github.v2compose.util.KLogger
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import io.github.v2compose.V2exUri
-import io.github.v2compose.shared.bean.ContentFormat
-import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.SearchPagingSource
@@ -17,17 +14,20 @@ import io.github.v2compose.network.bean.CreateTopicPageInfo
 import io.github.v2compose.network.bean.ReplyTopicResultInfo
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 import io.github.v2compose.network.bean.TopicInfo
-import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.network.bean.V2exResult
 import io.github.v2compose.repository.ActionMethod
 import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.shared.bean.ContentFormat
+import io.github.v2compose.shared.bean.DraftTopic
+import io.github.v2compose.shared.bean.TopicNode
+import io.github.v2compose.util.KLogger
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 private const val TAG = "DefaultTopic"
 
-class DefaultTopicRepository (
+class DefaultTopicRepository(
     private val v2exService: V2exApi,
     private val appPreferences: AppPreferences,
     private val accountPreferences: AccountPreferences,
@@ -42,7 +42,10 @@ class DefaultTopicRepository (
         initialPage: Int?,
         reversed: Boolean,
     ): Flow<PagingData<Any>> {
-        KLogger.d(TAG, "getTopic, topicId = $topicId, initialPage = $initialPage, reversed = $reversed")
+        KLogger.d(
+            TAG,
+            "getTopic, topicId = $topicId, initialPage = $initialPage, reversed = $reversed"
+        )
         return Pager(PagingConfig(pageSize = 10), initialKey = initialPage) {
             TopicPagingSource(
                 v2exService,

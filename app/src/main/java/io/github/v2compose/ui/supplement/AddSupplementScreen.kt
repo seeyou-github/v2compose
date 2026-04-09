@@ -32,17 +32,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.network.bean.AppendTopicPageInfo
+import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.TextAlertDialog
 import io.github.v2compose.ui.common.TextEditor
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.add_supplement
+import v2compose.shared.generated.resources.add_supplement_back_tips
+import v2compose.shared.generated.resources.add_supplement_fail_tips
+import v2compose.shared.generated.resources.add_supplement_tips
 
 @Composable
 fun AddSupplementScreenRoute(

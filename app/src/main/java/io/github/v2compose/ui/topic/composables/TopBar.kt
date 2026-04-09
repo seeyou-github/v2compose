@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.topic.composables
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,14 +39,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.StringResource
 import androidx.compose.ui.unit.sp
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.menu_item_thank
+import v2compose.shared.generated.resources.menu_item_unthank
+import v2compose.shared.generated.resources.topic
+import v2compose.shared.generated.resources.topic_menu_item_append
+import v2compose.shared.generated.resources.topic_menu_item_favorite
+import v2compose.shared.generated.resources.topic_menu_item_ignore
+import v2compose.shared.generated.resources.topic_menu_item_more
+import v2compose.shared.generated.resources.topic_menu_item_open_in_browser
+import v2compose.shared.generated.resources.topic_menu_item_report
+import v2compose.shared.generated.resources.topic_menu_item_reported
+import v2compose.shared.generated.resources.topic_menu_item_share
+import v2compose.shared.generated.resources.topic_menu_item_unfavorite
+import v2compose.shared.generated.resources.topic_menu_item_unignore
 
 
 enum class TopicMenuItem(val icon: ImageVector, val label: StringResource) {
@@ -161,7 +173,8 @@ private fun TopicTopBarActions(
     }
     DropdownMenu(expanded = moreExpanded, onDismissRequest = { moreExpanded = false }) {
         topicMenuItems.forEach { menuItem ->
-            DropdownMenuItem(text = { Text(stringResource(menuItem.label)) },
+            DropdownMenuItem(
+                text = { Text(stringResource(menuItem.label)) },
                 leadingIcon = {
                     Icon(menuItem.icon, menuItem.name)
                 },

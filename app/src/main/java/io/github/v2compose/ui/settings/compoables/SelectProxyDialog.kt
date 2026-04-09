@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,7 +40,20 @@ import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.util.InetValidator
 import org.jetbrains.compose.resources.StringResource
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.ok
+import v2compose.shared.generated.resources.settings_proxy
+import v2compose.shared.generated.resources.settings_proxy_direct
+import v2compose.shared.generated.resources.settings_proxy_hostOrIp
+import v2compose.shared.generated.resources.settings_proxy_hostOrIp_empty
+import v2compose.shared.generated.resources.settings_proxy_hostOrIp_format_error
+import v2compose.shared.generated.resources.settings_proxy_http
+import v2compose.shared.generated.resources.settings_proxy_port
+import v2compose.shared.generated.resources.settings_proxy_port_empty
+import v2compose.shared.generated.resources.settings_proxy_port_error
+import v2compose.shared.generated.resources.settings_proxy_socks
+import v2compose.shared.generated.resources.settings_proxy_system
 
 @Composable
 fun SelectProxyDialog(
@@ -94,7 +106,8 @@ fun SelectProxyDialog(
         }
     }
 
-    AlertDialog(onDismissRequest = onDismiss,
+    AlertDialog(
+        onDismissRequest = onDismiss,
         title = { Text(stringResource(Res.string.settings_proxy)) },
         text = {
             Column {

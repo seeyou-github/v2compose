@@ -6,7 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.stringResource
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.cancel
+import v2compose.shared.generated.resources.ok
 
 
 @Composable

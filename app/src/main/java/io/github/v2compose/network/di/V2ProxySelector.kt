@@ -1,9 +1,9 @@
 package io.github.v2compose.network.di
 
 import android.text.TextUtils
+import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
-import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.util.InetValidator
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -15,7 +15,7 @@ import java.net.ProxySelector
 import java.net.SocketAddress
 import java.net.URI
 
-class V2ProxySelector (appPreferences: AppPreferences) : ProxySelector() {
+class V2ProxySelector(appPreferences: AppPreferences) : ProxySelector() {
 
     private lateinit var proxyInfo: ProxyInfo
     private lateinit var delegation: ProxySelector

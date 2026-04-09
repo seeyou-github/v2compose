@@ -2,7 +2,6 @@ package io.github.v2compose.ui.topic
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -54,10 +53,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.StringResource
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -89,7 +85,13 @@ import io.github.v2compose.ui.topic.composables.UserRepliesDialog
 import io.github.v2compose.ui.topic.composables.fabSizeWithMargin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.n_comment
+import v2compose.shared.generated.resources.replies_order_negative
+import v2compose.shared.generated.resources.replies_order_positive
 
 private const val TAG = "TopicScreen"
 
@@ -419,7 +421,8 @@ private fun TopicList(
 
             if (contentInfo.supplements.isNotEmpty()) {
                 val supplements = contentInfo.supplements
-                itemsIndexed(items = supplements,
+                itemsIndexed(
+                    items = supplements,
                     key = { supplementIndex, _ -> "supplement:$supplementIndex" },
                     contentType = { _, _ -> "supplement" }) { supplementIndex, item ->
                     val tag = "supplement:$supplementIndex"
@@ -466,7 +469,8 @@ private fun TopicList(
 
         pagingPrependMoreItem(lazyPagingItems = topicItems)
 
-        items(topicItems.itemCount,
+        items(
+            topicItems.itemCount,
             key = { index -> topicItems[index].let { if (it is Reply) it.replyId() else "item#$index" } }) { index ->
             val item = topicItems[index] ?: return@items
             if (item is Reply) {
@@ -551,7 +555,8 @@ private fun TopicTitle(
     onNodeClick: (String, String) -> Unit
 ) {
     val headerInfo = topicInfo?.headerInfo ?: return
-    SimpleTopic(userName = headerInfo.userName,
+    SimpleTopic(
+        userName = headerInfo.userName,
         userAvatar = headerInfo.avatar,
         time = headerInfo.getTime(),
         replyCount = headerInfo.getCommentNum(),
@@ -600,12 +605,13 @@ private fun TopicSupplement(
 
     Box(modifier = Modifier.padding(horizontal = 16.dp)) {
         ListDivider(modifier = Modifier.align(alignment = Alignment.BottomCenter))
-        Column(modifier = Modifier
-            .drawBehind {
-                drawRect(color = backgroundColor)
-                drawRect(color = leftBorderColor, size = size.copy(width = 4.dp.toPx()))
-            }
-            .padding(horizontal = 8.dp, vertical = 4.dp)) {
+        Column(
+            modifier = Modifier
+                .drawBehind {
+                    drawRect(color = backgroundColor)
+                    drawRect(color = leftBorderColor, size = size.copy(width = 4.dp.toPx()))
+                }
+                .padding(horizontal = 8.dp, vertical = 4.dp)) {
             Text(
                 supplement.title,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),

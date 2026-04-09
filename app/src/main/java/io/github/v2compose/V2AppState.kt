@@ -18,11 +18,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil3.annotation.ExperimentalCoilApi
 import coil3.imageLoader
-import io.github.v2compose.shared.bean.RedirectEvent
-import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.core.extension.fullUrl
 import io.github.v2compose.core.extension.tryParse
 import io.github.v2compose.core.openInBrowser
+import io.github.v2compose.shared.bean.RedirectEvent
+import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.BaseScreenState
 import io.github.v2compose.ui.main.mainNavigationRoute
 import io.github.v2compose.ui.node.navigateToNode
@@ -31,11 +31,12 @@ import io.github.v2compose.ui.user.navigateToUser
 import io.github.v2compose.ui.webview.navigateToWebView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.io.File
-
-import org.koin.compose.koinInject
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import org.koin.compose.koinInject
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.save_image_failed
+import v2compose.shared.generated.resources.save_image_success
+import java.io.File
 
 private const val TAG = "AppState"
 
@@ -48,9 +49,10 @@ fun rememberV2AppState(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     eventManager: V2EventManager = koinInject(),
 ): V2AppState {
-    val v2AppState = remember(navHostController, context, coroutineScope, snackbarHostState, eventManager) {
-        V2AppState(context, navHostController, coroutineScope, snackbarHostState, eventManager)
-    }
+    val v2AppState =
+        remember(navHostController, context, coroutineScope, snackbarHostState, eventManager) {
+            V2AppState(context, navHostController, coroutineScope, snackbarHostState, eventManager)
+        }
     DisposableEffect(lifecycleOwner, v2AppState) {
         lifecycleOwner.lifecycle.addObserver(v2AppState)
         onDispose {
@@ -61,7 +63,7 @@ fun rememberV2AppState(
 }
 
 
-class V2AppState (
+class V2AppState(
     context: Context,
     private val navHostController: NavHostController,
     coroutineScope: CoroutineScope,

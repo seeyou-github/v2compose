@@ -1,12 +1,12 @@
 package io.github.v2compose.usecase
 
 import androidx.compose.runtime.Stable
-import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.shared.bean.TopicNode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LoadNodesUseCase (private val topicRepository: TopicRepository) {
+class LoadNodesUseCase(private val topicRepository: TopicRepository) {
 
     private val _state = MutableStateFlow<LoadNodesState>(LoadNodesState.Idle)
     val state: StateFlow<LoadNodesState> = _state

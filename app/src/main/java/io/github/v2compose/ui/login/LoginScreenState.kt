@@ -9,7 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import org.jetbrains.compose.resources.StringResource
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.login_captcha_blank
+import v2compose.shared.generated.resources.login_password_blank
+import v2compose.shared.generated.resources.login_username_blank
 
 @Composable
 fun rememberLoginScreenState(context: Context = LocalContext.current): LoginScreenState {

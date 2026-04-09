@@ -19,7 +19,8 @@ import io.github.v2compose.ui.topic.composables.TopicMenuItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.copy_comment_success_tips
 
 @Composable
 fun rememberTopicScreenState(

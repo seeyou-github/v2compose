@@ -41,10 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -56,7 +53,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -67,7 +63,13 @@ import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.history_keywords
+import v2compose.shared.generated.resources.logo_sov2ex
+import v2compose.shared.generated.resources.search_user_time_replies
 
 private const val TAG = "SearchScreen"
 

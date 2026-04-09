@@ -5,14 +5,14 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.v2compose.shared.bean.ContentFormat
-import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.extension.isRedirect
 import io.github.v2compose.core.extension.redirectLocation
 import io.github.v2compose.network.bean.CreateTopicPageInfo
-import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.shared.bean.ContentFormat
+import io.github.v2compose.shared.bean.DraftTopic
+import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.usecase.LoadNodesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class WriteTopicViewModel (
+class WriteTopicViewModel(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val topicRepository: TopicRepository,

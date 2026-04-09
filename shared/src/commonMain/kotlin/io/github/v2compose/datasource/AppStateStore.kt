@@ -1,14 +1,14 @@
 package io.github.v2compose.datasource
 
+import io.github.fruit.Fruit
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.NodesNavInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import io.github.fruit.Fruit
 
-class AppStateStore (
+class AppStateStore(
     private val fruit: Fruit,
 ) {
 

@@ -7,7 +7,7 @@ import io.github.v2compose.core.StringDecoder
 
 private const val TAG = "GalleryViewModel"
 
-class GalleryViewModel (
+class GalleryViewModel(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder
 ) : ViewModel() {

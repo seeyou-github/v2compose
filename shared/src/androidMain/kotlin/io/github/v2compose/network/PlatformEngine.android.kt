@@ -2,8 +2,8 @@ package io.github.v2compose.network
 
 import io.github.fruit.Fruit
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.*
-import io.ktor.client.engine.okhttp.*
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.okhttp.OkHttp
 import okhttp3.OkHttpClient
 
 actual fun createHttpClientEngine(): HttpClientEngine = OkHttp.create()

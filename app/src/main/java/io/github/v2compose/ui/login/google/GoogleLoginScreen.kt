@@ -15,15 +15,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
 import io.github.v2compose.Constants
 import io.github.v2compose.ui.common.CloseButton
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.sign_in_with_google
 
 private const val TAG = "GoogleLogin"
 private const val googleLoginUrlRefer = "${Constants.baseUrl}/signin?next=/mission/daily"

@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SearchViewModel (
+class SearchViewModel(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val topicRepository: TopicRepository,

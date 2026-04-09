@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -23,6 +22,7 @@ import io.github.v2compose.ui.common.pagingPrependMoreItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RecentTab(
@@ -85,7 +85,8 @@ private fun RecentTopicsList(
             pagingPrependMoreItem(recentTopics)
             items(recentTopics.itemCount, key = recentTopics.itemKey { it.id }) { index ->
                 val item = recentTopics[index] ?: return@items
-                SimpleTopic(title = item.title,
+                SimpleTopic(
+                    title = item.title,
                     userName = item.userName,
                     userAvatar = item.avatar,
                     time = item.time,

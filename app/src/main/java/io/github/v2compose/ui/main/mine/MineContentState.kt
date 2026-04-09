@@ -12,7 +12,9 @@ import io.github.v2compose.ui.BaseScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import v2compose.shared.generated.resources.*
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.function_not_implemented
+import v2compose.shared.generated.resources.login_first
 
 @Composable
 fun rememberMineContentState(

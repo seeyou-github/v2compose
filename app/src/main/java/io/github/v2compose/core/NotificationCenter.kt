@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import androidx.core.app.NotificationManagerCompat
-import io.github.v2compose.R
 
 
 object NotificationCenter {

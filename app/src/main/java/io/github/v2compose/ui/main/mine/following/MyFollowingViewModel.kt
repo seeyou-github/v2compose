@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class MyFollowingViewModel (
+class MyFollowingViewModel(
     private val accountRepository: AccountRepository,
     private val appPreferences: AppPreferences,
 ) : ViewModel() {

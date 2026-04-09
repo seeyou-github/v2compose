@@ -8,6 +8,7 @@ val Int.isRedirect: Boolean
         303, // HTTP_SEE_OTHER
         307, // HTTP_TEMP_REDIRECT
         308  // HTTP_PERM_REDIRECT
-        -> true
+            -> true
+
         else -> false
     }

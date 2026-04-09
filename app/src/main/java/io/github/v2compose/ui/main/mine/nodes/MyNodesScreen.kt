@@ -32,11 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.cooaer.htmltext.fullUrl
@@ -45,7 +43,10 @@ import io.github.v2compose.network.bean.MyNodesInfo
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.LoadError
 import io.github.v2compose.ui.common.Loading
-import v2compose.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import org.koin.androidx.compose.koinViewModel
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.my_nodes
 
 @Composable
 fun MyNodesScreenRoute(
