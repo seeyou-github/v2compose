@@ -24,7 +24,6 @@ import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.shared.core.V2EventManager
-import io.github.v2compose.ui.gallery.GalleryViewModel
 import io.github.v2compose.ui.login.LoginViewModel
 import io.github.v2compose.ui.login.google.GoogleLoginViewModel
 import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
@@ -39,7 +38,6 @@ import io.github.v2compose.ui.main.mine.topics.MyTopicsViewModel
 import io.github.v2compose.ui.main.nodes.NodesViewModel
 import io.github.v2compose.ui.main.notifications.NotificationViewModel
 import io.github.v2compose.ui.node.NodeViewModel
-import io.github.v2compose.ui.search.SearchViewModel
 import io.github.v2compose.ui.settings.SettingsScreenState
 import io.github.v2compose.ui.settings.SettingsViewModel
 import io.github.v2compose.ui.supplement.AddSupplementViewModel
@@ -153,12 +151,10 @@ val viewModelModule = module {
     viewModelOf(::MyNodesViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::NodesViewModel)
-    viewModelOf(::SearchViewModel)
     viewModelOf(::UserViewModel)
     viewModelOf(::RecentViewModel)
     viewModelOf(::TopicViewModel)
     viewModelOf(::HomeViewModel)
-    viewModelOf(::GalleryViewModel)
     viewModelOf(::WriteTopicViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::NewsViewModel)

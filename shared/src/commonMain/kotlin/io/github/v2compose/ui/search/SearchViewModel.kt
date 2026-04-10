@@ -36,9 +36,7 @@ class SearchViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val topics = keyword.filterNot { it.isNullOrEmpty() }
-        .flatMapLatest {
-            topicRepository.search(it!!)
-        }
+        .flatMapLatest { topicRepository.search(it!!) }
         .cachedIn(viewModelScope)
 
     fun search(value: String) {
