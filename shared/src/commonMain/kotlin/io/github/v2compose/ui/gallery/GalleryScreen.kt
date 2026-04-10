@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.gallery
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.GalleryImage
-import org.koin.androidx.compose.koinViewModel
-
-private const val TAG = "GalleryScreen"
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun GalleryScreenRoute(
@@ -38,13 +35,14 @@ fun GalleryScreenRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GalleryScreen(currentPic: String, pics: List<String>, onBackClick: () -> Unit) {
+private fun GalleryScreen(
+    currentPic: String,
+    pics: List<String>,
+    onBackClick: () -> Unit,
+) {
     val initialPicIndex = remember(currentPic, pics) {
         maxOf(pics.indexOf(currentPic), 0)
     }
-    Log.d(TAG, "initialPicIndex = $initialPicIndex")
-
-//    LightSystemBarIcons()
 
     Scaffold(
         contentWindowInsets = WindowInsets(top = 0, bottom = 0),
@@ -54,9 +52,12 @@ private fun GalleryScreen(currentPic: String, pics: List<String>, onBackClick: (
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPaddings)
+                .padding(contentPaddings),
         ) {
-            GalleryImage(imageUrl = currentPic, onBackgroundClick = onBackClick)
+            GalleryImage(
+                imageUrl = pics.getOrElse(initialPicIndex) { currentPic },
+                onBackgroundClick = onBackClick,
+            )
             val contentColor = LocalContentColor.current
             CenterAlignedTopAppBar(
                 title = {},
@@ -64,15 +65,14 @@ private fun GalleryScreen(currentPic: String, pics: List<String>, onBackClick: (
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.TopCenter),
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,
                     actionIconContentColor = contentColor,
                     titleContentColor = contentColor,
                     navigationIconContentColor = contentColor,
-                )
+                ),
             )
         }
     }
 }
-

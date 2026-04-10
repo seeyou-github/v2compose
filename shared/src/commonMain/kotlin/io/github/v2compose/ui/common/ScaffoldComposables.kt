@@ -11,7 +11,7 @@ fun BackIcon(onBackClick: () -> Unit) {
     IconButton(onClick = onBackClick) {
         Icon(
             Icons.AutoMirrored.Rounded.ArrowBack,
-            contentDescription = "back"
+            contentDescription = "back",
         )
     }
 }

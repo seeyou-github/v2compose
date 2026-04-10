@@ -34,12 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import io.github.v2compose.LocalImageSaver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,15 +44,12 @@ import org.jetbrains.compose.resources.stringResource
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.save_image
 
-private const val TAG = "GalleryImage"
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GalleryImage(
     imageUrl: String,
     onBackgroundClick: () -> Unit,
 ) {
-    val context = LocalContext.current
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -64,7 +58,6 @@ fun GalleryImage(
 
     var offsetX by rememberSaveable { mutableFloatStateOf(0f) }
     var offsetY by rememberSaveable { mutableFloatStateOf(0f) }
-
     var scale by rememberSaveable { mutableFloatStateOf(1f) }
 
     val transformableState = rememberTransformableState { zoomChange, offsetChange, _ ->
@@ -80,7 +73,7 @@ fun GalleryImage(
     val visibleTransition = rememberTransition(transitionState = visibleState, label = "visible")
     val currentAlpha by visibleTransition.animateFloat(
         transitionSpec = { tween(durationMillis = 400) },
-        label = "alpha"
+        label = "alpha",
     ) { it }
 
     BoxWithConstraints(
@@ -105,33 +98,36 @@ fun GalleryImage(
                             initialValue = 0f,
                             targetValue = 1f,
                         )
-                        var playTime: Long
                         val startTime = withFrameNanos { it }
                         val startScale = scale
                         val startOffsetX = offsetX
                         val startOffsetY = offsetY
 
-                        var endScale = scale
-                        var endOffsetX = offsetX
-                        var endOffsetY = offsetY
-                        if (scale > 2) {
+                        val endScale: Float
+                        val endOffsetX: Float
+                        val endOffsetY: Float
+                        if (scale > 2f) {
                             endScale = 1f
                             endOffsetX = 0f
                             endOffsetY = 0f
                         } else {
-                            endScale += 1f
+                            endScale = scale + 1f
+                            endOffsetX = offsetX
+                            endOffsetY = offsetY
                         }
 
+                        var playTime: Long
                         do {
                             playTime = withFrameNanos { it } - startTime
                             val progress = doubleClickAnim.getValueFromNanos(playTime)
                             scale = startScale + (endScale - startScale) * progress
                             offsetX = startOffsetX + (endOffsetX - startOffsetX) * progress
                             offsetY = startOffsetY + (endOffsetY - startOffsetY) * progress
-                        } while (playTime < 400 * 1000 * 1000)
+                        } while (playTime < 400L * 1000L * 1000L)
                     }
-                })
-            .transformable(transformableState)
+                },
+            )
+            .transformable(transformableState),
     ) {
         LaunchedEffect(maxWidth, maxHeight) {
             viewWidth = with(density) { maxWidth.toPx() }
@@ -139,8 +135,7 @@ fun GalleryImage(
         }
 
         AsyncImage(
-            model = ImageRequest.Builder(context).data(imageUrl)
-                .crossfade(true).build(),
+            model = imageUrl,
             contentDescription = "current image",
             contentScale = ContentScale.Fit,
             alpha = currentAlpha,
@@ -151,7 +146,7 @@ fun GalleryImage(
                     scaleY = scale,
                     translationX = offsetX,
                     translationY = offsetY,
-                    alpha = currentAlpha
+                    alpha = currentAlpha,
                 ),
         )
 
@@ -166,7 +161,8 @@ fun GalleryImage(
                     shape = RoundedCornerShape(4.dp),
                 )
                 .defaultMinSize(minWidth = 72.dp, minHeight = 32.dp)
-                .padding(horizontal = 8.dp)) {
+                .padding(horizontal = 8.dp),
+        ) {
             Text(
                 stringResource(Res.string.save_image),
                 modifier = Modifier.align(Alignment.Center),
