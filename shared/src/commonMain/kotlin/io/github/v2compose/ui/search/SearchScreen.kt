@@ -50,7 +50,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -65,19 +64,17 @@ import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.history_keywords
 import v2compose.shared.generated.resources.logo_sov2ex
 import v2compose.shared.generated.resources.search_user_time_replies
 
-private const val TAG = "SearchScreen"
-
 @Composable
 fun SearchScreenRoute(
     goBack: () -> Unit,
     onTopicClick: (SoV2EXSearchResultInfo.Hit) -> Unit,
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel(),
 ) {
     val keyword by viewModel.keyword.collectAsStateWithLifecycle()
     val topics = viewModel.topics.collectAsLazyPagingItems()
@@ -89,12 +86,11 @@ fun SearchScreenRoute(
         topics = topics,
         onCloseClick = goBack,
         onTopicClick = onTopicClick,
-        onSearchClick = { viewModel.search(it) },
-        onDeleteKeywordsClick = viewModel::clearHistoryKeywords
+        onSearchClick = viewModel::search,
+        onDeleteKeywordsClick = viewModel::clearHistoryKeywords,
     )
 }
 
-//TODO: 支持更多选项，1选择时间范围（一个小时内、一天内、一周内、一个月内、一年内，时间不限），2排序方式(默认，发帖时间)
 @Composable
 private fun SearchScreen(
     keyword: String?,
@@ -105,11 +101,6 @@ private fun SearchScreen(
     onSearchClick: (String) -> Unit,
     onDeleteKeywordsClick: () -> Unit,
 ) {
-//    val backgroundColor = if (lazyPagingItems.itemCount == 0) {
-//        MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.disabled)
-//    } else {
-//        MaterialTheme.colorScheme.background
-//    }
     val backgroundColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
 
     Scaffold(modifier = Modifier.background(color = backgroundColor)) {
@@ -117,34 +108,39 @@ private fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = backgroundColor)
-                .padding(it)
+                .padding(it),
         ) {
             if (topics.itemSnapshotList.isEmpty()) {
                 SearchHistoryKeywords(
                     searchKeywords = historyKeywords,
                     onKeywordClick = onSearchClick,
                     onDeleteKeywordsClick = onDeleteKeywordsClick,
-                    modifier = Modifier.padding(top = 72.dp)
+                    modifier = Modifier.padding(top = 72.dp),
                 )
             } else {
                 SearchResult(
                     topics = topics,
-                    onTopicClick = onTopicClick
+                    onTopicClick = onTopicClick,
                 )
             }
-            SearchBar(keyword = keyword, onCloseClick = onCloseClick, onSearchClick = onSearchClick)
+            SearchBar(
+                keyword = keyword,
+                onCloseClick = onCloseClick,
+                onSearchClick = onSearchClick,
+            )
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-private fun SearchBar(keyword: String?, onCloseClick: () -> Unit, onSearchClick: (String) -> Unit) {
+private fun SearchBar(
+    keyword: String?,
+    onCloseClick: () -> Unit,
+    onSearchClick: (String) -> Unit,
+) {
     var currentKeyword by remember(keyword) {
-        mutableStateOf(
-            TextFieldValue(keyword ?: "", selection = TextRange(keyword?.length ?: 0))
-        )
+        mutableStateOf(TextFieldValue(keyword ?: "", selection = TextRange(keyword?.length ?: 0)))
     }
     var autoShowKeyboard by rememberSaveable { mutableStateOf(true) }
     val focusRequester = remember { FocusRequester() }
@@ -161,7 +157,7 @@ private fun SearchBar(keyword: String?, onCloseClick: () -> Unit, onSearchClick:
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
     ) {
         OutlinedTextField(
             value = currentKeyword,
@@ -175,7 +171,8 @@ private fun SearchBar(keyword: String?, onCloseClick: () -> Unit, onSearchClick:
                 .focusRequester(focusRequester)
                 .onFocusChanged { },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Search,
             ),
             keyboardActions = KeyboardActions(onSearch = { onSearchAction() }),
             singleLine = true,
@@ -183,7 +180,7 @@ private fun SearchBar(keyword: String?, onCloseClick: () -> Unit, onSearchClick:
                 Icon(
                     painter = painterResource(Res.drawable.logo_sov2ex),
                     contentDescription = "sov2ex logo",
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                 )
             },
             shape = RoundedCornerShape(12.dp),
@@ -220,7 +217,7 @@ private fun SearchHistoryKeywords(
     searchKeywords: List<String>,
     onKeywordClick: (String) -> Unit,
     onDeleteKeywordsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -228,17 +225,18 @@ private fun SearchHistoryKeywords(
                 stringResource(Res.string.history_keywords),
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 16.dp)
+                    .padding(start = 16.dp),
             )
             Icon(
-                Icons.Rounded.Delete, "delete",
+                Icons.Rounded.Delete,
+                contentDescription = "delete",
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .align(Alignment.CenterEnd)
                     .clip(CircleShape)
                     .clickable { onDeleteKeywordsClick() }
                     .padding(6.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         FlowRow(
@@ -262,7 +260,7 @@ private fun SearchKeyword(keyword: String, onKeywordClick: (String) -> Unit) {
                 .height(24.dp)
                 .background(
                     color = backgroundColor,
-                    shape = RoundedCornerShape(24.dp)
+                    shape = RoundedCornerShape(24.dp),
                 )
                 .clip(RoundedCornerShape(24.dp))
                 .clickable { onKeywordClick(keyword) }
@@ -270,7 +268,7 @@ private fun SearchKeyword(keyword: String, onKeywordClick: (String) -> Unit) {
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                keyword,
+                text = keyword,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -306,7 +304,6 @@ private fun SearchResult(
             lazyListState.scrollToItem(0)
         }
     }
-
 }
 
 @Composable
@@ -319,8 +316,9 @@ private fun SearchTopic(
         listOfNotNull(
             highlight?.content?.firstOrNull(),
             highlight?.postscriptListContent?.firstOrNull(),
-            highlight?.replyListContent?.firstOrNull()
-        ).filter { it.isNotBlank() }
+            highlight?.replyListContent?.firstOrNull(),
+        )
+            .filter { it.isNotBlank() }
             .joinToString("...")
             .ifBlank { topic.source.content }
     }
@@ -331,7 +329,8 @@ private fun SearchTopic(
                 .fillMaxWidth()
                 .clickable { onTopicClick(topic) }
                 .background(color = MaterialTheme.colorScheme.background)
-                .padding(vertical = 8.dp, horizontal = 16.dp)) {
+                .padding(vertical = 8.dp, horizontal = 16.dp),
+        ) {
             SearchTopicText(
                 text = topic.highlight?.title?.firstOrNull() ?: topic.source.title,
                 modifier = Modifier.fillMaxWidth(),
@@ -343,8 +342,10 @@ private fun SearchTopic(
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 3,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 15.sp, lineHeight = 22.sp, letterSpacing = 0.3.sp
-                )
+                    fontSize = 15.sp,
+                    lineHeight = 22.sp,
+                    letterSpacing = 0.3.sp,
+                ),
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -355,7 +356,7 @@ private fun SearchTopic(
                     topic.source.replies,
                 ),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -367,7 +368,7 @@ private fun SearchTopicText(
     text: String,
     style: TextStyle,
     modifier: Modifier = Modifier,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     val annotatedString = buildAnnotatedString {
         var start = 0
@@ -396,10 +397,4 @@ private fun SearchTopicText(
         style = style,
         maxLines = maxLines,
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SearchBarPreview() {
-    SearchBar(keyword = "", onCloseClick = {}, onSearchClick = {})
 }

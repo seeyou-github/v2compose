@@ -49,7 +49,9 @@ kotlin {
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material3)
+            implementation(compose.materialIconsExtended)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ui.tooling.preview)
 
             // KMP Lifecycle & Navigation
             api(libs.jetbrains.lifecycle.viewmodel.compose)

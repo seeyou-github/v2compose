@@ -40,7 +40,8 @@ fun <T : Any> LazyListScope.pagingRefreshItem(
     item(key = "refresh${lazyPagingItems.itemCount}", contentType = "refresh") {
         PagingLoadState(
             state = lazyPagingItems.loadState.refresh,
-            onRetryClick = { lazyPagingItems.retry() }, modifier = modifier,
+            onRetryClick = { lazyPagingItems.retry() },
+            modifier = modifier,
         )
     }
 }
@@ -87,8 +88,6 @@ fun PagingLoadState(
     if (state is LoadState.Loading) {
         var showLoading by remember { mutableStateOf(false) }
         LaunchedEffect(state) {
-            //修复：缓存 Pager 的数据后，再次使用缓存数据，会从loading状态快速切换到loaded状态，loading状态会闪现；
-            //延迟 20ms 展示loading状态可以避免这种情况；
             delay(20)
             showLoading = true
         }
@@ -144,7 +143,5 @@ fun Loading(modifier: Modifier = Modifier) {
         modifier = modifier.then(LoadModifier),
     ) {
         CircularProgressIndicator()
-//        Spacer(modifier = Modifier.width(8.dp))
-//        Text(stringResource(Res.string.loading))
     }
 }
