@@ -10,28 +10,29 @@ import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.cancel
 import v2compose.shared.generated.resources.ok
 
-
 @Composable
 fun TextAlertDialog(
     title: String? = null,
     message: String,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { title?.let { Text(title) } },
         text = { Text(message, style = MaterialTheme.typography.bodyLarge) },
         confirmButton = {
-            TextButton(onClick = {
-                onDismiss()
-                onConfirm()
-            }) {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                    onConfirm()
+                },
+            ) {
                 Text(stringResource(Res.string.ok))
             }
         },
         dismissButton = {
-            TextButton(onClick = { onDismiss() }) {
+            TextButton(onClick = onDismiss) {
                 Text(stringResource(Res.string.cancel))
             }
         },

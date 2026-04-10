@@ -1,8 +1,6 @@
 package io.github.v2compose.ui.node
 
-import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -102,11 +100,4 @@ class NodeViewModel(
         }
     }
 
-}
-
-@Stable
-sealed interface NodeUiState {
-    data class Success(val nodeInfo: NodeInfo) : NodeUiState
-    object Loading : NodeUiState
-    data class Error(val error: Throwable?) : NodeUiState
 }

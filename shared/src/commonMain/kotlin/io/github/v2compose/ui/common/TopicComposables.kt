@@ -47,13 +47,14 @@ fun SimpleTopic(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = onItemClick != null) { onItemClick?.invoke() }) {
+            .clickable(enabled = onItemClick != null) { onItemClick?.invoke() },
+    ) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TopicUserAvatar(
                     userName = userName,
                     userAvatar = userAvatar,
-                    onUserAvatarClick = onUserAvatarClick
+                    onUserAvatarClick = onUserAvatarClick,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
@@ -63,7 +64,7 @@ fun SimpleTopic(
                             lineHeightStyle = LineHeightStyle(
                                 alignment = LineHeightStyle.Alignment.Center,
                                 trim = LineHeightStyle.Trim.FirstLineTop,
-                            )
+                            ),
                         ),
                     )
 
@@ -71,20 +72,20 @@ fun SimpleTopic(
                         Text(
                             time,
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             stringResource(Res.string.n_comment, replyCount.ifBlank { "0" }),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         viewCount?.let {
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 stringResource(Res.string.n_views, viewCount.toString()),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     }
@@ -93,22 +94,22 @@ fun SimpleTopic(
                 NodeTag(
                     nodeTitle = nodeTitle,
                     nodeName = nodeName,
-                    onItemClick = { _, _ -> onNodeClick?.invoke() })
+                    onItemClick = { _, _ -> onNodeClick?.invoke() },
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 title,
                 style = MaterialTheme.typography.bodyLarge,
-                maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Integer.MAX_VALUE,
+                maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,
             )
         }
         ListDivider(
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }
-
 
 @Composable
 fun TopicUserAvatar(

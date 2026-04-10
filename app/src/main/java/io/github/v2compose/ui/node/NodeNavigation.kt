@@ -1,36 +1,11 @@
 package io.github.v2compose.ui.node
 
-import android.net.Uri
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.network.bean.NodeTopicInfo
-
-private const val ArgsNodeName = "nodeName"
-private const val ArgsNodeTitle = "nodeTitle"
-
-const val nodeNavigationNavigationRoute = "/go/{$ArgsNodeName}?$ArgsNodeTitle={$ArgsNodeTitle}"
-
-data class NodeArgs(val nodeName: String, val nodeTitle: String? = null) {
-    constructor(
-        savedStateHandle: SavedStateHandle,
-        stringDecoder: StringDecoder
-    ) : this(
-        nodeName = stringDecoder.decodeString(checkNotNull(savedStateHandle[ArgsNodeName])),
-        nodeTitle = savedStateHandle.get<String>(ArgsNodeTitle)
-            .let { if (it == null) null else stringDecoder.decodeString(it) }
-    )
-}
-
-fun NavController.navigateToNode(nodeName: String, nodeTitle: String? = null) {
-    val encodedNodeName = Uri.encode(nodeName)
-    val encodedNodeTitle = Uri.encode(nodeTitle)
-    navigate("/go/$encodedNodeName?$ArgsNodeTitle=${encodedNodeTitle ?: ""}")
-}
 
 fun NavGraphBuilder.nodeScreen(
     onBackClick: () -> Unit,
@@ -41,8 +16,8 @@ fun NavGraphBuilder.nodeScreen(
     composableWithAnimation(
         route = nodeNavigationNavigationRoute,
         arguments = listOf(
-            navArgument(ArgsNodeName) { type = NavType.StringType },
-            navArgument(ArgsNodeTitle) {
+            navArgument(nodeArgsNodeName) { type = NavType.StringType },
+            navArgument(nodeArgsNodeTitle) {
                 type = NavType.StringType
                 nullable = true
             })

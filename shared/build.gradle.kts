@@ -86,6 +86,7 @@ kotlin {
             // Coil
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(project(":htmlText"))
         }
 
         androidMain.dependencies {

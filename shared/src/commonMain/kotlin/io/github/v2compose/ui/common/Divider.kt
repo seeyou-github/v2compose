@@ -21,7 +21,7 @@ fun ListDivider(
     HorizontalDivider(
         modifier = modifier,
         thickness = Dp.Hairline,
-        color = color
+        color = color,
     )
 }
 
@@ -29,12 +29,12 @@ fun ListDivider(
 fun WideDivider(
     modifier: Modifier = Modifier,
     size: Dp = 8.dp,
-    color: Color = Color(0xfff5f5f5)
+    color: Color = Color(0xfff5f5f5),
 ) {
     Box(
         modifier
             .fillMaxWidth()
             .height(size)
-            .background(color = color)
+            .background(color = color),
     )
 }

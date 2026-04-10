@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 fun NodeTag(
     nodeName: String,
     nodeTitle: String,
-    onItemClick: ((String, String) -> Unit)? = null
+    onItemClick: ((String, String) -> Unit)? = null,
 ) {
     Text(
         nodeTitle,
@@ -24,6 +24,6 @@ fun NodeTag(
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }

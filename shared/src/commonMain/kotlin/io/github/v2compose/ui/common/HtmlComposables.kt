@@ -7,9 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import io.github.cooaer.htmltext.HtmlText
+import io.github.cooaer.htmltext.Img
 import io.github.v2compose.Constants
-
-private const val TAG = "HtmlComposables"
 
 typealias OnHtmlImageClick = (String, List<String>) -> Unit
 
@@ -28,22 +27,23 @@ fun HtmlContent(
     onUriClick: ((uri: String) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     loadImage: ((html: String, img: String?) -> Unit)? = null,
-    onHtmlImageClick: ((String, List<String>) -> Unit)? = null
+    onHtmlImageClick: ((String, List<String>) -> Unit)? = null,
 ) {
-
     HtmlText(
-        html = content,
+        content,
         modifier = modifier,
         selectable = selectable,
         textStyle = textStyle,
         baseUrl = baseUrl,
         onLinkClick = onUriClick,
         onClick = onClick,
-        loadImage = { src -> loadImage?.invoke(content, src) },
-        onImageClick = { clicked, all -> onHtmlImageClick?.invoke(clicked.src, all.map { it.src }) }
+        loadImage = { src: String -> loadImage?.invoke(content, src) },
+        onImageClick = { clicked: Img, all: List<Img> ->
+            onHtmlImageClick?.invoke(clicked.src, all.map(Img::src))
+        },
     )
 
-    LaunchedEffect(true) {
+    LaunchedEffect(content, loadImage) {
         loadImage?.invoke(content, null)
     }
 }

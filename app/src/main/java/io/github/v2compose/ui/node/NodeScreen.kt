@@ -31,8 +31,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,9 +53,9 @@ import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
 import io.github.v2compose.core.extension.castOrNull
-import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
 import io.github.v2compose.ui.HandleSnackbarMessage
+import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.HtmlContent
 import io.github.v2compose.ui.common.ListDivider
@@ -144,9 +144,7 @@ private fun NodeScreen(
     onShareClick: () -> Unit,
     openUri: (String) -> Unit,
 ) {
-
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
     val scaffoldState = rememberCollapsingToolbarScaffoldState()
 
     Surface(
@@ -182,7 +180,6 @@ private fun NodeScreen(
                 onRetryNodeClick = onRetryNodeClick,
                 openUri = openUri,
             )
-
         }
     }
 }
@@ -295,8 +292,6 @@ private fun CollapsingToolbarScope.NodeTopBar(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -333,7 +328,6 @@ private fun NodeTitle(
                 )
             }
         }
-
     }
 }
 
@@ -348,7 +342,6 @@ private fun NodeContent(
     openUri: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     when (nodeUiState) {
         is NodeUiState.Success -> {
             TopicList(
@@ -390,7 +383,6 @@ private fun TopicList(
         lazyPagingItems.peek(0).castOrNull<NodeTopicInfo>()
     } else null
 
-    //TODO: 非登录情况下，某些节点无法访问
     if (nodeTopicInfo != null && !nodeTopicInfo.isValid()) {
         Log.e(TAG, "node topic info is invalid, nodeInfo = $nodeInfo")
         return
@@ -484,7 +476,7 @@ private fun NodeTopic(
             Text(
                 item.title,
                 style = MaterialTheme.typography.bodyLarge,
-                maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Integer.MAX_VALUE,
+                maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,
             )
         }
