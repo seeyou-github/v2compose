@@ -12,13 +12,18 @@ fun V2App(viewModel: V2AppViewModel = koinViewModel()) {
     val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
     val keyboardState by keyboardAsState()
     val navController = rememberNavController()
-    val appState = rememberV2AppState(navHostController = navController)
+    val openExternalUri = rememberAndroidExternalUriHandler()
+    val appState = rememberV2AppState(
+        navHostController = navController,
+        openExternalUri = openExternalUri,
+    )
+    val saveImage = rememberAndroidImageSaver(appState.snackbarHostState)
 
     V2AppShell(
         appSettings = appSettings,
         snackbarHostState = appState.snackbarHostState,
         keyboardVisible = keyboardState,
-        saveImage = appState::saveImage,
+        saveImage = saveImage,
         androidTheme = true,
     ) {
         V2AppNavGraph(

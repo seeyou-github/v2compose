@@ -10,7 +10,6 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
 import io.github.v2compose.BuildConfig
-import io.github.v2compose.V2AppState
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.UriDecoder
@@ -164,8 +163,6 @@ val viewModelModule = module {
     viewModelOf(::SettingsViewModel)
     viewModelOf(::NewsViewModel)
 
-    // States that injected
-    singleOf(::V2AppState)
     singleOf(::SettingsScreenState)
 }
 
