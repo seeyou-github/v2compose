@@ -8,9 +8,9 @@
     <string name="load_failed">加载失败，请重试</string>
     <string name="retry">重试</string>
 
-    <string name="n_comment">评论%s</string>
-    <string name="n_views">点击%s</string>
-    <string name="n_floor">%d楼</string>
+    <string name="n_comment">评论%1$s</string>
+    <string name="n_views">点击%1$s</string>
+    <string name="n_floor">%1$d楼</string>
 
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
@@ -44,12 +44,12 @@
 
     <string name="unthanks_tips">感谢已发送，不能取消</string>
     <string name="unreport_tips">你已对本主题进行了报告，不能取消</string>
-    <string name="action_success">%s成功</string>
-    <string name="action_failure">%s异常，请重试</string>
+    <string name="action_success">%1$s成功</string>
+    <string name="action_failure">%1$s异常，请重试</string>
     <string name="thanks_fail_is_self">不能感谢自己</string>
     <string name="thanks_fail_just_joined">感谢发送失败，可能因为您刚注册不久</string>
 
-    <string name="user_previous_replies">%s之前的评论</string>
+    <string name="user_previous_replies">%1$s之前的评论</string>
 
     <string name="replies_order_positive">最早</string>
     <string name="replies_order_negative">最新</string>
@@ -67,8 +67,8 @@
 
     <!-- Node Screen Start -->
     <string name="node">节点</string>
-    <string name="node_topics_and_favorites" formatted="false">%d条主题  %d次收藏</string>
-    <string name="node_click_times">%d 次点击</string>
+    <string name="node_topics_and_favorites">%1$d条主题  %2$d次收藏</string>
+    <string name="node_click_times">%1$d 次点击</string>
     <string name="node_favorite">加入收藏</string>
     <string name="node_favorited">已收藏</string>
     <string name="node_unfavorite_tips">确定要取消收藏吗？</string>
@@ -78,11 +78,11 @@
     <!-- Node Screen End -->
 
     <!-- Search Screen Start -->
-    <string name="search_user_time_replies" formatted="false">%s创建于%s  %d条回复</string>
+    <string name="search_user_time_replies">%1$s创建于%2$s  %3$d条回复</string>
 
-    <string name="n_days_ago">%d天前</string>
-    <string name="n_hours_ago">%d小时前</string>
-    <string name="n_minutes_ago">%d分钟前</string>
+    <string name="n_days_ago">%1$d天前</string>
+    <string name="n_hours_ago">%1$d小时前</string>
+    <string name="n_minutes_ago">%1$d分钟前</string>
     <string name="just_now">刚刚</string>
 
     <string name="history_keywords">历史搜索</string>
@@ -100,7 +100,7 @@
     <string name="user_action_success">操作成功</string>
     <string name="user_action_failure">操作异常，请重试</string>
     <string name="user_unfollow_tips">确定要取消特特别关注吗？</string>
-    <string name="user_block_tips">确定要屏蔽%s吗？</string>
+    <string name="user_block_tips">确定要屏蔽%1$s吗？</string>
     <!-- User Screen End -->
 
     <!-- Settings Screen Start -->
@@ -111,7 +111,7 @@
     <string name="settings_other">其他</string>
 
     <string name="settings_clear_cache">清除缓存</string>
-    <string name="settings_clear_cache_summary">包括图片及其他缓存数据，共%dMB</string>
+    <string name="settings_clear_cache_summary">包括图片及其他缓存数据，共%1$dMB</string>
     <string name="clear_cache_tips">确认清除缓存吗？</string>
 
     <string name="settings_auto_check_in">自动签到</string>
