@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import coil3.annotation.ExperimentalCoilApi
 import coil3.imageLoader
 import io.github.v2compose.core.openInBrowser
+import io.github.v2compose.core.share
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import v2compose.shared.generated.resources.Res
@@ -28,6 +29,13 @@ fun rememberAndroidExternalUriHandler(
 }
 
 @Composable
+fun rememberAndroidShareHandler(
+    context: Context = LocalContext.current,
+): (String, String) -> Unit = remember(context) {
+    { title, url -> context.share(title, url) }
+}
+
+@Composable
 fun rememberAndroidImageSaver(
     snackbarHostState: SnackbarHostState,
     context: Context = LocalContext.current,
@@ -39,6 +47,27 @@ fun rememberAndroidImageSaver(
                 context.saveImage(url, snackbarHostState)
             }
         }
+    }
+}
+
+@Composable
+fun rememberAndroidAppPlatformHandlers(
+    snackbarHostState: SnackbarHostState,
+    context: Context = LocalContext.current,
+): AppPlatformHandlers {
+    val openExternalUri = rememberAndroidExternalUriHandler(context)
+    val shareContent = rememberAndroidShareHandler(context)
+    val saveImage = rememberAndroidImageSaver(
+        snackbarHostState = snackbarHostState,
+        context = context,
+    )
+
+    return remember(openExternalUri, shareContent, saveImage) {
+        AppPlatformHandlers(
+            openExternalUri = openExternalUri,
+            shareContent = shareContent,
+            saveImage = saveImage,
+        )
     }
 }
 

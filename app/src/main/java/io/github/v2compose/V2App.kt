@@ -17,13 +17,13 @@ fun V2App(viewModel: V2AppViewModel = koinViewModel()) {
         navHostController = navController,
         openExternalUri = openExternalUri,
     )
-    val saveImage = rememberAndroidImageSaver(appState.snackbarHostState)
+    val platformHandlers = rememberAndroidAppPlatformHandlers(appState.snackbarHostState)
 
     V2AppShell(
         appSettings = appSettings,
         snackbarHostState = appState.snackbarHostState,
         keyboardVisible = keyboardState,
-        saveImage = saveImage,
+        platformHandlers = platformHandlers,
         androidTheme = true,
     ) {
         V2AppNavGraph(

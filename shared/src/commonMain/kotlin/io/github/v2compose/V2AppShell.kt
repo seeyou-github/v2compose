@@ -20,10 +20,6 @@ import io.github.v2compose.ui.theme.V2composeTheme
 val LocalSnackbarHostState =
     compositionLocalOf<SnackbarHostState> { error("LocalSnackbar not provided") }
 
-private typealias ImageSaver = (String) -> Unit
-
-val LocalImageSaver = compositionLocalOf<ImageSaver> { error("LocalImageSaver not provided") }
-
 private val BottomAppBarHeight = 72.dp
 
 @Composable
@@ -31,7 +27,7 @@ fun V2AppShell(
     appSettings: AppSettings,
     snackbarHostState: SnackbarHostState,
     keyboardVisible: Boolean,
-    saveImage: (String) -> Unit,
+    platformHandlers: AppPlatformHandlers,
     androidTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {
@@ -46,7 +42,7 @@ fun V2AppShell(
     V2composeTheme(androidTheme = androidTheme, darkTheme = darkTheme) {
         CompositionLocalProvider(
             LocalSnackbarHostState provides snackbarHostState,
-            LocalImageSaver provides saveImage,
+            LocalAppPlatformHandlers provides platformHandlers,
         ) {
             Box {
                 content()

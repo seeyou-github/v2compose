@@ -37,7 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import io.github.v2compose.LocalImageSaver
+import io.github.v2compose.LocalAppPlatformHandlers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -150,7 +150,7 @@ fun GalleryImage(
                 ),
         )
 
-        val saveImage = LocalImageSaver.current
+        val saveImage = LocalAppPlatformHandlers.current.saveImage
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
