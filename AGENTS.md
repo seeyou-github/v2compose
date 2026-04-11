@@ -77,11 +77,11 @@ V2compose 是一个现代化的 V2EX 客户端，采用 **Compose Multiplatform*
 ### 已迁移至 `:shared` (commonMain)
 - 数据模型 (`bean`)、网络层 (`network`)、本地存储 (`datasource`)。
 - Repository 和 UseCase。
-- 大部分 UI 屏幕 (Topic, User, Node, Search, Settings, Login, Write, Supplement) 及其 ViewModel。
+- 所有 UI 屏幕 (Topic, User, Node, Search, Settings, Login, Write, Supplement, Mine) 及其 ViewModel。
+- 导航图和 DI (Koin) 配置。
 
 ### 待处理 / 平台相关
-- `WebViewScreen` & `GalleryScreen`: 仍保留在 `:app` 模块，依赖 Android 原生组件。
-- 导航图完全迁移：`V2AppNavGraph` 仍部分位于 `:app`。
+- iOS 平台的具体实现（如 `PlatformModule.kt` 补全、资源适配等）。
 
 ## 开发指南
 

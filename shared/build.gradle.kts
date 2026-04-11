@@ -86,6 +86,8 @@ kotlin {
             // Coil
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.coil.gif)
+            implementation(libs.coil.svg)
             implementation(libs.mikepenz.markdown)
             implementation(libs.mikepenz.markdown.m3)
             implementation(libs.mikepenz.markdown.coil3)
@@ -97,7 +99,10 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.slf4j.android)
+            implementation(libs.orhanobut.logger)
             implementation(libs.androidx.work.runtime.ktx)
+            implementation(libs.koin.androidx.workmanager)
+            implementation(libs.okhttp.logging)
         }
 
         iosMain.dependencies {

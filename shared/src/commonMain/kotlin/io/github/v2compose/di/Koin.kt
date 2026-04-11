@@ -22,28 +22,38 @@ import io.github.v2compose.repository.def.DefaultNodeRepository
 import io.github.v2compose.repository.def.DefaultTopicRepository
 import io.github.v2compose.repository.def.DefaultUserRepository
 import io.github.v2compose.shared.core.V2EventManager
-import io.github.v2compose.ui.node.NodeViewModel
 import io.github.v2compose.ui.gallery.GalleryViewModel
+import io.github.v2compose.ui.login.LoginViewModel
+import io.github.v2compose.ui.login.google.GoogleLoginViewModel
+import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
 import io.github.v2compose.ui.main.MainViewModel
 import io.github.v2compose.ui.main.home.recent.RecentViewModel
 import io.github.v2compose.ui.main.home.tab.NewsViewModel
 import io.github.v2compose.ui.main.mine.MineViewModel
+import io.github.v2compose.ui.main.mine.following.MyFollowingViewModel
+import io.github.v2compose.ui.main.mine.nodes.MyNodesViewModel
+import io.github.v2compose.ui.main.mine.topics.MyTopicsViewModel
 import io.github.v2compose.ui.main.nodes.NodesViewModel
 import io.github.v2compose.ui.main.notifications.NotificationViewModel
+import io.github.v2compose.ui.node.NodeViewModel
 import io.github.v2compose.ui.search.SearchViewModel
+import io.github.v2compose.ui.settings.SettingsScreenState
+import io.github.v2compose.ui.settings.SettingsViewModel
+import io.github.v2compose.ui.supplement.AddSupplementViewModel
 import io.github.v2compose.ui.topic.TopicViewModel
 import io.github.v2compose.ui.user.UserViewModel
+import io.github.v2compose.ui.write.WriteTopicViewModel
 import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
 import io.ktor.client.HttpClient
+import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.core.context.startKoin
-import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
@@ -95,6 +105,18 @@ val sharedViewModelModule = module {
     viewModelOf(::NodeViewModel)
     viewModelOf(::UserViewModel)
     viewModelOf(::TopicViewModel)
+
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::TwoStepLoginViewModel)
+    viewModelOf(::GoogleLoginViewModel)
+    viewModelOf(::AddSupplementViewModel)
+    viewModelOf(::MyTopicsViewModel)
+    viewModelOf(::MyFollowingViewModel)
+    viewModelOf(::MyNodesViewModel)
+    viewModelOf(::WriteTopicViewModel)
+    viewModelOf(::SettingsViewModel)
+
+    singleOf(::SettingsScreenState)
 }
 
 fun sharedModules(): List<Module> = listOf(
@@ -104,6 +126,7 @@ fun sharedModules(): List<Module> = listOf(
     sharedUseCaseModule,
     sharedPagingModule,
     sharedViewModelModule,
+    platformModule,
 )
 
 /**
@@ -111,7 +134,7 @@ fun sharedModules(): List<Module> = listOf(
  */
 fun initKoin(
     appDeclaration: KoinAppDeclaration = {},
-    platformModules: List<Module> = emptyList()
+    platformModules: List<Module> = emptyList(),
 ) {
     startKoin {
         appDeclaration()

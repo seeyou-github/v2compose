@@ -9,14 +9,13 @@ import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.v2compose.core.NotificationCenter
 import io.github.v2compose.core.analytics.IAnalytics
+import io.github.v2compose.di.appModule
 import io.github.v2compose.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
 class App : Application(), Configuration.Provider, KoinComponent {
 
@@ -29,24 +28,19 @@ class App : Application(), Configuration.Provider, KoinComponent {
     }
 
     override fun onCreate() {
-        beforeOnCreate()
         super.onCreate()
         instance = this
 
         initKoin(
             appDeclaration = {
-            androidLogger()
-            androidContext(this@App)
-            workManagerFactory()
+                androidLogger()
+                androidContext(this@App)
+                workManagerFactory()
             },
-            platformModules = io.github.v2compose.di.allModules
+            platformModules = listOf(appModule)
         )
 
         init()
-    }
-
-    private fun beforeOnCreate() {
-//        resetScrollableTabRowMinimumTabWidth()
     }
 
     private fun init() {
@@ -74,17 +68,4 @@ class App : Application(), Configuration.Provider, KoinComponent {
         get() = Configuration.Builder()
             .build() // Koin's workManagerFactory injects workers automatically
 
-    private fun resetScrollableTabRowMinimumTabWidth() {
-        try {
-            val cls = Class.forName("androidx.compose.material3.TabRowKt")
-            val field = cls.getDeclaredField("ScrollableTabRowMinimumTabWidth")
-            field.isAccessible = true
-            val modifiersField = Field::class.java.getDeclaredField("accessFlags")
-            modifiersField.isAccessible = true
-            modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
-            field.set(null, 0)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 }

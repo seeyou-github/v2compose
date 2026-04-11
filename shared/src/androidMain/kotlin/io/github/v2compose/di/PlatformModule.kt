@@ -8,13 +8,9 @@ import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
-import coil3.util.DebugLogger
-import io.github.v2compose.BuildConfig
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.UriDecoder
-import io.github.v2compose.core.analytics.IAnalytics
-import io.github.v2compose.core.analytics.VendorAnalytics
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
@@ -24,32 +20,22 @@ import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.shared.core.V2EventManager
-import io.github.v2compose.usecase.HtmlImageLoader
-import io.github.v2compose.ui.login.LoginViewModel
-import io.github.v2compose.ui.login.google.GoogleLoginViewModel
-import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
 import io.github.v2compose.ui.main.AndroidMainPlatformDelegate
 import io.github.v2compose.ui.main.MainPlatformDelegate
-import io.github.v2compose.ui.main.mine.following.MyFollowingViewModel
-import io.github.v2compose.ui.main.mine.nodes.MyNodesViewModel
-import io.github.v2compose.ui.main.mine.topics.MyTopicsViewModel
-import io.github.v2compose.ui.settings.SettingsScreenState
-import io.github.v2compose.ui.settings.SettingsViewModel
-import io.github.v2compose.ui.supplement.AddSupplementViewModel
-import io.github.v2compose.ui.write.WriteTopicViewModel
 import io.github.v2compose.usecase.FixHtmlUseCase
+import io.github.v2compose.usecase.HtmlImageLoader
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
-import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.androidx.workmanager.dsl.workerOf
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-val appModule = module {
+actual val platformModule: Module = module {
     single(named("Account")) { createAccountDataStore(get()) }
     single(named("App")) { createAppDataStore(get()) }
 
@@ -71,23 +57,14 @@ val appModule = module {
                 add(SvgDecoder.Factory())
             }
             .diskCache(get<DiskCache>())
-            .apply {
-                if (BuildConfig.DEBUG) {
-                    logger(DebugLogger())
-                }
-            }
             .build()
     }
-    single<ExecutorService> { Executors.newFixedThreadPool(4) }
     single<MainPlatformDelegate> { AndroidMainPlatformDelegate(get(), get()) }
 
     singleOf(::UriDecoder)
     single<StringDecoder> { get<UriDecoder>() }
 
-    singleOf(::VendorAnalytics)
-    single<IAnalytics> { get<VendorAnalytics>() }
-}
-val networkModule = module {
+    // Network
     single<io.github.fruit.Fruit> { OkHttpFactory.createFruit() }
 
     single { WebkitCookieManager() }
@@ -126,31 +103,11 @@ val networkModule = module {
     single<HttpClient>(named("GithubHttpClient")) {
         createAndroidGithubHttpClient(okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")))
     }
-}
 
-val androidUseCaseModule = module {
+    // UseCase
     singleOf(::FixHtmlUseCase)
     single<HtmlImageLoader> { get<FixHtmlUseCase>() }
-}
 
-val viewModelModule = module {
-    viewModelOf(::LoginViewModel)
-    viewModelOf(::TwoStepLoginViewModel)
-    viewModelOf(::GoogleLoginViewModel)
-    viewModelOf(::AddSupplementViewModel)
-    viewModelOf(::MyTopicsViewModel)
-    viewModelOf(::MyFollowingViewModel)
-    viewModelOf(::MyNodesViewModel)
-    viewModelOf(::WriteTopicViewModel)
-    viewModelOf(::SettingsViewModel)
-
-    singleOf(::SettingsScreenState)
-}
-
-val workerModule = module {
+    // Worker
     workerOf(::CheckInWorker)
 }
-
-val allModules = listOf(
-    appModule, networkModule, androidUseCaseModule, viewModelModule, workerModule
-)
