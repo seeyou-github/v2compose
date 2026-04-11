@@ -10,33 +10,37 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebContent
 import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebStateSaver
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import io.github.v2compose.Constants
-import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.webview.client.V2exRequestInterceptor
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.v2ex
 
 @Composable
-fun WebViewScreenRoute(url: String, onCloseClick: () -> Unit, openUri: (String) -> Unit) {
-    WebViewScreen(url = url, onCloseClick = onCloseClick, openUri = openUri)
+fun WebViewScreenRoute(
+    onCloseClick: () -> Unit,
+    openUri: (String) -> Unit,
+    viewModel: WebViewViewModel = koinViewModel(),
+) {
+    WebViewScreen(url = viewModel.url, onCloseClick = onCloseClick, openUri = openUri)
 }
 
 @Composable
 private fun WebViewScreen(url: String, onCloseClick: () -> Unit, openUri: (String) -> Unit) {
     val webViewState = rememberSaveableWebViewState(
         url = url,
-        additionalHttpHeaders = mapOf("Refer" to Constants.baseUrl)
+        additionalHttpHeaders = mapOf("Refer" to Constants.baseUrl),
     )
 
     val loadingState = webViewState.loadingState
@@ -97,24 +101,13 @@ private fun rememberSaveableWebViewState(
     rememberSaveable(
         url,
         additionalHttpHeaders,
-        saver = listSaver(
-            save = { state ->
-                state.content.castOrNull<WebContent.Url>()
-                    ?.let { listOf(it.url, it.additionalHttpHeaders) } ?: listOf()
-            },
-            restore = {
-                if (it.isEmpty()) {
-                    WebViewState(WebContent.Url(url, additionalHttpHeaders))
-                } else {
-                    WebViewState(WebContent.Url(it[0] as String, it[1] as Map<String, String>))
-                }
-            }
-        )
+        saver = WebStateSaver,
     ) {
-        WebViewState(
-            WebContent.Url(
-                url = url,
-                additionalHttpHeaders = additionalHttpHeaders
-            )
+        WebViewState(WebContent.NavigatorOnly)
+    }.apply {
+        content = WebContent.Url(
+            url = url,
+            additionalHttpHeaders = additionalHttpHeaders,
         )
+        webSettings.applyBaseV2WebSettings()
     }

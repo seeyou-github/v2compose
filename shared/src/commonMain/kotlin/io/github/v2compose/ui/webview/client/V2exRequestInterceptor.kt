@@ -4,6 +4,10 @@ import com.multiplatform.webview.request.RequestInterceptor
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.web.WebViewNavigator
+import io.github.v2compose.Constants
+import io.ktor.http.Url
+
+private val internalPaths = setOf("t", "member", "go")
 
 class V2exRequestInterceptor(private val openUri: (String) -> Unit) : RequestInterceptor {
     override fun onInterceptUrlRequest(
@@ -11,10 +15,11 @@ class V2exRequestInterceptor(private val openUri: (String) -> Unit) : RequestInt
         navigator: WebViewNavigator
     ): WebRequestInterceptResult {
         val url = request.url
-        if (url.startsWith("https://www.v2ex.com/t/") ||
-            url.startsWith("https://www.v2ex.com/member/") ||
-            url.startsWith("https://www.v2ex.com/go/")
-        ) {
+        val parsedUrl = runCatching { Url(url) }.getOrNull()
+        val shouldOpenInternally =
+            parsedUrl?.host?.endsWith(Constants.host) == true &&
+                parsedUrl.segments.firstOrNull()?.lowercase() in internalPaths
+        if (shouldOpenInternally) {
             openUri(url)
             return WebRequestInterceptResult.Reject
         }

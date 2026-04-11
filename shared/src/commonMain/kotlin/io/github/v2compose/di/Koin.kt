@@ -1,6 +1,8 @@
 package io.github.v2compose.di
 
 import io.github.v2compose.V2AppViewModel
+import io.github.v2compose.core.StringDecoder
+import io.github.v2compose.core.UrlStringDecoder
 import io.github.v2compose.datasource.AccountPreferences
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
@@ -42,6 +44,7 @@ import io.github.v2compose.ui.settings.SettingsViewModel
 import io.github.v2compose.ui.supplement.AddSupplementViewModel
 import io.github.v2compose.ui.topic.TopicViewModel
 import io.github.v2compose.ui.user.UserViewModel
+import io.github.v2compose.ui.webview.WebViewViewModel
 import io.github.v2compose.ui.write.WriteTopicViewModel
 import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
@@ -60,6 +63,8 @@ import org.koin.dsl.module
 
 val sharedCoreModule = module {
     singleOf(::V2EventManager)
+    singleOf(::UrlStringDecoder)
+    single<StringDecoder> { get<UrlStringDecoder>() }
 }
 
 val sharedNetworkModule = module {
@@ -115,6 +120,7 @@ val sharedViewModelModule = module {
     viewModelOf(::MyNodesViewModel)
     viewModelOf(::WriteTopicViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::WebViewViewModel)
 
     singleOf(::SettingsScreenState)
 }

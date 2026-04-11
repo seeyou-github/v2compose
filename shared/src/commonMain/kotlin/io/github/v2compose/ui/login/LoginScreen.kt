@@ -71,7 +71,6 @@ private const val TAG = "LoginScreen"
 fun LoginScreenRoute(
     onCloseClick: () -> Unit,
     onSignInWithGoogleClick: (String) -> Unit,
-    redirect: String? = null,
     viewModel: LoginViewModel = koinViewModel(),
     loginScreenState: LoginScreenState = rememberLoginScreenState(),
 ) {

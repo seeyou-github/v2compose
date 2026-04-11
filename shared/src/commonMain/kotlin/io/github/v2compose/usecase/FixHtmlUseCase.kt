@@ -10,7 +10,6 @@ import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
-import io.github.v2compose.core.PlatformContext
 import io.github.v2compose.usecase.HtmlImageLoader
 import io.github.v2compose.util.CfEmailUtils
 import io.github.v2compose.util.KLogger
@@ -22,7 +21,7 @@ import kotlin.math.ceil
 
 private const val TAG = "FixHtmlImageUseCase"
 
-class FixHtmlUseCase(private val context: PlatformContext) : HtmlImageLoader {
+class FixHtmlUseCase(private val context: coil3.PlatformContext) : HtmlImageLoader {
 
     companion object {
         const val LoadImagesCountEveryTime = 4
@@ -62,7 +61,7 @@ class FixHtmlUseCase(private val context: PlatformContext) : HtmlImageLoader {
                 val src = element.attr("src").fullUrl(Constants.baseUrl)
                 val imageRequest = createImageRequest(src)
                 try {
-                    val result = coil3.SingletonImageLoader.get(context as coil3.PlatformContext).execute(imageRequest)
+                    val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
                     Pair(element, result)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -85,7 +84,7 @@ class FixHtmlUseCase(private val context: PlatformContext) : HtmlImageLoader {
 ////            Size(screenWidth, coil3.size.Dimension.Undefined)
 //        }
 
-        return ImageRequest.Builder(context as coil3.PlatformContext)
+        return ImageRequest.Builder(context)
             .data(src)
             .size(Size.ORIGINAL)
             .scale(Scale.FIT)
@@ -101,8 +100,8 @@ class FixHtmlUseCase(private val context: PlatformContext) : HtmlImageLoader {
         emit(document.outerHtml())
 
         val imageRequest =
-            ImageRequest.Builder(context as coil3.PlatformContext).data(src).size(Size.ORIGINAL).build()
-        val imageResult = coil3.SingletonImageLoader.get(context as coil3.PlatformContext).execute(imageRequest)
+            ImageRequest.Builder(context).data(src).size(Size.ORIGINAL).build()
+        val imageResult = coil3.SingletonImageLoader.get(context).execute(imageRequest)
         loadingImages.forEach { element ->
             fillElement(element, imageResult)
         }

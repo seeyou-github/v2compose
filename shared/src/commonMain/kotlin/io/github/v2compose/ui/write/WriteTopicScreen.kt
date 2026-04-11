@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.write
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -65,6 +64,7 @@ import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.ListDivider
+import io.github.v2compose.ui.common.PlatformBackHandler
 import io.github.v2compose.ui.common.SelectNode
 import io.github.v2compose.ui.common.TextEditor
 import io.github.v2compose.usecase.LoadNodesState
@@ -142,7 +142,7 @@ private fun WriteTopicScreen(
     var showNodes by remember { mutableStateOf(false) }
     val hasNodes = loadNodesState is LoadNodesState.Success && loadNodesState.data.isNotEmpty()
 
-    BackHandler(enabled = showNodes) {
+    PlatformBackHandler(enabled = showNodes) {
         showNodes = false
     }
 
@@ -455,4 +455,3 @@ private fun TopicNodeField(
         }
     }
 }
-

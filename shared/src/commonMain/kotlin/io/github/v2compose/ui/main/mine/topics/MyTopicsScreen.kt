@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main.mine.topics
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,12 +23,13 @@ import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
+import io.github.v2compose.util.KLogger
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.my_topics
 
-private const val TAG = "MyFollowingScreen"
+private const val TAG = "MyTopicsScreen"
 
 @Composable
 fun MyTopicsScreenRoute(
@@ -104,7 +104,7 @@ private fun MyTopicsList(
         items(myTopics.itemCount, key = myTopics.itemKey { it.id }) { index ->
             val item = myTopics[index]
             item?.let {
-                Log.d(TAG, "mytopics, index = $index, item = $item")
+                KLogger.d(TAG, "mytopics, index = $index, item = $item")
                 SimpleTopic(
                     title = item.title,
                     userName = item.userName,

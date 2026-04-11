@@ -21,6 +21,7 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
 import io.github.v2compose.Constants
 import io.github.v2compose.ui.common.CloseButton
+import io.github.v2compose.ui.webview.applyGoogleLoginWebSettings
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
@@ -31,7 +32,6 @@ private const val googleLoginUrlRefer = "${Constants.baseUrl}/signin?next=/missi
 
 @Composable
 fun GoogleLoginScreenRoute(
-    once: String,
     onCloseClick: () -> Unit,
     onLoginSuccess: () -> Unit,
     viewModel: GoogleLoginViewModel = koinViewModel()
@@ -43,7 +43,9 @@ fun GoogleLoginScreenRoute(
         }
     }
 
-    val googleLoginUrl = remember(once) { "${Constants.baseUrl}/auth/google?once=$once" }
+    val googleLoginUrl = remember(viewModel.args.once) {
+        "${Constants.baseUrl}/auth/google?once=${viewModel.args.once}"
+    }
     GoogleLoginScreen(
         loginUrl = googleLoginUrl,
         onCloseClick = onCloseClick,
@@ -60,7 +62,10 @@ private fun GoogleLoginScreen(
 ) {
     val webViewState = rememberWebViewState(
         url = loginUrl,
-        additionalHttpHeaders = mapOf("Refer" to googleLoginUrlRefer)
+        additionalHttpHeaders = mapOf("Refer" to googleLoginUrlRefer),
+        extraSettings = {
+            applyGoogleLoginWebSettings()
+        },
     )
 
     val loadingState = webViewState.loadingState
@@ -95,20 +100,7 @@ private fun GoogleLoginScreen(
                 state = webViewState,
                 modifier = Modifier.fillMaxSize(),
                 captureBackPresses = true,
-                onCreated = { nativeWebView ->
-                    nativeWebView.settings.apply {
-                        val defaultAgent = userAgentString
-                        userAgentString = defaultAgent?.replace("; wv", "")
-                        javaScriptEnabled = true
-                        domStorageEnabled = true
-                        databaseEnabled = true
-                        allowUniversalAccessFromFileURLs = true
-                        useWideViewPort = true
-                        builtInZoomControls = true
-                        displayZoomControls = false
-                        setSupportZoom(true)
-                    }
-                })
+            )
             if (webViewState.isLoading) {
                 LinearProgressIndicator(progress = { loadingProgress })
             }

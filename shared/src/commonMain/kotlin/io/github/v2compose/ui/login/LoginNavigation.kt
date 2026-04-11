@@ -30,11 +30,9 @@ fun NavGraphBuilder.loginScreen(
             nullable = true
         })
     ) {
-        val redirect = it.arguments?.getString(argsNext)
         LoginScreenRoute(
             onCloseClick = onCloseClick,
             onSignInWithGoogleClick = onSignInWithGoogleClick,
-            redirect = redirect,
         )
     }
 }

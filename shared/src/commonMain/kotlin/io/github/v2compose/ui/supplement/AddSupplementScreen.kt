@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.supplement
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +37,7 @@ import io.github.v2compose.network.bean.AppendTopicPageInfo
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
+import io.github.v2compose.ui.common.PlatformBackHandler
 import io.github.v2compose.ui.common.TextAlertDialog
 import io.github.v2compose.ui.common.TextEditor
 import org.jetbrains.compose.resources.stringResource
@@ -176,7 +176,7 @@ fun WriteSupplementField(
 private fun AddSupplementBackHandler(supplement: String, onCloseClick: () -> Unit) {
     var showBackTips by remember { mutableStateOf(false) }
 
-    BackHandler(enabled = supplement.isNotEmpty()) {
+    PlatformBackHandler(enabled = supplement.isNotEmpty()) {
         showBackTips = true
     }
 
@@ -221,4 +221,3 @@ private fun HandleAddSupplementState(
         }
     }
 }
-

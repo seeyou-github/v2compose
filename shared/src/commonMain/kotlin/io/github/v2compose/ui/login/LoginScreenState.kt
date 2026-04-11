@@ -1,13 +1,11 @@
 package io.github.v2compose.ui.login
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import org.jetbrains.compose.resources.StringResource
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.login_captcha_blank
@@ -15,14 +13,12 @@ import v2compose.shared.generated.resources.login_password_blank
 import v2compose.shared.generated.resources.login_username_blank
 
 @Composable
-fun rememberLoginScreenState(context: Context = LocalContext.current): LoginScreenState {
-    return remember(context) {
-        LoginScreenState(context)
-    }
+fun rememberLoginScreenState(): LoginScreenState {
+    return remember { LoginScreenState() }
 }
 
 @Stable
-class LoginScreenState(private val context: Context) {
+class LoginScreenState {
 
     var userNameError by mutableStateOf<StringResource?>(null)
         private set
@@ -52,5 +48,4 @@ class LoginScreenState(private val context: Context) {
     fun resetCaptchaError() {
         captchaError = null
     }
-
 }

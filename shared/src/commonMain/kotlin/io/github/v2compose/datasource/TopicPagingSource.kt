@@ -16,9 +16,10 @@ class TopicPagingSource(
 
     companion object {
         const val FirstPageIndex = 1
+        private const val StartPageReversed = 999
     }
 
-    private var totalPageCount: Int = 0
+    private var startPage = initialPage ?: if (reversed) StartPageReversed else FirstPageIndex
 
     override fun getRefreshKey(state: PagingState<Int, Any>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -29,18 +30,26 @@ class TopicPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
         return try {
-            val page = params.key ?: initialPage ?: FirstPageIndex
+            var page = params.key ?: startPage
             val topicInfo = v2exService.topicDetails(topicId = topicId, page = page)
             KLogger.d(TAG, "load, result, topicInfo = $topicInfo")
-            val pCount = topicInfo.totalPage()
-            totalPageCount = pCount
+            val totalPageCount = topicInfo.totalPage()
+            if (page == StartPageReversed) {
+                startPage = totalPageCount
+                page = startPage
+            }
             val data = topicInfo.replies.toMutableList<Any>().apply {
-                if (page == FirstPageIndex || (reversed && page == pCount)) {
+                if (page == FirstPageIndex || (reversed && page == totalPageCount)) {
                     add(0, topicInfo)
                 }
+                if (reversed) {
+                    reverse()
+                }
             }
-            val prev = if (page <= 1) null else page - 1
-            val next = if (page < pCount) page + 1 else null
+            val largerPage = if (page < totalPageCount) page + 1 else null
+            val smallerPage = if (page <= FirstPageIndex) null else page - 1
+            val prev = if (reversed) largerPage else smallerPage
+            val next = if (reversed) smallerPage else largerPage
             LoadResult.Page(
                 data = data,
                 prevKey = prev,

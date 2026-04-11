@@ -9,12 +9,13 @@ import coil3.gif.GifDecoder
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import io.github.v2compose.core.CheckInWorker
-import io.github.v2compose.core.StringDecoder
-import io.github.v2compose.core.UriDecoder
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
+import io.github.v2compose.network.HttpCacheManager
 import io.github.v2compose.network.OkHttpFactory
+import io.github.v2compose.network.OkHttpCacheManager
+import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
@@ -61,9 +62,6 @@ actual val platformModule: Module = module {
     }
     single<MainPlatformDelegate> { AndroidMainPlatformDelegate(get(), get()) }
 
-    singleOf(::UriDecoder)
-    single<StringDecoder> { get<UriDecoder>() }
-
     // Network
     single<io.github.fruit.Fruit> { OkHttpFactory.createFruit() }
 
@@ -72,7 +70,9 @@ actual val platformModule: Module = module {
     single<CookieManager> { get<WebkitCookieManager>() }
 
     singleOf(::V2ProxySelector)
+    single<ProxyManager> { get<V2ProxySelector>() }
     single<okhttp3.Cache> { OkHttpFactory.createCache(get<android.content.Context>()) }
+    single<HttpCacheManager> { OkHttpCacheManager(get()) }
 
     single<OkHttpClient>(named("CommonOkHttpClient")) {
         OkHttpFactory.createHttpClient(
