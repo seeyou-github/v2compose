@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -60,6 +61,7 @@ import v2compose.shared.generated.resources.user_unfollow_tips
 fun UserToolbar(
     userUiState: UserUiState,
     isLoggedIn: Boolean,
+    titleAlpha: Float,
     scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
@@ -73,7 +75,9 @@ fun UserToolbar(
             userPageInfo?.let {
                 UserTopAppBarTitle(
                     userPageInfo = it,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .graphicsLayer(alpha = titleAlpha),
                 )
             }
         },

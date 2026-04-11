@@ -30,15 +30,20 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -110,7 +115,7 @@ fun UserScreenRoute(
         onShareClick = {
             context.share(userArgs.userName, V2exUri.userUrl(userArgs.userName))
         },
-        onRetryClick = { viewModel.retry() },
+        onRetryClick = viewModel::retry,
         onFollowClick = viewModel::followUser,
         onBlockClick = viewModel::blockUser,
         onTopicClick = onTopicClick,
@@ -142,6 +147,23 @@ private fun UserScreen(
     onHtmlImageClick: OnHtmlImageClick,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val topicsListState = userTopics.rememberLazyListState()
+    val repliesListState = userReplies.rememberLazyListState()
+    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
+    var headerHeightPx by remember { mutableIntStateOf(1) }
+    val headerAlpha by remember(userUiState, selectedTabIndex, headerHeightPx) {
+        derivedStateOf {
+            if (userUiState !is UserUiState.Success) {
+                0f
+            } else {
+                val listState = if (selectedTabIndex == 0) topicsListState else repliesListState
+                calculateHeaderAlpha(
+                    listState = listState,
+                    headerHeightPx = headerHeightPx,
+                )
+            }
+        }
+    }
 
     Surface(
         modifier = Modifier
@@ -156,6 +178,7 @@ private fun UserScreen(
                 UserToolbar(
                     userUiState = userUiState,
                     isLoggedIn = isLoggedIn,
+                    titleAlpha = 1f - headerAlpha,
                     scrollBehavior = scrollBehavior,
                     onBackClick = onBackClick,
                     onShareClick = onShareClick,
@@ -176,7 +199,13 @@ private fun UserScreen(
                     sizedHtmls = sizedHtmls,
                     topicTitleOverview = topicTitleOverview,
                     isLoggedIn = isLoggedIn,
+                    topicsListState = topicsListState,
+                    repliesListState = repliesListState,
+                    selectedTabIndex = selectedTabIndex,
+                    headerAlpha = headerAlpha,
                     onRetryClick = onRetryClick,
+                    onSelectedTabIndexChange = { selectedTabIndex = it },
+                    onHeaderMeasured = { headerHeightPx = it },
                     onFollowClick = onFollowClick,
                     onBlockClick = onBlockClick,
                     onTopicClick = onTopicClick,
@@ -198,8 +227,14 @@ private fun UserContent(
     userReplies: LazyPagingItems<UserReplies.Item>,
     topicTitleOverview: Boolean,
     isLoggedIn: Boolean,
+    topicsListState: LazyListState,
+    repliesListState: LazyListState,
+    selectedTabIndex: Int,
+    headerAlpha: Float,
     sizedHtmls: SnapshotStateMap<String, String>,
     onRetryClick: () -> Unit,
+    onSelectedTabIndexChange: (Int) -> Unit,
+    onHeaderMeasured: (Int) -> Unit,
     onFollowClick: () -> Unit,
     onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
@@ -216,7 +251,13 @@ private fun UserContent(
                 userReplies = userReplies,
                 topicTitleOverview = topicTitleOverview,
                 isLoggedIn = isLoggedIn,
+                topicsListState = topicsListState,
+                repliesListState = repliesListState,
+                selectedTabIndex = selectedTabIndex,
+                headerAlpha = headerAlpha,
                 sizedHtmls = sizedHtmls,
+                onSelectedTabIndexChange = onSelectedTabIndexChange,
+                onHeaderMeasured = onHeaderMeasured,
                 onFollowClick = onFollowClick,
                 onBlockClick = onBlockClick,
                 onTopicClick = onTopicClick,
@@ -244,7 +285,13 @@ fun UserPager(
     userReplies: LazyPagingItems<UserReplies.Item>,
     topicTitleOverview: Boolean,
     isLoggedIn: Boolean,
+    topicsListState: LazyListState,
+    repliesListState: LazyListState,
+    selectedTabIndex: Int,
+    headerAlpha: Float,
     sizedHtmls: SnapshotStateMap<String, String>,
+    onSelectedTabIndexChange: (Int) -> Unit,
+    onHeaderMeasured: (Int) -> Unit,
     onFollowClick: () -> Unit,
     onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
@@ -253,9 +300,6 @@ fun UserPager(
     loadHtmlImage: (String, String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    val topicsListState = userTopics.rememberLazyListState()
-    val repliesListState = userReplies.rememberLazyListState()
-    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
     val tabNames =
         listOf(stringResource(Res.string.user_topic), stringResource(Res.string.user_reply))
 
@@ -266,9 +310,11 @@ fun UserPager(
             isLoggedIn = isLoggedIn,
             topicTitleOverview = topicTitleOverview,
             lazyListState = topicsListState,
+            headerAlpha = headerAlpha,
             selectedTabIndex = selectedTabIndex,
             tabNames = tabNames,
-            onTabSelected = { selectedTabIndex = it },
+            onTabSelected = onSelectedTabIndexChange,
+            onHeaderMeasured = onHeaderMeasured,
             onFollowClick = onFollowClick,
             onBlockClick = onBlockClick,
             onTopicClick = onTopicClick,
@@ -281,9 +327,11 @@ fun UserPager(
             isLoggedIn = isLoggedIn,
             sizedHtmls = sizedHtmls,
             lazyListState = repliesListState,
+            headerAlpha = headerAlpha,
             selectedTabIndex = selectedTabIndex,
             tabNames = tabNames,
-            onTabSelected = { selectedTabIndex = it },
+            onTabSelected = onSelectedTabIndexChange,
+            onHeaderMeasured = onHeaderMeasured,
             onFollowClick = onFollowClick,
             onBlockClick = onBlockClick,
             onTopicClick = onTopicClick,
@@ -302,9 +350,11 @@ private fun UserTopicsList(
     isLoggedIn: Boolean,
     topicTitleOverview: Boolean,
     lazyListState: LazyListState,
+    headerAlpha: Float,
     selectedTabIndex: Int,
     tabNames: List<String>,
     onTabSelected: (Int) -> Unit,
+    onHeaderMeasured: (Int) -> Unit,
     onFollowClick: () -> Unit,
     onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
@@ -315,6 +365,8 @@ private fun UserTopicsList(
             UserHeaderSection(
                 userPageInfo = userPageInfo,
                 isLoggedIn = isLoggedIn,
+                alpha = headerAlpha,
+                onMeasured = onHeaderMeasured,
                 onFollowClick = onFollowClick,
                 onBlockClick = onBlockClick,
             )
@@ -390,9 +442,11 @@ private fun UserRepliesList(
     isLoggedIn: Boolean,
     sizedHtmls: SnapshotStateMap<String, String>,
     lazyListState: LazyListState,
+    headerAlpha: Float,
     selectedTabIndex: Int,
     tabNames: List<String>,
     onTabSelected: (Int) -> Unit,
+    onHeaderMeasured: (Int) -> Unit,
     onFollowClick: () -> Unit,
     onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
@@ -405,6 +459,8 @@ private fun UserRepliesList(
             UserHeaderSection(
                 userPageInfo = userPageInfo,
                 isLoggedIn = isLoggedIn,
+                alpha = headerAlpha,
+                onMeasured = onHeaderMeasured,
                 onFollowClick = onFollowClick,
                 onBlockClick = onBlockClick,
             )
@@ -441,6 +497,8 @@ private fun UserRepliesList(
 private fun UserHeaderSection(
     userPageInfo: UserPageInfo,
     isLoggedIn: Boolean,
+    alpha: Float,
+    onMeasured: (Int) -> Unit,
     onFollowClick: () -> Unit,
     onBlockClick: () -> Unit,
 ) {
@@ -448,6 +506,8 @@ private fun UserHeaderSection(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
+            .onSizeChanged { onMeasured(it.height) }
+            .graphicsLayer(alpha = alpha)
     ) {
         UserHeader(
             userPageInfo = userPageInfo,
@@ -567,4 +627,18 @@ private fun UserTabIndicator(tabPosition: TabPosition, modifier: Modifier = Modi
             .height(2.dp)
             .background(color = MaterialTheme.colorScheme.primary)
     )
+}
+
+private fun calculateHeaderAlpha(
+    listState: LazyListState,
+    headerHeightPx: Int,
+): Float {
+    if (listState.firstVisibleItemIndex > 0) {
+        return 0f
+    }
+    if (headerHeightPx <= 0) {
+        return 1f
+    }
+    val progress = listState.firstVisibleItemScrollOffset.toFloat() / headerHeightPx.toFloat()
+    return (1f - progress).coerceIn(0f, 1f)
 }
