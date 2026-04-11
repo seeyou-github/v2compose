@@ -5,6 +5,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
@@ -71,16 +71,12 @@ fun ReplyInput(
         }
     )
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val expandedWidth = screenWidth - fabSize - borderPadding * 3
-    val expandedWidthPx = with(LocalDensity.current) { expandedWidth.roundToPx() }
-
     val sizeModifier = when (state) {
         ReplyInputState.Expanded -> Modifier.fillMaxWidth()
         ReplyInputState.Collapsed -> Modifier.size(fabSize)
     }
 
-    Box(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .padding(
@@ -90,6 +86,9 @@ fun ReplyInput(
                 bottom = borderPadding
             )
     ) {
+        val expandedWidthPx = with(LocalDensity.current) {
+            (maxWidth - fabSize - borderPadding * 3).roundToPx()
+        }
         AnimatedVisibility(
             visible = state == ReplyInputState.Expanded,
             modifier = Modifier.align(Alignment.BottomEnd),

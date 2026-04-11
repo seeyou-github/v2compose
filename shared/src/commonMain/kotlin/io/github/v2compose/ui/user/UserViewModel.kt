@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.user
 
-import android.app.Application
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.SavedStateHandle
@@ -12,7 +11,8 @@ import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.repository.UserRepository
 import io.github.v2compose.ui.BaseViewModel
-import io.github.v2compose.usecase.FixHtmlUseCase
+import io.github.v2compose.usecase.HtmlImageLoader
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +30,7 @@ class UserViewModel(
     private val userRepository: UserRepository,
     private val topicRepository: TopicRepository,
     private val accountRepository: AccountRepository,
-    private val fixedHtmlImage: FixHtmlUseCase,
+    private val htmlImageLoader: HtmlImageLoader,
 ) : BaseViewModel() {
 
     val userArgs = UserArgs(savedStateHandle, stringDecoder)
@@ -66,7 +66,7 @@ class UserViewModel(
                 val result = userRepository.getUserPageInfo(userArgs.userName)
                 _userUiState.emit(UserUiState.Success(result))
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e("UserViewModel", "loadUserPageInfo failed", e)
                 _userUiState.emit(UserUiState.Error(e))
             }
         }
@@ -92,7 +92,7 @@ class UserViewModel(
                 _userUiState.emit(UserUiState.Success(result))
 //                updateSnackbarMessage(Res.string.user_action_success)
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e("UserViewModel", "doUserAction failed", e)
                 updateSnackbarMessage(e.message ?: getString(Res.string.user_action_failure))
             }
         }
@@ -102,7 +102,7 @@ class UserViewModel(
 
     fun loadHtmlImage(tag: String, html: String, imageSrc: String?) {
         viewModelScope.launch {
-            fixedHtmlImage.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
+            htmlImageLoader.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
         }
     }
 

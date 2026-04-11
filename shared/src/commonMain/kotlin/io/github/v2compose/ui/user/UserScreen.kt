@@ -44,16 +44,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import io.github.v2compose.Constants
 import io.github.v2compose.V2exUri
-import io.github.v2compose.core.share
+import io.github.v2compose.Constants
 import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
@@ -71,7 +69,7 @@ import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.user.composables.UserHeader
 import io.github.v2compose.ui.user.composables.UserToolbar
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.user_reply
 import v2compose.shared.generated.resources.user_topic
@@ -83,11 +81,9 @@ fun UserScreenRoute(
     onNodeClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
+    onShareUser: (String, String) -> Unit,
     viewModel: UserViewModel = koinViewModel(),
-    screenState: UserScreenState = rememberUserScreenState(),
 ) {
-    val context = LocalContext.current
-
     val userArgs = viewModel.userArgs
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
     val userUiState by viewModel.userUiState.collectAsStateWithLifecycle()
@@ -102,7 +98,7 @@ fun UserScreenRoute(
         }
     }
 
-    HandleSnackbarMessage(viewModel, screenState)
+    HandleSnackbarMessage(viewModel)
 
     UserScreen(
         userUiState = userUiState,
@@ -113,7 +109,7 @@ fun UserScreenRoute(
         sizedHtmls = viewModel.sizedHtmls,
         onBackClick = onBackClick,
         onShareClick = {
-            context.share(userArgs.userName, V2exUri.userUrl(userArgs.userName))
+            onShareUser(userArgs.userName, V2exUri.userUrl(userArgs.userName))
         },
         onRetryClick = viewModel::retry,
         onFollowClick = viewModel::followUser,
@@ -411,7 +407,7 @@ fun UserTopicItem(
                     topic.title,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.weight(1f),
-                    maxLines = if (topicTitleOverview) Constants.topicTitleOverviewMaxLines else Integer.MAX_VALUE,
+                    maxLines = if (topicTitleOverview) Constants.topicTitleOverviewMaxLines else Int.MAX_VALUE,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.width(8.dp))

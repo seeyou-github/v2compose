@@ -1,6 +1,5 @@
 package io.github.v2compose.core
 
-import androidx.annotation.AnimRes
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
@@ -10,30 +9,9 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import io.github.v2compose.R
-
-fun NavController.navigateWithAnimation(
-    route: String,
-    @AnimRes enterAnim: Int = R.anim.slide_in_right,
-    @AnimRes exitAnim: Int = R.anim.slide_out_left,
-    @AnimRes popEnterAnim: Int = android.R.anim.slide_in_left,
-    @AnimRes popExitAnim: Int = android.R.anim.slide_out_right,
-) {
-    navigate(
-        route,
-        NavOptions.Builder().apply {
-            setEnterAnim(enterAnim)
-            setExitAnim(exitAnim)
-            setPopEnterAnim(popEnterAnim)
-            setPopExitAnim(popExitAnim)
-        }.build(),
-    )
-}
 
 fun NavGraphBuilder.composableWithAnimation(
     route: String,

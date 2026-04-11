@@ -2,10 +2,12 @@ package io.github.v2compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
+import io.github.v2compose.core.share
 import io.github.v2compose.ui.gallery.galleryScreen
 import io.github.v2compose.ui.gallery.navigateToGallery
 import io.github.v2compose.ui.login.google.googleLoginScreen
@@ -48,6 +50,7 @@ fun V2AppNavGraph(
     appState: V2AppState,
     viewModel: V2AppViewModel,
 ) {
+    val context = LocalContext.current
     val account by viewModel.account.collectAsStateWithLifecycle()
 
     NavHost(navController = navController, startDestination = mainNavigationRoute) {
@@ -81,12 +84,14 @@ fun V2AppNavGraph(
             openUri = appState::openUri,
             onAddSupplementClick = navController::navigateToAddSupplement,
             onHtmlImageClick = navController::navigateToGallery,
+            onShareTopic = context::share,
         )
         nodeScreen(
             onBackClick = appState::back,
             onTopicClick = { item -> navController.navigateToTopic(item.topicId) },
             onUserAvatarClick = navController::navigateToUser,
-            openUri = appState::openUri
+            openUri = appState::openUri,
+            onShareNode = context::share,
         )
         searchScreen(
             goBack = appState::back,
@@ -98,6 +103,7 @@ fun V2AppNavGraph(
             onNodeClick = { path, _ -> appState.openUri(path) },
             openUri = appState::openUri,
             onHtmlImageClick = navController::navigateToGallery,
+            onShareUser = context::share,
         )
         settingsScreen(
             onBackClick = appState::back,

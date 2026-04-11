@@ -357,7 +357,6 @@ fun ReplyBottomSheet(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
-            decorFitsSystemWindows = false,
         )
     ) {
         Box(

@@ -13,6 +13,7 @@ import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
+import io.github.v2compose.usecase.HtmlImageLoader
 import io.github.v2compose.util.CfEmailUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ import kotlin.math.ceil
 
 private const val TAG = "FixHtmlImageUseCase"
 
-class FixHtmlUseCase(private val context: Context) {
+class FixHtmlUseCase(private val context: Context) : HtmlImageLoader {
 
     companion object {
         const val LoadImagesCountEveryTime = 4
@@ -30,7 +31,7 @@ class FixHtmlUseCase(private val context: Context) {
 
     private val floorRegex = "(^|\\s+)#(\\d+)($|\\s+)".toRegex()
 
-    suspend fun loadHtmlImages(html: String, src: String?): Flow<String> {
+    override suspend fun loadHtmlImages(html: String, src: String?): Flow<String> {
         return if (src == null) {
             loadImages(html)
         } else {

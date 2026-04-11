@@ -24,6 +24,7 @@ import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.shared.core.V2EventManager
+import io.github.v2compose.usecase.HtmlImageLoader
 import io.github.v2compose.ui.login.LoginViewModel
 import io.github.v2compose.ui.login.google.GoogleLoginViewModel
 import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
@@ -37,12 +38,9 @@ import io.github.v2compose.ui.main.mine.nodes.MyNodesViewModel
 import io.github.v2compose.ui.main.mine.topics.MyTopicsViewModel
 import io.github.v2compose.ui.main.nodes.NodesViewModel
 import io.github.v2compose.ui.main.notifications.NotificationViewModel
-import io.github.v2compose.ui.node.NodeViewModel
 import io.github.v2compose.ui.settings.SettingsScreenState
 import io.github.v2compose.ui.settings.SettingsViewModel
 import io.github.v2compose.ui.supplement.AddSupplementViewModel
-import io.github.v2compose.ui.topic.TopicViewModel
-import io.github.v2compose.ui.user.UserViewModel
 import io.github.v2compose.ui.write.WriteTopicViewModel
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.ktor.client.HttpClient
@@ -136,6 +134,7 @@ val networkModule = module {
 
 val androidUseCaseModule = module {
     singleOf(::FixHtmlUseCase)
+    single<HtmlImageLoader> { get<FixHtmlUseCase>() }
 }
 
 val viewModelModule = module {
@@ -143,7 +142,6 @@ val viewModelModule = module {
     viewModelOf(::TwoStepLoginViewModel)
     viewModelOf(::GoogleLoginViewModel)
     viewModelOf(::NotificationViewModel)
-    viewModelOf(::NodeViewModel)
     viewModelOf(::AddSupplementViewModel)
     viewModelOf(::MyTopicsViewModel)
     viewModelOf(::MineViewModel)
@@ -151,9 +149,7 @@ val viewModelModule = module {
     viewModelOf(::MyNodesViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::NodesViewModel)
-    viewModelOf(::UserViewModel)
     viewModelOf(::RecentViewModel)
-    viewModelOf(::TopicViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::WriteTopicViewModel)
     viewModelOf(::SettingsViewModel)

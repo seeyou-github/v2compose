@@ -1,16 +1,15 @@
 package io.github.v2compose.ui.node
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import io.github.v2compose.core.StringDecoder
-import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.repository.NodeRepository
 import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.ui.BaseViewModel
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -62,10 +61,10 @@ class NodeViewModel(
             _nodeInfo.emit(NodeUiState.Loading)
             try {
                 val nodeInfo = nodeRepository.getNodeInfo(nodeArgs.nodeName)
-                Log.d(TAG, "loadNodeInternal, result, nodeInfo = $nodeInfo")
+                KLogger.d(TAG, "loadNodeInternal, result, nodeInfo = $nodeInfo")
                 _nodeInfo.emit(NodeUiState.Success(nodeInfo))
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e(TAG, "loadNodeInternal failed", e)
                 _nodeInfo.emit(NodeUiState.Error(e))
             }
         }
@@ -92,7 +91,7 @@ class NodeViewModel(
 //                    if (result.hasStared()) Res.string.node_favorite_success_tips else Res.string.node_unfavorite_success_tips
 //                updateSnackbarMessage(getString(successTips))
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e(TAG, "doNodeAction failed", e)
                 updateSnackbarMessage(
                     e.message ?: getString(Res.string.node_action_failure_tips)
                 )

@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.user
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -9,6 +8,8 @@ import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.ui.common.OnHtmlImageClick
+import io.ktor.http.encodeURLParameter
+import io.ktor.http.encodeURLPathPart
 
 private const val argsUserName = "userName"
 private const val argsAvatar = "userAvatar"
@@ -23,8 +24,8 @@ data class UserArgs(val userName: String, val avatar: String? = null) {
 }
 
 fun NavController.navigateToUser(userName: String, userAvatar: String? = null) {
-    val encodedUserName = Uri.encode(userName)
-    val encodedUserAvatar = Uri.encode(userAvatar) ?: ""
+    val encodedUserName = userName.encodeURLPathPart()
+    val encodedUserAvatar = userAvatar?.encodeURLParameter().orEmpty()
     navigate("/member/$encodedUserName?userAvatar=$encodedUserAvatar")
 }
 
@@ -34,6 +35,7 @@ fun NavGraphBuilder.userScreen(
     onNodeClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
+    onShareUser: (String, String) -> Unit,
 ) {
     composableWithAnimation(
         route = userScreenNavigationRoute,
@@ -51,6 +53,7 @@ fun NavGraphBuilder.userScreen(
             onNodeClick = onNodeClick,
             openUri = openUri,
             onHtmlImageClick = onHtmlImageClick,
+            onShareUser = onShareUser,
         )
     }
 }

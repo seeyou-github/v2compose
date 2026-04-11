@@ -12,26 +12,24 @@ import org.jetbrains.compose.resources.stringResource
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.ok
 
-
 @Composable
 fun HtmlAlertDialog(
     title: String? = null,
     content: String,
-    onUriClick: ((uri: String) -> Unit)? = null
+    onUriClick: ((uri: String) -> Unit)? = null,
 ) {
     var showDialog by remember(content) { mutableStateOf(content.isNotEmpty()) }
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { title?.let { Text(title) } },
-            text = {
-                HtmlContent(content = content, onUriClick = onUriClick)
-            },
+            title = { title?.let { Text(it) } },
+            text = { HtmlContent(content = content, onUriClick = onUriClick) },
             confirmButton = {
                 TextButton(onClick = { showDialog = false }) {
                     Text(stringResource(Res.string.ok))
                 }
-            })
+            },
+        )
     }
 }

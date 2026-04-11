@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.node
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -69,7 +68,8 @@ import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import io.github.v2compose.util.KLogger
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.n_comment
 import v2compose.shared.generated.resources.node
@@ -87,8 +87,8 @@ fun NodeRoute(
     onTopicClick: (NodeTopicInfo.Item) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
+    onShareNode: (String, String) -> Unit,
     viewModel: NodeViewModel = koinViewModel(),
-    nodeScreenState: NodeScreenState = rememberNodeScreenState(),
 ) {
     val nodeArgs = viewModel.nodeArgs
     val nodeUiState by viewModel.nodeInfo.collectAsStateWithLifecycle()
@@ -105,7 +105,7 @@ fun NodeRoute(
     }
     val nodeTopicInfo by viewModel.nodeTopicInfo.collectAsStateWithLifecycle()
 
-    HandleSnackbarMessage(viewModel, nodeScreenState)
+    HandleSnackbarMessage(viewModel)
 
     NodeScreen(
         nodeArgs = nodeArgs,
@@ -119,7 +119,12 @@ fun NodeRoute(
         onRetryNodeClick = viewModel::retryNode,
         onTopicClick = onTopicClick,
         onUserAvatarClick = onUserAvatarClick,
-        onShareClick = { nodeScreenState.share(nodeArgs, nodeUiState) },
+        onShareClick = {
+            val title = (nodeUiState as? NodeUiState.Success)?.let {
+                "V2EX > ${it.nodeInfo.name}\n${it.nodeInfo.title}"
+            } ?: "V2EX > ${nodeArgs.nodeTitle.orEmpty()}"
+            onShareNode(title, "https://www.v2ex.com/go/${nodeArgs.nodeName}")
+        },
         openUri = openUri,
     )
 }
@@ -405,7 +410,7 @@ private fun TopicList(
     } else null
 
     if (nodeTopicInfo != null && !nodeTopicInfo.isValid()) {
-        Log.e(TAG, "node topic info is invalid, nodeInfo = $nodeInfo")
+        KLogger.e(TAG, "node topic info is invalid, nodeInfo = $nodeInfo")
         return
     }
 

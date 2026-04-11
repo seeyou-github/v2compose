@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.topic
 
-import android.app.Application
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
@@ -21,7 +20,8 @@ import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.ui.topic.bean.ReplyWrapper
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
-import io.github.v2compose.usecase.FixHtmlUseCase
+import io.github.v2compose.usecase.HtmlImageLoader
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +40,7 @@ import org.jetbrains.compose.resources.getString
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.action_failure
 import v2compose.shared.generated.resources.action_success
+import v2compose.shared.generated.resources.copy_comment_success_tips
 import v2compose.shared.generated.resources.ignore_comment
 import v2compose.shared.generated.resources.menu_item_thank
 import v2compose.shared.generated.resources.reply
@@ -61,7 +62,7 @@ class TopicViewModel(
     stringDecoder: StringDecoder,
     private val topicRepository: TopicRepository,
     private val accountRepository: AccountRepository,
-    private val fixedHtmlImage: FixHtmlUseCase,
+    private val htmlImageLoader: HtmlImageLoader,
 ) : BaseViewModel() {
 
     companion object {
@@ -235,7 +236,7 @@ class TopicViewModel(
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e(TAG, "doTopicAction failed", e)
                 if (e.isRedirect) {
                     onSuccess?.invoke()
                     updateSnackbarMessage(getString(Res.string.action_success, actionName))
@@ -274,7 +275,7 @@ class TopicViewModel(
 
     fun loadHtmlImage(tag: String, html: String, imageSrc: String?) {
         viewModelScope.launch {
-            fixedHtmlImage.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
+            htmlImageLoader.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
         }
     }
 
@@ -310,7 +311,7 @@ class TopicViewModel(
                     updateSnackbarMessage(getString(Res.string.action_failure, actionName))
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e(TAG, "ignoreReply failed", e)
                 updateSnackbarMessage(
                     e.message ?: getString(Res.string.action_failure, actionName)
                 )
@@ -365,7 +366,7 @@ class TopicViewModel(
                 }
 
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e(TAG, "doReplyAction failed", e)
                 if (e.isRedirect) {
                     onSuccess?.invoke()
                     updateSnackbarMessage(getString(Res.string.action_success, actionName))
@@ -411,7 +412,7 @@ class TopicViewModel(
                 val result = topicRepository.replyTopic(topicArgs.topicId, content, topic.once)
                 _replyTopicState.emit(ReplyTopicState.Failure(result))
             } catch (e: Exception) {
-                e.printStackTrace()
+                KLogger.e(TAG, "replyTopic failed", e)
                 if (e.isRedirect) {
                     val location = e.redirectLocation ?: ""
                     _replyTopicState.emit(ReplyTopicState.Success(location))
@@ -443,6 +444,12 @@ class TopicViewModel(
             }
         }
         return true
+    }
+
+    fun notifyReplyCopied() {
+        viewModelScope.launch {
+            updateSnackbarMessage(getString(Res.string.copy_comment_success_tips))
+        }
     }
 
 }

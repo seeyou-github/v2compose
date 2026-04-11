@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.topic
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,6 +9,7 @@ import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.composableWithAnimation
 import io.github.v2compose.ui.common.OnHtmlImageClick
+import io.ktor.http.encodeURLPathPart
 
 private const val argsTopicId: String = "topicId"
 private const val argsReplyFloor: String = "floor"
@@ -28,7 +28,7 @@ fun NavController.navigateToTopic(
     replyFloor: Int = 0,
     navOptions: NavOptions? = null
 ) {
-    val encodedTopicId = Uri.encode(topicId)
+    val encodedTopicId = topicId.encodeURLPathPart()
     navigate("/t/$encodedTopicId#reply$replyFloor", navOptions)
 }
 
@@ -39,6 +39,7 @@ fun NavGraphBuilder.topicScreen(
     openUri: (String) -> Unit,
     onAddSupplementClick: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
+    onShareTopic: (String, String) -> Unit,
 ) {
     composableWithAnimation(
         topicNavigationRoute,
@@ -54,6 +55,7 @@ fun NavGraphBuilder.topicScreen(
             openUri = openUri,
             onAddSupplementClick = onAddSupplementClick,
             onHtmlImageClick = onHtmlImageClick,
+            onShareTopic = onShareTopic,
         )
     }
 }

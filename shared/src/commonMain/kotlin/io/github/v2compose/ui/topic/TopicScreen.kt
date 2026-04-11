@@ -1,8 +1,7 @@
 package io.github.v2compose.ui.topic
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -40,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,7 +52,10 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -60,18 +63,18 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.ContentInfo.Supplement
 import io.github.v2compose.network.bean.TopicInfo.Reply
+import io.github.v2compose.V2exUri
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.HtmlContent
 import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.OnHtmlImageClick
-import io.github.v2compose.ui.common.SegmentedControl
+import io.github.v2compose.ui.common.PlatformBackHandler
 import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingPrependMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
-import io.github.v2compose.ui.common.rememberMutableStateListOf
 import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.topic.bean.ReplyWrapper
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
@@ -87,7 +90,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import io.github.v2compose.util.KLogger
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.n_comment
 import v2compose.shared.generated.resources.replies_order_negative
@@ -103,9 +107,11 @@ fun TopicScreenRoute(
     onAddSupplementClick: (String) -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
+    onShareTopic: (String, String) -> Unit,
     viewModel: TopicViewModel = koinViewModel(),
-    screenState: TopicScreenState = rememberTopicScreenState(),
 ) {
+    val clipboardManager = LocalClipboardManager.current
+    val uriHandler = LocalUriHandler.current
     val args = viewModel.topicArgs
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val repliesReversed by viewModel.repliesReversed.collectAsStateWithLifecycle(initialValue = true)
@@ -130,11 +136,11 @@ fun TopicScreenRoute(
         }
     }
 
-    Log.d(TAG, "topic args = $args")
+    KLogger.d(TAG, "topic args = $args")
 
     HandleReplyTopicState(replyTopicState, topicItems, openUri)
 
-    HandleSnackbarMessage(viewModel, screenState)
+    HandleSnackbarMessage(viewModel)
 
     TopicScreen(
         targetFloor = args.replyFloor,
@@ -159,7 +165,13 @@ fun TopicScreenRoute(
                 TopicMenuItem.Ignored -> viewModel.unIgnoreTopic()
                 TopicMenuItem.Report -> viewModel.reportTopic()
                 TopicMenuItem.Reported -> viewModel.unReportTopic()
-                else -> screenState.onMenuClick(it, viewModel.topicArgs, topicInfo)
+                TopicMenuItem.Share -> {
+                    topicInfo?.headerInfo?.let { header ->
+                        onShareTopic(header.title, V2exUri.topicUrl(args.topicId))
+                    }
+                }
+                TopicMenuItem.OpenInBrowser -> uriHandler.openUri(V2exUri.topicUrl(args.topicId))
+                TopicMenuItem.More -> Unit
             }
         },
         onUserAvatarClick = onUserAvatarClick,
@@ -170,7 +182,10 @@ fun TopicScreenRoute(
             when (menuItem) {
                 ReplyMenuItem.Thank -> viewModel.thankReply(reply)
                 ReplyMenuItem.Ignore -> viewModel.ignoreReply(reply)
-                ReplyMenuItem.Copy -> screenState.copy(reply)
+                ReplyMenuItem.Copy -> {
+                    clipboardManager.setText(AnnotatedString(reply.replyContent))
+                    viewModel.notifyReplyCopied()
+                }
                 ReplyMenuItem.HomePage -> onUserAvatarClick(reply.userName, reply.avatar)
                 else -> {}
             }
@@ -222,7 +237,7 @@ private fun TopicScreen(
     }
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    BackHandler(enabled = replyInputState == ReplyInputState.Expanded) {
+    PlatformBackHandler(enabled = replyInputState == ReplyInputState.Expanded) {
         replyInputState = ReplyInputState.Collapsed
     }
 
@@ -341,7 +356,7 @@ private fun TopicList(
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val clickedUserReplies = rememberMutableStateListOf<List<Reply>>()
+    val clickedUserReplies = remember { mutableStateListOf<List<Reply>>() }
     val repliesBarIndex = rememberRepliesBarIndex(topicInfo)
     var currentTargetFloor by rememberSaveable { mutableIntStateOf(targetFloor) }
 
@@ -361,7 +376,7 @@ private fun TopicList(
             return
         }
         if (floorRegex.matches(uri)) {
-            Log.d(TAG, "clickUriHandler, uri = $uri")
+            KLogger.d(TAG, "clickUriHandler, uri = $uri")
             val floor = uri.substring("#reply".length).toIntOrNull() ?: return
             val floorReply =
                 topicItems.itemSnapshotList.firstOrNull { it is Reply && it.floor == floor } as Reply?
@@ -652,19 +667,37 @@ private fun TopicRepliesBar(
             style = MaterialTheme.typography.titleMedium,
         )
         Spacer(modifier = Modifier.weight(1f))
-        val orders = RepliesOrder.values().toList()
-        SegmentedControl(
-            segments = orders,
-            selectedSegment = repliesOrder,
-            onSegmentSelected = onRepliedOrderClick,
-            modifier = Modifier.sizeIn(maxWidth = 108.dp)
-        ) { order ->
-            val textColorAlpha = if (repliesOrder == order) 1f else 0.6f
-            Text(
-                stringResource(order.label),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = textColorAlpha)
-            )
+        Row(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                    shape = CircleShape,
+                )
+                .padding(2.dp),
+        ) {
+            RepliesOrder.entries.forEach { order ->
+                val selected = repliesOrder == order
+                Text(
+                    text = stringResource(order.label),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier
+                        .background(
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0f)
+                            },
+                            shape = CircleShape,
+                        )
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                        .clickable { onRepliedOrderClick(order) },
+                )
+            }
         }
     }
 }
