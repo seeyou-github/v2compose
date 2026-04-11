@@ -28,7 +28,8 @@ import io.github.v2compose.usecase.HtmlImageLoader
 import io.github.v2compose.ui.login.LoginViewModel
 import io.github.v2compose.ui.login.google.GoogleLoginViewModel
 import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
-import io.github.v2compose.ui.main.MainViewModel
+import io.github.v2compose.ui.main.AndroidMainPlatformDelegate
+import io.github.v2compose.ui.main.MainPlatformDelegate
 import io.github.v2compose.ui.main.home.HomeViewModel
 import io.github.v2compose.ui.main.home.recent.RecentViewModel
 import io.github.v2compose.ui.main.home.tab.NewsViewModel
@@ -84,6 +85,7 @@ val appModule = module {
             .build()
     }
     single<ExecutorService> { Executors.newFixedThreadPool(4) }
+    single<MainPlatformDelegate> { AndroidMainPlatformDelegate(get(), get()) }
 
     singleOf(::UriDecoder)
     single<StringDecoder> { get<UriDecoder>() }
@@ -147,7 +149,6 @@ val viewModelModule = module {
     viewModelOf(::MineViewModel)
     viewModelOf(::MyFollowingViewModel)
     viewModelOf(::MyNodesViewModel)
-    viewModelOf(::MainViewModel)
     viewModelOf(::NodesViewModel)
     viewModelOf(::RecentViewModel)
     viewModelOf(::HomeViewModel)

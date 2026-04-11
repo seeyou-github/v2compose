@@ -24,6 +24,7 @@ import io.github.v2compose.repository.def.DefaultUserRepository
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.node.NodeViewModel
 import io.github.v2compose.ui.gallery.GalleryViewModel
+import io.github.v2compose.ui.main.MainViewModel
 import io.github.v2compose.ui.search.SearchViewModel
 import io.github.v2compose.ui.topic.TopicViewModel
 import io.github.v2compose.ui.user.UserViewModel
@@ -78,6 +79,7 @@ val sharedPagingModule = module {
 
 val sharedViewModelModule = module {
     viewModelOf(::V2AppViewModel)
+    viewModelOf(::MainViewModel)
     viewModelOf(::SearchViewModel)
     viewModelOf(::GalleryViewModel)
     viewModelOf(::NodeViewModel)
