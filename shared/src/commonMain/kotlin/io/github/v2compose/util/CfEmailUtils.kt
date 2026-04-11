@@ -1,6 +1,5 @@
 package io.github.v2compose.util
 
-import android.util.Log
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.nodes.TextNode
 import kotlin.experimental.xor
@@ -24,13 +23,10 @@ object CfEmailUtils {
                 }
             }
 
-            Log.d(
-                TAG,
-                "fixEmailProtected, encodedEmail = ${ele.outerHtml()}, decodedEmail = $email"
-            )
+            println("fixEmailProtected, encodedEmail = ${ele.outerHtml()}, decodedEmail = $email")
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-            Log.d(TAG, "fixEmailProtected, encodedEmail = ${ele.outerHtml()}")
+            println("fixEmailProtected, encodedEmail = ${ele.outerHtml()}")
         }
     }
 

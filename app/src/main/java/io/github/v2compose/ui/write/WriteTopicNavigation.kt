@@ -9,24 +9,16 @@ import androidx.navigation.navArgument
 import io.github.v2compose.core.StringDecoder
 import io.github.v2compose.core.composableWithAnimation
 
-private const val argsNode = "node"
-private const val argsNodeTitle = "node_title"
+const val argsNode = "node"
+const val argsNodeTitle = "node_title"
 const val createTopicNavigationRoute =
-    "/write?$argsNode={$argsNode}&$argsNodeTitle={$argsNodeTitle}"
-
-data class WriteTopicArgs(val nodeName: String?, val nodeTitle: String?) {
-    constructor(savedStateHandle: SavedStateHandle, stringDecoder: StringDecoder) : this(
-        savedStateHandle.get<String>(argsNode)?.let { stringDecoder.decodeString(it) },
-        savedStateHandle.get<String>(argsNodeTitle)?.let { stringDecoder.decodeString(it) },
-    )
-}
+    "/write?node={node}&node_title={node_title}"
 
 fun NavController.navigateToWriteTopic(node: String? = null, nodeTitle: String? = null) {
     val encodedNode = Uri.encode(node) ?: ""
     val encodedNodeTitle = Uri.encode(nodeTitle) ?: ""
-    navigate("/write?$argsNode=$encodedNode&$argsNodeTitle=$encodedNodeTitle")
+    navigate("/write?node=$encodedNode&node_title=$encodedNodeTitle")
 }
-
 
 fun NavGraphBuilder.writeTopicScreen(
     onCloseClick: () -> Unit,

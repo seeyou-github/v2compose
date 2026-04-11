@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.write
 
-import android.net.Uri
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,7 @@ import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.usecase.LoadNodesUseCase
+import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -87,7 +87,7 @@ class WriteTopicViewModel(
                 if (e.isRedirect) {
                     saveDraftTopic("", "", ContentFormat.Original, null)
                     val location = e.redirectLocation ?: ""
-                    val topicId = Uri.parse(location).pathSegments.getOrNull(1)
+                    val topicId = Url(location).pathSegments.getOrNull(1)
                     if (topicId != null) {
                         _createTopicState.emit(CreateTopicState.Success(topicId))
                         return@launch

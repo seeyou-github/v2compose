@@ -1,13 +1,13 @@
 package io.github.v2compose.ui.settings
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.annotation.ExperimentalCoilApi
 import coil3.disk.DiskCache
 import io.github.v2compose.datasource.AppPreferences
+import io.github.v2compose.network.HttpCacheManager
+import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.bean.Release
-import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import okhttp3.Cache
-import java.util.concurrent.ExecutorService
 
 private const val TAG = "SettingsViewModel"
 
@@ -28,10 +26,9 @@ class SettingsViewModel(
     private val appPreferences: AppPreferences,
     val checkForUpdates: CheckForUpdatesUseCase,
     private val accountRepository: AccountRepository,
-    private val httpCache: Cache,
+    private val httpCache: HttpCacheManager,
     private val imageDiskCache: DiskCache,
-    private val proxySelector: V2ProxySelector,
-    private val appExecutorService: ExecutorService,
+    private val proxyManager: ProxyManager,
 ) : ViewModel() {
 
     val appSettings: StateFlow<AppSettings> = appPreferences.appSettings
@@ -64,7 +61,7 @@ class SettingsViewModel(
     private fun initCacheSize() {
         viewModelScope.launch {
             val imageCacheSize = imageDiskCache.size.div(1024 * 1024)
-            val httpCacheSize = httpCache.size().div(1024 * 1024)
+            val httpCacheSize = httpCache.size.div(1024 * 1024)
             _cacheSize.emit(imageCacheSize + httpCacheSize)
         }
     }
@@ -108,7 +105,7 @@ class SettingsViewModel(
     fun changeProxy(proxy: ProxyInfo) {
         viewModelScope.launch {
             appPreferences.proxyInfo(proxy)
-            proxySelector.updateProxy(proxy)
+            proxyManager.updateProxy(proxy)
         }
     }
 
@@ -117,7 +114,7 @@ class SettingsViewModel(
     fun clearCache() {
         viewModelScope.launch {
             imageDiskCache.clear()
-            httpCache.evictAll()
+            httpCache.clear()
             _cacheSize.emit(0L)
         }
     }
