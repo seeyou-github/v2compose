@@ -33,7 +33,7 @@ class NodePagingSource(private val nodeName: String, private val v2exService: V2
         return try {
             val page = params.key ?: FirstPageIndex
             val nodeInfo = v2exService.nodesInfo(node = nodeName, page = page)
-            io.github.v2compose.util.KLogger.d(TAG, "load, result, nodeTopicInfo = $nodeInfo")
+            KLogger.d(TAG, "load, result, nodeTopicInfo = $nodeInfo")
             if (page == FirstPageIndex) {
                 pageCount =
                     if (nodeInfo.items.isEmpty()) 0 else nodeInfo.total() / nodeInfo.items.size
@@ -50,6 +50,11 @@ class NodePagingSource(private val nodeName: String, private val v2exService: V2
             )
         } catch (e: Exception) {
             e.printStackTrace()
+            LoadResult.Error(e)
+        }
+
+    }
+}ntStackTrace()
             LoadResult.Error(e)
         }
 
