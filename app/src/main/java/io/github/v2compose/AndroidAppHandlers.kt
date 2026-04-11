@@ -1,15 +1,22 @@
 package io.github.v2compose
 
+import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.Settings
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import coil3.annotation.ExperimentalCoilApi
 import coil3.imageLoader
 import io.github.v2compose.core.openInBrowser
@@ -62,13 +69,28 @@ fun rememberAndroidAppPlatformHandlers(
         context = context,
     )
 
-    return remember(openExternalUri, shareContent, saveImage) {
+    return remember(openExternalUri, shareContent, saveImage, context) {
         AppPlatformHandlers(
             openExternalUri = openExternalUri,
             shareContent = shareContent,
             saveImage = saveImage,
+            openAppSettings = { context.openAppSettings() },
+            openNotificationSettings = { context.openNotificationSettings() },
+            copyToClipboard = { text -> context.copyToClipboard(text) },
+            checkNotificationPermission = { context.checkNotificationPermission() },
+            isAutoCheckInChannelEnabled = { io.github.v2compose.core.NotificationCenter.isAutoCheckInChannelEnabled(context) },
+            requestNotificationPermission = { context.openNotificationSettings() }
         )
     }
+}
+
+private fun Context.openNotificationSettings() {
+    val intent = Intent().apply {
+        action = "android.settings.APP_NOTIFICATION_SETTINGS"
+        putExtra("android.provider.extra.APP_PACKAGE", packageName)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    startActivity(intent)
 }
 
 private fun Context.openExternalUri(uri: String) {
@@ -100,4 +122,29 @@ private suspend fun Context.saveImage(
         message = message,
         duration = SnackbarDuration.Short,
     )
+}
+
+private fun Context.openAppSettings() {
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        data = Uri.fromParts("package", packageName, null)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    startActivity(intent)
+}
+
+private fun Context.copyToClipboard(text: String) {
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("v2compose", text)
+    clipboard.setPrimaryClip(clip)
+}
+
+private fun Context.checkNotificationPermission(): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
+    }
 }

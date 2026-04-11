@@ -66,8 +66,7 @@ import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
-import io.github.v2compose.ui.user.composables.UserHeader
-import io.github.v2compose.ui.user.composables.UserToolbar
+import io.github.v2compose.ui.user.composables.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res

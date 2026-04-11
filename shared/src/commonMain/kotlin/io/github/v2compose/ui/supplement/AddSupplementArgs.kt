@@ -2,8 +2,6 @@ package io.github.v2compose.ui.supplement
 
 import androidx.lifecycle.SavedStateHandle
 
-const val argsTopicId = "topicId"
-
 class AddSupplementArgs(val topicId: String) {
     constructor(savedStateHandle: SavedStateHandle) : this(
         checkNotNull(

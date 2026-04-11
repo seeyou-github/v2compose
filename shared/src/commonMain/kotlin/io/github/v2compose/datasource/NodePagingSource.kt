@@ -3,6 +3,7 @@ package io.github.v2compose.datasource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import io.github.v2compose.network.V2exApi
+import io.github.v2compose.util.KLogger
 
 private const val TAG = "NodePagingSource"
 
@@ -16,16 +17,9 @@ class NodePagingSource(private val nodeName: String, private val v2exService: V2
     private var pageCount: Int = 0
 
     override fun getRefreshKey(state: PagingState<Int, Any>): Int? {
-        // Try to find the page key of the closest page to anchorPosition, from
-        // either the prevKey or the nextKey, but you need to handle nullability
-        // here:
-        //  * prevKey == null -> anchorPage is the first page.
-        //  * nextKey == null -> anchorPage is the last page.
-        //  * both prevKey and nextKey null -> anchorPage is the initial page, so
-        //    just return null.
         return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
 
@@ -49,14 +43,8 @@ class NodePagingSource(private val nodeName: String, private val v2exService: V2
                 nextKey = next,
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            KLogger.e(TAG, "load node failed", e)
             LoadResult.Error(e)
         }
-
-    }
-}ntStackTrace()
-            LoadResult.Error(e)
-        }
-
     }
 }

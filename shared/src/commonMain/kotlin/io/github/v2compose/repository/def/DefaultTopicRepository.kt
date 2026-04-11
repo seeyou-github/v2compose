@@ -48,9 +48,10 @@ class DefaultTopicRepository(
         )
         return Pager(PagingConfig(pageSize = 10), initialKey = initialPage) {
             TopicPagingSource(
-                v2exService,
-                topicId,
-                reversed
+                topicId = topicId,
+                initialPage = initialPage,
+                reversed = reversed,
+                v2exService = v2exService,
             )
         }.flow
     }

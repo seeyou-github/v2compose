@@ -103,6 +103,7 @@ private fun NotificationsContainer(
         }
     }
 
+
     LaunchedEffect(unreadNotifications) {
         if (unreadNotifications > 0) {
             notifications.refresh()

@@ -90,12 +90,14 @@ kotlin {
             implementation(libs.mikepenz.markdown.m3)
             implementation(libs.mikepenz.markdown.coil3)
             implementation(project(":htmlText"))
+            api(libs.compose.webview)
         }
 
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.slf4j.android)
+            implementation(libs.androidx.work.runtime.ktx)
         }
 
         iosMain.dependencies {

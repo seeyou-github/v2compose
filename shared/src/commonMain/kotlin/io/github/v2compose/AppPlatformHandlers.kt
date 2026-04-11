@@ -9,6 +9,12 @@ data class AppPlatformHandlers(
     val openExternalUri: (String) -> Unit,
     val shareContent: (String, String) -> Unit,
     val saveImage: (String) -> Unit,
+    val openAppSettings: () -> Unit,
+    val openNotificationSettings: () -> Unit,
+    val copyToClipboard: (String) -> Unit,
+    val checkNotificationPermission: () -> Boolean,
+    val isAutoCheckInChannelEnabled: () -> Boolean,
+    val requestNotificationPermission: () -> Unit,
 )
 
 val LocalAppPlatformHandlers = compositionLocalOf<AppPlatformHandlers> {
