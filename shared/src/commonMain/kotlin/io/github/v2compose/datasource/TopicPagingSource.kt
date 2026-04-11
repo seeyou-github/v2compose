@@ -28,7 +28,7 @@ class TopicPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Any> {
         return try {
             var page = params.key ?: startPage
-            println("$TAG: load, page = $page")
+            io.github.v2compose.util.KLogger.d(TAG, "load, page = $page")
             val topicInfo = v2exService.topicDetails(topicId, page)
             if (page == startPageReversed) {
                 startPage = topicInfo.totalPage()

@@ -110,7 +110,7 @@ class FixHtmlUseCase(private val context: PlatformContext) : HtmlImageLoader {
 
     private fun fillElement(element: Element, result: ImageResult?) {
         val image = if (result is SuccessResult) result.image else null
-        println("fillElement, src = ${element.attr("src")}, result width = ${image?.width}, resultHeight = ${image?.height}")
+        io.github.v2compose.util.KLogger.d(TAG, "fillElement, src = ${element.attr("src")}, result width = ${image?.width}, resultHeight = ${image?.height}")
 
         if (image != null) {
             element.attr("width", image.width.toString())

@@ -23,10 +23,10 @@ object CfEmailUtils {
                 }
             }
 
-            println("fixEmailProtected, encodedEmail = ${ele.outerHtml()}, decodedEmail = $email")
+            KLogger.d(TAG, "fixEmailProtected, encodedEmail = ${ele.outerHtml()}, decodedEmail = $email")
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-            println("fixEmailProtected, encodedEmail = ${ele.outerHtml()}")
+            KLogger.d(TAG, "fixEmailProtected, encodedEmail = ${ele.outerHtml()}")
         }
     }
 
