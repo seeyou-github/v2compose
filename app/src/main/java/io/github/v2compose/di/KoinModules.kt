@@ -30,15 +30,9 @@ import io.github.v2compose.ui.login.google.GoogleLoginViewModel
 import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
 import io.github.v2compose.ui.main.AndroidMainPlatformDelegate
 import io.github.v2compose.ui.main.MainPlatformDelegate
-import io.github.v2compose.ui.main.home.HomeViewModel
-import io.github.v2compose.ui.main.home.recent.RecentViewModel
-import io.github.v2compose.ui.main.home.tab.NewsViewModel
-import io.github.v2compose.ui.main.mine.MineViewModel
 import io.github.v2compose.ui.main.mine.following.MyFollowingViewModel
 import io.github.v2compose.ui.main.mine.nodes.MyNodesViewModel
 import io.github.v2compose.ui.main.mine.topics.MyTopicsViewModel
-import io.github.v2compose.ui.main.nodes.NodesViewModel
-import io.github.v2compose.ui.main.notifications.NotificationViewModel
 import io.github.v2compose.ui.settings.SettingsScreenState
 import io.github.v2compose.ui.settings.SettingsViewModel
 import io.github.v2compose.ui.supplement.AddSupplementViewModel
@@ -143,18 +137,12 @@ val viewModelModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::TwoStepLoginViewModel)
     viewModelOf(::GoogleLoginViewModel)
-    viewModelOf(::NotificationViewModel)
     viewModelOf(::AddSupplementViewModel)
     viewModelOf(::MyTopicsViewModel)
-    viewModelOf(::MineViewModel)
     viewModelOf(::MyFollowingViewModel)
     viewModelOf(::MyNodesViewModel)
-    viewModelOf(::NodesViewModel)
-    viewModelOf(::RecentViewModel)
-    viewModelOf(::HomeViewModel)
     viewModelOf(::WriteTopicViewModel)
     viewModelOf(::SettingsViewModel)
-    viewModelOf(::NewsViewModel)
 
     singleOf(::SettingsScreenState)
 }

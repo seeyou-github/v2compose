@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -20,11 +19,31 @@ import io.github.v2compose.ui.common.MyScrollableTabRow
 import io.github.v2compose.ui.main.home.recent.RecentTab
 import io.github.v2compose.ui.main.home.tab.NewsTab
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 private val TabRowHeight = 32.dp
 
-private const val TAG = "HomeContent"
+private val HomeTabInfos = listOf(
+    NewsTabInfo("全部", "all"),
+    NewsTabInfo("最热", "hot"),
+    NewsTabInfo("最近", "recent"),
+    NewsTabInfo("技术", "tech"),
+    NewsTabInfo("创意", "creative"),
+    NewsTabInfo("好玩", "play"),
+    NewsTabInfo("Apple", "apple"),
+    NewsTabInfo("酷工作", "jobs"),
+    NewsTabInfo("交易", "deals"),
+    NewsTabInfo("城市", "city"),
+    NewsTabInfo("问与答", "qna"),
+    NewsTabInfo("R2", "r2"),
+    NewsTabInfo("节点", "nodes"),
+    NewsTabInfo("关注", "members"),
+)
+
+data class NewsTabInfo(val name: String, val value: String) {
+    companion object {
+        const val recent = "recent"
+    }
+}
 
 @Composable
 fun HomeContent(
@@ -33,11 +52,9 @@ fun HomeContent(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel(),
 ) {
-
     val coroutineScope = rememberCoroutineScope()
-    val tabInfos = viewModel.newsTabInfos
+    val tabInfos = HomeTabInfos
     val pagerState = rememberPagerState { tabInfos.size }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -77,7 +94,6 @@ fun HomeContent(
                     onClick = {
                         coroutineScope.launch {
                             pagerState.scrollToPage(index)
-                            Log.d(TAG, "animateScrollToPage, index = $index")
                         }
                     },
                     modifier = Modifier.height(TabRowHeight)

@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -41,6 +40,7 @@ import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.NewReleaseDialog
 import io.github.v2compose.ui.common.OnHtmlImageClick
+import io.github.v2compose.ui.common.PlatformBackHandler
 import io.github.v2compose.ui.common.SelectNode
 import io.github.v2compose.ui.main.composables.ClickDispatcher
 import io.github.v2compose.ui.main.composables.LocalClickDispatcher
@@ -51,7 +51,7 @@ import io.github.v2compose.ui.main.notifications.NotificationsContent
 import io.github.v2compose.usecase.LoadNodesState
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.main_home
 import v2compose.shared.generated.resources.main_mine
@@ -75,12 +75,11 @@ fun MainScreenRoute(
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
     viewModel: MainViewModel = koinViewModel(),
-    screenState: MainScreenState = rememberMainScreenState()
 ) {
     val unreadNotifications by viewModel.unreadNotifications.collectAsStateWithLifecycle()
     val loadNodesState by viewModel.loadNodes.state.collectAsStateWithLifecycle()
 
-    HandleSnackbarMessage(viewModel, screenState)
+    HandleSnackbarMessage(viewModel)
 
     val newRelease by viewModel.newRelease.collectAsStateWithLifecycle()
     if (newRelease.isValid()) {
@@ -150,7 +149,7 @@ private fun MainScreen(
     var showNodes by rememberSaveable { mutableStateOf(false) }
     val hasNodes = rememberSaveable(loadNodesState) { loadNodesState is LoadNodesState.Success }
 
-    BackHandler(enabled = showNodes) {
+    PlatformBackHandler(enabled = showNodes) {
         showNodes = false
     }
 

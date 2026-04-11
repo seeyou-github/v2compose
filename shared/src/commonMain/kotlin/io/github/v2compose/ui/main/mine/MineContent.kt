@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.NavigateNext
 import androidx.compose.material.icons.rounded.Category
@@ -34,23 +32,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import io.github.cooaer.htmltext.HtmlText
+import io.github.v2compose.LocalSnackbarHostState
 import io.github.v2compose.core.extension.isBeforeTodayByUTC
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.ListDivider
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.bronze
 import v2compose.shared.generated.resources.checking_in
@@ -59,6 +59,7 @@ import v2compose.shared.generated.resources.daily_mission
 import v2compose.shared.generated.resources.daily_mission_ok
 import v2compose.shared.generated.resources.gold
 import v2compose.shared.generated.resources.login
+import v2compose.shared.generated.resources.login_first
 import v2compose.shared.generated.resources.my_following
 import v2compose.shared.generated.resources.my_nodes
 import v2compose.shared.generated.resources.my_topics
@@ -77,17 +78,28 @@ fun MineContent(
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MineViewModel = koinViewModel(),
-    mineContentState: MineContentState = rememberMineContentState(),
 ) {
     val account by viewModel.account.collectAsStateWithLifecycle()
     val lastCheckInTime by viewModel.lastCheckInTime.collectAsStateWithLifecycle()
     val hasCheckingInTips by viewModel.hasCheckingInTips.collectAsStateWithLifecycle()
     val checkingIn by viewModel.checkingIn.collectAsStateWithLifecycle()
+    val snackbarHostState = LocalSnackbarHostState.current
+    val coroutineScope = rememberCoroutineScope()
 
-    HandleSnackbarMessage(viewModel, mineContentState)
+    HandleSnackbarMessage(viewModel)
 
     LaunchedEffect(true) {
         viewModel.refreshAccount()
+    }
+
+    fun doActionIfLoggedIn(action: () -> Unit) {
+        if (account.isValid()) {
+            action()
+        } else {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(getString(Res.string.login_first))
+            }
+        }
     }
 
     MineContainer(
@@ -98,10 +110,10 @@ fun MineContent(
         onLoginClick = onLoginClick,
         onMyHomePageClick = onMyHomePageClick,
         onCheckInClick = viewModel::doCheckIn,
-        onCreateTopicClick = { mineContentState.doActionIfLoggedIn(account) { onCreateTopicClick() } },
-        onMyNodesClick = { mineContentState.doActionIfLoggedIn(account) { onMyNodesClick() } },
-        onMyTopicsClick = { mineContentState.doActionIfLoggedIn(account) { onMyTopicsClick() } },
-        onMyFollowingClick = { mineContentState.doActionIfLoggedIn(account) { onMyFollowingClick() } },
+        onCreateTopicClick = { doActionIfLoggedIn(onCreateTopicClick) },
+        onMyNodesClick = { doActionIfLoggedIn(onMyNodesClick) },
+        onMyTopicsClick = { doActionIfLoggedIn(onMyTopicsClick) },
+        onMyFollowingClick = { doActionIfLoggedIn(onMyFollowingClick) },
         onSettingsClick = onSettingsClick,
         modifier = Modifier
     )
@@ -346,15 +358,4 @@ fun MineEntry(
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
-}
-
-@Composable
-private fun TestHtmlText() {
-    HtmlText(
-        html = TEST_HTML_TEXT + TEST_HTML_TEXT_2,
-        textStyle = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-    )
 }

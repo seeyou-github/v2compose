@@ -22,7 +22,7 @@ import io.github.v2compose.ui.common.pagingPrependMoreItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RecentTab(

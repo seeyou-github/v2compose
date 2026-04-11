@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main.home.tab
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,14 +16,11 @@ import io.github.v2compose.ui.common.PullToRefresh
 import io.github.v2compose.ui.common.SimpleTopic
 import io.github.v2compose.ui.main.composables.ClickHandler
 import io.github.v2compose.ui.main.home.NewsTabInfo
-import io.github.v2compose.util.L
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-private const val TAG = "NewTab"
-
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun NewsTab(
     newsTabInfo: NewsTabInfo,
@@ -123,7 +119,7 @@ private fun NewsList(
             items(newsInfo.items, key = { it.id }) { item ->
                 val tagId = item.tagId()
                 if (tagId.isNullOrBlank()) {
-                    L.e("topic's item, tagId is null or blank, item = $item")
+                    KLogger.e("NewsTab", "topic item tagId is null or blank, item = $item")
                     return@items
                 }
                 SimpleTopic(

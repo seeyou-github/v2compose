@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.v2compose.core.extension.castOrNull
 import io.github.v2compose.network.bean.Node
 import io.github.v2compose.repository.NodeRepository
+import io.github.v2compose.util.currentTimeMillis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,7 +42,7 @@ class NodesViewModel(private val nodeRepository: NodeRepository) : ViewModel() {
         val currentData = _nodesUiState.value.castOrNull<NodesUiState.Success>()?.data
         _nodesUiState.emit(NodesUiState.Loading(currentData))
         try {
-            val startMills = System.currentTimeMillis()
+            val startMills = currentTimeMillis()
 
             var nodesNavInfo =
                 nodeRepository.nodesNavInfo.first()
@@ -57,7 +58,7 @@ class NodesViewModel(private val nodeRepository: NodeRepository) : ViewModel() {
                 Pair(category.category, nodes)
             }
 
-            val requestMills = System.currentTimeMillis() - startMills
+            val requestMills = currentTimeMillis() - startMills
             if (requestMills < minRequestMills) {
                 delay(minRequestMills - requestMills)
             }

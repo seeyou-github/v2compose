@@ -1,6 +1,5 @@
 package io.github.v2compose.ui.main.nodes
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -40,11 +39,10 @@ import io.github.v2compose.ui.common.PullToRefresh
 import io.github.v2compose.ui.common.SimpleNode
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.ceil
 import kotlin.math.floor
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun NodesContent(
     onNodeClick: (String, String) -> Unit,
@@ -269,4 +267,3 @@ private fun CategoryTitle(selected: Boolean, title: String, onTitleClick: () -> 
         textAlign = TextAlign.Center,
     )
 }
-

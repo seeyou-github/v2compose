@@ -50,11 +50,9 @@ import io.github.v2compose.ui.gallery.composables.PopupImage
 import io.github.v2compose.ui.main.composables.ClickHandler
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.login
-
-private const val TAG = "NotificationsContent"
 
 @Composable
 fun NotificationsContent(
@@ -250,4 +248,3 @@ private fun NotificationItem(
         ListDivider(modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
-

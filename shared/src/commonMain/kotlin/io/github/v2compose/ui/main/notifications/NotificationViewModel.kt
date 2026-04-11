@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import io.github.v2compose.repository.AccountRepository
-import io.github.v2compose.usecase.FixHtmlUseCase
+import io.github.v2compose.usecase.HtmlImageLoader
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class NotificationViewModel(
     private val accountRepository: AccountRepository,
-    private val fixedHtmlImage: FixHtmlUseCase,
+    private val htmlImageLoader: HtmlImageLoader,
 ) : ViewModel() {
 
     val isLoggedIn = accountRepository.isLoggedIn
@@ -35,7 +35,7 @@ class NotificationViewModel(
 
     fun loadHtmlImage(tag: String, html: String, imageSrc: String?) {
         viewModelScope.launch {
-            fixedHtmlImage.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
+            htmlImageLoader.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
         }
     }
 }

@@ -5,6 +5,7 @@ import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.usecase.CheckInUseCase
+import io.github.v2compose.util.currentTimeMillis
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -62,7 +63,7 @@ class MineViewModel(
     }
 
     private suspend fun refreshAccountInternal(force: Boolean = false) {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = currentTimeMillis()
         if (!force && currentTime - lastRefreshAccountTime < 5 * 60 * 1000) {
             return
         }
@@ -92,4 +93,3 @@ class MineViewModel(
     }
 
 }
-
