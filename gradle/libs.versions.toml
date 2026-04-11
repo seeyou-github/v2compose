@@ -39,7 +39,6 @@ splashscreen = "1.2.0"
 annotation = "1.10.0"
 logger = "2.2.0"
 progressButton = "1.1.0"
-toolbarCompose = "2.3.5"
 composeWebviewMultiplatform = "2.0.3"
 youtubePlayer = "13.0.0"
 ktor = "3.4.2"
@@ -95,7 +94,6 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 orhanobut-logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "runtime" }
 ssjetpack-progress-button = { group = "com.github.SimformSolutionsPvtLtd", name = "SSJetPackComposeProgressButton", version.ref = "progressButton" }
-toolbar-compose = { group = "me.onebone", name = "toolbar-compose", version.ref = "toolbarCompose" }
 compose-webview = { group = "io.github.kevinnzou", name = "compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
 ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "ui" }
 ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }

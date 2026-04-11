@@ -26,13 +26,14 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.LineHeightStyle
@@ -53,9 +55,9 @@ import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
 import io.github.v2compose.core.extension.castOrNull
+import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.network.bean.NodeTopicInfo
 import io.github.v2compose.ui.HandleSnackbarMessage
-import io.github.v2compose.network.bean.NodeInfo
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.HtmlContent
 import io.github.v2compose.ui.common.ListDivider
@@ -66,11 +68,6 @@ import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
-import me.onebone.toolbar.CollapsingToolbarScaffold
-import me.onebone.toolbar.CollapsingToolbarScaffoldState
-import me.onebone.toolbar.CollapsingToolbarScope
-import me.onebone.toolbar.ScrollStrategy
-import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import v2compose.shared.generated.resources.Res
@@ -144,21 +141,20 @@ private fun NodeScreen(
     onShareClick: () -> Unit,
     openUri: (String) -> Unit,
 ) {
-    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val scaffoldState = rememberCollapsingToolbarScaffoldState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Surface(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
             .systemBarsPadding(),
     ) {
-        CollapsingToolbarScaffold(
-            modifier = Modifier.fillMaxSize(),
-            state = scaffoldState,
-            scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
-            toolbar = {
-                NodeTopBar(
-                    scaffoldState = scaffoldState,
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                NodeTopBarTitle(
+                    scrollBehavior = scrollBehavior,
                     nodeArgs = nodeArgs,
                     nodeUiState = nodeUiState,
                     nodeTopicInfo = nodeTopicInfo,
@@ -168,26 +164,31 @@ private fun NodeScreen(
                     onShareClick = onShareClick,
                 )
             },
-        ) {
-            NodeContent(
-                nodeUiState = nodeUiState,
-                lazyPagingItems = nodeTopicItems,
-                topicTitleOverview = topicTitleOverview,
+        ) { innerPadding ->
+            Surface(
                 modifier = Modifier
-                    .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-                onTopicClick = onTopicClick,
-                onUserAvatarClick = onUserAvatarClick,
-                onRetryNodeClick = onRetryNodeClick,
-                openUri = openUri,
-            )
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+            ) {
+                NodeContent(
+                    nodeUiState = nodeUiState,
+                    lazyPagingItems = nodeTopicItems,
+                    topicTitleOverview = topicTitleOverview,
+                    onTopicClick = onTopicClick,
+                    onUserAvatarClick = onUserAvatarClick,
+                    onRetryNodeClick = onRetryNodeClick,
+                    openUri = openUri,
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CollapsingToolbarScope.NodeTopBar(
-    scaffoldState: CollapsingToolbarScaffoldState,
+private fun NodeTopBarTitle(
+    scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior,
     nodeArgs: NodeArgs,
     nodeUiState: NodeUiState,
     nodeTopicInfo: NodeTopicInfo?,
@@ -196,8 +197,6 @@ private fun CollapsingToolbarScope.NodeTopBar(
     onFavoriteClick: () -> Unit,
     onShareClick: () -> Unit,
 ) {
-    val topBarHeight = 64.dp
-
     var favorited by remember(nodeTopicInfo) { mutableStateOf(nodeTopicInfo?.hasStared) }
     var showUnfollowDialog by remember { mutableStateOf(false) }
     val onFavoriteClickInternal = {
@@ -225,22 +224,26 @@ private fun CollapsingToolbarScope.NodeTopBar(
         )
     }
 
-    TopAppBar(
+    LargeTopAppBar(
         title = {
-            NodeTitle(
-                nodeArgs = nodeArgs,
-                nodeUiState = nodeUiState,
-                modifier = Modifier
-                    .graphicsLayer(alpha = (1 - scaffoldState.toolbarState.progress)),
+            val progress = scrollBehavior.state.collapsedFraction
+            NodeTopBarTitle(
+                nodeArgs,
+                nodeUiState,
+                isLoggedIn,
+                favorited,
+                progress,
+                onFavoriteClickInternal
             )
         },
         navigationIcon = { BackIcon(onBackClick = onBackClick) },
         actions = {
+            val progress = scrollBehavior.state.collapsedFraction
             if (isLoggedIn) {
                 favorited?.let {
                     IconButton(
                         onClick = { onFavoriteClickInternal() },
-                        modifier = Modifier.graphicsLayer(alpha = 1 - scaffoldState.toolbarState.progress)
+                        modifier = Modifier.graphicsLayer(alpha = progress)
                     ) {
                         Icon(
                             if (it) Icons.Rounded.BookmarkAdded else Icons.Rounded.BookmarkAdd,
@@ -254,14 +257,24 @@ private fun CollapsingToolbarScope.NodeTopBar(
                 Icon(Icons.Rounded.Share, "share node")
             }
         },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
+        ),
+        scrollBehavior = scrollBehavior
     )
+}
 
-    Box(
-        modifier = Modifier
-            .padding(start = 16.dp, top = topBarHeight, end = 16.dp)
-            .parallax(0.5f)
-            .graphicsLayer(alpha = scaffoldState.toolbarState.progress)
-    ) {
+@Composable
+private fun NodeTopBarTitle(
+    nodeArgs: NodeArgs,
+    nodeUiState: NodeUiState,
+    isLoggedIn: Boolean,
+    favorited: Boolean?,
+    progress: Float,
+    onFavoriteClickInternal: () -> Unit?
+) {
+    Box {
         NodeTitle(
             nodeArgs = nodeArgs,
             nodeUiState = nodeUiState,
@@ -273,7 +286,13 @@ private fun CollapsingToolbarScope.NodeTopBar(
                     if (it) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
 
                 AssistChip(
-                    modifier = Modifier.align(Alignment.CenterEnd),
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 16.dp)
+                        .graphicsLayer(
+                            alpha = 1f - progress,
+                            translationY = progress * 100f
+                        ),
                     onClick = { onFavoriteClickInternal() },
                     leadingIcon = {
                         Icon(
@@ -308,7 +327,7 @@ private fun NodeTitle(
             model = nodeInfo?.avatar,
             contentDescription = nodeTitle,
             modifier = Modifier
-                .size(48.dp)
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
         )
@@ -324,7 +343,9 @@ private fun NodeTitle(
                 Text(
                     stringResource(Res.string.node_topics_and_favorites, it.topics, it.stars),
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
