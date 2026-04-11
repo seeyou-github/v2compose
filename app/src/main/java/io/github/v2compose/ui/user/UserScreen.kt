@@ -3,6 +3,7 @@ package io.github.v2compose.ui.user
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,24 +19,26 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,6 +49,7 @@ import androidx.paging.compose.itemKey
 import io.github.v2compose.Constants
 import io.github.v2compose.V2exUri
 import io.github.v2compose.core.share
+import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.ui.HandleSnackbarMessage
@@ -59,18 +63,13 @@ import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
+import io.github.v2compose.ui.user.composables.UserHeader
 import io.github.v2compose.ui.user.composables.UserToolbar
-import kotlinx.coroutines.launch
-import me.onebone.toolbar.CollapsingToolbarScaffold
-import me.onebone.toolbar.ScrollStrategy
-import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.user_reply
 import v2compose.shared.generated.resources.user_topic
-
-private const val TAG = "UserScreen"
 
 @Composable
 fun UserScreenRoute(
@@ -122,6 +121,7 @@ fun UserScreenRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UserScreen(
     userUiState: UserUiState,
@@ -141,45 +141,53 @@ private fun UserScreen(
     loadHtmlImage: (String, String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    val scaffoldState = rememberCollapsingToolbarScaffoldState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Surface(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
             .systemBarsPadding(),
     ) {
-        CollapsingToolbarScaffold(
-            modifier = Modifier.fillMaxSize(),
-            state = scaffoldState,
-            scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
-            enabled = true,
-            toolbar = {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
                 UserToolbar(
                     userUiState = userUiState,
                     isLoggedIn = isLoggedIn,
-                    scaffoldState = scaffoldState,
+                    scrollBehavior = scrollBehavior,
                     onBackClick = onBackClick,
                     onShareClick = onShareClick,
                     onFollowClick = onFollowClick,
-                    onBlockClick = onBlockClick,
                 )
-            }) {
-            UserContent(
-                userUiState = userUiState,
-                userTopics = userTopics,
-                userReplies = userReplies,
-                sizedHtmls = sizedHtmls,
-                topicTitleOverview = topicTitleOverview,
-                onRetryClick = onRetryClick,
-                onTopicClick = onTopicClick,
-                onNodeClick = onNodeClick,
-                openUri = openUri,
-                loadHtmlImage = loadHtmlImage,
-                onHtmlImageClick = onHtmlImageClick,
-            )
+            }
+        ) { innerPadding ->
+            Surface(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+            ) {
+                UserContent(
+                    userUiState = userUiState,
+                    userTopics = userTopics,
+                    userReplies = userReplies,
+                    sizedHtmls = sizedHtmls,
+                    topicTitleOverview = topicTitleOverview,
+                    isLoggedIn = isLoggedIn,
+                    onRetryClick = onRetryClick,
+                    onFollowClick = onFollowClick,
+                    onBlockClick = onBlockClick,
+                    onTopicClick = onTopicClick,
+                    onNodeClick = onNodeClick,
+                    openUri = openUri,
+                    loadHtmlImage = loadHtmlImage,
+                    onHtmlImageClick = onHtmlImageClick,
+                )
+            }
         }
     }
-
 }
 
 
@@ -189,8 +197,11 @@ private fun UserContent(
     userTopics: LazyPagingItems<UserTopics.Item>,
     userReplies: LazyPagingItems<UserReplies.Item>,
     topicTitleOverview: Boolean,
+    isLoggedIn: Boolean,
     sizedHtmls: SnapshotStateMap<String, String>,
     onRetryClick: () -> Unit,
+    onFollowClick: () -> Unit,
+    onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     onNodeClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
@@ -200,10 +211,14 @@ private fun UserContent(
     when (userUiState) {
         is UserUiState.Success -> {
             UserPager(
+                userPageInfo = userUiState.userPageInfo,
                 userTopics = userTopics,
                 userReplies = userReplies,
                 topicTitleOverview = topicTitleOverview,
+                isLoggedIn = isLoggedIn,
                 sizedHtmls = sizedHtmls,
+                onFollowClick = onFollowClick,
+                onBlockClick = onBlockClick,
                 onTopicClick = onTopicClick,
                 onNodeClick = onNodeClick,
                 openUri = openUri,
@@ -224,78 +239,93 @@ private fun UserContent(
 
 @Composable
 fun UserPager(
+    userPageInfo: UserPageInfo,
     userTopics: LazyPagingItems<UserTopics.Item>,
     userReplies: LazyPagingItems<UserReplies.Item>,
     topicTitleOverview: Boolean,
+    isLoggedIn: Boolean,
     sizedHtmls: SnapshotStateMap<String, String>,
+    onFollowClick: () -> Unit,
+    onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     onNodeClick: (String, String) -> Unit,
     openUri: (String) -> Unit,
     loadHtmlImage: (String, String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    val topicsListState = userTopics.rememberLazyListState()
+    val repliesListState = userReplies.rememberLazyListState()
+    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
     val tabNames =
         listOf(stringResource(Res.string.user_topic), stringResource(Res.string.user_reply))
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions: List<TabPosition> ->
-                UserTabIndicator(tabPosition = tabPositions[pagerState.currentPage])
-            }) {
-            tabNames.forEachIndexed { index, name ->
-                val selected = pagerState.currentPage == index
-                Tab(
-                    selected = selected, onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(page = index)
-                        }
-                    }, modifier = Modifier.height(32.dp)
-                ) {
-                    Text(
-                        name,
-                        color = if (selected) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onBackground
-                        },
-                    )
-                }
-            }
-        }
+    when (selectedTabIndex) {
+        0 -> UserTopicsList(
+            items = userTopics,
+            userPageInfo = userPageInfo,
+            isLoggedIn = isLoggedIn,
+            topicTitleOverview = topicTitleOverview,
+            lazyListState = topicsListState,
+            selectedTabIndex = selectedTabIndex,
+            tabNames = tabNames,
+            onTabSelected = { selectedTabIndex = it },
+            onFollowClick = onFollowClick,
+            onBlockClick = onBlockClick,
+            onTopicClick = onTopicClick,
+            onNodeClick = onNodeClick,
+        )
 
-        HorizontalPager(state = pagerState) { index ->
-            when (index) {
-                0 -> UserTopicsList(
-                    items = userTopics,
-                    topicTitleOverview = topicTitleOverview,
-                    onTopicClick = onTopicClick,
-                    onNodeClick = onNodeClick
-                )
-
-                1 -> UserRepliesList(
-                    items = userReplies,
-                    sizedHtmls = sizedHtmls,
-                    onTopicClick = onTopicClick,
-                    openUri = openUri,
-                    loadHtmlImage = loadHtmlImage,
-                    onHtmlImageClick = onHtmlImageClick,
-                )
-            }
-        }
+        else -> UserRepliesList(
+            items = userReplies,
+            userPageInfo = userPageInfo,
+            isLoggedIn = isLoggedIn,
+            sizedHtmls = sizedHtmls,
+            lazyListState = repliesListState,
+            selectedTabIndex = selectedTabIndex,
+            tabNames = tabNames,
+            onTabSelected = { selectedTabIndex = it },
+            onFollowClick = onFollowClick,
+            onBlockClick = onBlockClick,
+            onTopicClick = onTopicClick,
+            openUri = openUri,
+            loadHtmlImage = loadHtmlImage,
+            onHtmlImageClick = onHtmlImageClick,
+        )
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun UserTopicsList(
     items: LazyPagingItems<UserTopics.Item>,
+    userPageInfo: UserPageInfo,
+    isLoggedIn: Boolean,
     topicTitleOverview: Boolean,
+    lazyListState: LazyListState,
+    selectedTabIndex: Int,
+    tabNames: List<String>,
+    onTabSelected: (Int) -> Unit,
+    onFollowClick: () -> Unit,
+    onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     onNodeClick: (String, String) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(), state = items.rememberLazyListState()) {
+    LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+        item(key = "user_header") {
+            UserHeaderSection(
+                userPageInfo = userPageInfo,
+                isLoggedIn = isLoggedIn,
+                onFollowClick = onFollowClick,
+                onBlockClick = onBlockClick,
+            )
+        }
+        stickyHeader(key = "user_tabs") {
+            UserTabs(
+                selectedTabIndex = selectedTabIndex,
+                tabNames = tabNames,
+                onTabSelected = onTabSelected,
+            )
+        }
         pagingRefreshItem(lazyPagingItems = items)
 
         items(items.itemCount, key = items.itemKey { it.link }) { index ->
@@ -352,16 +382,40 @@ fun UserTopicItem(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun UserRepliesList(
     items: LazyPagingItems<UserReplies.Item>,
+    userPageInfo: UserPageInfo,
+    isLoggedIn: Boolean,
     sizedHtmls: SnapshotStateMap<String, String>,
+    lazyListState: LazyListState,
+    selectedTabIndex: Int,
+    tabNames: List<String>,
+    onTabSelected: (Int) -> Unit,
+    onFollowClick: () -> Unit,
+    onBlockClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     openUri: (String) -> Unit,
     loadHtmlImage: (String, String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(), state = items.rememberLazyListState()) {
+    LazyColumn(modifier = Modifier.fillMaxSize(), state = lazyListState) {
+        item(key = "user_header") {
+            UserHeaderSection(
+                userPageInfo = userPageInfo,
+                isLoggedIn = isLoggedIn,
+                onFollowClick = onFollowClick,
+                onBlockClick = onBlockClick,
+            )
+        }
+        stickyHeader(key = "user_tabs") {
+            UserTabs(
+                selectedTabIndex = selectedTabIndex,
+                tabNames = tabNames,
+                onTabSelected = onTabSelected,
+            )
+        }
         pagingRefreshItem(items)
 
         items(
@@ -380,6 +434,63 @@ private fun UserRepliesList(
         }
 
         pagingAppendMoreItem(items)
+    }
+}
+
+@Composable
+private fun UserHeaderSection(
+    userPageInfo: UserPageInfo,
+    isLoggedIn: Boolean,
+    onFollowClick: () -> Unit,
+    onBlockClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        UserHeader(
+            userPageInfo = userPageInfo,
+            isLoggedIn = isLoggedIn,
+            onFollowClick = onFollowClick,
+            onBlockClick = onBlockClick,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+        )
+        ListDivider()
+    }
+}
+
+@Composable
+private fun UserTabs(
+    selectedTabIndex: Int,
+    tabNames: List<String>,
+    onTabSelected: (Int) -> Unit,
+) {
+    Surface(color = MaterialTheme.colorScheme.background) {
+        TabRow(
+            selectedTabIndex = selectedTabIndex,
+            indicator = { tabPositions: List<TabPosition> ->
+                UserTabIndicator(tabPosition = tabPositions[selectedTabIndex])
+            }
+        ) {
+            tabNames.forEachIndexed { index, name ->
+                val selected = selectedTabIndex == index
+                Tab(
+                    selected = selected,
+                    onClick = { onTabSelected(index) },
+                    modifier = Modifier.height(32.dp)
+                ) {
+                    Text(
+                        text = name,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onBackground
+                        },
+                    )
+                }
+            }
+        }
     }
 }
 

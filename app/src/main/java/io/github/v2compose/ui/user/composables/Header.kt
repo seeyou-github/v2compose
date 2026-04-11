@@ -34,8 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.github.v2compose.core.extension.castOrNull
@@ -44,8 +44,6 @@ import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.TextAlertDialog
 import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.user.UserUiState
-import me.onebone.toolbar.CollapsingToolbarScaffoldState
-import me.onebone.toolbar.CollapsingToolbarScope
 import org.jetbrains.compose.resources.stringResource
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.user_block
@@ -59,49 +57,42 @@ import v2compose.shared.generated.resources.user_unfollow_tips
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingToolbarScope.UserToolbar(
+fun UserToolbar(
     userUiState: UserUiState,
     isLoggedIn: Boolean,
-    scaffoldState: CollapsingToolbarScaffoldState,
+    scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     onFollowClick: () -> Unit,
-    onBlockClick: () -> Unit,
 ) {
     val userPageInfo = userUiState.castOrNull<UserUiState.Success>()?.userPageInfo
 
-    TopAppBar(navigationIcon = { BackIcon(onBackClick = onBackClick) }, title = {
-        userPageInfo?.let {
-            UserTopAppBarTitle(
-                userPageInfo = it,
-                modifier = Modifier.graphicsLayer(alpha = 1 - scaffoldState.toolbarState.progress),
-            )
-        }
-    }, actions = {
-        if (isLoggedIn) {
+    TopAppBar(
+        navigationIcon = { BackIcon(onBackClick = onBackClick) },
+        title = {
             userPageInfo?.let {
-                if (userPageInfo.getFollowUrl() != null) {
-                    FollowIcon(
-                        userPageInfo.hadFollowed(),
-                        onFollowClick = onFollowClick,
-                        modifier = Modifier.graphicsLayer(alpha = 1 - scaffoldState.toolbarState.progress),
-                    )
+                UserTopAppBarTitle(
+                    userPageInfo = it,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        actions = {
+            if (isLoggedIn) {
+                userPageInfo?.let {
+                    if (userPageInfo.getFollowUrl() != null) {
+                        FollowIcon(
+                            userPageInfo.hadFollowed(),
+                            onFollowClick = onFollowClick,
+                        )
+                    }
                 }
             }
-        }
-        IconButton(onClick = onShareClick) {
-            Icon(Icons.Rounded.Share, contentDescription = "share")
-        }
-    })
-
-    UserHeader(
-        userPageInfo = userPageInfo,
-        isLoggedIn = isLoggedIn,
-        onFollowClick = onFollowClick,
-        onBlockClick = onBlockClick,
-        modifier = Modifier
-            .parallax(0.5f)
-            .graphicsLayer(alpha = scaffoldState.toolbarState.progress)
+            IconButton(onClick = onShareClick) {
+                Icon(Icons.Rounded.Share, contentDescription = "share")
+            }
+        },
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -153,31 +144,18 @@ private fun UserTopAppBarTitle(userPageInfo: UserPageInfo, modifier: Modifier = 
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         TopicUserAvatar(userName = userPageInfo.userName, userAvatar = userPageInfo.avatar)
         Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(
-                userPageInfo.userName,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            val online = userPageInfo.isOnline()
-            val colorScheme = MaterialTheme.colorScheme
-            Text(
-                text = stringResource(if (online) Res.string.user_online else Res.string.user_offline),
-                style = MaterialTheme.typography.labelSmall,
-                color = if (online) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .height(16.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(color = if (online) colorScheme.primaryContainer else colorScheme.surfaceVariant)
-                    .padding(horizontal = 6.dp)
-            )
-        }
+        Text(
+            text = userPageInfo.userName,
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
 @Composable
-private fun UserHeader(
+fun UserHeader(
     userPageInfo: UserPageInfo?,
     isLoggedIn: Boolean,
     onFollowClick: () -> Unit,
@@ -185,13 +163,10 @@ private fun UserHeader(
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val topBarHeight = 56.dp
-    Box(modifier = modifier) {
+    Box(modifier = modifier.fillMaxWidth()) {
         UserInfo(
             userPageInfo = userPageInfo, colorScheme = colorScheme,
-            modifier = Modifier.padding(
-                start = 16.dp, top = topBarHeight + 4.dp, end = 16.dp, bottom = 4.dp
-            ),
+            modifier = Modifier.padding(bottom = 4.dp),
         )
 
         if (isLoggedIn) {
@@ -200,9 +175,7 @@ private fun UserHeader(
                     userPageInfo = it,
                     onFollowClick = onFollowClick,
                     onBlockClick = onBlockClick,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = topBarHeight, end = 16.dp),
+                    modifier = Modifier.align(Alignment.TopEnd),
                 )
             }
         }
@@ -368,5 +341,3 @@ private fun FollowButton(
         shape = RoundedCornerShape(16.dp),
     )
 }
-
-
