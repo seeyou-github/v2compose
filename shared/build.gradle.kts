@@ -56,16 +56,16 @@ kotlin {
             implementation(libs.ui.tooling.preview)
 
             // KMP Lifecycle & Navigation
-            api(libs.jetbrains.lifecycle.viewmodel.compose)
-            api(libs.jetbrains.lifecycle.runtime.compose)
+            implementation(libs.jetbrains.lifecycle.viewmodel.compose)
+            implementation(libs.jetbrains.lifecycle.runtime.compose)
             api(libs.jetbrains.navigation.compose)
 
             // KMP Koin Compose
-            api(libs.koin.compose)
-            api(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             // Compose Multiplatform Resources
-            api("org.jetbrains.compose.components:components-resources:1.10.3")
+            api(libs.components.resources)
 
             // Ktor
             api(libs.ktor.client.core)
@@ -129,16 +129,6 @@ tasks.configureEach {
         if (name != "kspCommonMainKotlinMetadata") {
             dependsOn("kspCommonMainKotlinMetadata")
         }
-    }
-}
-
-
-// Wire the copied assets Directory to the KMP Android library's compilation
-kotlin {
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
-    android { // this is AndroidTarget
-        // We can't access AGP assets directly in experimental KMP plugin via standard properties yet,
-        // so we inject it into the app's merge assets task below if needed.
     }
 }
 

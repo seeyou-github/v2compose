@@ -1,8 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -77,38 +74,26 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation(libs.kotlinx.serialization.json)
-    implementation(project(":htmlText"))
 
     // Jetpack
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.annotation)
 
     // Dependency Injection
-    implementation(libs.koin.core)
     implementation(libs.koin.android)
-    implementation(libs.koin.androidx.compose)
     implementation(libs.koin.androidx.workmanager)
 
     implementation(libs.androidx.core.splashscreen)
 
-    implementation(libs.androidx.paging.compose)
-
     implementation(libs.androidx.browser)
-    implementation(libs.androidx.webkit)
     implementation(libs.androidx.startup.runtime)
-
     implementation(libs.androidx.work.runtime.ktx)
 
     // compose
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.foundation)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material.icons.extended)
 
     // firebase (flavor specific)
     "googleImplementation"(platform(libs.firebase.bom))
@@ -124,36 +109,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // fruit
-    implementation(libs.fruit)
-    implementation(libs.ksoup)
-    ksp(libs.fruit.ksp)
-
-    // network
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.logging)
     implementation(libs.orhanobut.logger)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
 
-    // coil
+    // image loading
     implementation(libs.coil)
-    implementation(libs.coil.gif)
-    implementation(libs.coil.svg)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.ktor)
-
-    // ui composables
-    implementation(libs.ssjetpack.progress.button)
-
-    // markdown
-    implementation(libs.mikepenz.markdown)
-    implementation(libs.mikepenz.markdown.m3)
-    implementation(libs.mikepenz.markdown.coil3)
-
-    implementation(libs.compose.webview)
 }
 
 
@@ -163,7 +122,7 @@ android {
         val sharedDir =
             project(":shared").layout.buildDirectory.dir("intermediates/compose_fake_assets")
                 .get().asFile.absolutePath
-        assets.srcDirs(sharedDir)
+        assets.directories.add(sharedDir)
     }
 }
 
