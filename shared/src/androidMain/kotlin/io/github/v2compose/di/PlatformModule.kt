@@ -21,8 +21,10 @@ import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.shared.core.V2EventManager
-import io.github.v2compose.ui.main.AndroidMainPlatformDelegate
-import io.github.v2compose.ui.main.MainPlatformDelegate
+import io.github.v2compose.ui.main.AndroidAutoCheckInScheduler
+import io.github.v2compose.ui.main.AndroidWebViewProxyController
+import io.github.v2compose.ui.main.AutoCheckInScheduler
+import io.github.v2compose.ui.main.WebViewProxyController
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.HtmlImageLoader
 import io.ktor.client.HttpClient
@@ -60,7 +62,8 @@ actual val platformModule: Module = module {
             .diskCache(get<DiskCache>())
             .build()
     }
-    single<MainPlatformDelegate> { AndroidMainPlatformDelegate(get(), get()) }
+    single<AutoCheckInScheduler> { AndroidAutoCheckInScheduler(get()) }
+    single<WebViewProxyController> { AndroidWebViewProxyController(get()) }
 
     // Network
     single<io.github.fruit.Fruit> { OkHttpFactory.createFruit() }

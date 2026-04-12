@@ -3,7 +3,7 @@ package io.github.cooaer.htmltext
 import androidx.compose.runtime.Composable
 
 @Composable
-expect fun YouTubePlayer(videoId: String)
+expect fun YouTubePlayer(videoId: String, onOpenExternalUri: (String) -> Unit)
 
 expect fun String.parseYouTubeVideoId(): String?
 

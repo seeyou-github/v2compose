@@ -28,7 +28,8 @@ class MainViewModel(
     private val appPreferences: AppPreferences,
     private val accountRepository: AccountRepository,
     private val platformCapabilities: PlatformCapabilities,
-    private val mainPlatformDelegate: MainPlatformDelegate,
+    private val autoCheckInScheduler: AutoCheckInScheduler,
+    private val webViewProxyController: WebViewProxyController,
     val loadNodes: LoadNodesUseCase,
 ) : BaseViewModel() {
 
@@ -94,7 +95,7 @@ class MainViewModel(
                     if (shouldCheckIn) {
                         checkInInternal()
                     }
-                    mainPlatformDelegate.syncAutoCheckIn(shouldCheckIn)
+                    autoCheckInScheduler.syncAutoCheckIn(shouldCheckIn)
                 }
         }
     }
@@ -103,7 +104,7 @@ class MainViewModel(
         viewModelScope.launch {
             appPreferences.proxyInfo.collectLatest { proxyInfo ->
                 if (proxyInfo != ProxyInfo.Default) {
-                    mainPlatformDelegate.updateWebViewProxy(proxyInfo)
+                    webViewProxyController.updateWebViewProxy(proxyInfo)
                 }
             }
         }

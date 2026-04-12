@@ -10,7 +10,6 @@ fun MainViewController(): UIViewController {
             platformHandlersProvider = { snackbarHostState ->
                 rememberIosAppPlatformHandlers(snackbarHostState)
             },
-            openExternalUri = rememberIosExternalUriHandler(),
         )
     }
 }

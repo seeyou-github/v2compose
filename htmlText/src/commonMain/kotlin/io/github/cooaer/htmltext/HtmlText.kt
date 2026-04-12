@@ -444,7 +444,9 @@ private fun HtmlElementsScope.Iframe(element: Element) {
         when (element.id()) {
             "ytplayer" -> {
                 element.attr("src").parseYouTubeVideoId()?.let {
-                    YouTubePlayer(it)
+                    YouTubePlayer(it) { url ->
+                        onLinkClick?.invoke(url)
+                    }
                 }
             }
         }

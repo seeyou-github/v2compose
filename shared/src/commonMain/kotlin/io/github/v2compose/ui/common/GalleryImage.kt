@@ -150,12 +150,12 @@ fun GalleryImage(
                 ),
         )
 
-        val saveImage = LocalAppPlatformHandlers.current.saveImage
+        val platformHandlers = LocalAppPlatformHandlers.current
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
-                .clickable { saveImage(imageUrl) }
+                .clickable { platformHandlers.saveImage(imageUrl) }
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(4.dp),

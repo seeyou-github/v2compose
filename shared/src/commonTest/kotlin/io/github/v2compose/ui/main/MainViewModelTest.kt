@@ -29,6 +29,7 @@ import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.shared.bean.ContentFormat
 import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.shared.bean.ProxyInfo
+import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
@@ -69,7 +70,8 @@ class MainViewModelTest {
             autoCheckIn = true,
             hasCheckingInTips = true,
         )
-        val platformDelegate = RecordingMainPlatformDelegate()
+        val autoCheckInScheduler = RecordingAutoCheckInScheduler()
+        val webViewProxyController = RecordingWebViewProxyController()
 
         MainViewModel(
             checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), fakeAppPreferences()),
@@ -77,14 +79,16 @@ class MainViewModelTest {
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
             platformCapabilities = PlatformCapabilities.Ios,
-            mainPlatformDelegate = platformDelegate,
+            autoCheckInScheduler = autoCheckInScheduler,
+            webViewProxyController = webViewProxyController,
             loadNodes = LoadNodesUseCase(FakeTopicRepository()),
         )
 
         advanceUntilIdle()
 
         assertEquals(0, accountRepository.dailyInfoCalls)
-        assertTrue(platformDelegate.autoCheckInStates.isEmpty())
+        assertTrue(autoCheckInScheduler.autoCheckInStates.isEmpty())
+        assertTrue(webViewProxyController.proxyUpdates.isEmpty())
     }
 
     @Test
@@ -94,7 +98,8 @@ class MainViewModelTest {
             autoCheckIn = true,
             hasCheckingInTips = true,
         )
-        val platformDelegate = RecordingMainPlatformDelegate()
+        val autoCheckInScheduler = RecordingAutoCheckInScheduler()
+        val webViewProxyController = RecordingWebViewProxyController()
 
         MainViewModel(
             checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), fakeAppPreferences()),
@@ -102,14 +107,41 @@ class MainViewModelTest {
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
             platformCapabilities = PlatformCapabilities.Android,
-            mainPlatformDelegate = platformDelegate,
+            autoCheckInScheduler = autoCheckInScheduler,
+            webViewProxyController = webViewProxyController,
             loadNodes = LoadNodesUseCase(FakeTopicRepository()),
         )
 
         advanceUntilIdle()
 
         assertTrue(accountRepository.dailyInfoCalls > 0)
-        assertTrue(platformDelegate.autoCheckInStates.contains(true))
+        assertTrue(autoCheckInScheduler.autoCheckInStates.contains(true))
+    }
+
+    @Test
+    fun updatesWebViewProxyWhenCustomProxyIsConfigured() = runTest(dispatcher) {
+        val proxyInfo = ProxyInfo(type = ProxyType.Http, address = "127.0.0.1", port = 7890)
+        val appPreferences = fakeAppPreferences()
+        val accountRepository = FakeAccountRepository(false, false, false)
+        val autoCheckInScheduler = RecordingAutoCheckInScheduler()
+        val webViewProxyController = RecordingWebViewProxyController()
+        appPreferences.proxyInfo(proxyInfo)
+
+        MainViewModel(
+            checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), appPreferences),
+            checkIn = CheckInUseCase(accountRepository),
+            appPreferences = appPreferences,
+            accountRepository = accountRepository,
+            platformCapabilities = PlatformCapabilities.Android,
+            autoCheckInScheduler = autoCheckInScheduler,
+            webViewProxyController = webViewProxyController,
+            loadNodes = LoadNodesUseCase(FakeTopicRepository()),
+        )
+
+        advanceUntilIdle()
+
+        assertEquals(1, webViewProxyController.proxyUpdates.size)
+        assertEquals(proxyInfo, webViewProxyController.proxyUpdates.single())
     }
 }
 
@@ -127,13 +159,16 @@ private class FakePreferencesDataStore : DataStore<Preferences> {
     }
 }
 
-private class RecordingMainPlatformDelegate : MainPlatformDelegate {
+private class RecordingAutoCheckInScheduler : AutoCheckInScheduler {
     val autoCheckInStates = mutableListOf<Boolean>()
-    val proxyUpdates = mutableListOf<ProxyInfo>()
 
     override fun syncAutoCheckIn(enabled: Boolean) {
         autoCheckInStates += enabled
     }
+}
+
+private class RecordingWebViewProxyController : WebViewProxyController {
+    val proxyUpdates = mutableListOf<ProxyInfo>()
 
     override fun updateWebViewProxy(proxyInfo: ProxyInfo) {
         proxyUpdates += proxyInfo

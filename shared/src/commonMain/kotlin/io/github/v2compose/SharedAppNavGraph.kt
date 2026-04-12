@@ -47,7 +47,8 @@ fun SharedAppNavGraph(
     viewModel: V2AppViewModel,
 ) {
     val account by viewModel.account.collectAsStateWithLifecycle()
-    val shareContent = LocalAppPlatformHandlers.current.shareContent
+    val platformHandlers = LocalAppPlatformHandlers.current
+    val shareContent: (String, String) -> Unit = platformHandlers::shareContent
 
     NavHost(navController = navController, startDestination = mainNavigationRoute) {
         mainScreen(

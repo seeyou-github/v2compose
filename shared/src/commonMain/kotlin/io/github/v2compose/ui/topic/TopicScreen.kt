@@ -54,16 +54,16 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import io.github.v2compose.LocalAppPlatformHandlers
+import io.github.v2compose.V2exUri
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.ContentInfo.Supplement
 import io.github.v2compose.network.bean.TopicInfo.Reply
-import io.github.v2compose.V2exUri
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.HtmlContent
@@ -111,7 +111,7 @@ fun TopicScreenRoute(
     viewModel: TopicViewModel = koinViewModel(),
 ) {
     val clipboardManager = LocalClipboardManager.current
-    val uriHandler = LocalUriHandler.current
+    val platformHandlers = LocalAppPlatformHandlers.current
     val args = viewModel.topicArgs
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
     val repliesReversed by viewModel.repliesReversed.collectAsStateWithLifecycle(initialValue = true)
@@ -170,7 +170,8 @@ fun TopicScreenRoute(
                         onShareTopic(header.title, V2exUri.topicUrl(args.topicId))
                     }
                 }
-                TopicMenuItem.OpenInBrowser -> uriHandler.openUri(V2exUri.topicUrl(args.topicId))
+                TopicMenuItem.OpenInBrowser ->
+                    platformHandlers.openExternalUri(V2exUri.topicUrl(args.topicId))
                 TopicMenuItem.More -> Unit
             }
         },

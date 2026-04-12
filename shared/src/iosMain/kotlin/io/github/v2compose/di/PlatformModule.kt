@@ -18,8 +18,10 @@ import io.github.v2compose.network.NoOpProxyManager
 import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.createGithubHttpClient
 import io.github.v2compose.network.createV2HttpClient
-import io.github.v2compose.ui.main.IosMainPlatformDelegate
-import io.github.v2compose.ui.main.MainPlatformDelegate
+import io.github.v2compose.ui.main.AutoCheckInScheduler
+import io.github.v2compose.ui.main.IosAutoCheckInScheduler
+import io.github.v2compose.ui.main.IosWebViewProxyController
+import io.github.v2compose.ui.main.WebViewProxyController
 import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.HtmlImageLoader
 import io.ktor.client.HttpClient
@@ -56,7 +58,8 @@ actual val platformModule: Module = module {
             .build()
     }
 
-    single<MainPlatformDelegate> { IosMainPlatformDelegate() }
+    single<AutoCheckInScheduler> { IosAutoCheckInScheduler() }
+    single<WebViewProxyController> { IosWebViewProxyController() }
     single<Fruit> {
         Fruit().apply {
             registerGeneratedAdapters()

@@ -5,18 +5,13 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import io.github.v2compose.core.CheckInWorker
-import io.github.v2compose.shared.bean.ProxyInfo
-import io.github.v2compose.util.WebViewProxy
 import java.time.Duration
-import java.util.concurrent.ExecutorService
 
 private const val AutoCheckInWorkName = "autoCheckInWork"
 
-class AndroidMainPlatformDelegate(
+class AndroidAutoCheckInScheduler(
     private val context: Context,
-    private val appExecutorService: ExecutorService,
-) : MainPlatformDelegate {
-
+) : AutoCheckInScheduler {
     override fun syncAutoCheckIn(enabled: Boolean) {
         val workManager = WorkManager.getInstance(context)
         if (enabled) {
@@ -32,9 +27,5 @@ class AndroidMainPlatformDelegate(
         } else {
             workManager.cancelUniqueWork(AutoCheckInWorkName)
         }
-    }
-
-    override fun updateWebViewProxy(proxyInfo: ProxyInfo) {
-        WebViewProxy.updateProxy(proxyInfo, appExecutorService)
     }
 }

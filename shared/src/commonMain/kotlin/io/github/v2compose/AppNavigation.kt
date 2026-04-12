@@ -95,6 +95,8 @@ private fun parseAppUri(raw: String): ParsedAppUri? {
         .takeIf { it.isNotEmpty() && !it.contains('/') && !it.contains('?') && !it.contains('#') }
 
     val (normalizedAbsoluteUrl, route, host) = when {
+        scheme in systemSchemes -> Triple(value, value, null)
+
         value.startsWith("//") -> {
             val absolute = "https:$value"
             val afterScheme = absolute.substringAfter("://")

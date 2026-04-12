@@ -24,7 +24,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 private const val TAG = "VideoPlayer"
 
 @Composable
-actual fun YouTubePlayer(videoId: String) {
+actual fun YouTubePlayer(videoId: String, onOpenExternalUri: (String) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 

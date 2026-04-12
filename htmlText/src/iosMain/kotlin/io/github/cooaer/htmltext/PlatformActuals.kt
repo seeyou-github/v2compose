@@ -11,12 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 
 @Composable
-actual fun YouTubePlayer(videoId: String) {
-    val uriHandler = LocalUriHandler.current
+actual fun YouTubePlayer(videoId: String, onOpenExternalUri: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,7 +31,7 @@ actual fun YouTubePlayer(videoId: String) {
             )
             Button(
                 onClick = {
-                    uriHandler.openUri("https://www.youtube.com/watch?v=$videoId")
+                    onOpenExternalUri("https://www.youtube.com/watch?v=$videoId")
                 },
                 modifier = Modifier.padding(top = 12.dp),
             ) {

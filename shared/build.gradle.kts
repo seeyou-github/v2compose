@@ -104,6 +104,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.browser)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.slf4j.android)
             implementation(libs.orhanobut.logger)

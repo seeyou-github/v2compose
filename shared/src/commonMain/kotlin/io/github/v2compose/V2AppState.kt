@@ -19,7 +19,7 @@ import org.koin.compose.koinInject
 @Composable
 fun rememberV2AppState(
     navHostController: NavHostController,
-    openExternalUri: (String) -> Unit,
+    platformHandlers: AppPlatformHandlers,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
@@ -27,14 +27,14 @@ fun rememberV2AppState(
 ): V2AppState {
     val appState = remember(
         navHostController,
-        openExternalUri,
+        platformHandlers,
         coroutineScope,
         snackbarHostState,
         eventManager,
     ) {
         V2AppState(
             navHostController = navHostController,
-            openExternalUri = openExternalUri,
+            platformHandlers = platformHandlers,
             coroutineScope = coroutineScope,
             snackbarHostState = snackbarHostState,
             eventManager = eventManager,
@@ -52,7 +52,7 @@ fun rememberV2AppState(
 
 class V2AppState(
     private val navHostController: NavHostController,
-    private val openExternalUri: (String) -> Unit,
+    private val platformHandlers: AppPlatformHandlers,
     private val coroutineScope: CoroutineScope,
     val snackbarHostState: SnackbarHostState,
     private val eventManager: V2EventManager,
@@ -80,7 +80,7 @@ class V2AppState(
 
     private fun handleAction(action: AppNavigationAction) {
         when (action) {
-            is AppNavigationAction.External -> openExternalUri(action.uri)
+            is AppNavigationAction.External -> platformHandlers.openExternalUri(action.uri)
             AppNavigationAction.Ignore -> Unit
             is AppNavigationAction.Navigate -> {
                 val navOptions = if (action.clearBackStackToRoot) {

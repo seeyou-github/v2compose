@@ -38,6 +38,16 @@ class AppNavigationTest {
     }
 
     @Test
+    fun resolveOpenUri_routesProtocolRelativeExternalDomainToBrowser() {
+        val action = resolveOpenUri("//example.com/path?q=1")
+
+        assertEquals(
+            AppNavigationAction.External("https://example.com/path?q=1"),
+            action,
+        )
+    }
+
+    @Test
     fun resolveOpenUri_routesSystemSchemesToExternalHandler() {
         val actions = listOf(
             resolveOpenUri("mailto:test@example.com"),
