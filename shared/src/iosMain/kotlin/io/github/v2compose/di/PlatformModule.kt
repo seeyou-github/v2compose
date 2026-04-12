@@ -6,6 +6,7 @@ import coil3.disk.DiskCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import io.github.fruit.Fruit
+import io.github.fruit.registerGeneratedAdapters
 import io.github.v2compose.core.PlatformContext as AppPlatformContext
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
@@ -56,7 +57,11 @@ actual val platformModule: Module = module {
     }
 
     single<MainPlatformDelegate> { IosMainPlatformDelegate() }
-    single<Fruit> { Fruit.createDefault() }
+    single<Fruit> {
+        Fruit().apply {
+            registerGeneratedAdapters()
+        }
+    }
     single<CookieManager> { IosCookieManager() }
     single<ProxyManager> { NoOpProxyManager() }
     single<HttpCacheManager> { NoOpHttpCacheManager() }
