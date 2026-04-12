@@ -46,6 +46,6 @@ targets:
         basedOnDependencyAnalysis: false
         script: |
           cd "$SRCROOT/.."
-          ./gradlew --no-daemon :shared:embedAndSignAppleFrameworkForXcode \
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
             -Pcompose.ios.resources.platform="${PLATFORM_NAME:-$SDK_NAME}" \
             -Pcompose.ios.resources.archs="${NATIVE_ARCH_ACTUAL:-${ARCHS%% *}}"
