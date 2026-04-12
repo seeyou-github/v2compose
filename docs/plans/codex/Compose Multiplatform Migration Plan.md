@@ -5,10 +5,15 @@
       - shared 与 htmlText 已是 KMP 模块，且 iOS target 当前能编译通过。
       - Android 仍以 app/src/main/java/io/github/v2compose/MainActivity.kt 和 app/src/main/java/io/
         github/v2compose/V2App.kt 为主入口。
-      - shared 已承载数据层、资源、主题、部分 use case/repository，但共享 DI 入口 shared/src/
-        commonMain/kotlin/io/github/v2compose/di/Koin.kt 仍未接入完整共享模块。
+      - shared 已承载共享导航、共享 ViewModel、数据层、资源、主题及平台 handler 注入，`initKoin`
+        已形成可用共享模块组合。
+      - app 已基本收敛为 Android 宿主与 Android-only 初始化层，不再维护大块重复共享 UI。
       - htmlText 的 iOS 端已有 expect/actual 骨架，但仍存在功能占位，典型如 YouTube 播放器。
   - 迁移策略：保持 Android 可发布，分阶段把“共享应用壳”建立起来，首个 iOS 版本只覆盖核心浏览能力。
+
+## Implementation Doc
+
+  - Phase 4: `docs/plans/codex/phase-4.md`
 
 ## Key Changes
 
@@ -86,14 +91,17 @@
 
 ### Phase 4: 收尾与收敛
 
-  - Android 旧实现逐步下线：
-      - 不再维护 app 中与共享页面重复的 Compose 页面、ViewModel、导航扩展。
-      - 删除仅因双轨迁移存在的过渡注入和桥接代码。
+  - Android 旧实现维持宿主薄壳：
+      - `app` 继续保留 Android 宿主、Android-only 初始化与平台独占能力。
+      - 不再把 `V2App()` 这类宿主包装层误判为“待删除旧 UI”。
+  - 删除仅因双轨迁移存在的过渡注入和桥接代码：
+      - 例如将平台能力注册收敛回各平台 `platformModule`，避免独立过渡模块长期保留。
   - 文档补齐：
       - 模块职责图
       - 平台能力接口清单
       - iOS 首版功能矩阵
       - 新页面迁移模板
+      - 详细落地说明见 `docs/plans/codex/phase-4.md`
   - 发布准备：
       - Android 继续完整构建。
       - iOS 至少具备可运行 Demo 和核心浏览回归清单。
