@@ -13,3 +13,9 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.buildkonfig) apply false
 }
+
+allprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+        compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+}
