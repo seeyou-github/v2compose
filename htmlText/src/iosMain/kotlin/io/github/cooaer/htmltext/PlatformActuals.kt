@@ -1,24 +1,45 @@
 package io.github.cooaer.htmltext
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 
 @Composable
 actual fun YouTubePlayer(videoId: String) {
-    // Placeholder for iOS
+    val uriHandler = LocalUriHandler.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text("YouTube Player (iOS placeholder): $videoId")
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "iOS v1 暂不支持内嵌 YouTube 播放",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Button(
+                onClick = {
+                    uriHandler.openUri("https://www.youtube.com/watch?v=$videoId")
+                },
+                modifier = Modifier.padding(top = 12.dp),
+            ) {
+                Text("在浏览器打开")
+            }
+        }
     }
 }
 

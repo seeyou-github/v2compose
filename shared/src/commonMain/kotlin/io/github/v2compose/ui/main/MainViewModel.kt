@@ -1,5 +1,6 @@
 package io.github.v2compose.ui.main
 
+import io.github.v2compose.PlatformCapabilities
 import androidx.lifecycle.viewModelScope
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.Release
@@ -26,6 +27,7 @@ class MainViewModel(
     private val checkIn: CheckInUseCase,
     private val appPreferences: AppPreferences,
     private val accountRepository: AccountRepository,
+    private val platformCapabilities: PlatformCapabilities,
     private val mainPlatformDelegate: MainPlatformDelegate,
     val loadNodes: LoadNodesUseCase,
 ) : BaseViewModel() {
@@ -54,6 +56,7 @@ class MainViewModel(
     }
 
     private fun listenCanCheckIn() {
+        if (!platformCapabilities.supportsAutoCheckIn) return
         viewModelScope.launch {
             accountRepository.hasCheckingInTips
                 .combine(accountRepository.autoCheckIn) { hasCheckingInTips, autoCheckIn ->
@@ -80,6 +83,7 @@ class MainViewModel(
     }
 
     private fun listenAutoCheckIn() {
+        if (!platformCapabilities.supportsAutoCheckIn) return
         viewModelScope.launch {
             accountRepository.isLoggedIn
                 .combine(accountRepository.autoCheckIn) { isLoggedIn, autoCheckIn ->

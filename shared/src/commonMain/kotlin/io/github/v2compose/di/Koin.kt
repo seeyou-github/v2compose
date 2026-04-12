@@ -132,6 +132,7 @@ fun sharedModules(): List<Module> = listOf(
     sharedUseCaseModule,
     sharedPagingModule,
     sharedViewModelModule,
+    platformCapabilitiesModule,
     platformModule,
 )
 

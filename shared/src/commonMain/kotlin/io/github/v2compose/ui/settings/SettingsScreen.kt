@@ -176,9 +176,12 @@ private fun SettingsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+            val platformHandlers = LocalAppPlatformHandlers.current
             PreferenceGroupTitle(title = stringResource(Res.string.settings_common))
             ClearCachePreference(cacheSize, onClearCacheClick)
-            AutoCheckInPreference(appSettings, onAutoCheckInChanged)
+            if (platformHandlers.capabilities.supportsAutoCheckIn) {
+                AutoCheckInPreference(appSettings, onAutoCheckInChanged)
+            }
             SwitchPreference(
                 title = stringResource(Res.string.settings_reply_with_floor),
                 summary = stringResource(Res.string.settings_reply_with_floor_description),

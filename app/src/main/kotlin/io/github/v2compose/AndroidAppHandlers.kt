@@ -71,6 +71,7 @@ fun rememberAndroidAppPlatformHandlers(
 
     return remember(openExternalUri, shareContent, saveImage, context) {
         AppPlatformHandlers(
+            capabilities = PlatformCapabilities.Android,
             openExternalUri = openExternalUri,
             shareContent = shareContent,
             saveImage = saveImage,

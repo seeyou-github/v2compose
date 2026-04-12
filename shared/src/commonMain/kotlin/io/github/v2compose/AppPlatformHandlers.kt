@@ -6,6 +6,7 @@ import androidx.compose.runtime.compositionLocalOf
  * Shared platform interaction handlers exposed to common UI.
  */
 data class AppPlatformHandlers(
+    val capabilities: PlatformCapabilities,
     val openExternalUri: (String) -> Unit,
     val shareContent: (String, String) -> Unit,
     val saveImage: (String) -> Unit,

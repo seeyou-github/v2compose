@@ -38,6 +38,7 @@ fun rememberIosAppPlatformHandlers(
 
     return remember(viewController, openExternalUri, snackbarHostState) {
         AppPlatformHandlers(
+            capabilities = PlatformCapabilities.Ios,
             openExternalUri = openExternalUri,
             shareContent = { title, url ->
                 presentActivitySheet(
