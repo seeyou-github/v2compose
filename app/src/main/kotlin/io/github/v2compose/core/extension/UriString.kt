@@ -1,10 +1,11 @@
 package io.github.v2compose.core.extension
 
 import android.net.Uri
+import androidx.core.net.toUri
 
 fun String.tryParse(): Uri? {
     return try {
-        Uri.parse(this)
+        this.toUri()
     } catch (e: Exception) {
         e.printStackTrace()
         null

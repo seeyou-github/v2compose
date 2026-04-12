@@ -46,10 +46,12 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         commonMain.dependencies {
+            implementation(project(":htmlText"))
+
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material3)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.material.icons.extended)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ui.tooling.preview)
 
@@ -63,7 +65,7 @@ kotlin {
             api(libs.koin.compose.viewmodel)
 
             // Compose Multiplatform Resources
-            api(compose.components.resources)
+            api("org.jetbrains.compose.components:components-resources:1.10.3")
 
             // Ktor
             api(libs.ktor.client.core)
@@ -74,6 +76,7 @@ kotlin {
 
             // Fruit-KT KMP
             api(libs.fruit)
+            implementation(libs.fruit.ktor)
             implementation(libs.ksoup)
 
             // DataStore KMP
@@ -91,7 +94,6 @@ kotlin {
             implementation(libs.mikepenz.markdown)
             implementation(libs.mikepenz.markdown.m3)
             implementation(libs.mikepenz.markdown.coil3)
-            implementation(project(":htmlText"))
             api(libs.compose.webview)
         }
 
@@ -144,7 +146,7 @@ kotlin {
 tasks.configureEach {
     if (name == "copyAndroidMainComposeResourcesToAndroidAssets") {
         try {
-            val dirProp = this.property("outputDirectory") as org.gradle.api.file.DirectoryProperty
+            val dirProp = this.property("outputDirectory") as DirectoryProperty
             dirProp.set(layout.buildDirectory.dir("intermediates/compose_fake_assets"))
         } catch (e: Exception) {
         }

@@ -124,7 +124,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // v2er-ghui
+    // fruit
     implementation(libs.fruit)
     implementation(libs.ksoup)
     ksp(libs.fruit.ksp)

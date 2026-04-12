@@ -1,7 +1,9 @@
 package io.github.v2compose.network.bean
 
-import io.github.fruit.IBaseWrapper
-
-interface IBase : IBaseWrapper {
+interface IBase {
     fun isValid(): Boolean
+
+    fun setResponse(html: String)
+
+    fun getResponse(): String
 }
