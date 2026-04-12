@@ -7,6 +7,7 @@ import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import io.github.fruit.Fruit
 import io.github.fruit.registerGeneratedAdapters
+import io.github.v2compose.PlatformCapabilities
 import io.github.v2compose.core.PlatformContext as AppPlatformContext
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
@@ -36,6 +37,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
 actual val platformModule: Module = module {
+    single { PlatformCapabilities.Ios }
     single<AppPlatformContext> { IosAppPlatformContext }
     single<CoilPlatformContext> { CoilPlatformContext.INSTANCE }
 

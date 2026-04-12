@@ -8,6 +8,7 @@ import coil3.gif.AnimatedImageDecoder
 import coil3.gif.GifDecoder
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
+import io.github.v2compose.PlatformCapabilities
 import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
@@ -39,6 +40,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 actual val platformModule: Module = module {
+    single { PlatformCapabilities.Android }
     single(named("Account")) { createAccountDataStore(get()) }
     single(named("App")) { createAppDataStore(get()) }
 
