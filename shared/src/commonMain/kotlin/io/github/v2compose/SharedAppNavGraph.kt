@@ -40,10 +40,8 @@ import io.github.v2compose.ui.webview.webViewScreen
 import io.github.v2compose.ui.write.navigateToWriteTopic
 import io.github.v2compose.ui.write.writeTopicScreen
 
-private const val TAG = "V2AppNavGraph"
-
 @Composable
-fun V2AppNavGraph(
+fun SharedAppNavGraph(
     navController: NavHostController,
     appState: V2AppState,
     viewModel: V2AppViewModel,
@@ -63,7 +61,7 @@ fun V2AppNavGraph(
                 if (account.isValid()) {
                     navController.navigateToUser(
                         userName = account.userName,
-                        userAvatar = account.userAvatar
+                        userAvatar = account.userAvatar,
                     )
                 }
             },
@@ -112,7 +110,7 @@ fun V2AppNavGraph(
                         inclusive = true
                     }
                 })
-            }
+            },
         )
         loginScreen(
             onCloseClick = appState::back,
@@ -123,11 +121,11 @@ fun V2AppNavGraph(
         )
         googleLoginScreen(
             onCloseClick = appState::back,
-            onLoginSuccess = navController::navigateToMain
+            onLoginSuccess = navController::navigateToMain,
         )
         webViewScreen(
             onCloseClick = appState::back,
-            openUri = appState::openUri
+            openUri = appState::openUri,
         )
         writeTopicScreen(
             onCloseClick = appState::back,
