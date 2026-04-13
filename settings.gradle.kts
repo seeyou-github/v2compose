@@ -16,6 +16,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "V2compose"
 includeBuild("../fruit-kt")
-include(":app")
+include(":androidApp")
 include(":htmlText")
 include(":shared")
