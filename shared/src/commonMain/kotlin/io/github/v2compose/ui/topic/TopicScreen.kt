@@ -52,15 +52,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.github.v2compose.LocalAppPlatformHandlers
 import io.github.v2compose.V2exUri
+import io.github.v2compose.core.plainTextClipEntry
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.ContentInfo.Supplement
 import io.github.v2compose.network.bean.TopicInfo.Reply
@@ -110,7 +110,8 @@ fun TopicScreenRoute(
     onShareTopic: (String, String) -> Unit,
     viewModel: TopicViewModel = koinViewModel(),
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
+    val coroutineScope = rememberCoroutineScope()
     val platformHandlers = LocalAppPlatformHandlers.current
     val args = viewModel.topicArgs
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
@@ -187,8 +188,10 @@ fun TopicScreenRoute(
                 ReplyMenuItem.Thank -> viewModel.thankReply(reply)
                 ReplyMenuItem.Ignore -> viewModel.ignoreReply(reply)
                 ReplyMenuItem.Copy -> {
-                    clipboardManager.setText(AnnotatedString(reply.replyContent))
-                    viewModel.notifyReplyCopied()
+                    coroutineScope.launch {
+                        clipboard.setClipEntry(plainTextClipEntry(reply.replyContent))
+                        viewModel.notifyReplyCopied()
+                    }
                 }
                 ReplyMenuItem.HomePage -> onUserAvatarClick(reply.userName, reply.avatar)
                 else -> {}

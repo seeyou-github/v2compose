@@ -14,8 +14,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -109,7 +109,7 @@ private fun ContentBar(
     ) {
         val currentPage =
             if (pagerState.currentPage >= tabTitles.size) 0 else pagerState.currentPage
-        TabRow(
+        SecondaryTabRow(
             selectedTabIndex = currentPage,
             modifier = Modifier.width(64.dp * tabTitles.size),
             divider = {},

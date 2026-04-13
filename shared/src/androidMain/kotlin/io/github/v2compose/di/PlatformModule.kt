@@ -2,6 +2,7 @@ package io.github.v2compose.di
 
 import android.os.Build
 import coil3.ImageLoader
+import coil3.annotation.ExperimentalCoilApi
 import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.gif.AnimatedImageDecoder
@@ -41,6 +42,7 @@ import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+@OptIn(ExperimentalCoilApi::class)
 actual val platformModule: Module = module {
     single { PlatformCapabilities.Android }
     single(named("Account")) { createAccountDataStore(get()) }

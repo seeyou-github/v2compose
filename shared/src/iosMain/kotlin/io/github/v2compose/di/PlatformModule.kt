@@ -1,6 +1,7 @@
 package io.github.v2compose.di
 
 import coil3.ImageLoader
+import coil3.annotation.ExperimentalCoilApi
 import coil3.PlatformContext as CoilPlatformContext
 import coil3.disk.DiskCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
@@ -38,6 +39,7 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURLCache
 import platform.Foundation.NSUserDomainMask
 
+@OptIn(ExperimentalCoilApi::class)
 actual val platformModule: Module = module {
     single { PlatformCapabilities.Ios }
     single<AppPlatformContext> { IosAppPlatformContext }

@@ -42,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -76,6 +77,23 @@ import v2compose.shared.generated.resources.load_nodes_failure
 import v2compose.shared.generated.resources.select_node
 import v2compose.shared.generated.resources.topic_content_placeholder
 import v2compose.shared.generated.resources.topic_title
+
+private val TopicNodeSaver: Saver<TopicNode?, Any> = listSaver(
+    save = { node -> listOf(node?.name, node?.title, node?.topics, node?.aliases) },
+    restore = { values ->
+        val name = values.getOrNull(0) as? String ?: return@listSaver null
+        val title = values.getOrNull(1) as? String ?: return@listSaver null
+        val topics = values.getOrNull(2) as? Int ?: return@listSaver null
+        val aliases = (values.getOrNull(3) as? List<*>)?.filterIsInstance<String>().orEmpty()
+
+        TopicNode(
+            name = name,
+            title = title,
+            topics = topics,
+            aliases = aliases,
+        )
+    }
+)
 
 @Composable
 fun WriteTopicScreenRoute(
@@ -128,19 +146,10 @@ private fun WriteTopicScreen(
     var title by rememberSaveable { mutableStateOf(initialDraftTopic.title) }
     var content by rememberSaveable { mutableStateOf(initialDraftTopic.content) }
     var contentFormat by rememberSaveable { mutableStateOf(initialDraftTopic.contentFormat) }
-    var node by rememberSaveable(
-        stateSaver = listSaver(
-            save = { listOf(it?.name, it?.title, it?.topics, it?.aliases) },
-            restore = {
-                TopicNode(
-                    it[0] as String, it[1] as String, it[2] as Int,
-                    it[3] as List<String>
-                )
-            }
-        )) { mutableStateOf(initialDraftTopic.node) }
+    var node by rememberSaveable(stateSaver = TopicNodeSaver) { mutableStateOf(initialDraftTopic.node) }
 
     var showNodes by remember { mutableStateOf(false) }
-    val hasNodes = loadNodesState is LoadNodesState.Success && loadNodesState.data.isNotEmpty()
+    val successLoadNodesState = loadNodesState as? LoadNodesState.Success
 
     PlatformBackHandler(enabled = showNodes) {
         showNodes = false
@@ -219,8 +228,8 @@ private fun WriteTopicScreen(
             }
         }
 
-        if (showNodes && hasNodes) {
-            val nodes = (loadNodesState as LoadNodesState.Success).data
+        if (showNodes && successLoadNodesState?.data?.isNotEmpty() == true) {
+            val nodes = successLoadNodesState.data
             SelectNode(
                 nodes = nodes,
                 onNodeClick = {
@@ -435,6 +444,7 @@ private fun TopicNodeField(
                 .clickable { onNodeClick(node) },
         ) {
             val contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            val nodeTitle = node?.title
             Spacer(Modifier.width(12.dp))
             if (loadNodesState is LoadNodesState.Loading) {
                 CircularProgressIndicator(
@@ -445,7 +455,11 @@ private fun TopicNodeField(
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                if (node?.title.isNullOrEmpty()) stringResource(Res.string.select_node) else node?.title!!,
+                text = if (nodeTitle.isNullOrEmpty()) {
+                    stringResource(Res.string.select_node)
+                } else {
+                    nodeTitle
+                },
                 color = contentColor,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,

@@ -1,8 +1,5 @@
 package io.github.v2compose.ui.user
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -22,10 +18,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -518,11 +514,9 @@ private fun UserTabs(
     onTabSelected: (Int) -> Unit,
 ) {
     Surface(color = MaterialTheme.colorScheme.background) {
-        TabRow(
+        SecondaryTabRow(
             selectedTabIndex = selectedTabIndex,
-            indicator = { tabPositions: List<TabPosition> ->
-                UserTabIndicator(tabPosition = tabPositions[selectedTabIndex])
-            }
+            indicator = { UserTabIndicator(selectedTabIndex = selectedTabIndex) }
         ) {
             tabNames.forEachIndexed { index, name ->
                 val selected = selectedTabIndex == index
@@ -597,27 +591,21 @@ fun UserReplyItem(
 }
 
 @Composable
-private fun UserTabIndicator(tabPosition: TabPosition, modifier: Modifier = Modifier) {
-    val tabWidth = 32.dp
-    val leftSpace = (tabPosition.width - tabWidth) / 2
-    val currentTabWidth by animateDpAsState(
-        targetValue = tabWidth,
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
-    )
-    val indicatorOffset by animateDpAsState(
-        targetValue = tabPosition.left + leftSpace,
-        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
-    )
-
+private fun TabIndicatorScope.UserTabIndicator(selectedTabIndex: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.BottomStart)
-            .offset(x = indicatorOffset)
-            .width(currentTabWidth)
-            .height(2.dp)
-            .background(color = MaterialTheme.colorScheme.primary)
-    )
+            .tabIndicatorOffset(selectedTabIndex = selectedTabIndex, matchContentSize = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .width(32.dp)
+                .height(2.dp)
+                .background(color = MaterialTheme.colorScheme.primary)
+        )
+    }
 }
 
 private fun calculateHeaderAlpha(

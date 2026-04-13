@@ -87,7 +87,7 @@ class WriteTopicViewModel(
                 if (e.isRedirect) {
                     saveDraftTopic("", "", ContentFormat.Original, null)
                     val location = e.redirectLocation ?: ""
-                    val topicId = Url(location).pathSegments.getOrNull(1)
+                    val topicId = Url(location).segments.getOrNull(1)
                     if (topicId != null) {
                         _createTopicState.emit(CreateTopicState.Success(topicId))
                         return@launch

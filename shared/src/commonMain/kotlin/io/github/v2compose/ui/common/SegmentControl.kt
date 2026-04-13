@@ -4,8 +4,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -46,7 +46,6 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChangeConsumed
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.onClick
@@ -367,43 +366,41 @@ private class SegmentedControlState {
                 .toInt()
                 .coerceIn(0, segmentCount - 1)
 
-        forEachGesture {
-            awaitPointerEventScope {
-                val down = awaitFirstDown()
+        awaitEachGesture {
+            val down = awaitFirstDown()
 
-                pressedSegment = segmentIndex(down)
-                val downOnSelected = pressedSegment == selectedSegment
-                val segmentBounds = Rect(
-                    left = pressedSegment * segmentWidth.toFloat(),
-                    right = (pressedSegment + 1) * segmentWidth.toFloat(),
-                    top = 0f,
-                    bottom = size.height.toFloat()
-                )
+            pressedSegment = segmentIndex(down)
+            val downOnSelected = pressedSegment == selectedSegment
+            val segmentBounds = Rect(
+                left = pressedSegment * segmentWidth.toFloat(),
+                right = (pressedSegment + 1) * segmentWidth.toFloat(),
+                top = 0f,
+                bottom = size.height.toFloat()
+            )
 
-                // Now that the pointer is down, the rest of the gesture depends on whether the segment that
-                // was "pressed" was selected.
-                if (downOnSelected) {
-                    // When the selected segment is pressed, it can be dragged to other segments to animate the
-                    // thumb moving and the segments scaling.
-                    horizontalDrag(down.id) { change ->
-                        pressedSegment = segmentIndex(change)
+            // Now that the pointer is down, the rest of the gesture depends on whether the segment that
+            // was "pressed" was selected.
+            if (downOnSelected) {
+                // When the selected segment is pressed, it can be dragged to other segments to animate the
+                // thumb moving and the segments scaling.
+                horizontalDrag(down.id) { change ->
+                    pressedSegment = segmentIndex(change)
 
-                        // Notify the SegmentedControl caller when the pointer changes segments.
-                        if (pressedSegment != selectedSegment) {
-                            onSegmentSelected(pressedSegment)
-                        }
+                    // Notify the SegmentedControl caller when the pointer changes segments.
+                    if (pressedSegment != selectedSegment) {
+                        onSegmentSelected(pressedSegment)
                     }
-                } else {
-                    // When an unselected segment is pressed, we just animate the alpha of the segment while
-                    // the pointer is down. No dragging is supported.
-                    waitForUpOrCancellation(inBounds = segmentBounds)
-                        // Null means the gesture was cancelled (e.g. dragged out of bounds).
-                        ?.let { onSegmentSelected(pressedSegment) }
                 }
-
-                // In either case, once the gesture is cancelled, stop showing the pressed indication.
-                pressedSegment = NO_SEGMENT_INDEX
+            } else {
+                // When an unselected segment is pressed, we just animate the alpha of the segment while
+                // the pointer is down. No dragging is supported.
+                waitForUpOrCancellation(inBounds = segmentBounds)
+                    // Null means the gesture was cancelled (e.g. dragged out of bounds).
+                    ?.let { onSegmentSelected(pressedSegment) }
             }
+
+            // In either case, once the gesture is cancelled, stop showing the pressed indication.
+            pressedSegment = NO_SEGMENT_INDEX
         }
     }
 }
@@ -419,14 +416,14 @@ private suspend fun AwaitPointerEventScope.waitForUpOrCancellation(inBounds: Rec
             return event.changes[0]
         }
 
-        if (event.changes.any { it.consumed.downChange || !inBounds.contains(it.position) }) {
+        if (event.changes.any { it.isConsumed || !inBounds.contains(it.position) }) {
             return null // Canceled
         }
 
         // Check for cancel by position consumption. We can look on the Final pass of the
         // existing pointer event because it comes after the Main pass we checked above.
         val consumeCheck = awaitPointerEvent(PointerEventPass.Final)
-        if (consumeCheck.changes.any { it.positionChangeConsumed() }) {
+        if (consumeCheck.changes.any { it.isConsumed }) {
             return null
         }
     }
