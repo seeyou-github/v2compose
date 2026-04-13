@@ -17,8 +17,13 @@ targets:
     info:
       path: iosApp/Info.plist
       properties:
+        BGTaskSchedulerPermittedIdentifiers:
+          - io.github.v2compose.auto-check-in
         CFBundleDisplayName: $(APP_DISPLAY_NAME)
+        NSPhotoLibraryAddUsageDescription: V2compose 需要将图片保存到系统相册。
         UIApplicationSupportsIndirectInputEvents: true
+        UIBackgroundModes:
+          - fetch
         UILaunchScreen: {}
     settings:
       base:

@@ -13,9 +13,10 @@ import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
 import io.github.v2compose.network.HttpCacheManager
+import io.github.v2compose.network.IosHttpCacheManager
 import io.github.v2compose.network.IosCookieManager
-import io.github.v2compose.network.NoOpHttpCacheManager
-import io.github.v2compose.network.NoOpProxyManager
+import io.github.v2compose.network.IosNetworkClientRegistry
+import io.github.v2compose.network.NetworkClientProvider
 import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.createGithubHttpClient
 import io.github.v2compose.network.createV2HttpClient
@@ -34,6 +35,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSFileManager
+import platform.Foundation.NSURLCache
 import platform.Foundation.NSUserDomainMask
 
 actual val platformModule: Module = module {
@@ -49,6 +51,13 @@ actual val platformModule: Module = module {
             .directory(iosCacheDirectory("image_cache"))
             .maxSizePercent(0.02)
             .build()
+    }
+    single<NSURLCache> {
+        NSURLCache(
+            memoryCapacity = 8uL * 1024uL * 1024uL,
+            diskCapacity = 32uL * 1024uL * 1024uL,
+            diskPath = "v2compose_http_cache",
+        )
     }
     single<ImageLoader> {
         ImageLoader.Builder(get<CoilPlatformContext>())
@@ -68,17 +77,12 @@ actual val platformModule: Module = module {
         }
     }
     single<CookieManager> { IosCookieManager() }
-    single<ProxyManager> { NoOpProxyManager() }
-    single<HttpCacheManager> { NoOpHttpCacheManager() }
-
-    single<HttpClient>(named("V2HttpClient")) {
-        createV2HttpClient(engine = null, fruit = get<Fruit>())
-    }
+    single<IosNetworkClientRegistry> { IosNetworkClientRegistry(get(), get(), get()) }
+    single<NetworkClientProvider> { get<IosNetworkClientRegistry>() }
+    single<ProxyManager> { get<IosNetworkClientRegistry>() }
+    single<HttpCacheManager> { IosHttpCacheManager(get()) }
     single<HttpClient>(named("ImageHttpClient")) {
-        createV2HttpClient(engine = null, fruit = get<Fruit>())
-    }
-    single<HttpClient>(named("GithubHttpClient")) {
-        createGithubHttpClient()
+        get<IosNetworkClientRegistry>().imageHttpClient()
     }
 
     singleOf(::FixHtmlUseCase)

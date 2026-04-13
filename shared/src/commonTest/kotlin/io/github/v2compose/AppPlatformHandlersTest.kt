@@ -27,6 +27,9 @@ class AppPlatformHandlersTest {
 
                 override fun isAutoCheckInChannelEnabled(): Boolean = true
             },
+            autoCheckInPrerequisite = AutoCheckInPrerequisite {
+                AutoCheckInPrerequisiteState.Ready
+            },
         )
 
         handlers.openExternalUri("https://example.com")
@@ -47,5 +50,6 @@ class AppPlatformHandlersTest {
         )
         assertFalse(handlers.checkNotificationPermission())
         assertEquals(true, handlers.isAutoCheckInChannelEnabled())
+        assertEquals(AutoCheckInPrerequisiteState.Ready, handlers.checkAutoCheckInPrerequisite())
     }
 }

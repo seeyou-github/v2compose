@@ -26,6 +26,16 @@ interface NotificationAccess {
     fun isAutoCheckInChannelEnabled(): Boolean
 }
 
+enum class AutoCheckInPrerequisiteState {
+    Ready,
+    RequiresNotificationPermission,
+    RequiresNotificationSettings,
+}
+
+fun interface AutoCheckInPrerequisite {
+    fun check(): AutoCheckInPrerequisiteState
+}
+
 /**
  * Shared platform interaction handlers exposed to common UI.
  */
@@ -36,6 +46,7 @@ data class AppPlatformHandlers(
     val imageSaver: ImageSaver,
     val settingsLauncher: SettingsLauncher,
     val notificationAccess: NotificationAccess,
+    val autoCheckInPrerequisite: AutoCheckInPrerequisite,
 ) {
     fun openExternalUri(uri: String) = externalNavigator.openExternalUri(uri)
 
@@ -51,6 +62,9 @@ data class AppPlatformHandlers(
 
     fun isAutoCheckInChannelEnabled(): Boolean =
         notificationAccess.isAutoCheckInChannelEnabled()
+
+    fun checkAutoCheckInPrerequisite(): AutoCheckInPrerequisiteState =
+        autoCheckInPrerequisite.check()
 }
 
 val LocalAppPlatformHandlers = compositionLocalOf<AppPlatformHandlers> {

@@ -116,6 +116,7 @@
 
     <string name="settings_auto_check_in">自动签到</string>
     <string name="settings_auto_check_in_description">自动领取每日登录奖励</string>
+    <string name="settings_auto_check_in_description_ios">自动领取每日登录奖励，执行时机由 iOS 系统决定</string>
 
     <string name="settings_reply_with_floor">回复时附带楼层</string>
     <string name="settings_reply_with_floor_description">点击评论中的楼层，查看被回复的评论</string>
@@ -150,6 +151,7 @@
     <string name="settings_proxy_hostOrIp_format_error">主机或IP格式错误</string>
     <string name="settings_proxy_port_empty">端口不能为空</string>
     <string name="settings_proxy_port_error">端口只能为0–65535</string>
+    <string name="settings_proxy_ios_notice">仅作用于接口请求，内嵌网页与登录页不走代理</string>
 
     <string name="settings_open_source">源码</string>
 

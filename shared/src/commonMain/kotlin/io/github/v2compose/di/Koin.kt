@@ -50,7 +50,6 @@ import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
-import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -68,8 +67,8 @@ val sharedCoreModule = module {
 }
 
 val sharedNetworkModule = module {
-    single<V2exApi> { V2exApi(get<HttpClient>(named("V2HttpClient"))) }
-    single<GithubApi> { KtorGithubApi(get<HttpClient>(named("GithubHttpClient"))) }
+    singleOf(::V2exApi)
+    single<GithubApi> { KtorGithubApi(get()) }
 }
 
 val sharedDataModule = module {

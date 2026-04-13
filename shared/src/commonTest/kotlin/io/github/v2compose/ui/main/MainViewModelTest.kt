@@ -78,7 +78,10 @@ class MainViewModelTest {
             checkIn = CheckInUseCase(accountRepository),
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
-            platformCapabilities = PlatformCapabilities.Ios,
+            platformCapabilities = PlatformCapabilities(
+                supportsAutoCheckIn = false,
+                supportsEmbeddedYouTube = false,
+            ),
             autoCheckInScheduler = autoCheckInScheduler,
             webViewProxyController = webViewProxyController,
             loadNodes = LoadNodesUseCase(FakeTopicRepository()),
@@ -107,6 +110,33 @@ class MainViewModelTest {
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
             platformCapabilities = PlatformCapabilities.Android,
+            autoCheckInScheduler = autoCheckInScheduler,
+            webViewProxyController = webViewProxyController,
+            loadNodes = LoadNodesUseCase(FakeTopicRepository()),
+        )
+
+        advanceUntilIdle()
+
+        assertTrue(accountRepository.dailyInfoCalls > 0)
+        assertTrue(autoCheckInScheduler.autoCheckInStates.contains(true))
+    }
+
+    @Test
+    fun iosNowParticipatesInAutoCheckInScheduling() = runTest(dispatcher) {
+        val accountRepository = FakeAccountRepository(
+            isLoggedIn = true,
+            autoCheckIn = true,
+            hasCheckingInTips = true,
+        )
+        val autoCheckInScheduler = RecordingAutoCheckInScheduler()
+        val webViewProxyController = RecordingWebViewProxyController()
+
+        MainViewModel(
+            checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), fakeAppPreferences()),
+            checkIn = CheckInUseCase(accountRepository),
+            appPreferences = fakeAppPreferences(),
+            accountRepository = accountRepository,
+            platformCapabilities = PlatformCapabilities.Ios,
             autoCheckInScheduler = autoCheckInScheduler,
             webViewProxyController = webViewProxyController,
             loadNodes = LoadNodesUseCase(FakeTopicRepository()),

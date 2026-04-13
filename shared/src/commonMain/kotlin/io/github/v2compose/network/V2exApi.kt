@@ -28,7 +28,6 @@ import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
 import io.github.v2compose.network.bean.V2exResult
 import io.github.v2compose.shared.bean.TopicNode
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
@@ -42,7 +41,9 @@ import io.ktor.http.parameters
 /**
  * Multiplatform V2ex Network API using Ktor
  */
-class V2exApi(private val client: HttpClient) {
+class V2exApi(private val clientProvider: NetworkClientProvider) {
+    private val client
+        get() = clientProvider.v2HttpClient()
 
     suspend fun nodeInfo(name: String): NodeInfo =
         client.get("/api/nodes/show.json") { parameter("name", name) }.body()

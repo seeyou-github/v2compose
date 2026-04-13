@@ -88,6 +88,17 @@ fun rememberAndroidAppPlatformHandlers(
                 override fun isAutoCheckInChannelEnabled(): Boolean =
                     NotificationCenter.isAutoCheckInChannelEnabled(context)
             },
+            autoCheckInPrerequisite = AutoCheckInPrerequisite {
+                when {
+                    !context.checkNotificationPermission() ->
+                        AutoCheckInPrerequisiteState.RequiresNotificationPermission
+
+                    !NotificationCenter.isAutoCheckInChannelEnabled(context) ->
+                        AutoCheckInPrerequisiteState.RequiresNotificationSettings
+
+                    else -> AutoCheckInPrerequisiteState.Ready
+                }
+            },
         )
     }
 }

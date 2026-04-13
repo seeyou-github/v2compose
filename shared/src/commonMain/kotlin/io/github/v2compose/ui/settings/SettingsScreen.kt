@@ -34,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.Constants
+import io.github.v2compose.AutoCheckInPrerequisiteState
 import io.github.v2compose.LocalAppPlatformHandlers
+import io.github.v2compose.PlatformCapabilities
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
@@ -62,6 +64,7 @@ import v2compose.shared.generated.resources.settings_advanced
 import v2compose.shared.generated.resources.settings_appearance
 import v2compose.shared.generated.resources.settings_auto_check_in
 import v2compose.shared.generated.resources.settings_auto_check_in_description
+import v2compose.shared.generated.resources.settings_auto_check_in_description_ios
 import v2compose.shared.generated.resources.settings_check_for_updates
 import v2compose.shared.generated.resources.settings_check_for_updates_summary
 import v2compose.shared.generated.resources.settings_clear_cache
@@ -77,6 +80,7 @@ import v2compose.shared.generated.resources.settings_issues
 import v2compose.shared.generated.resources.settings_open_source
 import v2compose.shared.generated.resources.settings_other
 import v2compose.shared.generated.resources.settings_proxy
+import v2compose.shared.generated.resources.settings_proxy_ios_notice
 import v2compose.shared.generated.resources.settings_reply_with_floor
 import v2compose.shared.generated.resources.settings_reply_with_floor_description
 import v2compose.shared.generated.resources.settings_topic_title_overview
@@ -271,8 +275,22 @@ private fun AutoCheckInPreference(
 ) {
     val platformHandlers = LocalAppPlatformHandlers.current
     var currentChecked by remember(appSettings.autoCheckIn) { mutableStateOf(appSettings.autoCheckIn) }
-
+    var shouldRequestNotificationPermission by remember { mutableStateOf(false) }
     var showRequestNotificationPermissionRationale by remember { mutableStateOf(false) }
+
+    if (shouldRequestNotificationPermission) {
+        checkAndRequestNotificationPermission(
+            showRationale = { showRequestNotificationPermissionRationale = true },
+            onDenied = {
+                shouldRequestNotificationPermission = false
+                currentChecked = false
+            },
+            onGranted = {
+                shouldRequestNotificationPermission = false
+                onAutoCheckInChanged(true)
+            },
+        )
+    }
 
     if (showRequestNotificationPermissionRationale) {
         TextAlertDialog(
@@ -280,10 +298,12 @@ private fun AutoCheckInPreference(
             message = "自动签到需要通知权限以在后台运行并通知您结果。请在设置中开启。",
             onDismiss = {
                 showRequestNotificationPermissionRationale = false
+                shouldRequestNotificationPermission = false
                 currentChecked = false
             },
             onConfirm = {
                 showRequestNotificationPermissionRationale = false
+                shouldRequestNotificationPermission = false
                 platformHandlers.openNotificationSettings()
             },
         )
@@ -291,21 +311,27 @@ private fun AutoCheckInPreference(
 
     SwitchPreference(
         title = stringResource(Res.string.settings_auto_check_in),
-        summary = stringResource(Res.string.settings_auto_check_in_description),
+        summary = if (platformHandlers.capabilities == PlatformCapabilities.Ios) {
+            stringResource(Res.string.settings_auto_check_in_description_ios)
+        } else {
+            stringResource(Res.string.settings_auto_check_in_description)
+        },
         checked = currentChecked,
         onCheckedChange = { checked ->
             currentChecked = checked
             if (checked) {
-                if (platformHandlers.checkNotificationPermission()) {
-                    if (platformHandlers.isAutoCheckInChannelEnabled()) {
-                        onAutoCheckInChanged(true)
-                    } else {
+                when (platformHandlers.checkAutoCheckInPrerequisite()) {
+                    AutoCheckInPrerequisiteState.Ready -> onAutoCheckInChanged(true)
+                    AutoCheckInPrerequisiteState.RequiresNotificationPermission -> {
+                        shouldRequestNotificationPermission = true
+                    }
+                    AutoCheckInPrerequisiteState.RequiresNotificationSettings -> {
                         showRequestNotificationPermissionRationale = true
                     }
-                } else {
-                    showRequestNotificationPermissionRationale = true
                 }
             } else {
+                shouldRequestNotificationPermission = false
+                showRequestNotificationPermissionRationale = false
                 onAutoCheckInChanged(false)
             }
         },
@@ -457,16 +483,23 @@ private fun DropdownPreference(
 private fun ProxyPreference(
     title: String, proxyInfo: ProxyInfo, onProxyChanged: (ProxyInfo) -> Unit
 ) {
+    val platformHandlers = LocalAppPlatformHandlers.current
     var showSelectProxyDialog by remember { mutableStateOf(false) }
     var currentProxy by remember(proxyInfo) { mutableStateOf(proxyInfo) }
 
     val typeText = stringResource(currentProxy.type.titleRes)
-    val summary = remember(proxyInfo, typeText) {
+    val iosProxyNotice = stringResource(Res.string.settings_proxy_ios_notice)
+    val summary = remember(proxyInfo, typeText, iosProxyNotice, platformHandlers.capabilities) {
         val addressText =
             if (proxyInfo.type == ProxyType.Http || proxyInfo.type == ProxyType.Socks) {
                 proxyInfo.address + ":" + proxyInfo.port
             } else ""
-        "$typeText $addressText"
+        val baseSummary = "$typeText $addressText".trim()
+        if (platformHandlers.capabilities == PlatformCapabilities.Ios) {
+            "$baseSummary\n$iosProxyNotice".trim()
+        } else {
+            baseSummary
+        }
     }
 
     ClickablePreference(title = title, summary = summary) {

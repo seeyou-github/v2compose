@@ -14,10 +14,12 @@ import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
 import io.github.v2compose.network.HttpCacheManager
+import io.github.v2compose.network.NetworkClientProvider
 import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.OkHttpCacheManager
 import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.WebkitCookieManager
+import io.github.v2compose.network.AndroidNetworkClientProvider
 import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
@@ -107,6 +109,13 @@ actual val platformModule: Module = module {
 
     single<HttpClient>(named("GithubHttpClient")) {
         createAndroidGithubHttpClient(okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")))
+    }
+    single<NetworkClientProvider> {
+        AndroidNetworkClientProvider(
+            v2HttpClient = get(named("V2HttpClient")),
+            imageHttpClient = get(named("ImageHttpClient")),
+            githubHttpClient = get(named("GithubHttpClient")),
+        )
     }
 
     // UseCase

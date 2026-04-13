@@ -14,7 +14,7 @@ data class PlatformCapabilities(
         )
 
         val Ios = PlatformCapabilities(
-            supportsAutoCheckIn = false,
+            supportsAutoCheckIn = true,
             supportsEmbeddedYouTube = false,
         )
     }
