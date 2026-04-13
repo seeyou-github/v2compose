@@ -11,6 +11,7 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import platform.Foundation.NSHTTPCookieStorage
 import platform.Foundation.NSURLCache
 import platform.Foundation.NSURLRequestUseProtocolCachePolicy
 
@@ -21,7 +22,7 @@ class IosNetworkClientRegistry(
 ) : NetworkClientProvider, ProxyManager {
     private var currentProxyInfo: ProxyInfo = runBlocking { appPreferences.proxyInfo.first() }
     private var v2HttpClient: HttpClient = buildV2HttpClient(currentProxyInfo)
-    private var imageHttpClient: HttpClient = buildV2HttpClient(currentProxyInfo)
+    private var imageHttpClient: HttpClient = buildImageHttpClient(currentProxyInfo)
     private var githubHttpClient: HttpClient = buildGithubHttpClient(currentProxyInfo)
 
     override fun v2HttpClient(): HttpClient = v2HttpClient
@@ -39,7 +40,7 @@ class IosNetworkClientRegistry(
 
         currentProxyInfo = proxyInfo
         v2HttpClient = buildV2HttpClient(proxyInfo)
-        imageHttpClient = buildV2HttpClient(proxyInfo)
+        imageHttpClient = buildImageHttpClient(proxyInfo)
         githubHttpClient = buildGithubHttpClient(proxyInfo)
 
         oldV2HttpClient.close()
@@ -49,23 +50,46 @@ class IosNetworkClientRegistry(
 
     private fun buildV2HttpClient(proxyInfo: ProxyInfo): HttpClient =
         createV2HttpClient(
-            engine = createIosHttpClientEngine(proxyInfo, urlCache),
+            engine = createIosHttpClientEngine(
+                proxyInfo = proxyInfo,
+                urlCache = urlCache,
+                useSharedCookieStorage = true,
+            ),
+            fruit = fruit,
+        )
+
+    private fun buildImageHttpClient(proxyInfo: ProxyInfo): HttpClient =
+        createV2HttpClient(
+            engine = createIosHttpClientEngine(
+                proxyInfo = proxyInfo,
+                urlCache = urlCache,
+                useSharedCookieStorage = true,
+            ),
             fruit = fruit,
         )
 
     private fun buildGithubHttpClient(proxyInfo: ProxyInfo): HttpClient =
         createGithubHttpClient(
-            engine = createIosHttpClientEngine(proxyInfo, urlCache),
+            engine = createIosHttpClientEngine(
+                proxyInfo = proxyInfo,
+                urlCache = urlCache,
+                useSharedCookieStorage = false,
+            ),
         )
 }
 
 private fun createIosHttpClientEngine(
     proxyInfo: ProxyInfo,
     urlCache: NSURLCache,
+    useSharedCookieStorage: Boolean,
 ): HttpClientEngine = Darwin.create {
     configureSession {
         URLCache = urlCache
         requestCachePolicy = NSURLRequestUseProtocolCachePolicy
+        if (useSharedCookieStorage) {
+            HTTPCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage
+            HTTPShouldSetCookies = true
+        }
     }
 
     proxyInfo.toProxyConfig()?.let { proxy = it }

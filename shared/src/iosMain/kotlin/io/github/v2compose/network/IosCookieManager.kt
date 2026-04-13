@@ -7,6 +7,7 @@ class IosCookieManager : CookieManager {
     override fun clearCookies() {
         val storage = NSHTTPCookieStorage.sharedHTTPCookieStorage
         storage.cookies.orEmpty().forEach { cookie ->
+            // Keep logout aligned with the shared Darwin session cookie storage.
             storage.deleteCookie(cookie as NSHTTPCookie)
         }
     }
