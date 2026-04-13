@@ -97,6 +97,10 @@ class DefaultAccountRepository(
 
     override suspend fun refreshAccount() = coroutineScope {
         val userName = account.first().userName
+        if (userName.isBlank()) {
+            return@coroutineScope
+        }
+
         val homePageInfoDeferred = async { v2exService.homePageInfo(userName) }
         val userInfoDeferred = async { v2exService.userInfo(userName) }
         val homePageInfo = homePageInfoDeferred.await()

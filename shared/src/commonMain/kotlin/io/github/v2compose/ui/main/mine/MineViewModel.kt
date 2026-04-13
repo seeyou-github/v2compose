@@ -63,6 +63,10 @@ class MineViewModel(
     }
 
     private suspend fun refreshAccountInternal(force: Boolean = false) {
+        if (!account.value.isValid()) {
+            return
+        }
+
         val currentTime = currentTimeMillis()
         if (!force && currentTime - lastRefreshAccountTime < 5 * 60 * 1000) {
             return
