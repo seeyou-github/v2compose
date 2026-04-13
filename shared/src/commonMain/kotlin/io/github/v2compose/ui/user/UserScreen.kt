@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,8 +49,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import io.github.v2compose.V2exUri
 import io.github.v2compose.Constants
+import io.github.v2compose.V2exUri
 import io.github.v2compose.network.bean.UserPageInfo
 import io.github.v2compose.network.bean.UserReplies
 import io.github.v2compose.network.bean.UserTopics
@@ -66,7 +65,8 @@ import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
 import io.github.v2compose.ui.gallery.composables.PopupImage
-import io.github.v2compose.ui.user.composables.*
+import io.github.v2compose.ui.user.composables.UserHeader
+import io.github.v2compose.ui.user.composables.UserToolbar
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
@@ -160,11 +160,7 @@ private fun UserScreen(
         }
     }
 
-    Surface(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
-            .systemBarsPadding(),
-    ) {
+    Surface(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()

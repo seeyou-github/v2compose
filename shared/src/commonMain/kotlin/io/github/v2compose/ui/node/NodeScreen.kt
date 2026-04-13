@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -67,9 +66,9 @@ import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
+import io.github.v2compose.util.KLogger
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import io.github.v2compose.util.KLogger
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.n_comment
 import v2compose.shared.generated.resources.node
@@ -148,11 +147,7 @@ private fun NodeScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    Surface(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
-            .systemBarsPadding(),
-    ) {
+    Surface(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
