@@ -44,11 +44,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
+import io.github.v2compose.authSigninRoute
+import io.github.v2compose.core.extension.isRedirectToSameAuthFlow
 import io.github.v2compose.ui.common.CloseButton
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.autofill
@@ -60,6 +63,7 @@ import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.googleg_standard_color
 import v2compose.shared.generated.resources.load_failed
 import v2compose.shared.generated.resources.login
+import v2compose.shared.generated.resources.login_page_redirected
 import v2compose.shared.generated.resources.login_captcha
 import v2compose.shared.generated.resources.login_password
 import v2compose.shared.generated.resources.login_username
@@ -347,10 +351,13 @@ private fun Captcha(
                             .clickable { reloadLoginParam() },
                     ) {
                         Text(
-                            stringResource(Res.string.load_failed),
+                            stringResource(loginParamState.error.toLoginParamErrorMessage()),
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.align(Alignment.Center)
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(horizontal = 8.dp)
                         )
                     }
                 }
@@ -411,4 +418,13 @@ private fun SignInWithGoogle(
         )
     }
 
+}
+
+private fun Throwable?.toLoginParamErrorMessage(): StringResource {
+    val exception = this as? Exception
+    return if (exception?.isRedirectToSameAuthFlow(authSigninRoute) == true) {
+        Res.string.login_page_redirected
+    } else {
+        Res.string.load_failed
+    }
 }

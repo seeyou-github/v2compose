@@ -5,6 +5,8 @@ import io.ktor.http.encodeURLParameter
 import io.ktor.http.encodeURLPathPart
 
 const val rootNavigationRoute = "/"
+internal const val authSigninRoute = "/signin"
+internal const val authTwoStepRoute = "/2fa"
 const val unsupportedNavigationBaseRoute = "/unsupported"
 
 internal sealed interface AppNavigationAction {
@@ -76,10 +78,29 @@ internal fun resolveRedirectLocation(location: String): AppNavigationAction {
             clearBackStackToRoot = screenType.isEmpty(),
         )
 
-        "signin" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, "/signin"))
-        "2fa" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, "/2fa"))
+        "signin" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, authSigninRoute))
+        "2fa" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, authTwoStepRoute))
         else -> AppNavigationAction.Navigate(AppRoutes.unsupported(parsed.route))
     }
+}
+
+internal fun authFlowRouteKey(raw: String): String? {
+    val parsed = parseAppUri(raw) ?: return null
+    return when (parsed.pathSegments.getOrNull(0).orEmpty()) {
+        "signin" -> authSigninRoute
+        "2fa" -> authTwoStepRoute
+        else -> null
+    }
+}
+
+internal fun isSameAuthFlow(first: String, second: String): Boolean {
+    val firstKey = authFlowRouteKey(first) ?: return false
+    return firstKey == authFlowRouteKey(second)
+}
+
+internal fun shouldIgnoreRepeatedAuthNavigation(currentRoute: String?, targetRoute: String): Boolean {
+    val currentKey = currentRoute?.let(::authFlowRouteKey) ?: return false
+    return currentKey == authFlowRouteKey(targetRoute)
 }
 
 private val systemSchemes = setOf("mailto", "sms", "tel")

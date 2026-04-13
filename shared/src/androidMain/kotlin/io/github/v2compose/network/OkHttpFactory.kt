@@ -5,6 +5,7 @@ import io.github.fruit.Fruit
 import io.github.fruit.registerGeneratedAdapters
 import io.github.v2compose.BuildKonfig
 import io.github.v2compose.Constants
+import io.github.v2compose.isSameAuthFlow
 import io.github.v2compose.network.NetConstants.keyUserAgent
 import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector
@@ -99,9 +100,12 @@ object OkHttpFactory {
     private class RedirectInterceptor(private val eventManager: V2EventManager) : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
-            val resp = chain.proceed(chain.request())
+            val request = chain.request()
+            val resp = chain.proceed(request)
             if (resp.isRedirect && chain.request().url.host.contains(Constants.host)) {
-                resp.header("location")?.let { eventManager.tryPost(RedirectEvent(it)) }
+                resp.header("location")
+                    ?.takeUnless { isSameAuthFlow(request.url.toString(), it) }
+                    ?.let { eventManager.tryPost(RedirectEvent(it)) }
             }
             return resp
         }

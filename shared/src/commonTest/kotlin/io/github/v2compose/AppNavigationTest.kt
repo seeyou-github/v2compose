@@ -75,14 +75,52 @@ class AppNavigationTest {
         val signin = resolveRedirectLocation("/signin")
         val twoStep = resolveRedirectLocation("/2fa")
 
-        assertEquals(AppNavigationAction.Navigate("/signin"), signin)
-        assertEquals(AppNavigationAction.Navigate("/2fa"), twoStep)
+        assertEquals(AppNavigationAction.Navigate(authSigninRoute), signin)
+        assertEquals(AppNavigationAction.Navigate(authTwoStepRoute), twoStep)
     }
 
     @Test
-    fun resolveRedirectLocation_ignoresUnsupportedInternalRoutes() {
+    fun resolveRedirectLocation_normalizesSigninChildPath() {
+        val action = resolveRedirectLocation("/signin/cooldown?next=%2Fmission%2Fdaily")
+
+        assertEquals(
+            AppNavigationAction.Navigate("$authSigninRoute?next=%2Fmission%2Fdaily"),
+            action,
+        )
+    }
+
+    @Test
+    fun resolveRedirectLocation_routesUnsupportedInternalRoutesToFallback() {
         val action = resolveRedirectLocation("/balance")
 
-        assertTrue(action is AppNavigationAction.Ignore)
+        assertEquals(
+            AppNavigationAction.Navigate(AppRoutes.unsupported("/balance")),
+            action,
+        )
+    }
+
+    @Test
+    fun authFlowRouteKey_matchesAuthRoutes() {
+        assertEquals(authSigninRoute, authFlowRouteKey("/signin?next=%2Fmission%2Fdaily"))
+        assertEquals(authSigninRoute, authFlowRouteKey("https://www.v2ex.com/signin"))
+        assertEquals(authTwoStepRoute, authFlowRouteKey("/2fa"))
+    }
+
+    @Test
+    fun isSameAuthFlow_matchesEquivalentSigninRoutes() {
+        assertTrue(
+            isSameAuthFlow(
+                "https://www.v2ex.com/signin?next=%2Fmission%2Fdaily",
+                "/signin",
+            )
+        )
+    }
+
+    @Test
+    fun shouldIgnoreRepeatedAuthNavigation_onlyForSameAuthFlow() {
+        assertTrue(shouldIgnoreRepeatedAuthNavigation("/signin?next={next}", "/signin"))
+        assertTrue(shouldIgnoreRepeatedAuthNavigation("/2fa", "/2fa?once=1"))
+        assertTrue(!shouldIgnoreRepeatedAuthNavigation("/", "/signin"))
+        assertTrue(!shouldIgnoreRepeatedAuthNavigation("/signin?next={next}", "/2fa"))
     }
 }

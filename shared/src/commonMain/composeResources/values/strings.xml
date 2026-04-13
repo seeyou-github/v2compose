@@ -200,6 +200,7 @@
     <string name="login_password_blank">密码不能为空</string>
     <string name="login_captcha_blank">验证码不能为空</string>
     <string name="login_first">登录后才能进行该操作</string>
+    <string name="login_page_redirected">登录页被服务器重定向，请稍后重试</string>
     <!-- Login Screen End -->
 
     <!-- Two Step Screen Start -->
