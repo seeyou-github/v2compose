@@ -196,6 +196,7 @@ private fun ContentEditor(
 private fun MarkdownPreview(content: String) {
     Markdown(
         content = content,
+        typography = compactMarkdownTypography(),
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),

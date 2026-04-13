@@ -41,6 +41,7 @@ fun NewReleaseDialog(
 private fun NewReleaseBody(text: String) {
     Markdown(
         content = text,
+        typography = compactMarkdownTypography(),
         modifier = Modifier.fillMaxWidth(),
         imageTransformer = Coil3ImageTransformerImpl
     )
