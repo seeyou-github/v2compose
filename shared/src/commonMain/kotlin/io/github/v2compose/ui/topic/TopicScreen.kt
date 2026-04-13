@@ -119,11 +119,12 @@ fun TopicScreenRoute(
     val replyWithFloor by viewModel.replyWithFloor.collectAsStateWithLifecycle()
     val topicItems = viewModel.topicItems.collectAsLazyPagingItems()
 
-    val topicInfo = if (topicItems.itemCount > 0) {
-        topicItems.peek(0)?.let {
-            if (it is TopicInfo) it.also { viewModel.updateTopicInfoWrapper(topic = it) } else null
-        }
+    val pagingTopicInfo = if (topicItems.itemCount > 0) {
+        topicItems.itemSnapshotList.firstOrNull { it is TopicInfo } as? TopicInfo
     } else null
+    LaunchedEffect(pagingTopicInfo) {
+        pagingTopicInfo?.let { viewModel.updateTopicInfoWrapper(topic = it) }
+    }
 
     val topicInfoWrapper by viewModel.topicInfoWrapper
     val replyWrappers = viewModel.replyWrappers
@@ -166,7 +167,7 @@ fun TopicScreenRoute(
                 TopicMenuItem.Report -> viewModel.reportTopic()
                 TopicMenuItem.Reported -> viewModel.unReportTopic()
                 TopicMenuItem.Share -> {
-                    topicInfo?.headerInfo?.let { header ->
+                    pagingTopicInfo?.headerInfo?.let { header ->
                         onShareTopic(header.title, V2exUri.topicUrl(args.topicId))
                     }
                 }
