@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
 import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
+import io.github.v2compose.ui.error.navigateToUnsupportedRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -78,6 +79,10 @@ class V2AppState(
         handleAction(resolveOpenUri(uri))
     }
 
+    fun openExternalRoute(route: String) {
+        platformHandlers.openExternalUri(route.ensureAbsoluteUrl())
+    }
+
     private fun handleAction(action: AppNavigationAction) {
         when (action) {
             is AppNavigationAction.External -> platformHandlers.openExternalUri(action.uri)
@@ -92,8 +97,24 @@ class V2AppState(
                 } else {
                     null
                 }
-                navHostController.navigate(action.route, navOptions)
+                runCatching {
+                    navHostController.navigate(action.route, navOptions)
+                }.getOrElse { error ->
+                    if (error is IllegalArgumentException && !action.route.isUnsupportedRoute()) {
+                        navHostController.navigateToUnsupportedRoute(action.route)
+                    } else {
+                        throw error
+                    }
+                }
             }
         }
     }
 }
+
+private fun String.ensureAbsoluteUrl(): String =
+    if (startsWith("http://") || startsWith("https://")) this else Constants.baseUrl + ensureLeadingSlash()
+
+private fun String.ensureLeadingSlash(): String = if (startsWith("/")) this else "/$this"
+
+private fun String.isUnsupportedRoute(): Boolean =
+    substringBefore('?').substringBefore('#') == unsupportedNavigationBaseRoute

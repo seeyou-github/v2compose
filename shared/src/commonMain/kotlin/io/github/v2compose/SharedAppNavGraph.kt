@@ -6,6 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
+import io.github.v2compose.ui.error.unsupportedRouteScreen
 import io.github.v2compose.ui.gallery.galleryScreen
 import io.github.v2compose.ui.gallery.navigateToGallery
 import io.github.v2compose.ui.login.google.googleLoginScreen
@@ -165,6 +166,11 @@ fun SharedAppNavGraph(
         myNodesScreen(
             onBackClick = appState::back,
             onNodeClick = { navController.navigateToNode(it.name) },
+        )
+        unsupportedRouteScreen(
+            onBackClick = appState::back,
+            onNavigateHomeClick = navController::navigateToMain,
+            onOpenInBrowserClick = appState::openExternalRoute,
         )
     }
 }

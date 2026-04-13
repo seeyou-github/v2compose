@@ -7,6 +7,11 @@
     <string name="loading">加载中…</string>
     <string name="load_failed">加载失败，请重试</string>
     <string name="retry">重试</string>
+    <string name="open_in_browser">在浏览器中打开</string>
+    <string name="unsupported_path_title">未支持的页面</string>
+    <string name="unsupported_path_message">当前路径暂未接入应用导航，已阻止崩溃。</string>
+    <string name="unsupported_path_route">路径：%1$s</string>
+    <string name="unsupported_path_action_home">返回首页</string>
 
     <string name="n_comment">评论%1$s</string>
     <string name="n_views">点击%1$s</string>

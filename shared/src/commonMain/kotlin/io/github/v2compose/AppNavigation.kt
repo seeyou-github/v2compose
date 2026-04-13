@@ -5,6 +5,7 @@ import io.ktor.http.encodeURLParameter
 import io.ktor.http.encodeURLPathPart
 
 const val rootNavigationRoute = "/"
+const val unsupportedNavigationBaseRoute = "/unsupported"
 
 internal sealed interface AppNavigationAction {
     data class Navigate(
@@ -34,6 +35,9 @@ internal object AppRoutes {
     }
 
     fun webView(url: String): String = "/webview?url=${url.encodeURLParameter()}"
+
+    fun unsupported(route: String): String =
+        "$unsupportedNavigationBaseRoute?route=${route.encodeURLParameter()}"
 }
 
 internal fun resolveOpenUri(uri: String): AppNavigationAction {
@@ -67,12 +71,14 @@ internal fun resolveRedirectLocation(location: String): AppNavigationAction {
 
     val screenType = parsed.pathSegments.getOrNull(0).orEmpty()
     return when (screenType) {
-        "", "signin", "2fa" -> AppNavigationAction.Navigate(
+        "" -> AppNavigationAction.Navigate(
             route = parsed.route,
             clearBackStackToRoot = screenType.isEmpty(),
         )
 
-        else -> AppNavigationAction.Ignore
+        "signin" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, "/signin"))
+        "2fa" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, "/2fa"))
+        else -> AppNavigationAction.Navigate(AppRoutes.unsupported(parsed.route))
     }
 }
 
@@ -138,3 +144,16 @@ private fun parseAppUri(raw: String): ParsedAppUri? {
 }
 
 private fun String.ensureLeadingSlash(): String = if (startsWith("/")) this else "/$this"
+
+private fun normalizeRoute(route: String, normalizedPath: String): String {
+    val query = route.substringAfter('?', missingDelimiterValue = "")
+        .substringBefore('#')
+        .takeIf { it.isNotEmpty() }
+        ?.let { "?$it" }
+        .orEmpty()
+    val fragment = route.substringAfter('#', missingDelimiterValue = "")
+        .takeIf { it.isNotEmpty() }
+        ?.let { "#$it" }
+        .orEmpty()
+    return normalizedPath + query + fragment
+}
