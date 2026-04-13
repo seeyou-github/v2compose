@@ -127,6 +127,8 @@ fun TopicScreenRoute(
     }
 
     val topicInfoWrapper by viewModel.topicInfoWrapper
+    val resolvedTopicInfoWrapper = pagingTopicInfo?.let { topicInfoWrapper.copy(topic = it) }
+        ?: topicInfoWrapper
     val replyWrappers = viewModel.replyWrappers
     val replyTopicState by viewModel.replyTopicState.collectAsStateWithLifecycle()
     var htmlImageUrl by rememberSaveable { mutableStateOf("") }
@@ -146,7 +148,7 @@ fun TopicScreenRoute(
     TopicScreen(
         targetFloor = args.replyFloor,
         isLoggedIn = isLoggedIn,
-        topicInfo = topicInfoWrapper,
+        topicInfo = resolvedTopicInfoWrapper,
         repliesOrder = if (repliesReversed) RepliesOrder.Negative else RepliesOrder.Positive,
         topicItems = topicItems,
         sizedHtmls = viewModel.sizedHtmls,
