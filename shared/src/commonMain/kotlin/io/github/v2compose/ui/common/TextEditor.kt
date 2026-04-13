@@ -49,6 +49,11 @@ import v2compose.shared.generated.resources.content_preview
 
 private val ContentBarHeight = 40.dp
 
+private enum class ContentTab(val key: String, val title: StringResource) {
+    Body(key = "body", title = Res.string.content_body),
+    Preview(key = "preview", title = Res.string.content_preview),
+}
+
 @Composable
 fun TextEditor(
     content: String,
@@ -59,19 +64,19 @@ fun TextEditor(
     modifier: Modifier = Modifier,
     contentFocusRequester: FocusRequester = remember { FocusRequester() },
 ) {
-    val tabTitles = remember(contentFormat) {
+    val tabs = remember(contentFormat) {
         if (contentFormat == ContentFormat.Markdown) {
-            listOf(Res.string.content_body, Res.string.content_preview)
+            listOf(ContentTab.Body, ContentTab.Preview)
         } else {
-            listOf(Res.string.content_body)
+            listOf(ContentTab.Body)
         }
     }
-    val pagerState = rememberPagerState(pageCount = { tabTitles.size })
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
 
     Box(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
-            key = { tabTitles[it] },
+            key = { tabs[it].key },
             modifier = Modifier.padding(top = ContentBarHeight)
         ) { index ->
             when (index) {
@@ -86,7 +91,7 @@ fun TextEditor(
             }
         }
 
-        ContentBar(tabTitles, contentFormat, pagerState, onContentFormatChanged)
+        ContentBar(tabs, contentFormat, pagerState, onContentFormatChanged)
 
         ListDivider(modifier = Modifier.padding(top = ContentBarHeight))
     }
@@ -94,7 +99,7 @@ fun TextEditor(
 
 @Composable
 private fun ContentBar(
-    tabTitles: List<StringResource>,
+    tabs: List<ContentTab>,
     contentFormat: ContentFormat,
     pagerState: PagerState,
     onContentFormatChanged: (ContentFormat) -> Unit
@@ -108,13 +113,13 @@ private fun ContentBar(
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         val currentPage =
-            if (pagerState.currentPage >= tabTitles.size) 0 else pagerState.currentPage
+            if (pagerState.currentPage >= tabs.size) 0 else pagerState.currentPage
         SecondaryTabRow(
             selectedTabIndex = currentPage,
-            modifier = Modifier.width(64.dp * tabTitles.size),
+            modifier = Modifier.width(64.dp * tabs.size),
             divider = {},
         ) {
-            tabTitles.forEachIndexed { index, title ->
+            tabs.forEachIndexed { index, tab ->
                 Tab(
                     selected = index == currentPage,
                     onClick = {
@@ -124,7 +129,7 @@ private fun ContentBar(
                     },
                     modifier = Modifier.height(ContentBarHeight),
                 ) {
-                    Text(stringResource(title))
+                    Text(stringResource(tab.title))
                 }
             }
         }
