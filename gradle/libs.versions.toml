@@ -1,9 +1,9 @@
 [versions]
-agp = "9.1.0"
+agp = "9.1.1"
 componentsResources = "1.10.3"
 composeMultiplatform = "1.10.3"
 foundation = "1.10.3"
-kotlinxSerialization = "1.10.0"
+kotlinxSerialization = "1.11.0"
 coroutines = "1.10.2"
 kotlin = "2.3.20"
 coreKtx = "1.18.0"
@@ -11,10 +11,9 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 ksoup = "0.2.6"
-lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 composeBom = "2026.03.01"
-koin = "4.2.0"
+koin = "4.2.1"
 jetbrains-lifecycle = "2.10.0"
 jetbrains-navigation = "2.9.2"
 material3 = "1.9.0"
@@ -25,7 +24,7 @@ okhttp = "5.3.2"
 googleServices = "4.4.4"
 crashlytics = "3.0.7"
 ksp = "2.3.2"
-buildkonfig = "0.17.1"
+buildkonfig = "0.18.0"
 appcompat = "1.7.1"
 material = "1.13.0"
 firebaseBom = "34.12.0"
@@ -35,12 +34,9 @@ uiToolingPreview = "1.10.3"
 workManager = "2.11.2"
 datastore = "1.2.1"
 browser = "1.10.0"
-webkit = "1.15.0"
 startup = "1.2.0"
 splashscreen = "1.2.0"
-annotation = "1.10.0"
 logger = "2.2.0"
-progressButton = "1.1.0"
 composeWebviewMultiplatform = "2.0.3"
 youtubePlayer = "13.0.0"
 ktor = "3.4.2"
@@ -56,12 +52,9 @@ mikepenz-markdown = { group = "com.mikepenz", name = "multiplatform-markdown-ren
 mikepenz-markdown-m3 = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-m3", version.ref = "mikepenz-markdown" }
 mikepenz-markdown-coil3 = { group = "com.mikepenz", name = "multiplatform-markdown-renderer-coil3", version.ref = "mikepenz-markdown" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-foundation = { module = "androidx.compose.foundation:foundation" }
-androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -78,18 +71,15 @@ coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil"
 coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil" }
 coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 ksoup = { module = "com.fleeksoft.ksoup:ksoup", version.ref = "ksoup" }
-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 fruit = { group = "io.github.fruit", name = "fruit", version = "1.0.0" }
 fruit-ktor = { group = "io.github.fruit", name = "fruit-ktor", version = "1.0.0" }
 fruit-ksp = { group = "io.github.fruit", name = "fruit-ksp", version = "1.0.0" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
@@ -97,16 +87,13 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 orhanobut-logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "runtime" }
-ssjetpack-progress-button = { group = "com.github.SimformSolutionsPvtLtd", name = "SSJetPackComposeProgressButton", version.ref = "progressButton" }
 compose-webview = { group = "io.github.kevinnzou", name = "compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
 ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "ui" }
 ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtubePlayer" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
-koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
 jetbrains-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }

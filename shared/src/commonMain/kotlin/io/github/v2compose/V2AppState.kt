@@ -86,9 +86,12 @@ class V2AppState(
     private fun handleAction(action: AppNavigationAction) {
         when (action) {
             is AppNavigationAction.External -> platformHandlers.openExternalUri(action.uri)
-            AppNavigationAction.Ignore -> Unit
             is AppNavigationAction.Navigate -> {
-                if (shouldIgnoreRepeatedAuthNavigation(navHostController.currentDestination?.route, action.route)) {
+                if (shouldIgnoreRepeatedAuthNavigation(
+                        navHostController.currentDestination?.route,
+                        action.route
+                    )
+                ) {
                     return
                 }
                 val navOptions = if (action.clearBackStackToRoot) {
@@ -110,6 +113,8 @@ class V2AppState(
                     }
                 }
             }
+
+            AppNavigationAction.Ignore -> Unit
         }
     }
 }

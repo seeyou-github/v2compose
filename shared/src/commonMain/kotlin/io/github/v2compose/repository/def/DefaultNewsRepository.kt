@@ -11,7 +11,9 @@ import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.repository.NewsRepository
 import io.github.v2compose.shared.bean.AccountBalance
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.flow.Flow
+
 
 class DefaultNewsRepository(
     private val v2exService: V2exApi,
@@ -19,10 +21,15 @@ class DefaultNewsRepository(
     private val appStateStore: AppStateStore,
 ) : NewsRepository {
 
+    companion object {
+        private const val TAG = "DefaultNewsRepository"
+    }
+
     override suspend fun getHomeNews(tab: String): NewsInfo {
         return v2exService.homeNews(tab).also {
             accountPreferences.unreadNotifications(it.unreadCount())
-            accountPreferences.updateAccount(
+            KLogger.d(TAG, "getHomeNews, updateAccountValues")
+            accountPreferences.updateAccountValues(
                 balance = AccountBalance(
                     it.balanceGold(),
                     it.balanceSilver(),

@@ -21,6 +21,7 @@ import io.github.v2compose.network.bean.NotificationInfo
 import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.Account
+import io.github.v2compose.util.KLogger
 import io.github.v2compose.util.currentTimeMillis
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -88,7 +89,7 @@ class DefaultAccountRepository(
     override suspend fun fetchUserInfo() {
         val dailyInfo = v2exService.dailyInfo()
         if (dailyInfo.isValid()) {
-            accountPreferences.updateAccount(
+            accountPreferences.updateAccountValues(
                 userName = dailyInfo.userName,
                 userAvatar = dailyInfo.avatar
             )
@@ -106,8 +107,13 @@ class DefaultAccountRepository(
         val homePageInfo = homePageInfoDeferred.await()
         val userInfo = userInfoDeferred.await()
 
-        accountPreferences.updateAccount(
-            userName = homePageInfo.userName,
+        KLogger.d(
+            TAG,
+            "refreshAccount, userName = $userName, homePageInfo=${homePageInfo.userName}, userInfo=${userInfo.userName}"
+        )
+
+        accountPreferences.updateAccountValues(
+            userName = userName,
             userAvatar = userInfo.largestAvatar(),
             description = homePageInfo.desc,
             nodes = homePageInfo.nodes,

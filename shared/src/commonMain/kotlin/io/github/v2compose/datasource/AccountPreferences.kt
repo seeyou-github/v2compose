@@ -9,18 +9,20 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.shared.bean.AccountBalance
 import io.github.v2compose.shared.bean.DraftTopic
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-private const val TAG = "AccountPreferences"
 
 class AccountPreferences(
     private val dataStore: DataStore<Preferences>
 ) {
 
     companion object {
+        private const val TAG = "AccountPreferences"
+
         private val KeyAccount = stringPreferencesKey("account")
         private val KeyDraftTopic = stringPreferencesKey("draft_topic")
         private val KeyDraftSupplement = stringPreferencesKey("draft_supplement")
@@ -31,6 +33,7 @@ class AccountPreferences(
 
     val account: Flow<Account> = dataStore.data.map { preferences ->
         preferences[KeyAccount].let {
+            KLogger.d(TAG, "flow, account = $it")
             if (it.isNullOrEmpty()) Account.Empty else Account.fromJson(it)
         }
     }.distinctUntilChanged()
@@ -53,13 +56,14 @@ class AccountPreferences(
         it[KeyDraftSupplement] ?: ""
     }
 
-    suspend fun account(value: Account) {
+    suspend fun updateAccount(value: Account) {
+        KLogger.d(TAG, "updateAccount, account = $value")
         dataStore.edit {
             it[KeyAccount] = value.toJson()
         }
     }
 
-    suspend fun updateAccount(
+    suspend fun updateAccountValues(
         userName: String? = null,
         userAvatar: String? = null,
         description: String? = null,
@@ -69,7 +73,12 @@ class AccountPreferences(
         balance: AccountBalance? = null,
     ) {
         val current = account.first()
-        account(
+        KLogger.d(
+            TAG,
+            "updateAccountValues, userName = $userName, current.userName=${current.userName}"
+        )
+
+        updateAccount(
             current.copy(
                 userName = userName ?: current.userName,
                 userAvatar = userAvatar ?: current.userAvatar,
