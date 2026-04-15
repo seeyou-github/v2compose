@@ -7,3 +7,4 @@ expect object KLogger {
     fun w(tag: String, msg: String)
     fun e(tag: String, msg: String, throwable: Throwable? = null)
 }
+

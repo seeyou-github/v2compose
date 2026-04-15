@@ -619,7 +619,7 @@ private fun HtmlElementsScope.InlineImage(
                 model = img.src.fullUrl(baseUrl),
                 contentDescription = img.alt,
                 contentScale = ContentScale.Crop,
-                modifier = if (clickEnabled) modifier.clickable { onImageClick?.invoke(img) } else modifier,
+                modifier = if (clickEnabled) modifier.clickable { onImageClick.invoke(img) } else modifier,
             )
         }
 

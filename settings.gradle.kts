@@ -18,4 +18,5 @@ rootProject.name = "V2compose"
 includeBuild("../fruit-kt")
 include(":androidApp")
 include(":htmlText")
+include(":logging")
 include(":shared")

@@ -46,6 +46,7 @@ kotlin {
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
         commonMain.dependencies {
+            implementation(project(":logging"))
             implementation(project(":htmlText"))
 
             implementation(libs.runtime)

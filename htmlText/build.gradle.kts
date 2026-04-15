@@ -28,6 +28,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(project(":logging"))
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material3)
