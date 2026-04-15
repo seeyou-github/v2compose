@@ -6,6 +6,7 @@ import io.github.v2compose.Constants
 import io.github.v2compose.isSameAuthFlow
 import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
+import io.github.v2compose.util.KLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -98,8 +99,16 @@ private fun handleAuthRedirectException(
 ) {
     if (eventManager == null || cause !is ResponseException) return
     if (cause.response.status.value !in 300..399) return
+    val redirectLocation = cause.response.headers[HttpHeaders.Location]
+    KLogger.d(
+        "V2Client",
+        "auth redirect response: request=${request.url}, location=$redirectLocation, status=${cause.response.status.value}",
+    )
     resolveAuthRedirectEventLocation(
         requestUrl = request.url.toString(),
-        redirectLocation = cause.response.headers[HttpHeaders.Location],
-    )?.let { eventManager.tryPost(RedirectEvent(it)) }
+        redirectLocation = redirectLocation,
+    )?.let {
+        KLogger.d("V2Client", "post RedirectEvent($it)")
+        eventManager.tryPost(RedirectEvent(it))
+    }
 }

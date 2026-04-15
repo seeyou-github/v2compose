@@ -13,6 +13,7 @@ import androidx.navigation.navOptions
 import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.error.navigateToUnsupportedRoute
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -58,11 +59,15 @@ class V2AppState(
     val snackbarHostState: SnackbarHostState,
     private val eventManager: V2EventManager,
 ) : DefaultLifecycleObserver {
+    companion object {
+        private const val TAG = "V2AppState"
+    }
 
     override fun onCreate(owner: LifecycleOwner) {
         coroutineScope.launch {
             eventManager.events.collect { event ->
                 if (event is RedirectEvent) {
+                    KLogger.d(TAG, "consume RedirectEvent(${event.location})")
                     handleAction(resolveRedirectLocation(event.location))
                 }
             }
@@ -87,6 +92,10 @@ class V2AppState(
         when (action) {
             is AppNavigationAction.External -> platformHandlers.openExternalUri(action.uri)
             is AppNavigationAction.Navigate -> {
+                KLogger.d(
+                    TAG,
+                    "navigate action: current=${navHostController.currentDestination?.route}, target=${action.route}, clearToRoot=${action.clearBackStackToRoot}",
+                )
                 if (shouldIgnoreRepeatedAuthNavigation(
                         navHostController.currentDestination?.route,
                         action.route
