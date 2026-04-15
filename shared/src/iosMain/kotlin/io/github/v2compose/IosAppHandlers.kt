@@ -10,26 +10,26 @@ import io.github.v2compose.usecase.ExternalImageRequestHeaders
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.cinterop.ExperimentalForeignApi
-import org.jetbrains.compose.resources.getString
-import org.koin.mp.KoinPlatformTools
+import kotlinx.coroutines.withContext
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import platform.Foundation.NSURL
+import org.jetbrains.compose.resources.getString
+import org.koin.mp.KoinPlatformTools
 import platform.Foundation.NSTemporaryDirectory
-import platform.UIKit.UIActivityViewController
-import platform.UIKit.UIApplication
-import platform.UIKit.UIApplicationOpenSettingsURLString
-import platform.UIKit.UIViewController
+import platform.Foundation.NSURL
 import platform.Photos.PHAccessLevelAddOnly
 import platform.Photos.PHAssetChangeRequest
 import platform.Photos.PHAuthorizationStatusAuthorized
 import platform.Photos.PHAuthorizationStatusLimited
 import platform.Photos.PHPhotoLibrary
+import platform.UIKit.UIActivityViewController
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
+import platform.UIKit.UIViewController
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
 import platform.UserNotifications.UNAuthorizationStatusEphemeral
 import platform.UserNotifications.UNAuthorizationStatusProvisional
@@ -38,10 +38,10 @@ import platform.darwin.DISPATCH_TIME_FOREVER
 import platform.darwin.dispatch_semaphore_create
 import platform.darwin.dispatch_semaphore_signal
 import platform.darwin.dispatch_semaphore_wait
-import kotlin.coroutines.resume
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.save_image_failed
 import v2compose.shared.generated.resources.save_image_success
+import kotlin.coroutines.resume
 
 @Composable
 private fun rememberIosExternalUriHandler(): (String) -> Unit {
@@ -62,10 +62,10 @@ fun rememberIosAppPlatformHandlers(
         AppPlatformHandlers(
             capabilities = PlatformCapabilities.Ios,
             externalNavigator = ExternalNavigator(openExternalUri),
-            shareLauncher = ShareLauncher { title, url ->
+            shareLauncher = { title, url ->
                 presentActivitySheet(viewController, listOf(title, url))
             },
-            imageSaver = ImageSaver { imageUrl ->
+            imageSaver = { imageUrl ->
                 coroutineScope.launch {
                     val message = saveImageToPhotoLibrary(imageUrl)
                     snackbarHostState.showSnackbar(message)
@@ -85,7 +85,7 @@ fun rememberIosAppPlatformHandlers(
 
                 override fun isAutoCheckInChannelEnabled(): Boolean = true
             },
-            autoCheckInPrerequisite = AutoCheckInPrerequisite {
+            autoCheckInPrerequisite = {
                 AutoCheckInPrerequisiteState.Ready
             },
         )
@@ -117,7 +117,7 @@ private fun hasNotificationPermission(): Boolean {
                 UNAuthorizationStatusAuthorized,
                 UNAuthorizationStatusProvisional,
                 UNAuthorizationStatusEphemeral,
-                -> true
+                    -> true
 
                 else -> false
             }
@@ -136,17 +136,13 @@ private suspend fun saveImageToPhotoLibrary(imageUrl: String): String {
         val tempFileName = sourceUrl.lastPathComponent ?: "v2compose-image"
         val tempPath = NSTemporaryDirectory().trimEnd('/') + "/$tempFileName"
         val imageBytes = runCatching {
-            val networkClientProvider = KoinPlatformTools.defaultContext()
-                .get()
-                .get<NetworkClientProvider>()
-            networkClientProvider
-                .imageHttpClient()
-                .get(imageUrl) {
-                    ExternalImageRequestHeaders.forUrl(imageUrl).forEach { (key, value) ->
-                        header(key, value)
-                    }
+            val networkClientProvider =
+                KoinPlatformTools.defaultContext().get().get<NetworkClientProvider>()
+            networkClientProvider.imageHttpClient().get(imageUrl) {
+                ExternalImageRequestHeaders.forUrl(imageUrl).forEach { (key, value) ->
+                    header(key, value)
                 }
-                .body<ByteArray>()
+            }.body<ByteArray>()
         }.getOrNull() ?: return@withContext false
 
         val tempFile = tempPath.toPath()
@@ -174,9 +170,7 @@ private suspend fun saveImageToPhotoLibrary(imageUrl: String): String {
 private suspend fun requestPhotoLibraryPermission(): Boolean =
     suspendCancellableCoroutine { continuation ->
         val currentStatus = PHPhotoLibrary.authorizationStatusForAccessLevel(PHAccessLevelAddOnly)
-        if (currentStatus == PHAuthorizationStatusAuthorized ||
-            currentStatus == PHAuthorizationStatusLimited
-        ) {
+        if (currentStatus == PHAuthorizationStatusAuthorized || currentStatus == PHAuthorizationStatusLimited) {
             continuation.resume(true)
             return@suspendCancellableCoroutine
         }
