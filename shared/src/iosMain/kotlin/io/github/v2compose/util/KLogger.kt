@@ -4,22 +4,22 @@ import platform.Foundation.NSLog
 
 actual object KLogger {
     actual fun v(tag: String, msg: String) {
-        NSLog("V/%@: %@", tag, msg)
+        NSLog("V/$tag: $msg")
     }
 
     actual fun d(tag: String, msg: String) {
-        NSLog("D/%@: %@", tag, msg)
+        NSLog("D/$tag: $msg")
     }
 
     actual fun i(tag: String, msg: String) {
-        NSLog("I/%@: %@", tag, msg)
+        NSLog("I/$tag: $msg")
     }
 
     actual fun w(tag: String, msg: String) {
-        NSLog("W/%@: %@", tag, msg)
+        NSLog("W/$tag: $msg")
     }
 
     actual fun e(tag: String, msg: String, throwable: Throwable?) {
-        NSLog("E/%@: %@\n%@", tag, msg, throwable?.stackTraceToString() ?: "")
+        NSLog("E/$tag: $msg\n${throwable?.stackTraceToString() ?: ""}")
     }
 }
