@@ -14,6 +14,8 @@ targets:
       Release: Configuration/Config.xcconfig
     sources:
       - path: iosApp
+    resources:
+      - path: iosApp/Assets.xcassets
     info:
       path: iosApp/Info.plist
       properties:
