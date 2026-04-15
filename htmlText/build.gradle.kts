@@ -44,6 +44,10 @@ kotlin {
             implementation(libs.coil.network.ktor)
         }
 
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.appcompat)

@@ -633,7 +633,11 @@ private fun HtmlElementsScope.InlineImage(
         }
 
         "" -> {
-            AutoLoadInlineImage(img = img, modifier = modifier)
+            if (shouldAutoLoadInlineImage(img.loadState, loadImage != null)) {
+                AutoLoadInlineImage(img = img, modifier = modifier)
+            } else {
+                LoadingImage(modifier = Modifier.size(width, maxOf(height, 48.dp)))
+            }
         }
     }
 }
@@ -703,6 +707,13 @@ private fun createInlineCheckbox(lineHeightSp: TextUnit, density: Density): Inli
                 onCheckedChange = {})
         }
     }
+}
+
+internal fun shouldAutoLoadInlineImage(
+    loadState: String,
+    hasExternalImageLoader: Boolean,
+): Boolean {
+    return loadState.isEmpty() && !hasExternalImageLoader
 }
 
 private fun AnnotatedString.Builder.inlineText(node: Node, scope: HtmlElementsScope) {
