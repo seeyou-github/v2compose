@@ -6,8 +6,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.uikit.LocalUIViewController
 import io.github.v2compose.network.NetworkClientProvider
+import io.github.v2compose.usecase.ExternalImageRequestHeaders
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -134,11 +136,16 @@ private suspend fun saveImageToPhotoLibrary(imageUrl: String): String {
         val tempFileName = sourceUrl.lastPathComponent ?: "v2compose-image"
         val tempPath = NSTemporaryDirectory().trimEnd('/') + "/$tempFileName"
         val imageBytes = runCatching {
-            KoinPlatformTools.defaultContext()
+            val networkClientProvider = KoinPlatformTools.defaultContext()
                 .get()
                 .get<NetworkClientProvider>()
+            networkClientProvider
                 .imageHttpClient()
-                .get(imageUrl)
+                .get(imageUrl) {
+                    ExternalImageRequestHeaders.forUrl(imageUrl).forEach { (key, value) ->
+                        header(key, value)
+                    }
+                }
                 .body<ByteArray>()
         }.getOrNull() ?: return@withContext false
 

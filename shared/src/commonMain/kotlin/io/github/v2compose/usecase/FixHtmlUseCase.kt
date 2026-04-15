@@ -21,7 +21,10 @@ import kotlin.math.ceil
 
 private const val TAG = "FixHtmlImageUseCase"
 
-class FixHtmlUseCase(private val context: coil3.PlatformContext) : HtmlImageLoader {
+class FixHtmlUseCase(
+    private val context: coil3.PlatformContext,
+    private val externalImageUrlResolver: ExternalImageUrlResolver,
+) : HtmlImageLoader {
 
     companion object {
         const val LoadImagesCountEveryTime = 4
@@ -39,6 +42,7 @@ class FixHtmlUseCase(private val context: coil3.PlatformContext) : HtmlImageLoad
 
     suspend fun loadImages(html: String): Flow<String> = flow {
         val document = withContext(Dispatchers.Default) { initialHtml(html, true) }
+        rewriteHtmlImageSources(document, externalImageUrlResolver)
 
         //将html中所有的img的加载状态改为loading
         val loadingImages = document.select("img")
@@ -75,16 +79,10 @@ class FixHtmlUseCase(private val context: coil3.PlatformContext) : HtmlImageLoad
     }
 
     private fun createImageRequest(src: String): ImageRequest {
-//        val srcUri = Uri.parse(src) ?: null
-//        val screenWidth = context.resources.displayMetrics.widthPixels
-//        val size = if (srcUri?.lastPathSegment?.endsWith("svg") == true) {
-//            Size.ORIGINAL
-//        } else {
-//            Size(coil3.size.Dimension.Undefined, coil3.size.Dimension.Undefined)
-////            Size(screenWidth, coil3.size.Dimension.Undefined)
-//        }
-
-        return ImageRequest.Builder(context)
+        return applyExternalImageRequestHeaders(
+            ImageRequest.Builder(context),
+            src,
+        )
             .data(src)
             .size(Size.ORIGINAL)
             .scale(Scale.FIT)
@@ -93,14 +91,18 @@ class FixHtmlUseCase(private val context: coil3.PlatformContext) : HtmlImageLoad
 
     suspend fun loadImage(html: String, src: String): Flow<String> = flow {
         val document = Ksoup.parse(html)
-        val loadingImages = document.select("img[src=\"$src\"]")
+        rewriteHtmlImageSources(document, externalImageUrlResolver)
+        val resolvedSrc = externalImageUrlResolver.resolve(src.fullUrl(Constants.baseUrl))
+        val loadingImages = document.select("img[src=\"$resolvedSrc\"]")
         loadingImages.forEach { element ->
             element.attr("loadState", "loading")
         }
         emit(document.outerHtml())
 
-        val imageRequest =
-            ImageRequest.Builder(context).data(src).size(Size.ORIGINAL).build()
+        val imageRequest = applyExternalImageRequestHeaders(
+            ImageRequest.Builder(context),
+            resolvedSrc,
+        ).data(resolvedSrc).size(Size.ORIGINAL).build()
         val imageResult = coil3.SingletonImageLoader.get(context).execute(imageRequest)
         loadingImages.forEach { element ->
             fillElement(element, imageResult)
@@ -143,4 +145,28 @@ class FixHtmlUseCase(private val context: coil3.PlatformContext) : HtmlImageLoad
         return document
     }
 
+}
+
+internal suspend fun rewriteHtmlImageSources(
+    html: String,
+    resolver: ExternalImageUrlResolver,
+): String {
+    val document = Ksoup.parse(html)
+    rewriteHtmlImageSources(document, resolver)
+    return document.outerHtml()
+}
+
+internal suspend fun rewriteHtmlImageSources(
+    document: Document,
+    resolver: ExternalImageUrlResolver,
+) {
+    document.select("img").forEach { element ->
+        val src = element.attr("src")
+        if (src.isBlank()) return@forEach
+        val normalizedSrc = src.fullUrl(Constants.baseUrl)
+        val resolvedSrc = resolver.resolve(normalizedSrc)
+        if (resolvedSrc != src) {
+            element.attr("src", resolvedSrc)
+        }
+    }
 }

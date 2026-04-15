@@ -48,6 +48,8 @@ import io.github.v2compose.ui.webview.WebViewViewModel
 import io.github.v2compose.ui.write.WriteTopicViewModel
 import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
+import io.github.v2compose.usecase.DefaultExternalImageUrlResolver
+import io.github.v2compose.usecase.ExternalImageUrlResolver
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.github.v2compose.usecase.UpdateAccountUseCase
 import org.koin.core.context.startKoin
@@ -89,6 +91,7 @@ val sharedUseCaseModule = module {
     singleOf(::UpdateAccountUseCase)
     singleOf(::CheckInUseCase)
     singleOf(::LoadNodesUseCase)
+    singleOf(::DefaultExternalImageUrlResolver) { bind<ExternalImageUrlResolver>() }
 }
 
 val sharedPagingModule = module {

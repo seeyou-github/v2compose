@@ -20,11 +20,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,11 +38,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import coil3.compose.LocalPlatformContext
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import io.github.v2compose.LocalAppPlatformHandlers
+import io.github.v2compose.usecase.ExternalImageUrlResolver
+import io.github.v2compose.usecase.applyExternalImageRequestHeaders
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.save_image
 
@@ -52,6 +59,11 @@ fun GalleryImage(
 ) {
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
+    val resolver = koinInject<ExternalImageUrlResolver>()
+    val platformContext = LocalPlatformContext.current
+    val resolvedImageUrl by produceState<String?>(initialValue = null, imageUrl, resolver) {
+        value = resolver.resolve(imageUrl)
+    }
 
     var viewWidth by remember { mutableFloatStateOf(0f) }
     var viewHeight by remember { mutableFloatStateOf(0f) }
@@ -75,6 +87,14 @@ fun GalleryImage(
         transitionSpec = { tween(durationMillis = 400) },
         label = "alpha",
     ) { it }
+    val imageRequest = remember(platformContext, resolvedImageUrl) {
+        resolvedImageUrl?.let { resolvedUrl ->
+            applyExternalImageRequestHeaders(
+                ImageRequest.Builder(platformContext),
+                resolvedUrl,
+            ).data(resolvedUrl).build()
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -134,28 +154,37 @@ fun GalleryImage(
             viewHeight = with(density) { maxHeight.toPx() }
         }
 
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = "current image",
-            contentScale = ContentScale.Fit,
-            alpha = currentAlpha,
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offsetX,
-                    translationY = offsetY,
-                    alpha = currentAlpha,
-                ),
-        )
+        if (imageRequest == null) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        } else {
+            AsyncImage(
+                model = imageRequest,
+                contentDescription = "current image",
+                contentScale = ContentScale.Fit,
+                alpha = currentAlpha,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        translationX = offsetX,
+                        translationY = offsetY,
+                        alpha = currentAlpha,
+                    ),
+            )
+        }
 
         val platformHandlers = LocalAppPlatformHandlers.current
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
-                .clickable { platformHandlers.saveImage(imageUrl) }
+                .clickable(enabled = resolvedImageUrl != null) {
+                    resolvedImageUrl?.let(platformHandlers::saveImage)
+                }
                 .background(
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = RoundedCornerShape(4.dp),
