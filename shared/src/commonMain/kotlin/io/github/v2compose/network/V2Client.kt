@@ -9,16 +9,16 @@ import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.util.KLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.plugin
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.LoggingFormat
 import io.ktor.client.plugins.ResponseException
-import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
@@ -57,9 +57,18 @@ fun createV2HttpClient(
         }
     }
 
-    HttpResponseValidator {
-        handleResponseExceptionWithRequest { cause, request ->
-            handleAuthRedirectException(cause, request, eventManager)
+    install("AuthRedirectBridge") {
+        plugin(HttpSend).intercept { request ->
+            try {
+                execute(request)
+            } catch (cause: ResponseException) {
+                handleAuthRedirectException(
+                    cause = cause,
+                    requestUrl = request.url.buildString(),
+                    eventManager = eventManager,
+                )
+                throw cause
+            }
         }
     }
 
@@ -94,7 +103,7 @@ internal fun resolveAuthRedirectEventLocation(
 
 private fun handleAuthRedirectException(
     cause: Throwable,
-    request: HttpRequest,
+    requestUrl: String,
     eventManager: V2EventManager?,
 ) {
     if (eventManager == null || cause !is ResponseException) return
@@ -102,10 +111,10 @@ private fun handleAuthRedirectException(
     val redirectLocation = cause.response.headers[HttpHeaders.Location]
     KLogger.d(
         "V2Client",
-        "auth redirect response: request=${request.url}, location=$redirectLocation, status=${cause.response.status.value}",
+        "auth redirect response: request=$requestUrl, location=$redirectLocation, status=${cause.response.status.value}",
     )
     resolveAuthRedirectEventLocation(
-        requestUrl = request.url.toString(),
+        requestUrl = requestUrl,
         redirectLocation = redirectLocation,
     )?.let {
         KLogger.d("V2Client", "post RedirectEvent($it)")
