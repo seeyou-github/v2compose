@@ -19,8 +19,6 @@ import io.github.v2compose.network.IosCookieManager
 import io.github.v2compose.network.IosNetworkClientRegistry
 import io.github.v2compose.network.NetworkClientProvider
 import io.github.v2compose.network.ProxyManager
-import io.github.v2compose.network.createGithubHttpClient
-import io.github.v2compose.network.createV2HttpClient
 import io.github.v2compose.ui.main.AutoCheckInScheduler
 import io.github.v2compose.ui.main.IosAutoCheckInScheduler
 import io.github.v2compose.ui.main.IosWebViewProxyController
@@ -79,7 +77,7 @@ actual val platformModule: Module = module {
         }
     }
     single<CookieManager> { IosCookieManager() }
-    single<IosNetworkClientRegistry> { IosNetworkClientRegistry(get(), get(), get()) }
+    single<IosNetworkClientRegistry> { IosNetworkClientRegistry(get(), get(), get(), get()) }
     single<NetworkClientProvider> { get<IosNetworkClientRegistry>() }
     single<ProxyManager> { get<IosNetworkClientRegistry>() }
     single<HttpCacheManager> { IosHttpCacheManager(get()) }

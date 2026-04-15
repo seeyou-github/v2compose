@@ -3,14 +3,9 @@ package io.github.v2compose.network
 import android.content.Context
 import io.github.fruit.Fruit
 import io.github.fruit.registerGeneratedAdapters
-import io.github.v2compose.BuildKonfig
-import io.github.v2compose.Constants
-import io.github.v2compose.isSameAuthFlow
 import io.github.v2compose.network.NetConstants.keyUserAgent
 import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector
-import io.github.v2compose.shared.bean.RedirectEvent
-import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.util.Check
 import io.github.v2compose.util.L
 import okhttp3.Cache
@@ -38,7 +33,6 @@ object OkHttpFactory {
         cookieJar: CookieJar,
         cache: Cache,
         proxySelector: V2ProxySelector,
-        eventManager: V2EventManager,
     ): OkHttpClient {
         val builder: OkHttpClient.Builder =
             OkHttpClient.Builder()
@@ -47,7 +41,6 @@ object OkHttpFactory {
                 .cookieJar(cookieJar)
                 .retryOnConnectionFailure(true)
                 .addInterceptor(ConfigInterceptor())
-                .addInterceptor(RedirectInterceptor(eventManager))
                 .followRedirects(false)
                 .followSslRedirects(false)
                 .proxySelector(proxySelector)
@@ -96,20 +89,4 @@ object OkHttpFactory {
             return chain.proceed(request)
         }
     }
-
-    private class RedirectInterceptor(private val eventManager: V2EventManager) : Interceptor {
-        @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val request = chain.request()
-            val resp = chain.proceed(request)
-            if (resp.isRedirect && chain.request().url.host.contains(Constants.host)) {
-                resp.header("location")
-                    ?.takeUnless { isSameAuthFlow(request.url.toString(), it) }
-                    ?.let { eventManager.tryPost(RedirectEvent(it)) }
-            }
-            return resp
-        }
-    }
-
-
 }

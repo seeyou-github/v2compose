@@ -4,6 +4,7 @@ import io.github.fruit.Fruit
 import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
+import io.github.v2compose.shared.core.V2EventManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.ProxyBuilder
 import io.ktor.client.engine.darwin.Darwin
@@ -19,6 +20,7 @@ class IosNetworkClientRegistry(
     private val fruit: Fruit,
     private val urlCache: NSURLCache,
     appPreferences: AppPreferences,
+    private val eventManager: V2EventManager,
 ) : NetworkClientProvider, ProxyManager {
     private var currentProxyInfo: ProxyInfo = runBlocking { appPreferences.proxyInfo.first() }
     private var v2HttpClient: HttpClient = buildV2HttpClient(currentProxyInfo)
@@ -56,6 +58,7 @@ class IosNetworkClientRegistry(
                 useSharedCookieStorage = true,
             ),
             fruit = fruit,
+            eventManager = eventManager,
         )
 
     private fun buildImageHttpClient(proxyInfo: ProxyInfo): HttpClient =

@@ -88,7 +88,6 @@ actual val platformModule: Module = module {
             get<okhttp3.CookieJar>(),
             get<okhttp3.Cache>(),
             get<V2ProxySelector>(),
-            get<V2EventManager>()
         )
     }
     single<OkHttpClient>(named("ImageOkHttpClient")) {
@@ -98,7 +97,8 @@ actual val platformModule: Module = module {
     single<HttpClient>(named("V2HttpClient")) {
         createAndroidV2HttpClient(
             okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")),
-            fruit = get<io.github.fruit.Fruit>()
+            fruit = get<io.github.fruit.Fruit>(),
+            eventManager = get<V2EventManager>(),
         )
     }
 
