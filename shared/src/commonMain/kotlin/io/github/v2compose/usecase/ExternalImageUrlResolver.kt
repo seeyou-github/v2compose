@@ -23,11 +23,16 @@ data class ImageProbeResult(
 
 class DefaultExternalImageUrlResolver(
     private val networkClientProvider: NetworkClientProvider,
-    private val probe: suspend (rawUrl: String, headers: Map<String, String>) -> ImageProbeResult? =
-        { rawUrl, headers ->
-            defaultProbe(networkClientProvider, rawUrl, headers)
-        },
 ) : ExternalImageUrlResolver {
+    private var probeOverride: (suspend (rawUrl: String, headers: Map<String, String>) -> ImageProbeResult?)? =
+        null
+
+    internal constructor(
+        networkClientProvider: NetworkClientProvider,
+        probe: suspend (rawUrl: String, headers: Map<String, String>) -> ImageProbeResult?,
+    ) : this(networkClientProvider) {
+        this.probeOverride = probe
+    }
 
     private val cacheMutex = Mutex()
     private val resolvedUrlCache = mutableMapOf<String, String>()
@@ -111,9 +116,16 @@ class DefaultExternalImageUrlResolver(
         KLogger.w(
             TAG,
             "imgur probe fallback: rawUrl=$rawUrl, resolvedUrl=$resolvedUrl, " +
-                "finalRequestUrl=$finalRequestUrl, status=$statusCode, " +
+            "finalRequestUrl=$finalRequestUrl, status=$statusCode, " +
                 "location=$redirectLocation, fallbackReason=$fallbackReason",
         )
+    }
+    private suspend fun probe(
+        rawUrl: String,
+        headers: Map<String, String>,
+    ): ImageProbeResult? {
+        return probeOverride?.invoke(rawUrl, headers)
+            ?: defaultProbe(networkClientProvider, rawUrl, headers)
     }
 }
 

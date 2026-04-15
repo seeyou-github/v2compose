@@ -91,7 +91,7 @@ val sharedUseCaseModule = module {
     singleOf(::UpdateAccountUseCase)
     singleOf(::CheckInUseCase)
     singleOf(::LoadNodesUseCase)
-    singleOf(::DefaultExternalImageUrlResolver) { bind<ExternalImageUrlResolver>() }
+    single<ExternalImageUrlResolver> { DefaultExternalImageUrlResolver(get()) }
 }
 
 val sharedPagingModule = module {
