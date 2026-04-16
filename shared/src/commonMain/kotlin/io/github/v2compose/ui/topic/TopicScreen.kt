@@ -1,9 +1,10 @@
 package io.github.v2compose.ui.topic
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +23,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.automirrored.rounded.Comment
+import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +52,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -86,12 +90,12 @@ import io.github.v2compose.ui.topic.composables.TopicReply
 import io.github.v2compose.ui.topic.composables.TopicTopBar
 import io.github.v2compose.ui.topic.composables.UserRepliesDialog
 import io.github.v2compose.ui.topic.composables.fabSizeWithMargin
+import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import io.github.v2compose.util.KLogger
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.n_comment
 import v2compose.shared.generated.resources.replies_order_negative
@@ -174,8 +178,10 @@ fun TopicScreenRoute(
                         onShareTopic(header.title, V2exUri.topicUrl(args.topicId))
                     }
                 }
+
                 TopicMenuItem.OpenInBrowser ->
                     platformHandlers.openExternalUri(V2exUri.topicUrl(args.topicId))
+
                 TopicMenuItem.More -> Unit
             }
         },
@@ -193,6 +199,7 @@ fun TopicScreenRoute(
                         viewModel.notifyReplyCopied()
                     }
                 }
+
                 ReplyMenuItem.HomePage -> onUserAvatarClick(reply.userName, reply.avatar)
                 else -> {}
             }
@@ -266,14 +273,20 @@ private fun TopicScreen(
                     ReplyInputState.Expanded -> FabType.Send
                 }
             }
-            FabButton(visible = isLoggedIn, type = fabType, onClick = { tabType ->
-                if (fabType == FabType.Send) {
-                    onSendComment(replyInputCurrentText)
+            FabButton(
+                visible = isLoggedIn, type = fabType,
+                onClick = { tabType ->
+                    if (fabType == FabType.Send) {
+                        onSendComment(replyInputCurrentText)
+                        replyInputState = ReplyInputState.Collapsed
+                    } else if (tabType == FabType.Reply) {
+                        replyInputState = ReplyInputState.Expanded
+                    }
+                },
+                dismiss = {
                     replyInputState = ReplyInputState.Collapsed
-                } else if (tabType == FabType.Reply) {
-                    replyInputState = ReplyInputState.Expanded
-                }
-            })
+                },
+            )
         },
         contentWindowInsets = WindowInsets.ime.union(WindowInsets.systemBars),
     ) { contentPadding ->
@@ -386,7 +399,7 @@ private fun TopicList(
             KLogger.d(TAG, "clickUriHandler, uri = $uri")
             val floor = uri.substring("#reply".length).toIntOrNull() ?: return
             val floorReply =
-                topicItems.itemSnapshotList.firstOrNull { it is Reply && it.floor == floor } as Reply?
+                topicItems.itemSnapshotList.firstOrNull { it is Reply && it.floor == floor } as? Reply?
                     ?: return
             clickedUserReplies.add(listOf(floorReply))
             return
@@ -740,35 +753,59 @@ private fun FabButton(
     visible: Boolean,
     type: FabType,
     onClick: (FabType) -> Unit,
+    dismiss: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
 
+    val closePaddingTop by animateDpAsState(
+        targetValue = if (type == FabType.Reply) 0.dp else 64.dp,
+    )
+
     if (visible) {
-        FloatingActionButton(
-            shape = CircleShape,
-            onClick = { onClick(type) },
-            modifier = Modifier.focusRequester(focusRequester)
-        ) {
-            val contentColor = LocalContentColor.current
-            AnimatedContent(targetState = type) { state ->
-                when (state) {
-                    FabType.Send -> Icon(
-                        Icons.AutoMirrored.Rounded.Send,
-                        type.name,
-                        tint = contentColor
-                    )
+        val contentColor = LocalContentColor.current
+        Box() {
+            FloatingActionButton(
+                shape = CircleShape,
+                onClick = { onClick(type) },
+                modifier = Modifier.focusRequester(focusRequester).align(Alignment.TopCenter)
+            ) {
+                AnimatedContent(targetState = type) { state ->
+                    when (state) {
+                        FabType.Send -> Icon(
+                            Icons.AutoMirrored.Rounded.Send,
+                            type.name,
+                            tint = contentColor
+                        )
 
-                    FabType.Reply -> Icon(
-                        Icons.AutoMirrored.Rounded.Comment,
-                        type.name,
-                        tint = contentColor
-                    )
+                        FabType.Reply -> Icon(
+                            Icons.AutoMirrored.Rounded.Comment,
+                            type.name,
+                            tint = contentColor
+                        )
 
-                    FabType.Loading -> CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp), color = contentColor, strokeWidth = 2.dp
-                    )
+                        FabType.Loading -> CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = contentColor,
+                            strokeWidth = 2.dp
+                        )
+                    }
                 }
             }
+            if (type != FabType.Reply)
+                FloatingActionButton(
+                    shape = CircleShape,
+                    onClick = dismiss,
+                    modifier = Modifier.padding(top = closePaddingTop).align(Alignment.BottomCenter)
+                ) {
+
+                    Icon(
+                        Icons.AutoMirrored.Rounded.ArrowBackIos,
+                        type.name,
+                        tint = contentColor,
+                        modifier = Modifier.rotate(-90f)
+                    )
+                }
+
         }
     }
 }

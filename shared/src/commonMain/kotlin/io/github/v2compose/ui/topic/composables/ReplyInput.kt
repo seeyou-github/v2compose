@@ -4,11 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -36,6 +35,8 @@ private val fabSize = 56.dp
 private val borderPadding = 16.dp
 
 val fabSizeWithMargin = fabSize + borderPadding * 2
+val fabsVerticalSpace = 8.dp
+val replyInputHeight = fabSize * 2 + fabsVerticalSpace
 
 private const val TAG = "CreateReply"
 
@@ -70,11 +71,6 @@ fun ReplyInput(
             borderPadding
         }
     )
-
-    val sizeModifier = when (state) {
-        ReplyInputState.Expanded -> Modifier.fillMaxWidth()
-        ReplyInputState.Collapsed -> Modifier.size(fabSize)
-    }
 
     BoxWithConstraints(
         modifier = modifier
@@ -116,8 +112,7 @@ fun ReplyInput(
                     .background(
                         color = MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(fabSize / 2)
-                    )
-                    .then(sizeModifier),
+                    ).fillMaxWidth().height(replyInputHeight),
                 shape = RoundedCornerShape(fabSize / 2)
             )
 
