@@ -434,6 +434,7 @@ private fun TopicList(
                     val content = contentInfo.content
                     TopicContent(
                         content = sizedHtmls[tag] ?: content,
+                        sourceContent = content,
                         openUri = openUri,
                         loadHtmlImage = { html, src -> loadHtmlImage(tag, html, src) },
                         onHtmlImageClick = onHtmlImageClick,
@@ -599,13 +600,18 @@ private fun TopicTitle(
 @Composable
 private fun TopicContent(
     content: String,
+    sourceContent: String,
     openUri: (String) -> Unit,
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
+    val htmlState = topicBodyHtmlContentState(
+        renderedContent = content,
+        originalContent = sourceContent,
+    )
     HtmlContent(
-        content = content,
-        sourceContent = content,
+        content = htmlState.content,
+        sourceContent = htmlState.sourceContent,
         selectable = false,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
         onUriClick = openUri,
@@ -652,6 +658,19 @@ private fun TopicSupplement(
         }
     }
 }
+
+internal data class TopicHtmlContentState(
+    val content: String,
+    val sourceContent: String,
+)
+
+internal fun topicBodyHtmlContentState(
+    renderedContent: String,
+    originalContent: String,
+): TopicHtmlContentState = TopicHtmlContentState(
+    content = renderedContent,
+    sourceContent = originalContent,
+)
 
 enum class RepliesOrder(val label: StringResource) {
     //最新的回复排在最前面
