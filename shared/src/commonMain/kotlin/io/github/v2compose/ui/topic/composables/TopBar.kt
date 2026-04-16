@@ -164,9 +164,10 @@ private fun TopicTopBarActions(
                     add(if (topicInfo.isThanked) TopicMenuItem.Thanked else TopicMenuItem.Thanks)
                 }
                 add(if (topicInfo.isIgnored) TopicMenuItem.Ignored else TopicMenuItem.Ignore)
-                if (topicInfo.topic?.hasReportPermission() == true) {
-                    add(if (topicInfo.isReported) TopicMenuItem.Reported else TopicMenuItem.Report)
-                }
+                // 网站已经取消了举报入口，当前客户端也屏蔽举报按钮
+//                if (topicInfo.topic?.hasReportPermission() == true) {
+//                    add(if (topicInfo.isReported) TopicMenuItem.Reported else TopicMenuItem.Report)
+//                }
             }
             addAll(listOf(TopicMenuItem.Share, TopicMenuItem.OpenInBrowser))
         }
