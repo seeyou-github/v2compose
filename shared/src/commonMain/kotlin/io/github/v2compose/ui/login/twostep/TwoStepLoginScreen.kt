@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.ui.common.CloseButton
+import io.github.v2compose.ui.common.HtmlContent
+import io.github.v2compose.ui.common.LoadMore
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
@@ -49,11 +51,14 @@ fun TwoStepLoginScreenRoute(
     viewModel: TwoStepLoginViewModel = koinViewModel()
 ) {
     val loginState by viewModel.login.collectAsStateWithLifecycle()
+    val twoStepLoginUiState by viewModel.twoStepLoginUiState.collectAsStateWithLifecycle()
 
     TwoStepLoginScreen(
         loginState = loginState,
+        twoStepLoginUiState = twoStepLoginUiState,
         onCloseClick = onCloseClick,
-        onLoginClick = viewModel::loginNextStep
+        onLoginClick = viewModel::loginNextStep,
+        onRetryClick = viewModel::fetchTwoStepLoginInfo
     )
 }
 
@@ -61,11 +66,11 @@ fun TwoStepLoginScreenRoute(
 @Composable
 private fun TwoStepLoginScreen(
     loginState: LoginState,
+    twoStepLoginUiState: TwoStepLoginUiState,
     onCloseClick: () -> Unit,
-    onLoginClick: (String) -> Unit
+    onLoginClick: (String) -> Unit,
+    onRetryClick: () -> Unit,
 ) {
-    var code by remember { mutableStateOf("") }
-    val focusRequester = remember { FocusRequester() }
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
@@ -82,40 +87,78 @@ private fun TwoStepLoginScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .align(Alignment.TopCenter),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(64.dp))
-                OutlinedTextField(
-                    value = code,
-                    onValueChange = { code = it },
-                    label = { Text(stringResource(Res.string.tfa_code)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = {
-                        if (code.isNotBlank()) {
-                            onLoginClick(code)
-                        }
-                    }),
-                    singleLine = true,
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                LoginButton(
+
+            when (twoStepLoginUiState) {
+                is TwoStepLoginUiState.Success -> TwoStepLoginContent(
                     loginState = loginState,
-                    enabled = code.isNotBlank(),
-                    onLoginClick = { onLoginClick(code) }
+                    twoStepLoginUiState = twoStepLoginUiState,
+                    onLoginClick = onLoginClick
+                )
+
+                else -> LoadMore(
+                    hasError = twoStepLoginUiState is TwoStepLoginUiState.Error,
+                    error = if (twoStepLoginUiState is TwoStepLoginUiState.Error) twoStepLoginUiState.error else null,
+                    onRetryClick = onRetryClick
                 )
             }
+
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TwoStepLoginContent(
+    loginState: LoginState,
+    twoStepLoginUiState: TwoStepLoginUiState.Success,
+    onLoginClick: (String) -> Unit
+) {
+    val focusRequester = remember { FocusRequester() }
+
+    var code by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            twoStepLoginUiState.twoStepLoginInfo.title,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = code,
+            onValueChange = { code = it },
+            label = { Text(stringResource(Res.string.tfa_code)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(onDone = {
+                if (code.isNotBlank()) {
+                    onLoginClick(code)
+                }
+            }),
+            singleLine = true,
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        LoginButton(
+            loginState = loginState,
+            enabled = code.isNotBlank(),
+            onLoginClick = { onLoginClick(code) }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        HtmlContent(
+            content = twoStepLoginUiState.twoStepLoginInfo.problem,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.error),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
