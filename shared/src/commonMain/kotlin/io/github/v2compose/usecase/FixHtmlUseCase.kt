@@ -121,7 +121,10 @@ class FixHtmlUseCase(
 
     private fun fillElement(element: Element, result: ImageResult?) {
         val image = if (result is SuccessResult) result.image else null
-        io.github.v2compose.util.KLogger.d(TAG, "fillElement, src = ${element.attr("src")}, result width = ${image?.width}, resultHeight = ${image?.height}")
+        KLogger.d(
+            TAG,
+            "fillElement, src = ${element.attr("src")}, result width = ${image?.width}, resultHeight = ${image?.height}"
+        )
 
         if (image != null) {
             element.attr("width", image.width.toString())

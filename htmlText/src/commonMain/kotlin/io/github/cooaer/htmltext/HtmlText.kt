@@ -68,6 +68,7 @@ import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
 import com.fleeksoft.ksoup.nodes.Node
 import com.fleeksoft.ksoup.nodes.TextNode
+import kotlin.math.roundToInt
 
 private const val TAG = "HtmlText"
 
@@ -639,6 +640,23 @@ private fun HtmlElementsScope.InlineImage(
                 model = imageRequest,
                 contentDescription = img.alt,
                 contentScale = ContentScale.Crop,
+                onSuccess = {
+                    logDebug(
+                        TAG,
+                        "inline image render success, url = $resolvedImageUrl, " +
+                            "decodeSize = ${decodeSize.width}x${decodeSize.height}, " +
+                            "displaySizeDp = ${width.value.roundToInt()}x${height.value.roundToInt()}",
+                    )
+                },
+                onError = {
+                    logDebug(
+                        TAG,
+                        "inline image render error, url = $resolvedImageUrl, " +
+                            "decodeSize = ${decodeSize.width}x${decodeSize.height}, " +
+                            "displaySizeDp = ${width.value.roundToInt()}x${height.value.roundToInt()}, " +
+                            "throwable = ${it.result.throwable.describeForLog()}",
+                    )
+                },
                 modifier = if (clickEnabled) modifier.clickable { onImageClick.invoke(img) } else modifier,
             )
         }
@@ -721,13 +739,27 @@ private fun HtmlElementsScope.AutoLoadInlineImage(
             val size = it.painter.intrinsicSize
             logDebug(
                 TAG,
-                "load image success, url = ${img.src}, width = ${size.width}, height = ${size.height}"
+                "load image success, url = ${img.src.fullUrl(baseUrl)}, " +
+                    "decodeSize = ${decodeSize.width}x${decodeSize.height}, " +
+                    "intrinsicSize = ${size.width}x${size.height}"
             )
         },
         onError = {
-            logDebug(TAG, "load image error, url = ${img.src}, error = ${it.result.throwable}")
+            logDebug(
+                TAG,
+                "load image error, url = ${img.src.fullUrl(baseUrl)}, " +
+                    "decodeSize = ${decodeSize.width}x${decodeSize.height}, " +
+                    "displaySizeDp = ${width.value.roundToInt()}x${height.value.roundToInt()}, " +
+                    "throwable = ${it.result.throwable.describeForLog()}"
+            )
         }
     )
+}
+
+private fun Throwable.describeForLog(): String {
+    val messagePart = message?.takeIf { it.isNotBlank() }?.let { ", message=$it" }.orEmpty()
+    val causePart = cause?.let { ", cause=${it::class.simpleName}:${it.message.orEmpty()}" }.orEmpty()
+    return "${this::class.simpleName}$messagePart$causePart"
 }
 
 
