@@ -15,6 +15,7 @@ import io.github.v2compose.usecase.HtmlImageLoader
 import io.github.v2compose.util.CfEmailUtils
 import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -66,10 +67,15 @@ class FixHtmlUseCase(
                 val src = element.attr("src").fullUrl(Constants.baseUrl)
                 val imageRequest = createImageRequest(src)
                 try {
+                    KLogger.d(TAG, "loadImages execute start, src = $src")
                     val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
+                    KLogger.d(TAG, "loadImages execute end, src = $src, result = ${result::class.simpleName}")
                     Pair(element, result)
+                } catch (e: CancellationException) {
+                    KLogger.w(TAG, "loadImages execute cancelled, src = $src, message = ${e.message}")
+                    throw e
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    KLogger.e(TAG, "loadImages execute failed, src = $src", e)
                     Pair(element, null)
                 }
             }.map { (element, result) ->
@@ -112,10 +118,22 @@ class FixHtmlUseCase(
             .precision(Precision.INEXACT)
             .scale(Scale.FIT)
             .build()
-        val imageResult = coil3.SingletonImageLoader.get(context).execute(imageRequest)
+        KLogger.d(TAG, "loadImage execute start, src = $resolvedSrc")
+        val imageResult = try {
+            val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
+            KLogger.d(TAG, "loadImage execute end, src = $resolvedSrc, result = ${result::class.simpleName}")
+            result
+        } catch (e: CancellationException) {
+            KLogger.w(TAG, "loadImage execute cancelled, src = $resolvedSrc, message = ${e.message}")
+            throw e
+        } catch (e: Exception) {
+            KLogger.e(TAG, "loadImage execute failed, src = $resolvedSrc", e)
+            null
+        }
         loadingImages.forEach { element ->
             fillElement(element, imageResult)
         }
+        KLogger.d(TAG, "loadImage emit final html, src = $resolvedSrc, matchedImages = ${loadingImages.size}")
         emit(document.outerHtml())
     }
 
