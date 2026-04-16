@@ -41,6 +41,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.LocalPlatformContext
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import coil3.size.Precision
+import coil3.size.Scale
+import io.github.cooaer.htmltext.ExternalImageSizePolicy
 import io.github.v2compose.LocalAppPlatformHandlers
 import io.github.v2compose.usecase.ExternalImageUrlResolver
 import io.github.v2compose.usecase.applyExternalImageRequestHeaders
@@ -50,6 +53,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.save_image
+import kotlin.math.ceil
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -87,15 +91,6 @@ fun GalleryImage(
         transitionSpec = { tween(durationMillis = 400) },
         label = "alpha",
     ) { it }
-    val imageRequest = remember(platformContext, resolvedImageUrl) {
-        resolvedImageUrl?.let { resolvedUrl ->
-            applyExternalImageRequestHeaders(
-                ImageRequest.Builder(platformContext),
-                resolvedUrl,
-            ).data(resolvedUrl).build()
-        }
-    }
-
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -149,6 +144,26 @@ fun GalleryImage(
             )
             .transformable(transformableState),
     ) {
+        val previewDecodeSize = remember(maxWidth, maxHeight, density) {
+            ExternalImageSizePolicy.galleryPreviewDecodeSize(
+                viewportWidthPx = with(density) { ceil(maxWidth.toPx()).toInt() },
+                viewportHeightPx = with(density) { ceil(maxHeight.toPx()).toInt() },
+            )
+        }
+        val imageRequest = remember(platformContext, resolvedImageUrl, previewDecodeSize) {
+            resolvedImageUrl?.let { resolvedUrl ->
+                applyExternalImageRequestHeaders(
+                    ImageRequest.Builder(platformContext),
+                    resolvedUrl,
+                )
+                    .data(resolvedUrl)
+                    .size(width = previewDecodeSize.width, height = previewDecodeSize.height)
+                    .precision(Precision.INEXACT)
+                    .scale(Scale.FIT)
+                    .build()
+            }
+        }
+
         LaunchedEffect(maxWidth, maxHeight) {
             viewWidth = with(density) { maxWidth.toPx() }
             viewHeight = with(density) { maxHeight.toPx() }

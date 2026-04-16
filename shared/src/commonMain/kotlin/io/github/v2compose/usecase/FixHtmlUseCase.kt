@@ -3,11 +3,12 @@ package io.github.v2compose.usecase
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
 import coil3.request.SuccessResult
+import coil3.size.Precision
 import coil3.size.Scale
-import coil3.size.Size
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
+import io.github.cooaer.htmltext.ExternalImageSizePolicy
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
 import io.github.v2compose.usecase.HtmlImageLoader
@@ -79,12 +80,14 @@ class FixHtmlUseCase(
     }
 
     private fun createImageRequest(src: String): ImageRequest {
+        val decodeSize = ExternalImageSizePolicy.htmlProbeDecodeSize()
         return applyExternalImageRequestHeaders(
             ImageRequest.Builder(context),
             src,
         )
             .data(src)
-            .size(Size.ORIGINAL)
+            .size(width = decodeSize.width, height = decodeSize.height)
+            .precision(Precision.INEXACT)
             .scale(Scale.FIT)
             .build()
     }
@@ -99,10 +102,16 @@ class FixHtmlUseCase(
         }
         emit(document.outerHtml())
 
+        val decodeSize = ExternalImageSizePolicy.htmlProbeDecodeSize()
         val imageRequest = applyExternalImageRequestHeaders(
             ImageRequest.Builder(context),
             resolvedSrc,
-        ).data(resolvedSrc).size(Size.ORIGINAL).build()
+        )
+            .data(resolvedSrc)
+            .size(width = decodeSize.width, height = decodeSize.height)
+            .precision(Precision.INEXACT)
+            .scale(Scale.FIT)
+            .build()
         val imageResult = coil3.SingletonImageLoader.get(context).execute(imageRequest)
         loadingImages.forEach { element ->
             fillElement(element, imageResult)

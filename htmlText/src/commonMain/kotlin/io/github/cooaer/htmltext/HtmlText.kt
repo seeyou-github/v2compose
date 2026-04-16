@@ -61,6 +61,8 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
+import coil3.size.Precision
+import coil3.size.Scale
 import com.fleeksoft.ksoup.Ksoup
 import com.fleeksoft.ksoup.nodes.Document
 import com.fleeksoft.ksoup.nodes.Element
@@ -606,7 +608,25 @@ private fun HtmlElementsScope.InlineImage(
 ) {
     var currentLoadState by remember(img.loadState) { mutableStateOf(img.loadState) }
 
+    val density = LocalDensity.current
+    val platformContext = LocalPlatformContext.current
     val modifier = Modifier.size(width, height)
+    val decodeSize = remember(width, height, density) {
+        ExternalImageSizePolicy.inlineDecodeSize(
+            width = width,
+            height = height,
+            density = density,
+        )
+    }
+    val resolvedImageUrl = remember(img.src, baseUrl) { img.src.fullUrl(baseUrl) }
+    val imageRequest = remember(platformContext, resolvedImageUrl, decodeSize) {
+        ImageRequest.Builder(platformContext)
+            .data(resolvedImageUrl)
+            .size(width = decodeSize.width, height = decodeSize.height)
+            .precision(Precision.INEXACT)
+            .scale(Scale.FIT)
+            .build()
+    }
 
     when (currentLoadState) {
         "loading" -> {
@@ -616,7 +636,7 @@ private fun HtmlElementsScope.InlineImage(
         "success" -> {
             val clickEnabled = clickable && onImageClick != null
             AsyncImage(
-                model = img.src.fullUrl(baseUrl),
+                model = imageRequest,
                 contentDescription = img.alt,
                 contentScale = ContentScale.Crop,
                 modifier = if (clickEnabled) modifier.clickable { onImageClick.invoke(img) } else modifier,
@@ -634,7 +654,12 @@ private fun HtmlElementsScope.InlineImage(
 
         "" -> {
             if (shouldAutoLoadInlineImage(img.loadState, loadImage != null)) {
-                AutoLoadInlineImage(img = img, modifier = modifier)
+                AutoLoadInlineImage(
+                    img = img,
+                    width = width,
+                    height = height,
+                    modifier = modifier,
+                )
             } else {
                 LoadingImage(modifier = Modifier.size(width, maxOf(height, 48.dp)))
             }
@@ -645,14 +670,31 @@ private fun HtmlElementsScope.InlineImage(
 @Composable
 private fun HtmlElementsScope.AutoLoadInlineImage(
     img: Img,
+    width: Dp,
+    height: Dp,
     modifier: Modifier
 ) {
     var retryTimes by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
+    val platformContext = LocalPlatformContext.current
+    val decodeSize = remember(width, height, density) {
+        ExternalImageSizePolicy.inlineDecodeSize(
+            width = width,
+            height = height,
+            density = density,
+        )
+    }
+    val imageRequest = remember(platformContext, img.src, baseUrl, retryTimes, decodeSize) {
+        ImageRequest.Builder(platformContext)
+            .data(img.src.fullUrl(baseUrl) + if (retryTimes > 0) "?retry=$retryTimes" else "")
+            .size(width = decodeSize.width, height = decodeSize.height)
+            .precision(Precision.INEXACT)
+            .scale(Scale.FIT)
+            .build()
+    }
 
     SubcomposeAsyncImage(
-        model = ImageRequest.Builder(LocalPlatformContext.current)
-            .data(img.src.fullUrl(baseUrl) + if (retryTimes > 0) "?retry=$retryTimes" else "")
-            .build(),
+        model = imageRequest,
         contentDescription = img.alt,
         modifier = modifier,
         success = {
