@@ -11,11 +11,10 @@ import com.fleeksoft.ksoup.nodes.Element
 import io.github.cooaer.htmltext.ExternalImageSizePolicy
 import io.github.cooaer.htmltext.fullUrl
 import io.github.v2compose.Constants
-import io.github.v2compose.usecase.HtmlImageLoader
 import io.github.v2compose.util.CfEmailUtils
 import io.github.v2compose.util.KLogger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
@@ -69,10 +68,16 @@ class FixHtmlUseCase(
                 try {
                     KLogger.d(TAG, "loadImages execute start, src = $src")
                     val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
-                    KLogger.d(TAG, "loadImages execute end, src = $src, result = ${result::class.simpleName}")
+                    KLogger.d(
+                        TAG,
+                        "loadImages execute end, src = $src, result = ${result::class.simpleName}"
+                    )
                     Pair(element, result)
                 } catch (e: CancellationException) {
-                    KLogger.w(TAG, "loadImages execute cancelled, src = $src, message = ${e.message}")
+                    KLogger.w(
+                        TAG,
+                        "loadImages execute cancelled, src = $src, message = ${e.message}"
+                    )
                     throw e
                 } catch (e: Exception) {
                     KLogger.e(TAG, "loadImages execute failed, src = $src", e)
@@ -121,10 +126,16 @@ class FixHtmlUseCase(
         KLogger.d(TAG, "loadImage execute start, src = $resolvedSrc")
         val imageResult = try {
             val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
-            KLogger.d(TAG, "loadImage execute end, src = $resolvedSrc, result = ${result::class.simpleName}")
+            KLogger.d(
+                TAG,
+                "loadImage execute end, src = $resolvedSrc, result = ${result::class.simpleName}"
+            )
             result
         } catch (e: CancellationException) {
-            KLogger.w(TAG, "loadImage execute cancelled, src = $resolvedSrc, message = ${e.message}")
+            KLogger.w(
+                TAG,
+                "loadImage execute cancelled, src = $resolvedSrc, message = ${e.message}"
+            )
             throw e
         } catch (e: Exception) {
             KLogger.e(TAG, "loadImage execute failed, src = $resolvedSrc", e)
@@ -133,7 +144,10 @@ class FixHtmlUseCase(
         loadingImages.forEach { element ->
             fillElement(element, imageResult)
         }
-        KLogger.d(TAG, "loadImage emit final html, src = $resolvedSrc, matchedImages = ${loadingImages.size}")
+        KLogger.d(
+            TAG,
+            "loadImage emit final html, src = $resolvedSrc, matchedImages = ${loadingImages.size}"
+        )
         emit(document.outerHtml())
     }
 

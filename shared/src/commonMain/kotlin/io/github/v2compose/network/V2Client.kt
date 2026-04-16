@@ -10,19 +10,19 @@ import io.github.v2compose.util.KLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.LoggingFormat
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
-import io.ktor.http.Url
 import io.ktor.http.URLProtocol
+import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -105,7 +105,7 @@ private fun createConfiguredHttpClient(
     }
 
     install(Logging) {
-        logger = Logger.DEFAULT
+        logger = Logger.SIMPLE
         level = LogLevel.BODY
         format = LoggingFormat.OkHttp
     }
@@ -130,14 +130,15 @@ private suspend fun handleAuthRedirectResponse(
     if (response.status.value !in 300..399) return
     val requestUrl = response.call.request.url.toString()
     val redirectLocation = response.headers[HttpHeaders.Location]
-    Logger.DEFAULT.log(
-        "V2Client redirect observed: request=$requestUrl, location=$redirectLocation, status=${response.status.value}",
+    KLogger.d(
+        "V2Client",
+        "redirect observed: request=$requestUrl, location=$redirectLocation, status=${response.status.value}",
     )
     resolveAuthRedirectEventLocation(
         requestUrl = requestUrl,
         redirectLocation = redirectLocation,
     )?.let {
-        Logger.DEFAULT.log("V2Client post RedirectEvent($it)")
+        KLogger.d("V2Client", "post RedirectEvent($it)")
         eventManager.tryPost(RedirectEvent(it))
     }
 }

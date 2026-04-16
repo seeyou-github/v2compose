@@ -109,8 +109,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.orhanobut.logger)
-
     // image loading
     implementation(libs.coil)
 }

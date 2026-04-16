@@ -109,7 +109,6 @@ kotlin {
             implementation(libs.androidx.browser)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.slf4j.android)
-            implementation(libs.orhanobut.logger)
             implementation(libs.androidx.work.runtime.ktx)
             implementation(libs.koin.androidx.workmanager)
             implementation(libs.okhttp.logging)

@@ -7,7 +7,7 @@ import io.github.v2compose.network.NetConstants.keyUserAgent
 import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.util.Check
-import io.github.v2compose.util.L
+import io.github.v2compose.util.KLogger
 import okhttp3.Cache
 import okhttp3.CookieJar
 import okhttp3.Interceptor
@@ -20,6 +20,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 object OkHttpFactory {
+    private const val TAG = "OkHttpFactory"
 
     private const val TIMEOUT_SECONDS: Long = 10
 
@@ -48,7 +49,7 @@ object OkHttpFactory {
         // For simplicity, let's use a fixed false or a better way to detect debug mode if BuildKonfig doesn't have it
         // Actually, let's just use a hardcoded check or remove logging if unsure
         builder.addInterceptor(
-            HttpLoggingInterceptor { msg: String -> L.v(msg) }
+            HttpLoggingInterceptor { msg: String -> KLogger.v(TAG, msg) }
                 .setLevel(HttpLoggingInterceptor.Level.BODY)
         )
         return builder.build()
@@ -64,9 +65,9 @@ object OkHttpFactory {
                 .followRedirects(true)
                 .followSslRedirects(true)
                 .proxySelector(proxySelector)
-        
+
         builder.addInterceptor(
-            HttpLoggingInterceptor { msg: String -> L.v(msg) }
+            HttpLoggingInterceptor { msg: String -> KLogger.v(TAG, msg) }
                 .setLevel(HttpLoggingInterceptor.Level.BODY)
         )
         return builder.build()
