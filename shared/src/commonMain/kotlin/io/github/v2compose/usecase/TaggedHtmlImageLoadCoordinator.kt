@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TaggedHtmlImageLoadCoordinator {
-    private val jobs = mutableMapOf<String, Job>()
+    private val jobs = mutableMapOf<String, TaggedLoadJob>()
 
     fun launch(
         tag: String,
@@ -16,18 +16,43 @@ class TaggedHtmlImageLoadCoordinator {
         loader: HtmlImageLoader,
         onHtmlUpdated: (String) -> Unit,
     ) {
-        jobs.remove(tag)?.cancel()
-        jobs[tag] = scope.launch {
+        val request = TaggedLoadRequest(
+            html = html,
+            imageSrc = imageSrc,
+        )
+        val existing = jobs[tag]
+        if (existing != null && existing.job.isActive && existing.request == request) {
+            return
+        }
+
+        existing?.job?.cancel()
+        val job = scope.launch {
             try {
                 loader.loadHtmlImages(html, imageSrc).collectLatest(onHtmlUpdated)
             } finally {
-                jobs.remove(tag)
+                if (jobs[tag]?.job === this.coroutineContext[Job]) {
+                    jobs.remove(tag)
+                }
             }
         }
+        jobs[tag] = TaggedLoadJob(
+            request = request,
+            job = job,
+        )
     }
 
     fun cancelAll() {
-        jobs.values.forEach(Job::cancel)
+        jobs.values.forEach { it.job.cancel() }
         jobs.clear()
     }
 }
+
+private data class TaggedLoadRequest(
+    val html: String,
+    val imageSrc: String?,
+)
+
+private data class TaggedLoadJob(
+    val request: TaggedLoadRequest,
+    val job: Job,
+)

@@ -3,6 +3,7 @@ package io.github.v2compose.ui.common
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
@@ -30,6 +31,9 @@ fun HtmlContent(
     loadImage: ((html: String, img: String?) -> Unit)? = null,
     onHtmlImageClick: ((String, List<String>) -> Unit)? = null,
 ) {
+    val currentSourceContent = rememberUpdatedState(sourceContent)
+    val currentLoadImage = rememberUpdatedState(loadImage)
+
     HtmlText(
         content,
         modifier = modifier,
@@ -38,13 +42,13 @@ fun HtmlContent(
         baseUrl = baseUrl,
         onLinkClick = onUriClick,
         onClick = onClick,
-        loadImage = { src: String -> loadImage?.invoke(sourceContent, src) },
+        loadImage = { src: String -> currentLoadImage.value?.invoke(currentSourceContent.value, src) },
         onImageClick = { clicked: Img, all: List<Img> ->
             onHtmlImageClick?.invoke(clicked.src, all.map(Img::src))
         },
     )
 
-    LaunchedEffect(sourceContent, loadImage) {
-        loadImage?.invoke(sourceContent, null)
+    LaunchedEffect(sourceContent) {
+        currentLoadImage.value?.invoke(sourceContent, null)
     }
 }
