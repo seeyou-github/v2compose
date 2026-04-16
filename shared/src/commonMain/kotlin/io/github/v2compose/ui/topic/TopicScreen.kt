@@ -605,6 +605,7 @@ private fun TopicContent(
 ) {
     HtmlContent(
         content = content,
+        sourceContent = content,
         selectable = false,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
         onUriClick = openUri,
@@ -641,6 +642,7 @@ private fun TopicSupplement(
             )
             HtmlContent(
                 content = content,
+                sourceContent = supplement.content,
                 selectable = false,
                 modifier = Modifier.fillMaxWidth(),
                 onUriClick = openUri,

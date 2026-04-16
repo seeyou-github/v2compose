@@ -21,6 +21,7 @@ import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.ui.topic.bean.ReplyWrapper
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
 import io.github.v2compose.usecase.HtmlImageLoader
+import io.github.v2compose.usecase.TaggedHtmlImageLoadCoordinator
 import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
@@ -272,11 +272,16 @@ class TopicViewModel(
 
 
     val sizedHtmls = mutableStateMapOf<String, String>()
+    private val htmlImageLoadCoordinator = TaggedHtmlImageLoadCoordinator()
 
     fun loadHtmlImage(tag: String, html: String, imageSrc: String?) {
-        viewModelScope.launch {
-            htmlImageLoader.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
-        }
+        htmlImageLoadCoordinator.launch(
+            tag = tag,
+            html = html,
+            imageSrc = imageSrc,
+            scope = viewModelScope,
+            loader = htmlImageLoader,
+        ) { sizedHtmls[tag] = it }
     }
 
     //缓存回复的感谢、忽略等状态

@@ -571,6 +571,7 @@ fun UserReplyItem(
             val leftBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
             HtmlContent(
                 content = content,
+                sourceContent = reply.content.content,
                 onUriClick = { openUri(V2exUri.fixUriWithTopicPath(it, reply.dock.link)) },
                 loadImage = loadHtmlImage,
                 onHtmlImageClick = onHtmlImageClick,

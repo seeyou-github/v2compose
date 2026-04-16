@@ -15,6 +15,7 @@ typealias OnHtmlImageClick = (String, List<String>) -> Unit
 @Composable
 fun HtmlContent(
     content: String,
+    sourceContent: String = content,
     modifier: Modifier = Modifier,
     selectable: Boolean = false,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
@@ -37,13 +38,13 @@ fun HtmlContent(
         baseUrl = baseUrl,
         onLinkClick = onUriClick,
         onClick = onClick,
-        loadImage = { src: String -> loadImage?.invoke(content, src) },
+        loadImage = { src: String -> loadImage?.invoke(sourceContent, src) },
         onImageClick = { clicked: Img, all: List<Img> ->
             onHtmlImageClick?.invoke(clicked.src, all.map(Img::src))
         },
     )
 
-    LaunchedEffect(content, loadImage) {
-        loadImage?.invoke(content, null)
+    LaunchedEffect(sourceContent, loadImage) {
+        loadImage?.invoke(sourceContent, null)
     }
 }

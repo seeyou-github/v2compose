@@ -12,12 +12,12 @@ import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.repository.UserRepository
 import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.usecase.HtmlImageLoader
+import io.github.v2compose.usecase.TaggedHtmlImageLoadCoordinator
 import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -99,11 +99,16 @@ class UserViewModel(
     }
 
     val sizedHtmls = mutableStateMapOf<String, String>()
+    private val htmlImageLoadCoordinator = TaggedHtmlImageLoadCoordinator()
 
     fun loadHtmlImage(tag: String, html: String, imageSrc: String?) {
-        viewModelScope.launch {
-            htmlImageLoader.loadHtmlImages(html, imageSrc).collectLatest { sizedHtmls[tag] = it }
-        }
+        htmlImageLoadCoordinator.launch(
+            tag = tag,
+            html = html,
+            imageSrc = imageSrc,
+            scope = viewModelScope,
+            loader = htmlImageLoader,
+        ) { sizedHtmls[tag] = it }
     }
 
 }

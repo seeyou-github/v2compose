@@ -232,6 +232,7 @@ private fun NotificationItem(
                     Spacer(Modifier.height(4.dp))
                     HtmlContent(
                         content = content,
+                        sourceContent = item.content,
                         onUriClick = { onUriClick(V2exUri.fixUriWithTopicPath(it, item.link)) },
                         loadImage = loadHtmlImage,
                         onHtmlImageClick = onHtmlImageClick,

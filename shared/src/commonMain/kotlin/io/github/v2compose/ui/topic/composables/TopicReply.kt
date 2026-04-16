@@ -136,6 +136,7 @@ fun TopicReply(
 
                     HtmlContent(
                         content = content,
+                        sourceContent = reply.replyContent,
                         selectable = false,
                         linkFloor = true,
                         onUriClick = { onUriClick(it, reply) },
@@ -269,6 +270,7 @@ fun UserTopicReply(
         Spacer(Modifier.height(8.dp))
         HtmlContent(
             content = content,
+            sourceContent = reply.replyContent,
             linkFloor = true,
             onUriClick = { onUriClick(it, reply) },
             loadImage = loadHtmlImage,
