@@ -15,7 +15,7 @@ class NodeTopicInfo : BaseInfo() {
     @Pick(value = "a[href*=favorite/] ", attr = Attrs.HREF)
     var favoriteLink: String = ""
 
-    @Pick("div.box div.cell:has(table)")
+    @Pick("div.box:nth-child(2) div.cell:has(table)")
     var items: List<Item> = listOf()
 
     fun total(): Int {
