@@ -27,51 +27,23 @@ import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.save_image_failed
 import v2compose.shared.generated.resources.save_image_success
 import java.io.File
-
-@Composable
-private fun rememberAndroidExternalUriHandler(
-    context: Context = LocalContext.current,
-): (String) -> Unit = remember(context) {
-    { uri -> context.openExternalUri(uri) }
-}
-
-@Composable
-private fun rememberAndroidShareHandler(
-    context: Context = LocalContext.current,
-): (String, String) -> Unit = remember(context) {
-    { title, url -> context.share(title, url) }
-}
-
-@Composable
-private fun rememberAndroidImageSaver(
-    snackbarHostState: SnackbarHostState,
-    context: Context = LocalContext.current,
-): (String) -> Unit {
-    val coroutineScope = rememberCoroutineScope()
-    return remember(context, coroutineScope, snackbarHostState) {
-        { url ->
-            coroutineScope.launch {
-                context.saveImage(url, snackbarHostState)
-            }
-        }
-    }
-}
+import androidx.core.net.toUri
 
 @Composable
 fun rememberAndroidAppPlatformHandlers(
     snackbarHostState: SnackbarHostState,
     context: Context = LocalContext.current,
 ): AppPlatformHandlers {
-    val openExternalUri = rememberAndroidExternalUriHandler(context)
-    val shareContent = rememberAndroidShareHandler(context)
-    val saveImage = rememberAndroidImageSaver(snackbarHostState, context)
+    val coroutineScope = rememberCoroutineScope()
 
-    return remember(openExternalUri, shareContent, saveImage, context) {
+    return remember(context, coroutineScope) {
         AppPlatformHandlers(
             capabilities = PlatformCapabilities.Android,
-            externalNavigator = ExternalNavigator(openExternalUri),
-            shareLauncher = ShareLauncher(shareContent),
-            imageSaver = ImageSaver(saveImage),
+            externalNavigator = { context.openExternalUri(it) },
+            shareLauncher = { title, url -> context.share(title, url) },
+            imageSaver = { url ->
+                coroutineScope.launch { context.saveImage(url, snackbarHostState) }
+            },
             settingsLauncher = object : SettingsLauncher {
                 override fun openAppSettings() {
                     context.openAppSettings()
@@ -88,7 +60,7 @@ fun rememberAndroidAppPlatformHandlers(
                 override fun isAutoCheckInChannelEnabled(): Boolean =
                     NotificationCenter.isAutoCheckInChannelEnabled(context)
             },
-            autoCheckInPrerequisite = AutoCheckInPrerequisite {
+            autoCheckInPrerequisite = {
                 when {
                     !context.checkNotificationPermission() ->
                         AutoCheckInPrerequisiteState.RequiresNotificationPermission
@@ -113,7 +85,7 @@ private fun Context.openNotificationSettings() {
 }
 
 private fun Context.openExternalUri(uri: String) {
-    val parsedUri = runCatching { Uri.parse(uri) }.getOrNull() ?: return
+    val parsedUri = runCatching { uri.toUri() }.getOrNull() ?: return
     when (parsedUri.scheme) {
         "mailto", "sms", "tel" -> startActivity(Intent(Intent.ACTION_VIEW, parsedUri))
         else -> openInBrowser(uri)
@@ -121,7 +93,7 @@ private fun Context.openExternalUri(uri: String) {
 }
 
 private fun Context.openInBrowser(url: String) {
-    val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return
+    val uri = runCatching { url.toUri() }.getOrNull() ?: return
     val defaultBrowser = getDefaultBrowser()
     val customTabsBrowsers = getCustomTabsBrowsers()
 
@@ -143,7 +115,7 @@ private fun Context.openInBrowser(url: String) {
 }
 
 private fun Context.getDefaultBrowser(): String? {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.v2ex.com"))
+    val intent = Intent(Intent.ACTION_VIEW, "https://www.v2ex.com".toUri())
     val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
         ?: return null
     return resolveInfo.activityInfo?.packageName
@@ -174,7 +146,7 @@ private suspend fun Context.saveImage(
     url: String,
     snackbarHostState: SnackbarHostState,
 ) {
-    val imageName = Uri.parse(url).lastPathSegment ?: return
+    val imageName = url.toUri().lastPathSegment ?: return
     val pictureDir =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
     val appImageDir = File(pictureDir, "v2compose").also { it.mkdirs() }

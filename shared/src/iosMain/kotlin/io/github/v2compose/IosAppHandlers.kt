@@ -7,6 +7,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.uikit.LocalUIViewController
 import io.github.v2compose.network.NetworkClientProvider
 import io.github.v2compose.usecase.ExternalImageRequestHeaders
+import io.github.v2compose.util.KLogger
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -43,25 +44,38 @@ import v2compose.shared.generated.resources.save_image_failed
 import v2compose.shared.generated.resources.save_image_success
 import kotlin.coroutines.resume
 
-@Composable
-private fun rememberIosExternalUriHandler(): (String) -> Unit {
-    return remember {
-        { uri -> openUrl(uri) }
+private const val TAG = "IosAppHandlers"
+
+internal interface IosUrlOpener {
+    fun canOpen(url: NSURL): Boolean
+
+    fun open(url: NSURL, completionHandler: (Boolean) -> Unit)
+}
+
+private object SharedApplicationUrlOpener : IosUrlOpener {
+    override fun canOpen(url: NSURL): Boolean = UIApplication.sharedApplication.canOpenURL(url)
+
+    override fun open(url: NSURL, completionHandler: (Boolean) -> Unit) {
+        UIApplication.sharedApplication.openURL(
+            url,
+            options = emptyMap<Any?, Any>(),
+            completionHandler = completionHandler,
+        )
     }
 }
+
 
 @Composable
 fun rememberIosAppPlatformHandlers(
     snackbarHostState: SnackbarHostState,
 ): AppPlatformHandlers {
     val viewController = LocalUIViewController.current
-    val openExternalUri = rememberIosExternalUriHandler()
     val coroutineScope = rememberCoroutineScope()
 
-    return remember(viewController, openExternalUri, snackbarHostState, coroutineScope) {
+    return remember(viewController, snackbarHostState, coroutineScope) {
         AppPlatformHandlers(
             capabilities = PlatformCapabilities.Ios,
-            externalNavigator = ExternalNavigator(openExternalUri),
+            externalNavigator = { openUrl(it) },
             shareLauncher = { title, url ->
                 presentActivitySheet(viewController, listOf(title, url))
             },
@@ -103,9 +117,21 @@ private fun presentActivitySheet(
     viewController.presentViewController(controller, animated = true, completion = null)
 }
 
-private fun openUrl(url: String) {
+internal fun openUrl(
+    url: String,
+    urlOpener: IosUrlOpener = SharedApplicationUrlOpener,
+    logger: (String) -> Unit = { KLogger.d(TAG, it) },
+) {
     val nsUrl = NSURL.URLWithString(url) ?: return
-    UIApplication.sharedApplication.openURL(nsUrl)
+    if (!urlOpener.canOpen(nsUrl)) {
+        logger("openUrl skipped because UIApplication cannot open: $url")
+        return
+    }
+    urlOpener.open(nsUrl) { opened ->
+        if (!opened) {
+            logger("openUrl completion reported failure: $url")
+        }
+    }
 }
 
 private fun hasNotificationPermission(): Boolean {
