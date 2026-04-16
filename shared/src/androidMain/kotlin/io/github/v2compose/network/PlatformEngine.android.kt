@@ -20,6 +20,13 @@ fun createAndroidV2HttpClient(
     return createV2HttpClient(engine, fruit, eventManager)
 }
 
+fun createAndroidImageHttpClient(okHttpClient: OkHttpClient): HttpClient {
+    val engine = OkHttp.create {
+        preconfigured = okHttpClient
+    }
+    return createImageHttpClient(engine)
+}
+
 fun createAndroidGithubHttpClient(okHttpClient: OkHttpClient): HttpClient {
     val engine = OkHttp.create {
         preconfigured = okHttpClient

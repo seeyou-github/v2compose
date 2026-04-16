@@ -8,7 +8,9 @@ import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.util.KLogger
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.DEFAULT
@@ -24,6 +26,8 @@ import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+internal const val DEFAULT_IMAGE_ACCEPT_HEADER = "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
+
 /**
  * Shared Ktor Client for V2EX
  */
@@ -31,21 +35,19 @@ fun createV2HttpClient(
     engine: HttpClientEngine? = null,
     fruit: Fruit = Fruit.createDefault(),
     eventManager: V2EventManager? = null,
-): HttpClient = HttpClient(engine ?: createHttpClientEngine()) {
-    expectSuccess = true
-
-    install(ContentNegotiation) {
-        // 支持 JSON 解析 (针对 V2EX API)
-        json(Json {
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-        })
-        // 支持 HTML 解析 (针对 V2EX 网页)
-        fruit(fruit)
-    }
-
-    // 默认配置
-    defaultRequest {
+): HttpClient = createConfiguredHttpClient(
+    engine = engine,
+    eventManager = eventManager,
+    installContentNegotiation = {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                coerceInputValues = true
+            })
+            fruit(fruit)
+        }
+    },
+    configureDefaultRequest = {
         url {
             protocol = URLProtocol.HTTPS
             host = "www.v2ex.com"
@@ -53,19 +55,24 @@ fun createV2HttpClient(
         if (!headers.contains(NetConstants.keyUserAgent)) {
             header(HttpHeaders.UserAgent, NetConstants.wapUserAgent)
         }
-    }
+    },
+)
 
-    ResponseObserver { response ->
-        handleAuthRedirectResponse(response, eventManager)
-    }
-
-    // 日志 (可选)
-    install(Logging) {
-        logger = Logger.DEFAULT
-        level = LogLevel.BODY
-        format = LoggingFormat.OkHttp
-    }
-}
+fun createImageHttpClient(
+    engine: HttpClientEngine? = null,
+): HttpClient = createConfiguredHttpClient(
+    engine = engine,
+    eventManager = null,
+    installContentNegotiation = null,
+    configureDefaultRequest = {
+        if (!headers.contains(NetConstants.keyUserAgent)) {
+            header(HttpHeaders.UserAgent, NetConstants.wapUserAgent)
+        }
+        if (!headers.contains(HttpHeaders.Accept)) {
+            header(HttpHeaders.Accept, DEFAULT_IMAGE_ACCEPT_HEADER)
+        }
+    },
+)
 
 fun createGithubHttpClient(engine: HttpClientEngine? = null): HttpClient =
     HttpClient(engine ?: createHttpClientEngine()) {
@@ -76,6 +83,33 @@ fun createGithubHttpClient(engine: HttpClientEngine? = null): HttpClient =
             })
         }
     }
+
+private fun createConfiguredHttpClient(
+    engine: HttpClientEngine?,
+    eventManager: V2EventManager?,
+    installContentNegotiation: (HttpClientConfig<*>.() -> Unit)?,
+    configureDefaultRequest: DefaultRequest.DefaultRequestBuilder.() -> Unit,
+): HttpClient = HttpClient(engine ?: createHttpClientEngine()) {
+    expectSuccess = true
+
+    installContentNegotiation?.invoke(this)
+
+    defaultRequest {
+        configureDefaultRequest.invoke(this)
+    }
+
+    if (eventManager != null) {
+        ResponseObserver { response ->
+            handleAuthRedirectResponse(response, eventManager)
+        }
+    }
+
+    install(Logging) {
+        logger = Logger.DEFAULT
+        level = LogLevel.BODY
+        format = LoggingFormat.OkHttp
+    }
+}
 
 internal fun resolveAuthRedirectEventLocation(
     requestUrl: String,

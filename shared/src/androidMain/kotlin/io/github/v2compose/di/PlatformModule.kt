@@ -20,6 +20,7 @@ import io.github.v2compose.network.OkHttpFactory
 import io.github.v2compose.network.OkHttpCacheManager
 import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.WebkitCookieManager
+import io.github.v2compose.network.createAndroidImageHttpClient
 import io.github.v2compose.network.AndroidNetworkClientProvider
 import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
@@ -103,9 +104,8 @@ actual val platformModule: Module = module {
     }
 
     single<HttpClient>(named("ImageHttpClient")) {
-        createAndroidV2HttpClient(
+        createAndroidImageHttpClient(
             okHttpClient = get<OkHttpClient>(named("ImageOkHttpClient")),
-            fruit = get<io.github.fruit.Fruit>()
         )
     }
 

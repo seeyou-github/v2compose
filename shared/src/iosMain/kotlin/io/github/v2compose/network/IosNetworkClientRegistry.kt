@@ -62,13 +62,12 @@ class IosNetworkClientRegistry(
         )
 
     private fun buildImageHttpClient(proxyInfo: ProxyInfo): HttpClient =
-        createV2HttpClient(
+        createImageHttpClient(
             engine = createIosHttpClientEngine(
                 proxyInfo = proxyInfo,
                 urlCache = urlCache,
                 useSharedCookieStorage = true,
             ),
-            fruit = fruit,
         )
 
     private fun buildGithubHttpClient(proxyInfo: ProxyInfo): HttpClient =
