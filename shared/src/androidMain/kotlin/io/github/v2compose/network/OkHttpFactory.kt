@@ -68,7 +68,7 @@ object OkHttpFactory {
 
         builder.addInterceptor(
             HttpLoggingInterceptor { msg: String -> KLogger.v(TAG, msg) }
-                .setLevel(HttpLoggingInterceptor.Level.BODY)
+                .setLevel(HttpLoggingInterceptor.Level.HEADERS)
         )
         return builder.build()
     }

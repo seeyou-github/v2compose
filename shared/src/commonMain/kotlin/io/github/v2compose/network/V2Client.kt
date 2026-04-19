@@ -26,7 +26,8 @@ import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-internal const val DEFAULT_IMAGE_ACCEPT_HEADER = "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
+internal const val DEFAULT_IMAGE_ACCEPT_HEADER =
+    "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"
 
 /**
  * Shared Ktor Client for V2EX
@@ -106,7 +107,7 @@ private fun createConfiguredHttpClient(
 
     install(Logging) {
         logger = Logger.SIMPLE
-        level = LogLevel.BODY
+        level = LogLevel.HEADERS
         format = LoggingFormat.OkHttp
     }
 }

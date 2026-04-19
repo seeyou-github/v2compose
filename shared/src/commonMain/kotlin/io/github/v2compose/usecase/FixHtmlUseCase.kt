@@ -1,5 +1,6 @@
 package io.github.v2compose.usecase
 
+import coil3.SingletonImageLoader
 import coil3.request.ImageRequest
 import coil3.request.ImageResult
 import coil3.request.SuccessResult
@@ -28,7 +29,7 @@ class FixHtmlUseCase(
 ) : HtmlImageLoader {
 
     companion object {
-        const val LoadImagesCountEveryTime = 4
+        const val LoadImagesCountEveryTime = 2
     }
 
     private val floorRegex = "(^|\\s+)#(\\d+)($|\\s+)".toRegex()
@@ -41,7 +42,7 @@ class FixHtmlUseCase(
         }
     }
 
-    suspend fun loadImages(html: String): Flow<String> = flow {
+    private fun loadImages(html: String): Flow<String> = flow {
         val document = withContext(Dispatchers.Default) { initialHtml(html, true) }
         rewriteHtmlImageSources(document, externalImageUrlResolver)
 
@@ -67,7 +68,7 @@ class FixHtmlUseCase(
                 val imageRequest = createImageRequest(src)
                 try {
                     KLogger.d(TAG, "loadImages execute start, src = $src")
-                    val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
+                    val result = SingletonImageLoader.get(context).execute(imageRequest)
                     KLogger.d(
                         TAG,
                         "loadImages execute end, src = $src, result = ${result::class.simpleName}"
@@ -103,7 +104,7 @@ class FixHtmlUseCase(
             .build()
     }
 
-    suspend fun loadImage(html: String, src: String): Flow<String> = flow {
+    private fun loadImage(html: String, src: String): Flow<String> = flow {
         val document = Ksoup.parse(html)
         rewriteHtmlImageSources(document, externalImageUrlResolver)
         val resolvedSrc = externalImageUrlResolver.resolve(src.fullUrl(Constants.baseUrl))
@@ -125,7 +126,7 @@ class FixHtmlUseCase(
             .build()
         KLogger.d(TAG, "loadImage execute start, src = $resolvedSrc")
         val imageResult = try {
-            val result = coil3.SingletonImageLoader.get(context).execute(imageRequest)
+            val result = SingletonImageLoader.get(context).execute(imageRequest)
             KLogger.d(
                 TAG,
                 "loadImage execute end, src = $resolvedSrc, result = ${result::class.simpleName}"
