@@ -105,7 +105,7 @@ fun WriteTopicScreenRoute(
 ) {
     val loadNodesState by viewModel.loadNodes.state.collectAsStateWithLifecycle()
     val createTopicState by viewModel.createTopicState.collectAsStateWithLifecycle()
-    val initialDraftTopic = remember { viewModel.draftTopic }
+    val draftTopicUiState by viewModel.draftTopicUiState.collectAsStateWithLifecycle()
 
     HandleLoadNodesState(loadNodesState, screenState)
 
@@ -117,7 +117,8 @@ fun WriteTopicScreenRoute(
     )
 
     WriteTopicScreen(
-        initialDraftTopic = initialDraftTopic,
+        initialDraftTopic = draftTopicUiState.draftTopic,
+        draftLoaded = draftTopicUiState.isLoaded,
         loadNodesState = loadNodesState,
         createTopicState = createTopicState,
         snackbarHostState = screenState.snackbarHostState,
@@ -135,6 +136,7 @@ fun WriteTopicScreenRoute(
 @Composable
 private fun WriteTopicScreen(
     initialDraftTopic: DraftTopic,
+    draftLoaded: Boolean,
     createTopicState: CreateTopicState,
     loadNodesState: LoadNodesState,
     snackbarHostState: SnackbarHostState,
@@ -147,9 +149,19 @@ private fun WriteTopicScreen(
     var content by rememberSaveable { mutableStateOf(initialDraftTopic.content) }
     var contentFormat by rememberSaveable { mutableStateOf(initialDraftTopic.contentFormat) }
     var node by rememberSaveable(stateSaver = TopicNodeSaver) { mutableStateOf(initialDraftTopic.node) }
+    var hasUserEditedDraft by rememberSaveable { mutableStateOf(false) }
 
     var showNodes by remember { mutableStateOf(false) }
     val successLoadNodesState = loadNodesState as? LoadNodesState.Success
+
+    LaunchedEffect(draftLoaded, initialDraftTopic) {
+        if (draftLoaded && !hasUserEditedDraft) {
+            title = initialDraftTopic.title
+            content = initialDraftTopic.content
+            contentFormat = initialDraftTopic.contentFormat
+            node = initialDraftTopic.node
+        }
+    }
 
     PlatformBackHandler(enabled = showNodes) {
         showNodes = false
@@ -178,6 +190,7 @@ private fun WriteTopicScreen(
                     TopicTitleField(
                         title = title,
                         onTitleChanged = {
+                            hasUserEditedDraft = true
                             title = it
                             onTopicChanged(title, content, contentFormat, node)
                         },
@@ -193,10 +206,12 @@ private fun WriteTopicScreen(
                             placeholder = stringResource(Res.string.topic_content_placeholder),
                             contentFormat = contentFormat,
                             onContentChanged = {
+                                hasUserEditedDraft = true
                                 content = it
                                 onTopicChanged(title, content, contentFormat, node)
                             },
                             onContentFormatChanged = {
+                                hasUserEditedDraft = true
                                 contentFormat = it
                                 onTopicChanged(title, content, contentFormat, node)
                             },
@@ -233,6 +248,7 @@ private fun WriteTopicScreen(
             SelectNode(
                 nodes = nodes,
                 onNodeClick = {
+                    hasUserEditedDraft = true
                     showNodes = false
                     node = it
                     onTopicChanged(title, content, contentFormat, node)
@@ -253,6 +269,11 @@ private fun TopicTitleField(
 ) {
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(title, TextRange(title.length)))
+    }
+    LaunchedEffect(title) {
+        if (textFieldValue.text != title) {
+            textFieldValue = TextFieldValue(title, TextRange(title.length))
+        }
     }
 
     val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -295,6 +316,11 @@ fun TopicContentField(
 ) {
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(content, TextRange(content.length)))
+    }
+    LaunchedEffect(content) {
+        if (textFieldValue.text != content) {
+            textFieldValue = TextFieldValue(content, TextRange(content.length))
+        }
     }
     val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
 
@@ -405,7 +431,14 @@ private fun HandleCreateTopicState(
         is CreateTopicState.Failure -> {
             val problem: CreateTopicPageInfo.Problem = createTopicState.pageInfo.problem ?: return
             if (problem.isEmpty()) return
-            HtmlAlertDialog(content = problem.html, onUriClick = onUriClick)
+            var showProblem by remember(createTopicState) { mutableStateOf(true) }
+            if (showProblem) {
+                HtmlAlertDialog(
+                    content = problem.html,
+                    onUriClick = onUriClick,
+                    onDismissRequest = { showProblem = false },
+                )
+            }
         }
 
         is CreateTopicState.Success -> {

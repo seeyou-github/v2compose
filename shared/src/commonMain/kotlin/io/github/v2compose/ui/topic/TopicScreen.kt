@@ -244,9 +244,9 @@ private fun TopicScreen(
     val scrollState = topicItems.rememberLazyListState()
     val topBarShowTopicTitle by remember(density, scrollState) {
         derivedStateOf {
-            scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset < with(
+            scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > with(
                 density
-            ) { -64.dp.toPx() }
+            ) { 64.dp.roundToPx() }
         }
     }
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -309,14 +309,18 @@ private fun TopicScreen(
                 onNodeClick = onNodeClick,
                 onRepliedOrderClick = onRepliedOrderClick,
                 onTopicReplyClick = {
-                    replyInputInitialText = initialReplyText(it, replyWithFloor)
+                    val initialText = initialReplyText(it, replyWithFloor)
+                    replyInputInitialText = initialText
+                    replyInputCurrentText = initialText
                     replyInputState = ReplyInputState.Expanded
                     clickReplyTimes++
                 },
                 openUri = openUri,
                 onTopicMenuItemClick = { menuItem, reply ->
                     if (menuItem == ReplyMenuItem.Reply) {
-                        replyInputInitialText = initialReplyText(reply, replyWithFloor)
+                        val initialText = initialReplyText(reply, replyWithFloor)
+                        replyInputInitialText = initialText
+                        replyInputCurrentText = initialText
                         replyInputState = ReplyInputState.Expanded
                     } else {
                         onReplyMenuItemClick(menuItem, reply)
@@ -338,6 +342,7 @@ private fun TopicScreen(
             if (replyTopicState is ReplyTopicState.Success) {
                 LaunchedEffect(true) {
                     replyInputInitialText = ""
+                    replyInputCurrentText = ""
                 }
             }
         }
@@ -822,6 +827,13 @@ private fun HandleReplyTopicState(
         }
     } else if (replyTopicState is ReplyTopicState.Failure) {
         val problem = rememberSaveable(replyTopicState) { replyTopicState.result.problem }
-        HtmlAlertDialog(content = problem, onUriClick = onUriClick)
+        var showProblem by remember(replyTopicState) { mutableStateOf(true) }
+        if (showProblem) {
+            HtmlAlertDialog(
+                content = problem,
+                onUriClick = onUriClick,
+                onDismissRequest = { showProblem = false },
+            )
+        }
     }
 }

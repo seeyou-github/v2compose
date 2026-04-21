@@ -102,10 +102,16 @@ private fun LoginScreen(
     onSignInWithGoogleClick: (String) -> Unit,
     reloadLoginParam: () -> Unit,
 ) {
-    val problem = rememberSaveable(loginParamState) {
-        if (loginParamState is LoginParamState.Success) loginParamState.data.problem else ""
+    val problem = (loginParamState as? LoginParamState.Success)?.data?.problem.orEmpty()
+    if (problem.isNotEmpty()) {
+        var showProblem by remember(loginParamState) { mutableStateOf(true) }
+        if (showProblem) {
+            HtmlAlertDialog(
+                content = problem,
+                onDismissRequest = { showProblem = false },
+            )
+        }
     }
-    HtmlAlertDialog(content = problem)
 
     Scaffold(
         topBar = { LoginTopBar(onCloseClick = onCloseClick) },

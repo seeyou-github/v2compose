@@ -15,10 +15,11 @@ import io.github.v2compose.shared.bean.TopicNode
 import io.github.v2compose.usecase.LoadNodesUseCase
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class WriteTopicViewModel(
     savedStateHandle: SavedStateHandle,
@@ -32,18 +33,30 @@ class WriteTopicViewModel(
     private val _createTopicState = MutableStateFlow<CreateTopicState>(CreateTopicState.Idle)
     val createTopicState: StateFlow<CreateTopicState> = _createTopicState
 
-    val draftTopic: DraftTopic
-        get() = runBlocking {
-            topicRepository.draftTopic.first().let { local ->
-                if (local.node != null) local else
-                    local.copy(
-                        node = TopicNode(
-                            writeTopicArgs.nodeName ?: "",
-                            writeTopicArgs.nodeTitle ?: "",
-                        )
-                    )
-            }
+    private val routeDefaultNode = TopicNode(
+        name = writeTopicArgs.nodeName ?: "",
+        title = writeTopicArgs.nodeTitle ?: "",
+    )
+
+    val draftTopicUiState: StateFlow<WriteTopicDraftUiState> = topicRepository.draftTopic
+        .map { local ->
+            WriteTopicDraftUiState(
+                draftTopic = if (local.node != null) {
+                    local
+                } else {
+                    local.copy(node = routeDefaultNode)
+                },
+                isLoaded = true,
+            )
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = WriteTopicDraftUiState(
+                draftTopic = DraftTopic(node = routeDefaultNode),
+                isLoaded = false,
+            ),
+        )
 
     init {
         loadNodes()
@@ -110,6 +123,12 @@ class WriteTopicViewModel(
     }
 
 }
+
+@Stable
+data class WriteTopicDraftUiState(
+    val draftTopic: DraftTopic,
+    val isLoaded: Boolean,
+)
 
 @Stable
 sealed interface CreateTopicState {

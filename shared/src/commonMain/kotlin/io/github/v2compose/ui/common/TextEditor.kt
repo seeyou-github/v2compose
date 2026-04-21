@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -165,6 +166,11 @@ private fun ContentEditor(
 ) {
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(content, TextRange(content.length)))
+    }
+    LaunchedEffect(content) {
+        if (textFieldValue.text != content) {
+            textFieldValue = TextFieldValue(content, TextRange(content.length))
+        }
     }
     val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
     TextField(

@@ -192,7 +192,14 @@ private fun AddSupplementBackHandler(supplement: String, onCloseClick: () -> Uni
 private fun HandleProblem(pageInfo: AppendTopicPageInfo?, onUriClick: (String) -> Unit) {
     pageInfo?.problem?.let {
         if (!it.isEmpty()) {
-            HtmlAlertDialog(content = it.html, onUriClick = onUriClick)
+            var showProblem by remember(pageInfo) { mutableStateOf(true) }
+            if (showProblem) {
+                HtmlAlertDialog(
+                    content = it.html,
+                    onUriClick = onUriClick,
+                    onDismissRequest = { showProblem = false },
+                )
+            }
         }
     }
 }
