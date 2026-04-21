@@ -328,18 +328,18 @@ private class FakeAccountRepository(
 
     override suspend fun dailyInfo(): DailyInfo {
         dailyInfoCalls += 1
-        return DailyInfo().apply {
-            continuousLoginDaysText = "已连续登录 1 天"
-            checkInUrl = "location.href = '/balance';"
-        }
+        return DailyInfo(
+            continuousLoginDaysText = "已连续登录 1 天",
+            checkInUrl = "location.href = '/balance';",
+        )
     }
 
     override suspend fun checkIn(once: String): DailyInfo {
         dailyInfoCalls += 1
-        return DailyInfo().apply {
-            continuousLoginDaysText = "已连续登录 1 天"
-            checkInUrl = "location.href = '/balance';"
-        }
+        return DailyInfo(
+            continuousLoginDaysText = "已连续登录 1 天",
+            checkInUrl = "location.href = '/balance';",
+        )
     }
 
     override val myTopics: Flow<PagingData<MyTopicsInfo.Item>> = flowOf(PagingData.empty())

@@ -30,7 +30,7 @@ class AppStateStore(
         if (newsInfo.isValid() && _nodesNavInfo.value != null) {
             return
         }
-        val newNodesNavInfo = fruit.fromHtml(newsInfo.getResponse(), NodesNavInfo::class)
+        val newNodesNavInfo = fruit.fromHtml(newsInfo.rawResponse, NodesNavInfo::class)
         if (newNodesNavInfo?.isValid() == true) {
             _nodesNavInfo.emit(newNodesNavInfo)
         }

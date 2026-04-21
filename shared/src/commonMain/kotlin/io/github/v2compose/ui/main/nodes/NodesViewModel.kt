@@ -46,12 +46,13 @@ class NodesViewModel(private val nodeRepository: NodeRepository) : ViewModel() {
 
             var nodesNavInfo =
                 nodeRepository.nodesNavInfo.first()
-            if (nodesNavInfo.isNullOrEmpty()) {
+            if (nodesNavInfo == null || nodesNavInfo.items.isEmpty()) {
                 nodesNavInfo = nodeRepository.getNodesNavInfo()
             }
+            val resolvedNodesNavInfo = requireNotNull(nodesNavInfo)
 
             val allNodes = nodeRepository.getAllNodes().associateBy { it.name }
-            val result = nodesNavInfo.map { category ->
+            val result = resolvedNodesNavInfo.items.map { category ->
                 val nodes = category.nodes
                     .map { node -> allNodes[node.name] }
                     .filterIsInstance<Node>()

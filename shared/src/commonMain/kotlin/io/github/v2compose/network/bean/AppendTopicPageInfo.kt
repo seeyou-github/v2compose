@@ -5,51 +5,31 @@ import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 
 @Pulp("div#Wrapper")
-class AppendTopicPageInfo : BaseInfo() {
-    @Pick(value = "input[name=once]", attr = "value")
-    var once: String = ""
-
-    @Pick("div.inner ul li")
-    var tips: List<Tip> = listOf()
-
-    @Pick("div.problem")
-    var problem: Problem? = null
-
-    override fun isValid(): Boolean {
-        return once.isNotEmpty() && tips.size > 1
-    }
-
-    override fun toString(): String {
-        return "AppendTopicPageInfo(once='$once', tips=$tips, problem=$problem)"
-    }
+data class AppendTopicPageInfo(
+    @property:Pick(value = "input[name=once]", attr = "value")
+    val once: String = "",
+    @property:Pick("div.inner ul li")
+    val tips: List<Tip> = emptyList(),
+    @property:Pick("div.problem")
+    val problem: Problem? = null,
+) {
+    fun isValid(): Boolean = once.isNotEmpty() && tips.size > 1
 
     @Pulp
-    class Tip {
-        @Pick
-        var text: String = ""
-
-        override fun toString(): String {
-            return "Tip(text='$text')"
-        }
-    }
+    data class Tip(
+        @property:Pick
+        val text: String = ""
+    )
 
     @Pulp
-    class Problem {
-        @Pick(attr = Attrs.HTML)
-        var html: String = ""
-
-        @Pick(attr = Attrs.OWN_TEXT)
-        var title: String = ""
-
-        @Pick("ul li")
-        var tips: List<String> = listOf()
-
-        fun isEmpty(): Boolean {
-            return tips.isEmpty() && title.isEmpty()
-        }
-
-        override fun toString(): String {
-            return "Problem(html='$html', title='$title', tips=$tips)"
-        }
+    data class Problem(
+        @property:Pick(attr = Attrs.HTML)
+        val html: String = "",
+        @property:Pick(attr = Attrs.OWN_TEXT)
+        val title: String = "",
+        @property:Pick("ul li")
+        val tips: List<String> = emptyList(),
+    ) {
+        fun isEmpty(): Boolean = tips.isEmpty() && title.isEmpty()
     }
 }

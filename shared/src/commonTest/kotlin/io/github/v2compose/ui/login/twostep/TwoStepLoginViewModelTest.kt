@@ -101,11 +101,11 @@ private class RecordingAccountRepository : AccountRepository {
 
     override suspend fun getTwoStepLoginInfo(): TwoStepLoginInfo {
         twoStepInfoCalls += 1
-        return TwoStepLoginInfo().apply {
-            once = "from-repository"
-            title = "两步验证"
-            avatar = "avatar"
-        }
+        return TwoStepLoginInfo(
+            avatar = "avatar",
+            title = "两步验证",
+            once = "from-repository",
+        )
     }
 
     override suspend fun loginNextStep(once: String, code: String): TwoStepLoginInfo = error("unused")

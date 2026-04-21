@@ -1,40 +1,47 @@
 package io.github.v2compose.network.bean
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * https://v2ex.com/api/nodes/s2.json
  */
-class NodesInfo : MutableList<NodesInfo.Node> by mutableListOf(), IBase {
-    private var responseBody: String = ""
-
-    override fun isValid(): Boolean {
-        if (isEmpty()) return true
-        return this[0].id.isNotEmpty()
-    }
-
-    override fun getResponse(): String = responseBody
-
-    override fun setResponse(html: String) {
-        responseBody = html
-    }
+@Serializable(with = NodesInfoSerializer::class)
+data class NodesInfo(
+    val items: List<Node> = emptyList()
+) {
+    fun isValid(): Boolean = items.isEmpty() || items[0].id.isNotEmpty()
 
     @Serializable
     data class Node(
-        var text: String = "",
-        var topics: Int = 0,
-        var id: String = "",
-        var isHot: Boolean = false
+        val text: String = "",
+        val topics: Int = 0,
+        val id: String = "",
+        val isHot: Boolean = false
     ) : Comparable<Node> {
-
-        override fun toString(): String {
-            return "Node(text='$text', topics=$topics, id='$id', isHot=$isHot)"
-        }
-
         override fun compareTo(other: Node): Int {
-            val flag1 = if (this.isHot) 0 else 1
+            val flag1 = if (isHot) 0 else 1
             val flag2 = if (other.isHot) 0 else 1
             return flag1 - flag2
         }
+    }
+}
+
+object NodesInfoSerializer : KSerializer<NodesInfo> {
+    private val delegate = ListSerializer(NodesInfo.Node.serializer())
+
+    override val descriptor: SerialDescriptor
+        get() = delegate.descriptor
+
+    override fun deserialize(decoder: Decoder): NodesInfo {
+        return NodesInfo(items = delegate.deserialize(decoder))
+    }
+
+    override fun serialize(encoder: Encoder, value: NodesInfo) {
+        delegate.serialize(encoder, value.items)
     }
 }

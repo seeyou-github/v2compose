@@ -8,47 +8,29 @@ import io.github.fruit.annotations.Pulp
  * https://www.v2ex.com/
  * bottom box
  */
-@Pulp("div.box:last-child div > table")
-class NodesNavInfo : MutableList<NodesNavInfo.Item> by mutableListOf(), IBase {
-    var responseBody: String = ""
-
-    override fun getResponse(): String = responseBody
-
-    override fun setResponse(html: String) {
-        responseBody = html
-    }
-
-    override fun isValid(): Boolean {
-        if (isEmpty()) return true
-        return this[0].category.isNotEmpty()
-    }
+@Pulp("div#Wrapper")
+data class NodesNavInfo(
+    @property:Pick("div.box:last-child div > table")
+    val items: List<Item> = emptyList(),
+) {
+    fun isValid(): Boolean = items.isEmpty() || items[0].category.isNotEmpty()
 
     @Pulp
-    class Item {
-        @Pick("span.fade")
-        var category: String = ""
-
-        @Pick("a")
-        var nodes: List<NodeItem> = listOf()
-
-        override fun toString(): String {
-            return "Item(category='$category', nodes=$nodes)"
-        }
-
+    data class Item(
+        @property:Pick("span.fade")
+        val category: String = "",
+        @property:Pick("a")
+        val nodes: List<NodeItem> = emptyList(),
+    ) {
         @Pulp
-        class NodeItem {
-            @Pick
-            var title: String = ""
-
-            @Pick(attr = Attrs.HREF)
-            var link: String = ""
-
+        data class NodeItem(
+            @property:Pick
+            val title: String = "",
+            @property:Pick(attr = Attrs.HREF)
+            val link: String = "",
+        ) {
             val name: String
                 get() = if (link.length > 4) link.substring(4) else ""
-
-            override fun toString(): String {
-                return "NodeItem(title='$title', link='$link')"
-            }
         }
     }
 }

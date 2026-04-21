@@ -5,69 +5,39 @@ import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 
 @Pulp("div#Wrapper")
-class UserPageInfo : BaseInfo() {
-    @Pick("h1")
-    var userName: String = ""
+data class UserPageInfo(
+    @property:Pick("h1")
+    val userName: String = "",
+    @property:Pick(value = "img.avatar", attr = Attrs.SRC)
+    val avatar: String = "",
+    @property:Pick("td[valign=top] > span.gray")
+    val desc: String = "",
+    @property:Pick("strong.online")
+    val online: String = "",
+    @property:Pick(value = "div.fr input", attr = "onclick")
+    val followOnClick: String = "",
+    @property:Pick(value = "div.fr input[value*=lock]", attr = "onclick")
+    val blockOnClick: String = "",
+) {
+    fun hadFollowed(): Boolean = followOnClick.contains("取消")
 
-    @Pick(value = "img.avatar", attr = Attrs.SRC)
-    var avatar: String = ""
+    fun hadBlocked(): Boolean = blockOnClick.contains("unblock")
 
-    @Pick("td[valign=top] > span.gray")
-    var desc: String = ""
+    fun getFollowUrl(): String? = extractUrl(followOnClick)
 
-    @Pick("strong.online")
-    var online: String = ""
+    fun getBlockUrl(): String? = extractUrl(blockOnClick)
 
-    @Pick(value = "div.fr input", attr = "onclick")
-    var followOnClick: String = ""
+    fun isOnline(): Boolean = online == "ONLINE"
 
-    @Pick(value = "div.fr input[value*=lock]", attr = "onclick")
-    var blockOnClick: String = ""
+    fun getAdjustedAvatar(): String = avatar
 
-    fun hadFollowed(): Boolean {
-        return followOnClick.isNotEmpty() && followOnClick.contains("取消")
-    }
+    fun isValid(): Boolean = userName.isNotEmpty()
 
-    fun hadBlocked(): Boolean {
-        return blockOnClick.isNotEmpty() && blockOnClick.contains("unblock")
-    }
-
-    fun getFollowUrl(): String? {
-        return getUrl(followOnClick)
-    }
-
-    fun getBlockUrl(): String? {
-        return getUrl(blockOnClick)
-    }
-
-    private fun getUrl(url: String?): String? {
-        if (!url.isNullOrEmpty()) {
-            var reg = "{ location.href = '"
-            var start = url.indexOf(reg) + reg.length
-            var end = url.lastIndexOf("'")
-            if (start in 0 until end) {
-                return url.substring(start, end)
-            }
-        }
-        return null
-    }
-
-    fun isOnline(): Boolean = online.isNotEmpty() && online == "ONLINE"
-
-    fun getAdjustedAvatar(): String = avatar // TODO: AvatarUtils 迁移后恢复
-
-    override fun toString(): String {
-        return "UserPageInfo(" +
-                "userName='$userName', " +
-                "followOnClick='$followOnClick', " +
-                "blockOnClick='$blockOnClick', " +
-                "avatar='$avatar', " +
-                "desc='$desc', " +
-                "online='$online'" +
-                ")"
-    }
-
-    override fun isValid(): Boolean {
-        return userName.isNotEmpty()
+    private fun extractUrl(value: String?): String? {
+        if (value.isNullOrEmpty()) return null
+        val prefix = "{ location.href = '"
+        val start = value.indexOf(prefix) + prefix.length
+        val end = value.lastIndexOf("'")
+        return if (start in 0 until end) value.substring(start, end) else null
     }
 }

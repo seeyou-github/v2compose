@@ -4,19 +4,12 @@ import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
 import io.github.fruit.annotations.Pulp
 
-@Pulp(value = "div#Wrapper")
-class ReplyTopicResultInfo : BaseInfo() {
-    @Pick(value = "input[name=once]", attr = "value")
-    var once: String = ""
-
-    @Pick(value = "div.problem", attr = Attrs.HTML)
-    var problem: String = ""
-
-    override fun isValid(): Boolean {
-        return once.isNotEmpty()
-    }
-
-    override fun toString(): String {
-        return "ReplyTopicResultInfo(once='$once', problem='$problem')"
-    }
+@Pulp("div#Wrapper")
+data class ReplyTopicResultInfo(
+    @property:Pick(value = "input[name=once]", attr = "value")
+    val once: String = "",
+    @property:Pick(value = "div.problem", attr = Attrs.HTML)
+    val problem: String = "",
+) {
+    fun isValid(): Boolean = once.isNotEmpty()
 }

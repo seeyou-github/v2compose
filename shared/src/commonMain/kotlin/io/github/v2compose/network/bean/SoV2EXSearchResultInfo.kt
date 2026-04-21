@@ -4,78 +4,49 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class SoV2EXSearchResultInfo : BaseInfo() {
+data class SoV2EXSearchResultInfo(
     @SerialName("total")
-    val total: Int = 0
-
+    val total: Int = 0,
     @SerialName("hits")
-    val hits: List<Hit> = listOf()
-
-    override fun toString(): String {
-        return "SoV2EXSearchResultInfo(total=$total, hits=$hits)"
-    }
-
-    override fun isValid(): Boolean {
-        return true
-    }
+    val hits: List<Hit> = emptyList(),
+) {
+    fun isValid(): Boolean = true
 
     @Serializable
-    class Hit {
+    data class Hit(
         @SerialName("_source")
-        lateinit var source: Source
-
+        val source: Source = Source(),
         @SerialName("highlight")
-        val highlight: Highlight? = null
-
-        override fun toString(): String {
-            return "Hit(source=$source, highlight=$highlight)"
-        }
-
+        val highlight: Highlight? = null,
+    ) {
         @Serializable
-        class Source {
+        data class Source(
             @SerialName("id")
-            val id: Int = 0
-
+            val id: Int = 0,
             @SerialName("title")
-            val title: String = ""
-
+            val title: String = "",
             @SerialName("content")
-            val content: String = ""
-
+            val content: String = "",
             @SerialName("node")
-            val node: Int = 0
-
+            val node: Int = 0,
             @SerialName("replies")
-            val replies: Int = 0
-
+            val replies: Int = 0,
             @SerialName("created")
-            val time: String = ""
-
+            val time: String = "",
             @SerialName("member")
-            val creator: String = ""
-
-            override fun toString(): String {
-                return "Source(id='$id', title='$title', content='$content', node='$node', replies=$replies, time='$time', creator='$creator')"
-            }
-        }
+            val creator: String = "",
+        )
 
         @Serializable
-        class Highlight {
+        data class Highlight(
             @SerialName("title")
-            val title: List<String> = listOf()
-
+            val title: List<String> = emptyList(),
             @SerialName("content")
-            val content: List<String> = listOf()
-
+            val content: List<String> = emptyList(),
             @SerialName("postscript_list.content")
-            val postscriptListContent: List<String> = listOf()
-
+            val postscriptListContent: List<String> = emptyList(),
             @SerialName("reply_list.content")
-            val replyListContent: List<String> = listOf()
-
-            override fun toString(): String {
-                return "Highlight(title=$title, content=$content, postscriptListContent=$postscriptListContent, replyListContent=$replyListContent)"
-            }
-        }
+            val replyListContent: List<String> = emptyList(),
+        )
     }
 }

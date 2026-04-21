@@ -4,71 +4,47 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class UserInfo : BaseInfo() {
+data class UserInfo(
     @SerialName("status")
-    var status: String = ""
-
+    val status: String = "",
     @SerialName("id")
-    var id: Int = 0
-
+    val id: Int = 0,
     @SerialName("username")
-    var userName: String = ""
-
+    val userName: String = "",
     @SerialName("website")
-    var website: String? = null
-
+    val website: String? = null,
     @SerialName("twitter")
-    var twitter: String? = null
-
+    val twitter: String? = null,
     @SerialName("psn")
-    var psn: String? = null
-
+    val psn: String? = null,
     @SerialName("github")
-    var github: String? = null
-
+    val github: String? = null,
     @SerialName("btc")
-    var btc: String? = null
-
+    val btc: String? = null,
     @SerialName("location")
-    var location: String? = null
-
+    val location: String? = null,
     @SerialName("tagline")
-    var tagline: String = ""
-
+    val tagline: String = "",
     @SerialName("bio")
-    var bio: String = ""
-
+    val bio: String = "",
     @SerialName("avatar_large")
-    var avatar: String = ""
-
+    val avatar: String = "",
     @SerialName("avatar_xlarge")
-    var avatarX: String = ""
-
+    val avatarX: String = "",
     @SerialName("avatar_xxlarge")
-    var avatarXx: String = ""
-
+    val avatarXx: String = "",
     @SerialName("avatar_xxxlarge")
-    var avatarXxx: String = ""
-
+    val avatarXxx: String = "",
     @SerialName("created")
-    var created: Long = 0
-
-    companion object {
-        fun build(userName: String, avatar: String): UserInfo {
-            val userInfo = UserInfo()
-            userInfo.userName = userName
-            userInfo.avatar = avatar
-            return userInfo
-        }
-    }
-
+    val created: Long = 0,
+) {
     fun avatarUrl(): String {
         var result = if (!avatar.startsWith("http")) "https:$avatar" else avatar
         if (!result.contains("large.png")) {
-            if (result.contains("mini.png")) {
-                result = result.replace("mini.png", "large.png")
-            } else if (result.contains("normal.png")) {
-                result = result.replace("normal.png", "large.png")
+            result = when {
+                result.contains("mini.png") -> result.replace("mini.png", "large.png")
+                result.contains("normal.png") -> result.replace("normal.png", "large.png")
+                else -> result
             }
         }
         return result
@@ -81,7 +57,7 @@ class UserInfo : BaseInfo() {
         return avatarUrl()
     }
 
-    override fun isValid(): Boolean = id > 0
+    fun isValid(): Boolean = id > 0
 
     fun userBasicInfo(): String? {
         return try {

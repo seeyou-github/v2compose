@@ -90,11 +90,11 @@ class TwoStepLoginViewModel(
 }
 
 private fun seedTwoStepLoginInfo(once: String): TwoStepLoginInfo =
-    TwoStepLoginInfo().apply {
-        this.once = once
-        title = "两步验证"
-        avatar = "seeded"
-    }
+    TwoStepLoginInfo(
+        avatar = "seeded",
+        title = "两步验证",
+        once = once,
+    )
 
 @Stable
 sealed interface TwoStepLoginUiState {

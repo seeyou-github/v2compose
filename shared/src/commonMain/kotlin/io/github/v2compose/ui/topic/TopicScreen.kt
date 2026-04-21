@@ -23,10 +23,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.automirrored.rounded.Comment
-import androidx.compose.material.icons.automirrored.rounded.ExitToApp
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -244,9 +242,8 @@ private fun TopicScreen(
     val scrollState = topicItems.rememberLazyListState()
     val topBarShowTopicTitle by remember(density, scrollState) {
         derivedStateOf {
-            scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > with(
-                density
-            ) { 64.dp.roundToPx() }
+            scrollState.firstVisibleItemIndex > 0
+                    || scrollState.firstVisibleItemScrollOffset > with(density) { 64.dp.roundToPx() }
         }
     }
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
