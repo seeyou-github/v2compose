@@ -2,12 +2,12 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
 /**
  * https://www.v2ex.com/my/topics
  */
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class MyTopicsInfo(
     @property:Pick(value = "input.page_input", attr = "max")
     val totalPageCountText: String = "",
@@ -18,7 +18,7 @@ data class MyTopicsInfo(
 
     fun isValid(): Boolean = items.isEmpty() || items[0].title.isNotEmpty()
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "td>a[href^=/member]", attr = Attrs.HREF)
         val userLink: String = "",

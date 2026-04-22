@@ -7,7 +7,7 @@ import coil3.disk.DiskCache
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import io.github.fruit.Fruit
-import io.github.fruit.registerGeneratedAdapters
+import io.github.fruit.registerGeneratedSliceAdapters
 import io.github.v2compose.PlatformCapabilities
 import io.github.v2compose.core.PlatformContext as AppPlatformContext
 import io.github.v2compose.datasource.createAccountDataStore
@@ -73,7 +73,7 @@ actual val platformModule: Module = module {
     single<WebViewProxyController> { IosWebViewProxyController() }
     single<Fruit> {
         Fruit().apply {
-            registerGeneratedAdapters()
+            registerGeneratedSliceAdapters()
         }
     }
     single<CookieManager> { IosCookieManager() }

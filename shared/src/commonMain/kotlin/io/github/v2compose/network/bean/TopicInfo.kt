@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp
+@Slice
 data class TopicInfo(
     @property:Pick("div#Wrapper")
     val headerInfo: HeaderInfo? = null,
@@ -59,7 +59,7 @@ data class TopicInfo(
 
     fun isValid(): Boolean = headerInfo?.isValid() == true
 
-    @Pulp
+    @Slice
     data class Problem(
         @property:Pick(attr = Attrs.OWN_TEXT)
         val title: String = "",
@@ -69,7 +69,7 @@ data class TopicInfo(
         fun isEmpty(): Boolean = tips.isEmpty() && title.isEmpty()
     }
 
-    @Pulp
+    @Slice
     data class ContentInfo(
         @property:Pick(attr = Attrs.HTML)
         val html: String = "",
@@ -91,7 +91,7 @@ data class TopicInfo(
 
         fun isValid(): Boolean = !formattedHtml().isNullOrEmpty()
 
-        @Pulp
+        @Slice
         data class Supplement(
             @property:Pick("span.fade")
             val title: String = "",
@@ -100,7 +100,7 @@ data class TopicInfo(
         )
     }
 
-    @Pulp
+    @Slice
     data class HeaderInfo(
         @property:Pick(value = "div.box img.avatar", attr = "src")
         val avatar: String = "",
@@ -183,7 +183,7 @@ data class TopicInfo(
         fun getTotalPage(): Int = maxOf(maxOf(page, currentPage), 1)
     }
 
-    @Pulp
+    @Slice
     data class Reply(
         @property:Pick(value = "div.reply_content", attr = Attrs.HTML)
         val replyContent: String = "",

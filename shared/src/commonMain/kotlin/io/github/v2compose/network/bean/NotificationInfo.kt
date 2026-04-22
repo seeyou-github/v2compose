@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class NotificationInfo(
     @property:Pick("div#Main div.box div.fr.f12 strong")
     val total: Int = 0,
@@ -17,7 +17,7 @@ data class NotificationInfo(
 
     fun isValid(): Boolean = replies.isEmpty() || replies[0].name.isNotEmpty()
 
-    @Pulp
+    @Slice
     data class Reply(
         @property:Pick(value = "div.cell[id^=n_]", attr = "id")
         val idText: String = "",

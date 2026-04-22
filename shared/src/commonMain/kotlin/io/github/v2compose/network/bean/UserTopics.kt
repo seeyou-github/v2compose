@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class UserTopics(
     @property:Pick("div.header strong.gray")
     val total: Int = -1,
@@ -21,7 +21,7 @@ data class UserTopics(
 
     fun isValid(): Boolean = total >= 0
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "span.item_title a", attr = Attrs.HREF)
         val link: String = "",

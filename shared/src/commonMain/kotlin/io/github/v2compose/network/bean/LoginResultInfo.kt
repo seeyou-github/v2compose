@@ -1,9 +1,9 @@
 package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("header#site-header")
+@Slice("header#site-header")
 data class LoginResultInfo(
     @property:Pick(value = "[href^=/member]", attr = "href")
     val userLink: String = "",

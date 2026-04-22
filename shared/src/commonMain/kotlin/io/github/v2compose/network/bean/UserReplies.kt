@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class UserReplies(
     @property:Pick("div.header strong.gray")
     val total: Int = -1,
@@ -23,7 +23,7 @@ data class UserReplies(
 
     fun isValid(): Boolean = total >= 0
 
-    @Pulp
+    @Slice
     data class ReplyDockItem(
         @property:Pick("span.gray")
         val title: String = "",
@@ -33,7 +33,7 @@ data class UserReplies(
         val time: String = "",
     )
 
-    @Pulp
+    @Slice
     data class ReplyContentItem(
         @property:Pick(attr = Attrs.HTML)
         val content: String = "",

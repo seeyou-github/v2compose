@@ -2,12 +2,12 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
 /**
  * https://www.v2ex.com/go/python
  */
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class NodeTopicInfo(
     @property:Pick("span.topic-count strong")
     val totalText: String = "",
@@ -29,7 +29,7 @@ data class NodeTopicInfo(
 
     fun isValid(): Boolean = items.isEmpty() || items[0].userName.isNotEmpty()
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "img.avatar", attr = Attrs.SRC)
         val avatar: String = "",

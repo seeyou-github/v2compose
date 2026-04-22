@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class CreateTopicPageInfo(
     @property:Pick(value = "input[name=once]", attr = "value")
     val once: String = "",
@@ -13,7 +13,7 @@ data class CreateTopicPageInfo(
 ) {
     fun isValid(): Boolean = once.isNotEmpty()
 
-    @Pulp
+    @Slice
     data class Problem(
         @property:Pick(attr = Attrs.HTML)
         val html: String = "",

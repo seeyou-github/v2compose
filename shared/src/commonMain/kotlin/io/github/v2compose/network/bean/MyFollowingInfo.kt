@@ -2,12 +2,12 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
 /**
  * https://www.v2ex.com/my/following?p=1
  */
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class MyFollowingInfo(
     @property:Pick(value = "input.page_input", attr = "max")
     val totalPageCount: Int = 0,
@@ -16,7 +16,7 @@ data class MyFollowingInfo(
 ) {
     fun isValid(): Boolean = items.isEmpty() || items[0].userName.isNotEmpty()
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "img.avatar", attr = Attrs.SRC)
         val avatar: String = "",

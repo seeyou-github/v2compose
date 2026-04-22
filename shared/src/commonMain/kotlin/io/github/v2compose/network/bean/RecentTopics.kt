@@ -1,9 +1,9 @@
 package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class RecentTopics(
     @property:Pick("div.header span.fade")
     val totalText: String = "",
@@ -20,7 +20,7 @@ data class RecentTopics(
 
     fun isValid(): Boolean = total() >= 0
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "span.item_title > a")
         val title: String = "",

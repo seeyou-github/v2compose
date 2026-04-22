@@ -30,8 +30,8 @@
 -dontwarn org.openjsse.**
 
 ## Fruit
-# keep @Pick annotated classes and fields for KSP generated adapters
--keep @io.github.fruit.annotations.Pick class * { *; }
+# keep @Slice annotated classes and @Pick fields for KSP generated adapters
+-keep @io.github.fruit.annotations.Slice class * { *; }
 -keepclassmembers class * {
     @io.github.fruit.annotations.Pick <fields>;
 }

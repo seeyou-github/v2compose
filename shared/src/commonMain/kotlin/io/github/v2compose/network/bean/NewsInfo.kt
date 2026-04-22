@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.RawResponseHolder
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp("div#Wrapper")
+@Slice("div#Wrapper")
 data class NewsInfo(
     override val rawResponse: String = "",
     @property:Pick("div.box a[href*=mission/daily]")
@@ -44,7 +44,7 @@ data class NewsInfo(
         }
     }
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "span.item_title > a")
         val title: String = "",

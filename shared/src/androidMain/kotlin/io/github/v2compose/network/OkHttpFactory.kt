@@ -2,7 +2,7 @@ package io.github.v2compose.network
 
 import android.content.Context
 import io.github.fruit.Fruit
-import io.github.fruit.registerGeneratedAdapters
+import io.github.fruit.registerGeneratedSliceAdapters
 import io.github.v2compose.network.NetConstants.keyUserAgent
 import io.github.v2compose.network.NetConstants.wapUserAgent
 import io.github.v2compose.network.di.V2ProxySelector
@@ -26,7 +26,7 @@ object OkHttpFactory {
 
     fun createFruit(): Fruit {
         return Fruit().apply {
-            registerGeneratedAdapters()
+            registerGeneratedSliceAdapters()
         }
     }
 

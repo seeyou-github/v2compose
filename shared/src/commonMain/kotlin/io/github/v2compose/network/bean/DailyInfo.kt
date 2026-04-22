@@ -1,9 +1,9 @@
 package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp
+@Slice
 data class DailyInfo(
     @property:Pick(value = "[href^=/member]", attr = "href")
     val userLink: String = "",

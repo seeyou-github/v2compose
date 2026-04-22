@@ -2,9 +2,9 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
-@Pulp
+@Slice
 data class LoginParam(
     @property:Pick(value = "input.sl[type=text]", attr = "name")
     val nameParam: String = "",

@@ -2,19 +2,19 @@ package io.github.v2compose.network.bean
 
 import io.github.fruit.annotations.Attrs
 import io.github.fruit.annotations.Pick
-import io.github.fruit.annotations.Pulp
+import io.github.fruit.annotations.Slice
 
 /**
  * https://www.v2ex.com/my/nodes
  */
-@Pulp("div#my-nodes")
+@Slice("div#my-nodes")
 data class MyNodesInfo(
     @property:Pick("a.fav-node")
     val items: List<Item> = emptyList(),
 ) {
     fun isValid(): Boolean = items.isEmpty() || items[0].title.isNotEmpty()
 
-    @Pulp
+    @Slice
     data class Item(
         @property:Pick(value = "img", attr = Attrs.SRC)
         val avatar: String = "",
