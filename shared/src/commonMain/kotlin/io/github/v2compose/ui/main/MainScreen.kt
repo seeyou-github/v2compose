@@ -78,6 +78,7 @@ fun MainScreenRoute(
 ) {
     val unreadNotifications by viewModel.unreadNotifications.collectAsStateWithLifecycle()
     val loadNodesState by viewModel.loadNodes.state.collectAsStateWithLifecycle()
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsStateWithLifecycle()
 
     HandleSnackbarMessage(viewModel)
 
@@ -101,6 +102,7 @@ fun MainScreenRoute(
 
     CompositionLocalProvider(LocalClickDispatcher provides clickDispatcher) {
         MainScreen(
+            selectedTabIndex = selectedTabIndex,
             unreadNotifications = unreadNotifications,
             loadNodesState = loadNodesState,
             onSearchClick = onSearchClick,
@@ -118,6 +120,7 @@ fun MainScreenRoute(
             onUriClick = openUri,
             onHtmlImageClick = onHtmlImageClick,
             loadNodes = viewModel::loadNodes,
+            onBottomTabClick = viewModel::updateSelectedTabIndex,
             onBottomTabClickAgain = clickDispatcher::dispatch
         )
     }
@@ -126,6 +129,7 @@ fun MainScreenRoute(
 
 @Composable
 private fun MainScreen(
+    selectedTabIndex: Int,
     unreadNotifications: Int,
     loadNodesState: LoadNodesState,
     onSearchClick: () -> Unit,
@@ -143,9 +147,10 @@ private fun MainScreen(
     onUriClick: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
     loadNodes: () -> Unit,
+    onBottomTabClick: (Int) -> Unit,
     onBottomTabClickAgain: () -> Unit,
 ) {
-    var navBarSelectedIndex by rememberSaveable { mutableIntStateOf(0) }
+    var navBarSelectedIndex by rememberSaveable { mutableIntStateOf(selectedTabIndex) }
     var showNodes by rememberSaveable { mutableStateOf(false) }
     val hasNodes = rememberSaveable(loadNodesState) { loadNodesState is LoadNodesState.Success }
 
@@ -204,6 +209,7 @@ private fun MainScreen(
                 selectedIndex = navBarSelectedIndex,
                 unreadNotifications = unreadNotifications,
                 onItemSelected = { index ->
+                    onBottomTabClick(index)
                     if (index == navBarSelectedIndex) onBottomTabClickAgain()
                     navBarSelectedIndex = index
                 })

@@ -1,5 +1,6 @@
 package io.github.v2compose.ui.main
 
+import androidx.compose.runtime.MutableIntState
 import io.github.v2compose.PlatformCapabilities
 import androidx.lifecycle.viewModelScope
 import io.github.v2compose.datasource.AppPreferences
@@ -32,6 +33,9 @@ class MainViewModel(
     private val webViewProxyController: WebViewProxyController,
     val loadNodes: LoadNodesUseCase,
 ) : BaseViewModel() {
+
+    private val _selectedTabIndex = MutableStateFlow(0)
+    val selectedTabIndex = _selectedTabIndex.asStateFlow()
 
     private val _newRelease = MutableStateFlow(Release.Empty)
     val newRelease = _newRelease.asStateFlow()
@@ -125,6 +129,12 @@ class MainViewModel(
     fun loadNodes() {
         viewModelScope.launch {
             loadNodes.execute()
+        }
+    }
+
+    fun updateSelectedTabIndex(index: Int) {
+        viewModelScope.launch {
+            _selectedTabIndex.emit(index)
         }
     }
 }
