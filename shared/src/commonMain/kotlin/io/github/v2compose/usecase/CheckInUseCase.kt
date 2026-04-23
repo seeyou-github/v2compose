@@ -15,12 +15,16 @@ class CheckInUseCase(
             if (!dailyInfo.hadCheckedIn()) {
                 dailyInfo = accountRepository.checkIn(dailyInfo.once)
             }
-            CheckInResult(dailyInfo.hadCheckedIn(), dailyInfo.continuousLoginDaysText)
+            dailyInfo.toCheckInResult()
         } catch (e: Exception) {
             e.printStackTrace()
             if (e.isRedirect(V2exUri.missionDailyPath)) {
-                val dailyInfo = accountRepository.dailyInfo()
-                CheckInResult(dailyInfo.hadCheckedIn(), dailyInfo.continuousLoginDaysText)
+                runCatching {
+                    accountRepository.dailyInfo().toCheckInResult()
+                }.getOrElse { followUpError ->
+                    followUpError.printStackTrace()
+                    CheckInResult(false, followUpError.message ?: e.message)
+                }
             } else {
                 CheckInResult(false, e.message)
             }
@@ -30,3 +34,11 @@ class CheckInUseCase(
 }
 
 data class CheckInResult(val success: Boolean, val message: String?)
+
+private fun io.github.v2compose.network.bean.DailyInfo.toCheckInResult(): CheckInResult {
+    val success = hadCheckedIn()
+    return CheckInResult(
+        success = success,
+        message = continuousLoginDaysText.takeIf { success && it.isNotBlank() },
+    )
+}

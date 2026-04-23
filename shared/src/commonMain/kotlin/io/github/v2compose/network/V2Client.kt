@@ -3,8 +3,10 @@ package io.github.v2compose.network
 import io.github.fruit.Fruit
 import io.github.fruit.ktor.fruit
 import io.github.v2compose.Constants
+import io.github.v2compose.authFlowRouteKey
 import io.github.v2compose.isSameAuthFlow
-import io.github.v2compose.shared.bean.RedirectEvent
+import io.github.v2compose.core.extension.fullUrl
+import io.github.v2compose.shared.bean.AuthRedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.util.KLogger
 import io.ktor.client.HttpClient
@@ -117,10 +119,18 @@ internal fun resolveAuthRedirectEventLocation(
     redirectLocation: String?,
 ): String? {
     if (redirectLocation.isNullOrBlank()) return null
-    val requestHost = runCatching { Url(requestUrl).host }.getOrNull() ?: return null
-    if (!requestHost.endsWith(Constants.host)) return null
+    if (!isV2exRoute(requestUrl) || !isV2exRoute(redirectLocation)) return null
     if (isSameAuthFlow(requestUrl, redirectLocation)) return null
+    val requestIsAuthFlow = authFlowRouteKey(requestUrl) != null
+    val redirectIsAuthFlow = authFlowRouteKey(redirectLocation) != null
+    if (!requestIsAuthFlow && !redirectIsAuthFlow) return null
     return redirectLocation
+}
+
+private fun isV2exRoute(raw: String): Boolean {
+    val normalized = raw.fullUrl(Constants.baseUrl)
+    val host = runCatching { Url(normalized).host }.getOrNull() ?: return false
+    return host.endsWith(Constants.host)
 }
 
 private suspend fun handleAuthRedirectResponse(
@@ -139,7 +149,7 @@ private suspend fun handleAuthRedirectResponse(
         requestUrl = requestUrl,
         redirectLocation = redirectLocation,
     )?.let {
-        KLogger.d("V2Client", "post RedirectEvent($it)")
-        eventManager.tryPost(RedirectEvent(it))
+        KLogger.d("V2Client", "post AuthRedirectEvent($it)")
+        eventManager.tryPost(AuthRedirectEvent(it))
     }
 }

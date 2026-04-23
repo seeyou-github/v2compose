@@ -11,7 +11,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
-import io.github.v2compose.shared.bean.RedirectEvent
+import io.github.v2compose.shared.bean.AuthRedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.error.navigateToUnsupportedRoute
 import io.github.v2compose.ui.topic.currentTopicId
@@ -67,8 +67,8 @@ class V2AppState(
     override fun onCreate(owner: LifecycleOwner) {
         coroutineScope.launch {
             eventManager.events.collect { event ->
-                if (event is RedirectEvent) {
-                    KLogger.d("V2AppState", "consume RedirectEvent(${event.location})")
+                if (event is AuthRedirectEvent) {
+                    KLogger.d("V2AppState", "consume AuthRedirectEvent(${event.location})")
                     handleAction(resolveRedirectLocation(event.location))
                 }
             }
