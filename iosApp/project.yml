@@ -1,6 +1,10 @@
 name: iosApp
 options:
   createIntermediateGroups: true
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk.git
+    exactVersion: 12.12.1
 configs:
   Debug: debug
   Release: release
@@ -8,7 +12,7 @@ targets:
   iosApp:
     type: application
     platform: iOS
-    deploymentTarget: "14.0"
+    deploymentTarget: "15.0"
     configFiles:
       Debug: Configuration/Config.xcconfig
       Release: Configuration/Config.xcconfig
@@ -16,17 +20,22 @@ targets:
       - path: iosApp
     resources:
       - path: iosApp/Assets.xcassets
+      - path: iosApp/GoogleService-Info.plist
+        optional: true
     info:
       path: iosApp/Info.plist
       properties:
         BGTaskSchedulerPermittedIdentifiers:
           - io.github.v2compose.auto-check-in
+        CADisableMinimumFrameDurationOnPhone: true
         CFBundleDisplayName: $(APP_DISPLAY_NAME)
         NSPhotoLibraryAddUsageDescription: V2X 需要将图片保存到系统相册。
         UIApplicationSupportsIndirectInputEvents: true
         UIBackgroundModes:
           - fetch
         UILaunchScreen: { }
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
     settings:
       base:
         SWIFT_VERSION: 5.0
@@ -35,6 +44,7 @@ targets:
         INFOPLIST_FILE: iosApp/Info.plist
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: $(DEVELOPMENT_TEAM)
+        DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
         ENABLE_USER_SCRIPT_SANDBOXING: NO
         "EXCLUDED_ARCHS[sdk=iphonesimulator*]": x86_64
         FRAMEWORK_SEARCH_PATHS:
@@ -42,17 +52,46 @@ targets:
           - $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
         OTHER_LDFLAGS:
           - $(inherited)
+          - -ObjC
           - -framework
           - shared
     dependencies:
+      - package: Firebase
+        product: FirebaseCore
+      - package: Firebase
+        product: FirebaseAnalytics
+      - package: Firebase
+        product: FirebaseCrashlytics
       - framework: ../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)/shared.framework
         embed: false
         codeSign: false
     preBuildScripts:
+      - name: Validate Firebase config
+        basedOnDependencyAnalysis: false
+        script: |
+          if [ ! -f "$SRCROOT/iosApp/GoogleService-Info.plist" ]; then
+            echo "error: Missing iosApp/iosApp/GoogleService-Info.plist. Register io.github.v2compose.iosApp in Firebase and add the downloaded plist before building iOS."
+            exit 1
+          fi
       - name: Build shared framework
         basedOnDependencyAnalysis: false
         script: |
+          if [ "YES" = "$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED" ]; then
+            echo "Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\""
+            exit 0
+          fi
           cd "$SRCROOT/.."
           ./gradlew :shared:embedAndSignAppleFrameworkForXcode \
             -Pcompose.ios.resources.platform="${PLATFORM_NAME:-$SDK_NAME}" \
             -Pcompose.ios.resources.archs="${NATIVE_ARCH_ACTUAL:-${ARCHS%% *}}"
+    postBuildScripts:
+      - name: Upload Crashlytics dSYM
+        basedOnDependencyAnalysis: false
+        script: |
+          "${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run"
+        inputFiles:
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist
+          - ${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}
+          - $(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist
+          - $(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)

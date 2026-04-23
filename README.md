@@ -52,9 +52,18 @@ V2compose 集成了 Firebase 的 Crashlytics 和 Analytics
 
 ## 构建须知
 
-V2compose 集成了 Firebase，开放的源码中不包含 Firebase 的密钥。如果你需要构建自己的 V2compose 版本，请创建自己
-Firebase 应用，添加
-google-services.json 至 app 目录下。
+V2compose 集成了 Firebase，开放的源码中不包含 Firebase 的密钥。
+
+如果你需要构建自己的 V2compose 版本：
+
+- Android:
+  - 创建自己的 Firebase 应用；
+  - 添加 `androidApp/src/google/google-services.json`。
+- iOS:
+  - 在 Firebase Console 中为 bundle id `io.github.v2compose.iosApp` 注册 iOS App；
+  - 添加 `iosApp/iosApp/GoogleService-Info.plist`；
+  - 先执行 `xcodegen generate --spec iosApp/project.yml` 生成工程，再用 Xcode 构建；
+  - iOS 侧 Firebase 官方 SDK 通过 Swift Package Manager 接入，最低系统版本为 iOS 15。
 
 ## 特别感谢
 
