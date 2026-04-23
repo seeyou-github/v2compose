@@ -43,44 +43,47 @@ internal object AppRoutes {
 }
 
 internal fun resolveOpenUri(uri: String): AppNavigationAction {
-    val parsed = parseAppUri(uri) ?: return AppNavigationAction.Ignore
-    if (parsed.scheme in systemSchemes) {
-        return AppNavigationAction.External(parsed.normalizedAbsoluteUrl)
-    }
-    if (parsed.host != null && !parsed.host.endsWith(Constants.host)) {
-        return AppNavigationAction.External(parsed.normalizedAbsoluteUrl)
-    }
+    return when (val target = resolveNavigationTarget(uri) ?: return AppNavigationAction.Ignore) {
+        is AppNavigationTarget.External -> AppNavigationAction.External(target.uri)
+        is AppNavigationTarget.Topic ->
+            AppNavigationAction.Navigate(AppRoutes.topic(target.topicId, target.replyFloor))
 
-    val screenType = parsed.pathSegments.getOrNull(0).orEmpty()
-    val screenId = parsed.pathSegments.getOrNull(1).orEmpty()
-    return when (screenType) {
-        "t" -> {
-            val replyFloor = parsed.fragment.removePrefix("reply").toIntOrNull() ?: 0
-            AppNavigationAction.Navigate(AppRoutes.topic(screenId, replyFloor))
-        }
+        is AppNavigationTarget.Node ->
+            AppNavigationAction.Navigate(AppRoutes.node(target.nodeName))
 
-        "go" -> AppNavigationAction.Navigate(AppRoutes.node(screenId))
-        "member" -> AppNavigationAction.Navigate(AppRoutes.user(screenId))
-        else -> AppNavigationAction.Navigate(AppRoutes.webView(parsed.normalizedAbsoluteUrl))
+        is AppNavigationTarget.User ->
+            AppNavigationAction.Navigate(AppRoutes.user(target.userName))
+
+        is AppNavigationTarget.Root,
+        is AppNavigationTarget.Auth,
+        is AppNavigationTarget.UnknownInternal -> AppNavigationAction.Navigate(
+            AppRoutes.webView(target.normalizedAbsoluteUrlForWebView()),
+        )
     }
 }
 
 internal fun resolveRedirectLocation(location: String): AppNavigationAction {
-    val parsed = parseAppUri(location) ?: return AppNavigationAction.Ignore
-    if (parsed.host != null && !parsed.host.endsWith(Constants.host)) {
-        return AppNavigationAction.External(parsed.normalizedAbsoluteUrl)
-    }
-
-    val screenType = parsed.pathSegments.getOrNull(0).orEmpty()
-    return when (screenType) {
-        "" -> AppNavigationAction.Navigate(
-            route = parsed.route,
-            clearBackStackToRoot = screenType.isEmpty(),
+    return when (val target = resolveNavigationTarget(location) ?: return AppNavigationAction.Ignore) {
+        is AppNavigationTarget.External -> AppNavigationAction.External(target.uri)
+        is AppNavigationTarget.Root -> AppNavigationAction.Navigate(
+            route = target.route,
+            clearBackStackToRoot = true,
         )
 
-        "signin" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, authSigninRoute))
-        "2fa" -> AppNavigationAction.Navigate(normalizeRoute(parsed.route, authTwoStepRoute))
-        else -> AppNavigationAction.Navigate(AppRoutes.unsupported(parsed.route))
+        is AppNavigationTarget.Auth ->
+            AppNavigationAction.Navigate(target.normalizedRoute)
+
+        is AppNavigationTarget.Topic ->
+            AppNavigationAction.Navigate(AppRoutes.topic(target.topicId, target.replyFloor))
+
+        is AppNavigationTarget.Node ->
+            AppNavigationAction.Navigate(AppRoutes.node(target.nodeName))
+
+        is AppNavigationTarget.User ->
+            AppNavigationAction.Navigate(AppRoutes.user(target.userName))
+
+        is AppNavigationTarget.UnknownInternal ->
+            AppNavigationAction.Navigate(AppRoutes.unsupported(target.route))
     }
 }
 
@@ -105,6 +108,34 @@ internal fun shouldIgnoreRepeatedAuthNavigation(currentRoute: String?, targetRou
 
 private val systemSchemes = setOf("mailto", "sms", "tel")
 
+private sealed interface AppNavigationTarget {
+    data class External(val uri: String) : AppNavigationTarget
+
+    data class Root(
+        val route: String,
+        val normalizedAbsoluteUrl: String,
+    ) : AppNavigationTarget
+
+    data class Auth(
+        val normalizedRoute: String,
+        val normalizedAbsoluteUrl: String,
+    ) : AppNavigationTarget
+
+    data class Topic(
+        val topicId: String,
+        val replyFloor: Int,
+    ) : AppNavigationTarget
+
+    data class Node(val nodeName: String) : AppNavigationTarget
+
+    data class User(val userName: String) : AppNavigationTarget
+
+    data class UnknownInternal(
+        val route: String,
+        val normalizedAbsoluteUrl: String,
+    ) : AppNavigationTarget
+}
+
 private data class ParsedAppUri(
     val normalizedAbsoluteUrl: String,
     val route: String,
@@ -113,6 +144,68 @@ private data class ParsedAppUri(
     val pathSegments: List<String>,
     val fragment: String,
 )
+
+private fun resolveNavigationTarget(raw: String): AppNavigationTarget? {
+    val parsed = parseAppUri(raw) ?: return null
+    return when {
+        parsed.scheme in systemSchemes -> AppNavigationTarget.External(parsed.normalizedAbsoluteUrl)
+        parsed.host != null && !parsed.host.endsWith(Constants.host) ->
+            AppNavigationTarget.External(parsed.normalizedAbsoluteUrl)
+
+        else -> parsed.toInternalNavigationTarget()
+    }
+}
+
+private fun ParsedAppUri.toInternalNavigationTarget(): AppNavigationTarget {
+    val screenType = pathSegments.getOrNull(0).orEmpty()
+    val screenId = pathSegments.getOrNull(1).orEmpty()
+    return when (screenType) {
+        "" -> AppNavigationTarget.Root(
+            route = route,
+            normalizedAbsoluteUrl = normalizedAbsoluteUrl,
+        )
+
+        "signin" -> AppNavigationTarget.Auth(
+            normalizedRoute = normalizeRoute(route, authSigninRoute),
+            normalizedAbsoluteUrl = normalizedAbsoluteUrl,
+        )
+
+        "2fa" -> AppNavigationTarget.Auth(
+            normalizedRoute = normalizeRoute(route, authTwoStepRoute),
+            normalizedAbsoluteUrl = normalizedAbsoluteUrl,
+        )
+
+        "t" -> screenId.takeIf { it.isNotEmpty() }?.let {
+            AppNavigationTarget.Topic(
+                topicId = it,
+                replyFloor = fragment.removePrefix("reply").toIntOrNull() ?: 0,
+            )
+        } ?: unknownInternalTarget()
+
+        "go" -> screenId.takeIf { it.isNotEmpty() }?.let {
+            AppNavigationTarget.Node(it)
+        } ?: unknownInternalTarget()
+
+        "member" -> screenId.takeIf { it.isNotEmpty() }?.let {
+            AppNavigationTarget.User(it)
+        } ?: unknownInternalTarget()
+
+        else -> unknownInternalTarget()
+    }
+}
+
+private fun ParsedAppUri.unknownInternalTarget(): AppNavigationTarget.UnknownInternal =
+    AppNavigationTarget.UnknownInternal(
+        route = route,
+        normalizedAbsoluteUrl = normalizedAbsoluteUrl,
+    )
+
+private fun AppNavigationTarget.normalizedAbsoluteUrlForWebView(): String = when (this) {
+    is AppNavigationTarget.Root -> normalizedAbsoluteUrl
+    is AppNavigationTarget.Auth -> normalizedAbsoluteUrl
+    is AppNavigationTarget.UnknownInternal -> normalizedAbsoluteUrl
+    else -> error("Unsupported webview navigation target: $this")
+}
 
 private fun parseAppUri(raw: String): ParsedAppUri? {
     val value = raw.trim()

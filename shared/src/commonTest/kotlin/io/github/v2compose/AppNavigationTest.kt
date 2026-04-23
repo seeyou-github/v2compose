@@ -61,6 +61,18 @@ class AppNavigationTest {
     }
 
     @Test
+    fun resolveOpenUri_routesSigninPathToWebView() {
+        val action = resolveOpenUri("/signin")
+
+        assertEquals(
+            AppNavigationAction.Navigate(
+                AppRoutes.webView("https://www.v2ex.com/signin"),
+            ),
+            action,
+        )
+    }
+
+    @Test
     fun resolveRedirectLocation_clearsBackStackForRoot() {
         val action = resolveRedirectLocation("/")
 
@@ -85,6 +97,36 @@ class AppNavigationTest {
 
         assertEquals(
             AppNavigationAction.Navigate("$authSigninRoute?next=%2Fmission%2Fdaily"),
+            action,
+        )
+    }
+
+    @Test
+    fun resolveRedirectLocation_routesTopicReplyIntoTopicScreen() {
+        val action = resolveRedirectLocation("/t/1207974?p=1#reply36")
+
+        assertEquals(
+            AppNavigationAction.Navigate(AppRoutes.topic("1207974", 36)),
+            action,
+        )
+    }
+
+    @Test
+    fun resolveRedirectLocation_routesNodeIntoNodeScreen() {
+        val action = resolveRedirectLocation("/go/compose")
+
+        assertEquals(
+            AppNavigationAction.Navigate(AppRoutes.node("compose")),
+            action,
+        )
+    }
+
+    @Test
+    fun resolveRedirectLocation_routesUserIntoUserScreen() {
+        val action = resolveRedirectLocation("/member/alice")
+
+        assertEquals(
+            AppNavigationAction.Navigate(AppRoutes.user("alice")),
             action,
         )
     }
