@@ -18,7 +18,7 @@
 		668CECA83ACC03A83C85A623 /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		6F014C83FDDBC68304D230E9 /* shared.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = shared.framework; path = "../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)/shared.framework"; sourceTree = "<group>"; };
 		719926556306ACCE69D2BB13 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		86038AE1032E284E79B32AD6 /* V2compose.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = V2compose.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		86038AE1032E284E79B32AD6 /* V2X.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = V2X.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		916CADC846B4B9CAF393EDB7 /* ComposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposeView.swift; sourceTree = "<group>"; };
 		999D3FB12F8F16DC009C773C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C117AD187833E2513BD2F553 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 		94C98B8B3A2BFC1966447269 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				86038AE1032E284E79B32AD6 /* V2compose.app */,
+				86038AE1032E284E79B32AD6 /* V2X.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,7 +103,7 @@
 			packageProductDependencies = (
 			);
 			productName = iosApp;
-			productReference = 86038AE1032E284E79B32AD6 /* V2compose.app */;
+			productReference = 86038AE1032E284E79B32AD6 /* V2X.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
