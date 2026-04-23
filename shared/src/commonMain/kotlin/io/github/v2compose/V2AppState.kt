@@ -8,11 +8,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.navOptions
 import io.github.v2compose.shared.bean.RedirectEvent
 import io.github.v2compose.shared.core.V2EventManager
 import io.github.v2compose.ui.error.navigateToUnsupportedRoute
+import io.github.v2compose.ui.topic.currentTopicId
+import io.github.v2compose.ui.topic.requestTopicRefresh
+import io.github.v2compose.ui.topic.shouldReuseCurrentTopicRoute
 import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -100,6 +104,9 @@ class V2AppState(
                 ) {
                     return
                 }
+                if (tryReuseCurrentTopic(action, navHostController.currentBackStackEntry)) {
+                    return
+                }
                 val navOptions = if (action.clearBackStackToRoot) {
                     navOptions {
                         popUpTo(rootNavigationRoute) {
@@ -122,6 +129,27 @@ class V2AppState(
 
             AppNavigationAction.Ignore -> Unit
         }
+    }
+
+    private fun tryReuseCurrentTopic(
+        action: AppNavigationAction.Navigate,
+        currentEntry: NavBackStackEntry?,
+    ): Boolean {
+        val entry = currentEntry ?: return false
+        if (!shouldReuseCurrentTopicRoute(
+                currentDestinationRoute = entry.destination.route,
+                currentTopicId = currentTopicId(entry.savedStateHandle),
+                targetRoute = action.route,
+            )
+        ) {
+            return false
+        }
+        requestTopicRefresh(entry.savedStateHandle)
+        KLogger.d(
+            "V2AppState",
+            "reuse current topic route and request refresh: current=${entry.destination.route}, target=${action.route}",
+        )
+        return true
     }
 }
 

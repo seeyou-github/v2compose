@@ -58,6 +58,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.github.v2compose.LocalAppPlatformHandlers
@@ -103,6 +104,7 @@ private const val TAG = "TopicScreen"
 
 @Composable
 fun TopicScreenRoute(
+    backStackEntry: NavBackStackEntry,
     onBackClick: () -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
@@ -121,12 +123,24 @@ fun TopicScreenRoute(
     val highlightOpReply by viewModel.highlightOpReply.collectAsStateWithLifecycle()
     val replyWithFloor by viewModel.replyWithFloor.collectAsStateWithLifecycle()
     val topicItems = viewModel.topicItems.collectAsLazyPagingItems()
+    val refreshRequest by backStackEntry.savedStateHandle
+        .getStateFlow(topicRefreshRequestKey, 0)
+        .collectAsStateWithLifecycle()
 
     val pagingTopicInfo = if (topicItems.itemCount > 0) {
         topicItems.itemSnapshotList.firstOrNull { it is TopicInfo } as? TopicInfo
     } else null
     LaunchedEffect(pagingTopicInfo) {
         pagingTopicInfo?.let { viewModel.updateTopicInfoWrapper(topic = it) }
+    }
+    LaunchedEffect(refreshRequest) {
+        if (refreshRequest > 0) {
+            KLogger.d(
+                TAG,
+                "refresh current topic without recreating route, request=$refreshRequest, topicId=${args.topicId}",
+            )
+            topicItems.refresh()
+        }
     }
 
     val topicInfoWrapper by viewModel.topicInfoWrapper
