@@ -17,7 +17,7 @@ enum FirebaseBootstrap {
         guard let optionsPath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
               FirebaseOptions(contentsOfFile: optionsPath) != nil else {
             preconditionFailure(
-                "Missing or invalid GoogleService-Info.plist. Put iosApp/iosApp/GoogleService-Info.plist in place before launching the iOS app."
+                "Missing or invalid GoogleService-Info.plist in the app bundle. Put iosApp/iosApp/GoogleService-Info-Debug.plist for Debug or iosApp/iosApp/GoogleService-Info.plist for Release before launching the iOS app."
             )
         }
 

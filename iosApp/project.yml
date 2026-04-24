@@ -14,14 +14,15 @@ targets:
     platform: iOS
     deploymentTarget: "15.0"
     configFiles:
-      Debug: Configuration/Config.xcconfig
-      Release: Configuration/Config.xcconfig
+      Debug: Configuration/Debug.xcconfig
+      Release: Configuration/Release.xcconfig
     sources:
       - path: iosApp
+        excludes:
+          - GoogleService-Info.plist
+          - GoogleService-Info-Debug.plist
     resources:
       - path: iosApp/Assets.xcassets
-      - path: iosApp/GoogleService-Info.plist
-        optional: true
     info:
       path: iosApp/Info.plist
       properties:
@@ -38,6 +39,7 @@ targets:
           - UIInterfaceOrientationPortrait
     settings:
       base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: $(APP_ICON_NAME)
         SWIFT_VERSION: 5.0
         PRODUCT_NAME: $(APP_PRODUCT_NAME)
         PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_IDENTIFIER)
@@ -69,8 +71,9 @@ targets:
       - name: Validate Firebase config
         basedOnDependencyAnalysis: false
         script: |
-          if [ ! -f "$SRCROOT/iosApp/GoogleService-Info.plist" ]; then
-            echo "error: Missing iosApp/iosApp/GoogleService-Info.plist. Register io.github.v2compose.iosApp in Firebase and add the downloaded plist before building iOS."
+          SOURCE_PLIST="$SRCROOT/$FIREBASE_PLIST_SOURCE"
+          if [ ! -f "$SOURCE_PLIST" ]; then
+            echo "error: Missing $FIREBASE_PLIST_SOURCE for $CONFIGURATION. Register $APP_BUNDLE_IDENTIFIER in Firebase and add the downloaded plist before building iOS."
             exit 1
           fi
       - name: Build shared framework
@@ -85,6 +88,17 @@ targets:
             -Pcompose.ios.resources.platform="${PLATFORM_NAME:-$SDK_NAME}" \
             -Pcompose.ios.resources.archs="${NATIVE_ARCH_ACTUAL:-${ARCHS%% *}}"
     postBuildScripts:
+      - name: Copy Firebase config
+        basedOnDependencyAnalysis: false
+        script: |
+          SOURCE_PLIST="$SRCROOT/$FIREBASE_PLIST_SOURCE"
+          TARGET_PLIST="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/GoogleService-Info.plist"
+          mkdir -p "$(dirname "$TARGET_PLIST")"
+          cp "$SOURCE_PLIST" "$TARGET_PLIST"
+        inputFiles:
+          - $(SRCROOT)/$(FIREBASE_PLIST_SOURCE)
+        outputFiles:
+          - $(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist
       - name: Upload Crashlytics dSYM
         basedOnDependencyAnalysis: false
         script: |
