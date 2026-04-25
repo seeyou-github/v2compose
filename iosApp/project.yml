@@ -23,6 +23,7 @@ targets:
           - GoogleService-Info-Debug.plist
     resources:
       - path: iosApp/Assets.xcassets
+      - path: iosApp/PrivacyInfo.xcprivacy
     info:
       path: iosApp/Info.plist
       properties:
@@ -30,6 +31,8 @@ targets:
           - io.github.v2compose.auto-check-in
         CADisableMinimumFrameDurationOnPhone: true
         CFBundleDisplayName: $(APP_DISPLAY_NAME)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSPhotoLibraryAddUsageDescription: V2X 需要将图片保存到系统相册。
         UIApplicationSupportsIndirectInputEvents: true
         UIBackgroundModes:
@@ -49,6 +52,7 @@ targets:
         DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
         ENABLE_USER_SCRIPT_SANDBOXING: NO
         "EXCLUDED_ARCHS[sdk=iphonesimulator*]": x86_64
+        TARGETED_DEVICE_FAMILY: 1
         FRAMEWORK_SEARCH_PATHS:
           - $(inherited)
           - $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
