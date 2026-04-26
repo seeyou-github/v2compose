@@ -12,10 +12,44 @@ val isGoogleTask = gradle.startParameter.taskRequests.any { request ->
 if (isGoogleTask) {
     apply(plugin = libs.plugins.google.services.get().pluginId)
     apply(plugin = libs.plugins.crashlytics.get().pluginId)
+
+    tasks.matching {
+        it.name.endsWith("GoogleServices") && !it.name.startsWith("processGoogle")
+    }.configureEach {
+        enabled = false
+    }
+    tasks.matching {
+        it.name.contains("Crashlytics") && !it.name.contains("Google")
+    }.configureEach {
+        enabled = false
+    }
 }
 
 val appVersionCode = providers.gradleProperty("app.versionCode").get().toInt()
 val appVersionName = providers.gradleProperty("app.versionName").get()
+
+val releaseSigningEnvVars = listOf(
+    "ANDROID_RELEASE_KEYSTORE_PATH",
+    "ANDROID_RELEASE_KEYSTORE_PASSWORD",
+    "ANDROID_RELEASE_KEY_ALIAS",
+    "ANDROID_RELEASE_KEY_PASSWORD"
+)
+val isReleaseBuildTask = gradle.startParameter.taskRequests.any { request ->
+    request.args.any { arg ->
+        val taskName = arg.substringAfterLast(':')
+        taskName.contains("Release") &&
+            (taskName.startsWith("assemble") || taskName.startsWith("bundle"))
+    }
+}
+val missingReleaseSigningEnvVars = releaseSigningEnvVars.filter {
+    providers.environmentVariable(it).orNull.isNullOrBlank()
+}
+if (isReleaseBuildTask && missingReleaseSigningEnvVars.isNotEmpty()) {
+    throw GradleException(
+        "Release signing environment variables are missing: " +
+            missingReleaseSigningEnvVars.joinToString()
+    )
+}
 
 android {
     namespace = "io.github.v2compose"
@@ -34,6 +68,17 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            providers.environmentVariable("ANDROID_RELEASE_KEYSTORE_PATH").orNull?.let {
+                storeFile = file(it)
+            }
+            storePassword = providers.environmentVariable("ANDROID_RELEASE_KEYSTORE_PASSWORD").orNull
+            keyAlias = providers.environmentVariable("ANDROID_RELEASE_KEY_ALIAS").orNull
+            keyPassword = providers.environmentVariable("ANDROID_RELEASE_KEY_PASSWORD").orNull
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
@@ -47,6 +92,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
