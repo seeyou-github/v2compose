@@ -14,6 +14,9 @@ if (isGoogleTask) {
     apply(plugin = libs.plugins.crashlytics.get().pluginId)
 }
 
+val appVersionCode = providers.gradleProperty("app.versionCode").get().toInt()
+val appVersionName = providers.gradleProperty("app.versionName").get()
+
 android {
     namespace = "io.github.v2compose"
     compileSdk = 36
@@ -22,8 +25,8 @@ android {
         applicationId = "io.github.v2compose"
         minSdk = 26
         targetSdk = 35
-        versionCode = 200
-        versionName = "2.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
