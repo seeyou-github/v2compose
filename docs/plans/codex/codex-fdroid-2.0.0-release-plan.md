@@ -44,7 +44,7 @@ If retaining upstream binary verification, publish a GitHub Release asset that
 matches the existing `Binaries` template:
 
 ```text
-https://github.com/cooaer/v2compose/releases/download/v2.0.0/v2compose-v2.0.0-foss.apk
+https://github.com/cooaer/v2compose/releases/download/v2.0.0/v2v-v2.0.0-foss.apk
 ```
 
 The APK must be signed with the existing certificate allowed by fdroiddata.
@@ -72,7 +72,7 @@ Expected `git ls-files` result for `google-services.json`: no output.
 ## Release Checklist
 
 - Create and push the `v2.0.0` tag after all verification passes.
-- Upload `v2compose-v2.0.0-foss.apk` to the GitHub Release if upstream binary
+- Upload `v2v-v2.0.0-foss.apk` to the GitHub Release if upstream binary
   verification remains enabled in fdroiddata.
 - Open an fdroiddata merge request for version `2.0.0 (200)`.
 - Confirm the F-Droid build log uses the `foss` flavor and does not include
