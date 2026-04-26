@@ -22,8 +22,8 @@ android {
         applicationId = "io.github.v2compose"
         minSdk = 26
         targetSdk = 35
-        versionCode = 101
-        versionName = "1.0.1"
+        versionCode = 200
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -124,9 +124,14 @@ android {
     }
 }
 
-tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
-    val sharedProject = project(":shared")
-    dependsOn(sharedProject.tasks.matching {
-        it.name == "copyAndroidMainComposeResourcesToAndroidAssets"
-    })
+val copySharedComposeResourcesToAndroidAssets = project(":shared").tasks.matching {
+    it.name == "copyAndroidMainComposeResourcesToAndroidAssets"
+}
+
+tasks.matching {
+    (it.name.startsWith("merge") && it.name.endsWith("Assets")) ||
+        (it.name.startsWith("generate") && it.name.endsWith("LintVitalReportModel")) ||
+        it.name.startsWith("lintVitalAnalyze")
+}.configureEach {
+    dependsOn(copySharedComposeResourcesToAndroidAssets)
 }

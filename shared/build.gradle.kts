@@ -14,7 +14,7 @@ buildkonfig {
         buildConfigField(
             com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
             "VERSION_NAME",
-            "\"1.0.1\""
+            "\"2.0.0\""
         )
     }
 }
