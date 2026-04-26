@@ -1,0 +1,217 @@
+package io.github.v2compose.usecase
+
+import coil3.SingletonImageLoader
+import coil3.request.ImageRequest
+import coil3.request.ImageResult
+import coil3.request.SuccessResult
+import coil3.size.Precision
+import coil3.size.Scale
+import com.fleeksoft.ksoup.Ksoup
+import com.fleeksoft.ksoup.nodes.Document
+import com.fleeksoft.ksoup.nodes.Element
+import io.github.cooaer.htmltext.ExternalImageSizePolicy
+import io.github.cooaer.htmltext.fullUrl
+import io.github.v2compose.Constants
+import io.github.v2compose.util.CfEmailUtils
+import io.github.v2compose.util.KLogger
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
+import kotlin.math.ceil
+
+private const val TAG = "FixHtmlImageUseCase"
+
+class FixHtmlUseCase(
+    private val context: coil3.PlatformContext,
+    private val externalImageUrlResolver: ExternalImageUrlResolver,
+) : HtmlImageLoader {
+
+    companion object {
+        const val LoadImagesCountEveryTime = 2
+    }
+
+    private val floorRegex = "(^|\\s+)#(\\d+)($|\\s+)".toRegex()
+
+    override suspend fun loadHtmlImages(html: String, src: String?): Flow<String> {
+        return if (src == null) {
+            loadImages(html)
+        } else {
+            loadImage(html, src)
+        }
+    }
+
+    private fun loadImages(html: String): Flow<String> = flow {
+        val document = withContext(Dispatchers.Default) { initialHtml(html, true) }
+        rewriteHtmlImageSources(document, externalImageUrlResolver)
+
+        //将html中所有的img的加载状态改为loading
+        val loadingImages = document.select("img")
+            .filter { element ->
+                val width = element.attr("width")
+                val height = element.attr("height")
+                width.isEmpty() && height.isEmpty()
+            }
+        loadingImages.forEach { element ->
+            element.attr("loadState", "loading")
+        }
+        emit(document.outerHtml())
+
+        //每次加载四张图片
+        val loadTimes = ceil(1f * loadingImages.size / LoadImagesCountEveryTime).toInt()
+        (0 until loadTimes).forEach { index ->
+            val toIndex = minOf((index + 1) * LoadImagesCountEveryTime, loadingImages.size)
+            val images = loadingImages.subList(index * LoadImagesCountEveryTime, toIndex)
+            images.map { element ->
+                val src = element.attr("src").fullUrl(Constants.baseUrl)
+                val imageRequest = createImageRequest(src)
+                try {
+                    KLogger.d(TAG, "loadImages execute start, src = $src")
+                    val result = SingletonImageLoader.get(context).execute(imageRequest)
+                    KLogger.d(
+                        TAG,
+                        "loadImages execute end, src = $src, result = ${result::class.simpleName}"
+                    )
+                    Pair(element, result)
+                } catch (e: CancellationException) {
+                    KLogger.w(
+                        TAG,
+                        "loadImages execute cancelled, src = $src, message = ${e.message}"
+                    )
+                    throw e
+                } catch (e: Exception) {
+                    KLogger.e(TAG, "loadImages execute failed, src = $src", e)
+                    Pair(element, null)
+                }
+            }.map { (element, result) ->
+                fillElement(element, result)
+            }
+            emit(document.outerHtml())
+        }
+    }
+
+    private fun createImageRequest(src: String): ImageRequest {
+        val decodeSize = ExternalImageSizePolicy.htmlProbeDecodeSize()
+        return applyExternalImageRequestHeaders(
+            ImageRequest.Builder(context),
+            src,
+        )
+            .data(src)
+            .size(width = decodeSize.width, height = decodeSize.height)
+            .precision(Precision.INEXACT)
+            .scale(Scale.FIT)
+            .build()
+    }
+
+    private fun loadImage(html: String, src: String): Flow<String> = flow {
+        val document = Ksoup.parse(html)
+        rewriteHtmlImageSources(document, externalImageUrlResolver)
+        val resolvedSrc = externalImageUrlResolver.resolve(src.fullUrl(Constants.baseUrl))
+        val loadingImages = document.select("img[src=\"$resolvedSrc\"]")
+        loadingImages.forEach { element ->
+            element.attr("loadState", "loading")
+        }
+        emit(document.outerHtml())
+
+        val decodeSize = ExternalImageSizePolicy.htmlProbeDecodeSize()
+        val imageRequest = applyExternalImageRequestHeaders(
+            ImageRequest.Builder(context),
+            resolvedSrc,
+        )
+            .data(resolvedSrc)
+            .size(width = decodeSize.width, height = decodeSize.height)
+            .precision(Precision.INEXACT)
+            .scale(Scale.FIT)
+            .build()
+        KLogger.d(TAG, "loadImage execute start, src = $resolvedSrc")
+        val imageResult = try {
+            val result = SingletonImageLoader.get(context).execute(imageRequest)
+            KLogger.d(
+                TAG,
+                "loadImage execute end, src = $resolvedSrc, result = ${result::class.simpleName}"
+            )
+            result
+        } catch (e: CancellationException) {
+            KLogger.w(
+                TAG,
+                "loadImage execute cancelled, src = $resolvedSrc, message = ${e.message}"
+            )
+            throw e
+        } catch (e: Exception) {
+            KLogger.e(TAG, "loadImage execute failed, src = $resolvedSrc", e)
+            null
+        }
+        loadingImages.forEach { element ->
+            fillElement(element, imageResult)
+        }
+        KLogger.d(
+            TAG,
+            "loadImage emit final html, src = $resolvedSrc, matchedImages = ${loadingImages.size}"
+        )
+        emit(document.outerHtml())
+    }
+
+    private fun fillElement(element: Element, result: ImageResult?) {
+        val image = if (result is SuccessResult) result.image else null
+        KLogger.d(
+            TAG,
+            "fillElement, src = ${element.attr("src")}, result width = ${image?.width}, resultHeight = ${image?.height}"
+        )
+
+        if (image != null) {
+            element.attr("width", image.width.toString())
+            element.attr("height", image.height.toString())
+            element.attr("loadState", "success")
+        } else {
+            element.attr("loadState", "error")
+        }
+    }
+
+    private fun initialHtml(content: String, linkFloor: Boolean): Document {
+        //替换html所有的符合规则的楼层为可点击的链接
+        val newContent = if (linkFloor) {
+            floorRegex.replace(content) { matchResult ->
+                val start = matchResult.groupValues[1]
+                val floor = matchResult.groupValues[2]
+                val end = matchResult.groupValues[3]
+                "$start<a href=\"#reply$floor\">#$floor</a>$end"
+            }
+        } else content
+
+        val document = Ksoup.parse(newContent)
+
+        //解密cloudflare对邮件名称的加密
+        val encodedEmails: List<Element> = document.select(".__cf_email__")
+        if (encodedEmails.isNotEmpty()) {
+            encodedEmails.forEach { CfEmailUtils.fixEmailProtected(it) }
+        }
+
+        return document
+    }
+
+}
+
+internal suspend fun rewriteHtmlImageSources(
+    html: String,
+    resolver: ExternalImageUrlResolver,
+): String {
+    val document = Ksoup.parse(html)
+    rewriteHtmlImageSources(document, resolver)
+    return document.outerHtml()
+}
+
+internal suspend fun rewriteHtmlImageSources(
+    document: Document,
+    resolver: ExternalImageUrlResolver,
+) {
+    document.select("img").forEach { element ->
+        val src = element.attr("src")
+        if (src.isBlank()) return@forEach
+        val normalizedSrc = src.fullUrl(Constants.baseUrl)
+        val resolvedSrc = resolver.resolve(normalizedSrc)
+        if (resolvedSrc != src) {
+            element.attr("src", resolvedSrc)
+        }
+    }
+}

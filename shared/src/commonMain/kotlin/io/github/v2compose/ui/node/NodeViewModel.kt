@@ -1,0 +1,102 @@
+package io.github.v2compose.ui.node
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import io.github.v2compose.core.StringDecoder
+import io.github.v2compose.network.bean.NodeTopicInfo
+import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.repository.NodeRepository
+import io.github.v2compose.repository.TopicRepository
+import io.github.v2compose.ui.BaseViewModel
+import io.github.v2compose.util.KLogger
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.node_action_failure_tips
+
+private const val TAG = "NodeViewModel"
+
+class NodeViewModel(
+    savedStateHandle: SavedStateHandle,
+    stringDecoder: StringDecoder,
+    private val nodeRepository: NodeRepository,
+    private val topicRepository: TopicRepository,
+    private val accountRepository: AccountRepository,
+) : BaseViewModel() {
+
+    val nodeArgs = NodeArgs(savedStateHandle, stringDecoder)
+
+    private val _nodeTopicInfo = MutableStateFlow<NodeTopicInfo?>(null)
+    val nodeTopicInfo: StateFlow<NodeTopicInfo?> = _nodeTopicInfo
+
+    private val _nodeInfo = MutableStateFlow<NodeUiState>(NodeUiState.Loading)
+    val nodeInfo = _nodeInfo.asStateFlow()
+
+    val nodeTopicItems =
+        nodeRepository.getNodeTopicInfo(nodeArgs.nodeName).cachedIn(viewModelScope)
+
+    //标题概览
+    val topicTitleOverview: StateFlow<Boolean> = topicRepository.topicTitleOverview
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), true)
+
+    val isLoggedIn = accountRepository.isLoggedIn
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+
+    init {
+        loadNodeInternal()
+    }
+
+    fun retryNode() {
+        loadNodeInternal()
+    }
+
+    private fun loadNodeInternal() {
+        viewModelScope.launch {
+            _nodeInfo.emit(NodeUiState.Loading)
+            try {
+                val nodeInfo = nodeRepository.getNodeInfo(nodeArgs.nodeName)
+                KLogger.d(TAG, "loadNodeInternal, result, nodeInfo = $nodeInfo")
+                _nodeInfo.emit(NodeUiState.Success(nodeInfo))
+            } catch (e: Exception) {
+                KLogger.e(TAG, "loadNodeInternal failed", e)
+                _nodeInfo.emit(NodeUiState.Error(e))
+            }
+        }
+    }
+
+    fun updateNodeTopicInfo(value: NodeTopicInfo?) {
+        viewModelScope.launch {
+            _nodeTopicInfo.emit(value)
+        }
+    }
+
+    fun follow() {
+        doNodeAction { it.favoriteLink }
+    }
+
+    private fun doNodeAction(actionUrl: (NodeTopicInfo) -> String) {
+        val node = _nodeTopicInfo.value ?: return
+        val url = actionUrl(node)
+        viewModelScope.launch {
+            try {
+                val result = nodeRepository.doNodeAction(nodeArgs.nodeName, url)
+                _nodeTopicInfo.emit(result)
+//                val successTips =
+//                    if (result.hasStared()) Res.string.node_favorite_success_tips else Res.string.node_unfavorite_success_tips
+//                updateSnackbarMessage(getString(successTips))
+            } catch (e: Exception) {
+                KLogger.e(TAG, "doNodeAction failed", e)
+                updateSnackbarMessage(
+                    e.message ?: getString(Res.string.node_action_failure_tips)
+                )
+            }
+        }
+    }
+
+}

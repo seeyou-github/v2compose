@@ -1,0 +1,229 @@
+package io.github.v2compose.ui.common
+
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.mikepenz.markdown.coil3.Coil3ImageTransformerImpl
+import com.mikepenz.markdown.m3.Markdown
+import io.github.v2compose.shared.bean.ContentFormat
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import v2compose.shared.generated.resources.Res
+import v2compose.shared.generated.resources.content_body
+import v2compose.shared.generated.resources.content_format_markdown
+import v2compose.shared.generated.resources.content_format_original
+import v2compose.shared.generated.resources.content_preview
+
+private val ContentBarHeight = 40.dp
+
+private enum class ContentTab(val key: String, val title: StringResource) {
+    Body(key = "body", title = Res.string.content_body),
+    Preview(key = "preview", title = Res.string.content_preview),
+}
+
+@Composable
+fun TextEditor(
+    content: String,
+    placeholder: String,
+    contentFormat: ContentFormat,
+    onContentChanged: (content: String) -> Unit,
+    onContentFormatChanged: (format: ContentFormat) -> Unit,
+    modifier: Modifier = Modifier,
+    contentFocusRequester: FocusRequester = remember { FocusRequester() },
+) {
+    val tabs = remember(contentFormat) {
+        if (contentFormat == ContentFormat.Markdown) {
+            listOf(ContentTab.Body, ContentTab.Preview)
+        } else {
+            listOf(ContentTab.Body)
+        }
+    }
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+
+    Box(modifier = modifier) {
+        HorizontalPager(
+            state = pagerState,
+            key = { tabs[it].key },
+            modifier = Modifier.padding(top = ContentBarHeight)
+        ) { index ->
+            when (index) {
+                0 -> ContentEditor(
+                    content = content,
+                    placeholder = placeholder,
+                    onContentChanged = onContentChanged,
+                    modifier = Modifier.focusRequester(contentFocusRequester),
+                )
+
+                1 -> MarkdownPreview(content)
+            }
+        }
+
+        ContentBar(tabs, contentFormat, pagerState, onContentFormatChanged)
+
+        ListDivider(modifier = Modifier.padding(top = ContentBarHeight))
+    }
+}
+
+@Composable
+private fun ContentBar(
+    tabs: List<ContentTab>,
+    contentFormat: ContentFormat,
+    pagerState: PagerState,
+    onContentFormatChanged: (ContentFormat) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(ContentBarHeight)
+            .background(color = MaterialTheme.colorScheme.background),
+    ) {
+        val currentPage =
+            if (pagerState.currentPage >= tabs.size) 0 else pagerState.currentPage
+        SecondaryTabRow(
+            selectedTabIndex = currentPage,
+            modifier = Modifier.width(64.dp * tabs.size),
+            divider = {},
+        ) {
+            tabs.forEachIndexed { index, tab ->
+                Tab(
+                    selected = index == currentPage,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    modifier = Modifier.height(ContentBarHeight),
+                ) {
+                    Text(stringResource(tab.title))
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        val segments = listOf(ContentFormat.Original, ContentFormat.Markdown)
+        var selectedSegment by remember(contentFormat) { mutableStateOf(contentFormat) }
+        SegmentedControl(
+            segments = segments,
+            selectedSegment = selectedSegment,
+            onSegmentSelected = {
+                selectedSegment = it
+                onContentFormatChanged(it)
+            },
+            modifier = Modifier.sizeIn(maxWidth = 192.dp),
+        ) {
+            val segmentResId = when (it) {
+                ContentFormat.Original -> Res.string.content_format_original
+                ContentFormat.Markdown -> Res.string.content_format_markdown
+            }
+            Text(stringResource(segmentResId), style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+@Composable
+private fun ContentEditor(
+    content: String,
+    placeholder: String,
+    onContentChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var textFieldValue by remember {
+        mutableStateOf(TextFieldValue(content, TextRange(content.length)))
+    }
+    LaunchedEffect(content) {
+        if (textFieldValue.text != content) {
+            textFieldValue = TextFieldValue(content, TextRange(content.length))
+        }
+    }
+    val placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant
+    TextField(
+        value = textFieldValue,
+        onValueChange = {
+            textFieldValue = it
+            onContentChanged(it.text)
+        },
+        modifier = modifier.fillMaxSize(),
+        colors = TextFieldDefaults.colors(
+            errorIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            focusedPlaceholderColor = placeholderColor,
+            unfocusedPlaceholderColor = placeholderColor,
+            errorPlaceholderColor = placeholderColor,
+            disabledPlaceholderColor = placeholderColor,
+        ),
+        placeholder = { Text(placeholder) },
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            fontSize = 15.sp,
+            lineHeight = 22.sp,
+            letterSpacing = 0.3.sp,
+        ),
+    )
+}
+
+@Composable
+private fun MarkdownPreview(content: String) {
+    Markdown(
+        content = content,
+        typography = compactMarkdownTypography(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        imageTransformer = Coil3ImageTransformerImpl
+    )
+}
+
+@Preview(widthDp = 440, heightDp = 960, device = "id:Nexus 5")
+@Composable
+private fun TextEditorPreview() {
+    TextEditor(
+        content = "",
+        placeholder = "",
+        contentFormat = ContentFormat.Markdown,
+        onContentChanged = {},
+        onContentFormatChanged = {},
+        modifier = Modifier.fillMaxSize(),
+    )
+}

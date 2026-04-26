@@ -1,0 +1,5 @@
+#include "Base.xcconfig"
+
+APP_BUNDLE_IDENTIFIER = io.github.v2compose.iosApp
+APP_ICON_NAME = AppIcon
+FIREBASE_PLIST_SOURCE = iosApp/GoogleService-Info.plist

@@ -8,7 +8,6 @@
 
 [<img src="https://raw.githubusercontent.com/cooaer/v2compose/master/.github/images/badge-f-droid.png" alt='Get it on F-Droid' height="80">](https://f-droid.org/packages/io.github.v2compose) [<img src="https://raw.githubusercontent.com/cooaer/v2compose/master/.github/images/badge-github.png" alt='Get it on GitHub' height="80">](https://github.com/cooaer/v2compose/releases/latest)
 
-
 ## 项目特色
 
 * UI 部分完全使用 Compose 实现；
@@ -48,18 +47,32 @@
 
 ## 用户隐私
 
-V2compose 集成了 Firebase 的 Crashlytics 和 Analytics 功能，仅用于收集崩溃信息、统计基本的应用活跃信息，没有收集任何用户隐私相关的数据。请放心使用。
+V2compose 集成了 Firebase 的 Crashlytics 和 Analytics
+功能，仅用于崩溃诊断、稳定性改进与基础使用统计，不用于广告跟踪。
+登录、发帖、回帖、签到、搜索等功能会按用户操作与 V2EX 或搜索服务通信；相关隐私说明请参考 `docs/privacy-policy.md`。
 
 ## 构建须知
 
-V2compose 集成了 Firebase，开放的源码中不包含 Firebase 的密钥。如果你需要构建自己的 V2compose 版本，请创建自己 Firebase 应用，添加
-google-services.json 至 app 目录下。
+V2compose 集成了 Firebase，开放的源码中不包含 Firebase 的密钥。
+
+如果你需要构建自己的 V2compose 版本：
+
+- Android:
+  - 创建自己的 Firebase 应用；
+  - 添加 `androidApp/src/google/google-services.json`。
+- iOS:
+  - 在 Firebase Console 中分别为 bundle id `io.github.v2compose.iosApp` 和 `io.github.v2compose.iosApp.debug` 注册 iOS App；
+  - 添加 `iosApp/iosApp/GoogleService-Info.plist`（Release）；
+  - 添加 `iosApp/iosApp/GoogleService-Info-Debug.plist`（Debug）；
+  - 先执行 `xcodegen generate --spec iosApp/project.yml` 生成工程，再用 Xcode 构建；
+  - iOS 侧 Firebase 官方 SDK 通过 Swift Package Manager 接入，最低系统版本为 iOS 15。
 
 ## 特别感谢
 
 * [V2er-app/Android](https://github.com/v2er-app/Android) : 一个 Android 端的 V2ex 客户端，V2Compose
   使用该项目的部分网络相关代码！
-* [sov2ex](https://github.com/Bynil/sov2ex) : 一个便捷的 V2EX 站内搜索引擎，V2Compose 使用该项目的 API 实现搜索 V2ex 的功能！
+* [sov2ex](https://github.com/Bynil/sov2ex) : 一个便捷的 V2EX 站内搜索引擎，V2Compose 使用该项目的
+  API 实现搜索 V2ex 的功能！
 
 ## JetBrains support
 
@@ -73,8 +86,13 @@ V2compose
 
 Copyright (C) 2023 cooaer
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+General Public License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License along with this program. If not,
+see <https://www.gnu.org/licenses/>.

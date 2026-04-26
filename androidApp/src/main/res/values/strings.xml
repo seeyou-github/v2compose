@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">V2X</string>
+    <string name="request_notification_permission">申请通知权限</string>
+    <string name="request_notification_permission_message">后台自动签到时需要发送前台通知，请授予通知权限，否则无法在应用关闭后自动签到。</string>
+    <string name="notification_channel_auto_check_in">自动签到通知</string>
+</resources>

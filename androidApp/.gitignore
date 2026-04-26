@@ -1,0 +1,6 @@
+/build
+/release/
+/google/
+/foss/
+/src/googleDebug/google-services.json
+/src/googleRelease/google-services.json

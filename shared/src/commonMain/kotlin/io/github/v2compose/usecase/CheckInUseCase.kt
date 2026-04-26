@@ -1,0 +1,44 @@
+package io.github.v2compose.usecase
+
+import io.github.v2compose.V2exUri
+import io.github.v2compose.core.extension.isRedirect
+import io.github.v2compose.repository.AccountRepository
+
+class CheckInUseCase(
+    private val accountRepository: AccountRepository,
+) {
+
+    //状态变化后的自动签到、点击签到按钮、后台自动签到
+    suspend operator fun invoke(): CheckInResult {
+        return try {
+            var dailyInfo = accountRepository.dailyInfo()
+            if (!dailyInfo.hadCheckedIn()) {
+                dailyInfo = accountRepository.checkIn(dailyInfo.once)
+            }
+            dailyInfo.toCheckInResult()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            if (e.isRedirect(V2exUri.missionDailyPath)) {
+                runCatching {
+                    accountRepository.dailyInfo().toCheckInResult()
+                }.getOrElse { followUpError ->
+                    followUpError.printStackTrace()
+                    CheckInResult(false, followUpError.message ?: e.message)
+                }
+            } else {
+                CheckInResult(false, e.message)
+            }
+        }
+    }
+
+}
+
+data class CheckInResult(val success: Boolean, val message: String?)
+
+private fun io.github.v2compose.network.bean.DailyInfo.toCheckInResult(): CheckInResult {
+    val success = hadCheckedIn()
+    return CheckInResult(
+        success = success,
+        message = continuousLoginDaysText.takeIf { success && it.isNotBlank() },
+    )
+}

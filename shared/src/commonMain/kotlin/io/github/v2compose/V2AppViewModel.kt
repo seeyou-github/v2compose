@@ -1,0 +1,28 @@
+package io.github.v2compose
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.github.v2compose.datasource.AppPreferences
+import io.github.v2compose.repository.AccountRepository
+import io.github.v2compose.shared.bean.Account
+import io.github.v2compose.shared.bean.AppSettings
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+
+class V2AppViewModel(
+    private val appPreferences: AppPreferences,
+    private val accountRepository: AccountRepository,
+) : ViewModel() {
+
+    val appSettings = appPreferences.appSettings.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        AppSettings.Default
+    )
+
+    val account = accountRepository.account.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        Account.Empty
+    )
+}
