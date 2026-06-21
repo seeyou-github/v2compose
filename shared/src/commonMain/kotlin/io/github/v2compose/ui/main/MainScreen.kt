@@ -23,6 +23,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -249,7 +250,16 @@ private fun MainTopBar(
         }
     }
     CenterAlignedTopAppBar(
-        title = { Text(navBarItemNames[currentNavBarIndex]) },
+        windowInsets = WindowInsets(top = 0, bottom = 0),
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        title = {
+            Text(
+                navBarItemNames[currentNavBarIndex],
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
         actions = {
             menuItem?.let {
                 IconButton(onClick = { onMenuItemClick(it) }) {
@@ -261,6 +271,7 @@ private fun MainTopBar(
                 }
             }
         },
+        modifier = Modifier.height(44.dp),
     )
 }
 
