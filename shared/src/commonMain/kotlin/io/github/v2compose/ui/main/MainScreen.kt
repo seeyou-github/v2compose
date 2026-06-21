@@ -250,7 +250,6 @@ private fun MainTopBar(
         }
     }
     CenterAlignedTopAppBar(
-        windowInsets = WindowInsets(top = 0, bottom = 0),
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -271,7 +270,6 @@ private fun MainTopBar(
                 }
             }
         },
-        modifier = Modifier.height(44.dp),
     )
 }
 
