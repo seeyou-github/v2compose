@@ -63,8 +63,6 @@ import v2compose.shared.generated.resources.settings_appearance
 import v2compose.shared.generated.resources.settings_auto_check_in
 import v2compose.shared.generated.resources.settings_auto_check_in_description
 import v2compose.shared.generated.resources.settings_auto_check_in_description_ios
-import v2compose.shared.generated.resources.settings_check_for_updates
-import v2compose.shared.generated.resources.settings_check_for_updates_summary
 import v2compose.shared.generated.resources.settings_clear_cache
 import v2compose.shared.generated.resources.settings_clear_cache_summary
 import v2compose.shared.generated.resources.settings_common
@@ -74,8 +72,6 @@ import v2compose.shared.generated.resources.settings_dark_mode_off
 import v2compose.shared.generated.resources.settings_dark_mode_on
 import v2compose.shared.generated.resources.settings_highlight_op_reply
 import v2compose.shared.generated.resources.settings_highlight_op_reply_summary
-import v2compose.shared.generated.resources.settings_issues
-import v2compose.shared.generated.resources.settings_open_source
 import v2compose.shared.generated.resources.settings_other
 import v2compose.shared.generated.resources.settings_proxy
 import v2compose.shared.generated.resources.settings_proxy_ios_notice
@@ -113,10 +109,7 @@ fun SettingsScreenRoute(
         onTopicTitleTwoLineMaxChanged = viewModel::setTopicTitleTwoLineMax,
         onHighlightOpReplyChanged = viewModel::toggleHighlightOpReply,
         onProxyChanged = viewModel::changeProxy,
-        onSourceClick = openUri,
-        onIssuesClick = openUri,
         onVersionClick = {},
-        onCheckForUpdatesClick = {},
         onLogout = {
             coroutineScope.launch {
                 viewModel.logout()
@@ -139,10 +132,7 @@ private fun SettingsScreen(
     onTopicTitleTwoLineMaxChanged: (Boolean) -> Unit,
     onHighlightOpReplyChanged: (Boolean) -> Unit,
     onProxyChanged: (ProxyInfo) -> Unit,
-    onSourceClick: (String) -> Unit,
-    onIssuesClick: (String) -> Unit,
     onVersionClick: () -> Unit,
-    onCheckForUpdatesClick: () -> Unit,
     onLogout: () -> Unit,
 ) {
     Scaffold(
@@ -197,25 +187,9 @@ private fun SettingsScreen(
             )
             PreferenceGroupTitle(title = stringResource(Res.string.settings_other))
             ClickablePreference(
-                title = stringResource(Res.string.settings_open_source),
-                summary = Constants.source,
-                onPreferenceClick = { onSourceClick(Constants.source) })
-            ClickablePreference(
-                title = stringResource(Res.string.settings_issues),
-                summary = Constants.issues,
-                onPreferenceClick = { onIssuesClick(Constants.issues) })
-            ClickablePreference(
                 title = stringResource(Res.string.settings_version),
                 summary = Constants.versionName,
                 onPreferenceClick = onVersionClick
-            )
-            // 禁止应用内“检查更新”：避免触发 GitHub release 检测链路。
-            // 点击项保留但不可点击，便于 UI 保持稳定。
-            ClickablePreference(
-                title = stringResource(Res.string.settings_check_for_updates),
-                summary = stringResource(Res.string.settings_check_for_updates_summary),
-                enabled = false,
-                onPreferenceClick = {},
             )
             if (isLoggedIn) {
                 Logout(onLogout = onLogout)
