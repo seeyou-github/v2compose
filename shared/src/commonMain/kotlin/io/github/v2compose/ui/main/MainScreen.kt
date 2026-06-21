@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
@@ -159,6 +158,11 @@ private fun MainScreen(
     val hasNodes = rememberSaveable(loadNodesState) { loadNodesState is LoadNodesState.Success }
     val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    // 切换 tab 时重置顶栏状态，确保顶栏展开显示
+    LaunchedEffect(navBarSelectedIndex) {
+        topAppBarScrollBehavior.state.heightOffset = 0f
+    }
+
     PlatformBackHandler(enabled = showNodes) {
         showNodes = false
     }
@@ -187,16 +191,16 @@ private fun MainScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .padding(paddingValues)
         ) {
             Box(
                 modifier = Modifier.weight(1f)
             ) {
+                val isHomeTab = navBarSelectedIndex == MainBottomTab.Home.ordinal
                 MainContent(
                     navBarSelectedIndex = navBarSelectedIndex,
                     hideLoginRelatedUi = hideLoginRelatedUi,
-                    nestedScrollConnection = topAppBarScrollBehavior.nestedScrollConnection,
+                    nestedScrollConnection = if (isHomeTab) topAppBarScrollBehavior.nestedScrollConnection else null,
                     onNewsItemClick = onNewsItemClick,
                     onRecentItemClick = onRecentItemClick,
                     onNodeClick = onNodeClick,
