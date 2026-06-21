@@ -40,7 +40,6 @@ fun SimpleTopic(
     nodeTitle: String,
     title: String,
     titleOverview: Boolean = false,
-    hideNodeTag: Boolean = false,
     hideUserInfo: Boolean = false,
     onItemClick: (() -> Unit)? = null,
     onUserAvatarClick: (() -> Unit)? = null,
@@ -93,14 +92,12 @@ fun SimpleTopic(
                             }
                         }
                     }
-                    if (!hideNodeTag) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        NodeTag(
-                            nodeTitle = nodeTitle,
-                            nodeName = nodeName,
-                            onItemClick = { _, _ -> onNodeClick?.invoke() },
-                        )
-                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    NodeTag(
+                        nodeTitle = nodeTitle,
+                        nodeName = nodeName,
+                        onItemClick = { _, _ -> onNodeClick?.invoke() },
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }

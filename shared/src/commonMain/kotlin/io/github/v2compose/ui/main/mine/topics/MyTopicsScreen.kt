@@ -45,7 +45,6 @@ fun MyTopicsScreenRoute(
 
     MyTopicsScreen(
         topicTitleOverview = topicTitleOverview,
-        hideNodeTag = appSettings.hideTopicNodeTag,
         hideUserInfo = appSettings.hideTopicUserInfo,
         myTopics = myTopics,
         onBackClick = onBackClick,
@@ -59,7 +58,6 @@ fun MyTopicsScreenRoute(
 @Composable
 private fun MyTopicsScreen(
     topicTitleOverview: Boolean,
-    hideNodeTag: Boolean,
     hideUserInfo: Boolean,
     myTopics: LazyPagingItems<MyTopicsInfo.Item>,
     onBackClick: () -> Unit,
@@ -87,7 +85,6 @@ private fun MyTopicsScreen(
             MyTopicsList(
                 myTopics = myTopics,
                 topicTitleOverview = topicTitleOverview,
-                hideNodeTag = hideNodeTag,
                 hideUserInfo = hideUserInfo,
                 onTopicClick = onTopicClick,
                 onNodeClick = onNodeClick,
@@ -101,7 +98,6 @@ private fun MyTopicsScreen(
 private fun MyTopicsList(
     myTopics: LazyPagingItems<MyTopicsInfo.Item>,
     topicTitleOverview: Boolean,
-    hideNodeTag: Boolean,
     hideUserInfo: Boolean,
     onTopicClick: (MyTopicsInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
@@ -123,7 +119,6 @@ private fun MyTopicsList(
                     nodeName = item.tagName,
                     nodeTitle = item.tagTitle,
                     titleOverview = topicTitleOverview,
-                    hideNodeTag = hideNodeTag,
                     hideUserInfo = hideUserInfo,
                     onItemClick = { onTopicClick(item) },
                     onNodeClick = { onNodeClick(item.tagName, item.tagTitle) },

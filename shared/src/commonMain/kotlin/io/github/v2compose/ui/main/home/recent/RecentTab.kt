@@ -46,7 +46,6 @@ fun RecentTab(
             RecentTopicsList(
                 recentTopics = recentTopics,
                 topicTitleOverview = topicTitleOverview,
-                hideNodeTag = appSettings.hideTopicNodeTag,
                 hideUserInfo = appSettings.hideTopicUserInfo,
                 onRecentItemClick = onRecentItemClick,
                 onNodeClick = onNodeClick,
@@ -60,7 +59,6 @@ fun RecentTab(
 private fun RecentTopicsList(
     recentTopics: LazyPagingItems<RecentTopics.Item>,
     topicTitleOverview: Boolean,
-    hideNodeTag: Boolean,
     hideUserInfo: Boolean,
     onRecentItemClick: (RecentTopics.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
@@ -99,7 +97,6 @@ private fun RecentTopicsList(
                     nodeName = item.nodeName,
                     nodeTitle = item.nodeTitle,
                     titleOverview = topicTitleOverview,
-                    hideNodeTag = hideNodeTag,
                     hideUserInfo = hideUserInfo,
                     onItemClick = { onRecentItemClick(item) },
                     onNodeClick = { onNodeClick(item.nodeName, item.nodeTitle) },

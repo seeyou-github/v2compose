@@ -74,8 +74,6 @@ import v2compose.shared.generated.resources.settings_highlight_op_reply
 import v2compose.shared.generated.resources.settings_highlight_op_reply_summary
 import v2compose.shared.generated.resources.settings_hide_login_related_ui
 import v2compose.shared.generated.resources.settings_hide_login_related_ui_summary
-import v2compose.shared.generated.resources.settings_hide_topic_node_tag
-import v2compose.shared.generated.resources.settings_hide_topic_node_tag_summary
 import v2compose.shared.generated.resources.settings_hide_topic_user_info
 import v2compose.shared.generated.resources.settings_hide_topic_user_info_summary
 import v2compose.shared.generated.resources.settings_other
@@ -110,7 +108,6 @@ fun SettingsScreenRoute(
         onBackClick = onBackClick,
         onClearCacheClick = viewModel::clearCache,
         onHideLoginRelatedUiChanged = viewModel::setHideLoginRelatedUi,
-        onHideTopicNodeTagChanged = viewModel::setHideTopicNodeTag,
         onHideTopicUserInfoChanged = viewModel::setHideTopicUserInfo,
         onAutoCheckInChanged = viewModel::updateAutoCheckIn,
         onReplyWithFloorChanged = viewModel::updateReplyWithFloor,
@@ -136,7 +133,6 @@ private fun SettingsScreen(
     onBackClick: () -> Unit,
     onClearCacheClick: () -> Unit,
     onHideLoginRelatedUiChanged: (Boolean) -> Unit,
-    onHideTopicNodeTagChanged: (Boolean) -> Unit,
     onHideTopicUserInfoChanged: (Boolean) -> Unit,
     onAutoCheckInChanged: (Boolean) -> Unit,
     onReplyWithFloorChanged: (Boolean) -> Unit,
@@ -164,12 +160,6 @@ private fun SettingsScreen(
                 summary = stringResource(Res.string.settings_hide_login_related_ui_summary),
                 checked = appSettings.hideLoginRelatedUi,
                 onCheckedChange = onHideLoginRelatedUiChanged,
-            )
-            SwitchPreference(
-                title = stringResource(Res.string.settings_hide_topic_node_tag),
-                summary = stringResource(Res.string.settings_hide_topic_node_tag_summary),
-                checked = appSettings.hideTopicNodeTag,
-                onCheckedChange = onHideTopicNodeTagChanged,
             )
             SwitchPreference(
                 title = stringResource(Res.string.settings_hide_topic_user_info),

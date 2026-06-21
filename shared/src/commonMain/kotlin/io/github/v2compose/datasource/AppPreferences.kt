@@ -29,7 +29,6 @@ class AppPreferences(
         private val KeyHighlightOpReply = booleanPreferencesKey("highlight_op_reply")
         private val KeyReplyWithFloor = booleanPreferencesKey("reply_with_floor")
         private val KeyHideLoginRelatedUi = booleanPreferencesKey("hide_login_related_ui")
-        private val KeyHideTopicNodeTag = booleanPreferencesKey("hide_topic_node_tag")
         private val KeyHideTopicUserInfo = booleanPreferencesKey("hide_topic_user_info")
 
         private val KeyProxyInfo = stringPreferencesKey("proxy_info")
@@ -48,7 +47,6 @@ class AppPreferences(
             highlightOpReply = it[KeyHighlightOpReply] ?: false,
             replyWithFloor = it[KeyReplyWithFloor] ?: true,
             hideLoginRelatedUi = it[KeyHideLoginRelatedUi] ?: true,
-            hideTopicNodeTag = it[KeyHideTopicNodeTag] ?: true,
             hideTopicUserInfo = it[KeyHideTopicUserInfo] ?: true,
         )
     }.distinctUntilChanged()
@@ -120,12 +118,6 @@ class AppPreferences(
     suspend fun hideLoginRelatedUi(value: Boolean) {
         dataStore.edit {
             it[KeyHideLoginRelatedUi] = value
-        }
-    }
-
-    suspend fun hideTopicNodeTag(value: Boolean) {
-        dataStore.edit {
-            it[KeyHideTopicNodeTag] = value
         }
     }
 

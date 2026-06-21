@@ -616,7 +616,6 @@ private fun TopicTitle(
         nodeName = headerInfo.getTagName(),
         nodeTitle = headerInfo.tag,
         title = headerInfo.title,
-        hideNodeTag = false,
         hideUserInfo = false,
         onUserAvatarClick = {
             onUserAvatarClick(
