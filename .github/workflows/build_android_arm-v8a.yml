@@ -30,6 +30,13 @@ on:
 permissions:
   contents: read
 
+env:
+  # On push events there are no workflow_dispatch inputs, so use github.event.inputs with fallbacks.
+  GRADLE_TASK: ${{ github.event.inputs.gradle_task || ':androidApp:assembleRelease' }}
+  ARTIFACT_PATH: ${{ github.event.inputs.artifact_path }}
+  ARTIFACT_GLOB: ${{ github.event.inputs.artifact_glob || '*armeabi-v7a*release*.apk' }}
+  OUTPUT_NAME: ${{ github.event.inputs.output_name }}
+
 jobs:
   build_android_arm_v8a:
     runs-on: ubuntu-latest
@@ -51,7 +58,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ./gradlew --no-configuration-cache "${{ inputs.gradle_task }}"
+          ./gradlew --no-configuration-cache "$GRADLE_TASK"
 
       - name: Locate APK
         id: locate
@@ -60,8 +67,8 @@ jobs:
           set -euo pipefail
           shopt -s nullglob globstar
 
-          artifact_path="${{ inputs.artifact_path }}"
-          artifact_glob="${{ inputs.artifact_glob }}"
+          artifact_path="$ARTIFACT_PATH"
+          artifact_glob="$ARTIFACT_GLOB"
 
           if [ -n "$artifact_path" ] && [ -f "$artifact_path" ]; then
             file="$artifact_path"
@@ -82,7 +89,7 @@ jobs:
             file="${matches[0]}"
           fi
 
-          name="${{ inputs.output_name }}"
+          name="$OUTPUT_NAME"
           if [ -z "$name" ]; then
             name="$(basename "$file")"
           fi
