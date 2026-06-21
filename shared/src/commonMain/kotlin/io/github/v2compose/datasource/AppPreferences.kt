@@ -30,6 +30,7 @@ class AppPreferences(
         private val KeyReplyWithFloor = booleanPreferencesKey("reply_with_floor")
         private val KeyHideLoginRelatedUi = booleanPreferencesKey("hide_login_related_ui")
         private val KeyHideTopicUserInfo = booleanPreferencesKey("hide_topic_user_info")
+        private val KeyDisableAvatarImages = booleanPreferencesKey("disable_avatar_images")
 
         private val KeyProxyInfo = stringPreferencesKey("proxy_info")
     }
@@ -48,6 +49,7 @@ class AppPreferences(
             replyWithFloor = it[KeyReplyWithFloor] ?: true,
             hideLoginRelatedUi = it[KeyHideLoginRelatedUi] ?: true,
             hideTopicUserInfo = it[KeyHideTopicUserInfo] ?: true,
+            disableAvatarImages = it[KeyDisableAvatarImages] ?: true,
         )
     }.distinctUntilChanged()
 
@@ -124,6 +126,12 @@ class AppPreferences(
     suspend fun hideTopicUserInfo(value: Boolean) {
         dataStore.edit {
             it[KeyHideTopicUserInfo] = value
+        }
+    }
+
+    suspend fun disableAvatarImages(value: Boolean) {
+        dataStore.edit {
+            it[KeyDisableAvatarImages] = value
         }
     }
 }

@@ -20,6 +20,9 @@ import io.github.v2compose.ui.theme.V2composeTheme
 val LocalSnackbarHostState =
     compositionLocalOf<SnackbarHostState> { error("LocalSnackbar not provided") }
 
+val LocalAppSettings =
+    compositionLocalOf<AppSettings> { error("LocalAppSettings not provided") }
+
 private val BottomAppBarHeight = 72.dp
 
 @Composable
@@ -43,6 +46,7 @@ fun V2AppShell(
         CompositionLocalProvider(
             LocalSnackbarHostState provides snackbarHostState,
             LocalAppPlatformHandlers provides platformHandlers,
+            LocalAppSettings provides appSettings,
         ) {
             Box {
                 content()

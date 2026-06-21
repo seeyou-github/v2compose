@@ -16,15 +16,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
+import io.github.v2compose.LocalAppSettings
 import org.jetbrains.compose.resources.stringResource
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.n_comment
@@ -142,14 +146,65 @@ fun TopicUserAvatar(
     modifier: Modifier = Modifier,
     onUserAvatarClick: (() -> Unit)? = null,
 ) {
-    AsyncImage(
-        model = userAvatar,
-        contentDescription = "$userName's avatar",
+    val disableAvatarImages = LocalAppSettings.current.disableAvatarImages
+    if (!disableAvatarImages) {
+        AsyncImage(
+            model = userAvatar,
+            contentDescription = "$userName's avatar",
+            modifier = modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
+                .clickable(enabled = onUserAvatarClick != null) { onUserAvatarClick?.invoke() },
+            contentScale = ContentScale.Crop,
+        )
+        return
+    }
+
+    val scheme = MaterialTheme.colorScheme
+    val isDark = scheme.surface.luminance() < 0.5f
+    val placeholderBg = remember(userName, isDark) { avatarPlaceholderColor(userName, isDark) }
+    val letter = remember(userName) { userName.trim().firstOrNull()?.toString().orEmpty() }
+
+    Box(
         modifier = modifier
             .size(36.dp)
             .clip(CircleShape)
-            .background(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
+            .background(placeholderBg)
             .clickable(enabled = onUserAvatarClick != null) { onUserAvatarClick?.invoke() },
-        contentScale = ContentScale.Crop,
-    )
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = letter,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (isDark) Color.White else Color.Black,
+            maxLines = 1,
+        )
+    }
+}
+
+private fun avatarPlaceholderColor(userName: String, dark: Boolean): Color {
+    // Stable per username.
+    val seed = userName.trim().lowercase().hashCode()
+    val h = ((seed % 360) + 360) % 360
+    val s = if (dark) 0.55f else 0.45f
+    val l = if (dark) 0.40f else 0.75f
+    return hslToColor(h.toFloat(), s, l)
+}
+
+// Minimal HSL -> RGB conversion; avoids extra deps.
+private fun hslToColor(h: Float, s: Float, l: Float): Color {
+    val c = (1f - kotlin.math.abs(2f * l - 1f)) * s
+    val hh = (h / 60f) % 6f
+    val x = c * (1f - kotlin.math.abs(hh % 2f - 1f))
+    val (r1, g1, b1) = when {
+        hh < 1f -> Triple(c, x, 0f)
+        hh < 2f -> Triple(x, c, 0f)
+        hh < 3f -> Triple(0f, c, x)
+        hh < 4f -> Triple(0f, x, c)
+        hh < 5f -> Triple(x, 0f, c)
+        else -> Triple(c, 0f, x)
+    }
+    val m = l - c / 2f
+    return Color(r1 + m, g1 + m, b1 + m, 1f)
 }

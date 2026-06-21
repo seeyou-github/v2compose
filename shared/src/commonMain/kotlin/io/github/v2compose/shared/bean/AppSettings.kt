@@ -12,6 +12,7 @@ data class AppSettings(
     val replyWithFloor: Boolean = true,
     val hideLoginRelatedUi: Boolean = true,
     val hideTopicUserInfo: Boolean = true,
+    val disableAvatarImages: Boolean = true,
 ) {
     companion object {
         val Default = AppSettings()

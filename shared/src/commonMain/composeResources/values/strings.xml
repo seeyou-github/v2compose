@@ -125,6 +125,9 @@
     <string name="settings_hide_topic_user_info">隐藏列表用户信息</string>
     <string name="settings_hide_topic_user_info_summary">帖子列表不显示头像与用户名，仅显示标题和时间/评论数</string>
 
+    <string name="settings_disable_avatar_images">不加载用户头像图片</string>
+    <string name="settings_disable_avatar_images_summary">关闭后将用用户名首字母占位头像</string>
+
     <string name="settings_auto_check_in">自动签到</string>
     <string name="settings_auto_check_in_description">自动领取每日登录奖励</string>
     <string name="settings_auto_check_in_description_ios">自动领取每日登录奖励，执行时机由 iOS 系统决定</string>

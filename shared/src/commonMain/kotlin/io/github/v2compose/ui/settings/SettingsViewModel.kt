@@ -112,6 +112,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setDisableAvatarImages(value: Boolean) {
+        viewModelScope.launch {
+            appPreferences.disableAvatarImages(value)
+        }
+    }
+
     fun changeProxy(proxy: ProxyInfo) {
         viewModelScope.launch {
             appPreferences.proxyInfo(proxy)
