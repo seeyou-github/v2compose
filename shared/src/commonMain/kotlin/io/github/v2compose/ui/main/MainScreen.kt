@@ -293,14 +293,17 @@ fun MainContent(
             )
 
             1 -> NodesContent(onNodeClick = onNodeClick, modifier = modifier)
-            2 -> if (!hideLoginRelatedUi) NotificationsContent(
-                onLoginClick = onLoginClick,
-                onUriClick = onUriClick,
-                onUserAvatarClick = onUserAvatarClick,
-                onHtmlImageClick = onHtmlImageClick,
-                modifier = modifier,
-            )
-            else -> Unit
+            2 -> {
+                if (!hideLoginRelatedUi) {
+                    NotificationsContent(
+                        onLoginClick = onLoginClick,
+                        onUriClick = onUriClick,
+                        onUserAvatarClick = onUserAvatarClick,
+                        onHtmlImageClick = onHtmlImageClick,
+                        modifier = modifier,
+                    )
+                }
+            }
 
             3 -> MineContent(
                 onLoginClick = onLoginClick,
@@ -313,6 +316,8 @@ fun MainContent(
                 hideLoginRelatedUi = hideLoginRelatedUi,
                 modifier = modifier,
             )
+
+            else -> Unit
         }
     }
 }
