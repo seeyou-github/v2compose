@@ -144,16 +144,19 @@ private fun MineContainer(
             .background(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.38f))
     ) {
         Column {
-            MineHeader(
-                account = account,
-                lastCheckInTime = lastCheckInTime,
-                hasCheckingInTips = hasCheckingInTips,
-                checkingIn = checkingIn,
-                hideLoginRelatedUi = hideLoginRelatedUi,
-                onLoginClick = onLoginClick,
-                onMyHomePageClick = onMyHomePageClick,
-                onCheckInClick = onCheckInClick,
-            )
+            // When hiding login-related UI, also hide the login entry in Mine header.
+            if (!hideLoginRelatedUi || account.isValid()) {
+                MineHeader(
+                    account = account,
+                    lastCheckInTime = lastCheckInTime,
+                    hasCheckingInTips = hasCheckingInTips,
+                    checkingIn = checkingIn,
+                    hideLoginRelatedUi = hideLoginRelatedUi,
+                    onLoginClick = onLoginClick,
+                    onMyHomePageClick = onMyHomePageClick,
+                    onCheckInClick = onCheckInClick,
+                )
+            }
             Spacer(Modifier.height(8.dp))
             if (!hideLoginRelatedUi) {
                 MineEntry(
