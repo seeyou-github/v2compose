@@ -11,6 +11,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.collectAsState
@@ -53,6 +54,15 @@ fun HomeContent(
     }
     val tabInfos = configuredTabs.effectiveHomeTabs()
     val pagerState = rememberPagerState { tabInfos.size }
+
+    // When tabs are reordered/changed from settings, always default to the first tab.
+    // This matches user expectation: open Home shows the first category.
+    val tabKey = remember(tabInfos) { tabInfos.joinToString(separator = "|") { it.id } }
+    LaunchedEffect(tabKey) {
+        if (pagerState.currentPage != 0) {
+            pagerState.scrollToPage(0)
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         HorizontalPager(
