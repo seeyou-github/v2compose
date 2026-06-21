@@ -9,7 +9,7 @@ data class PlatformCapabilities(
 ) {
     companion object {
         val Android = PlatformCapabilities(
-            supportsAutoCheckIn = true,
+            supportsAutoCheckIn = false,
             supportsEmbeddedYouTube = true,
         )
 

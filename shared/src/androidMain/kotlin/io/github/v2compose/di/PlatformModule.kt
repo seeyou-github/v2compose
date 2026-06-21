@@ -10,7 +10,6 @@ import coil3.gif.GifDecoder
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.svg.SvgDecoder
 import io.github.v2compose.PlatformCapabilities
-import io.github.v2compose.core.CheckInWorker
 import io.github.v2compose.datasource.createAccountDataStore
 import io.github.v2compose.datasource.createAppDataStore
 import io.github.v2compose.network.CookieManager
@@ -25,7 +24,6 @@ import io.github.v2compose.network.AndroidNetworkClientProvider
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.shared.core.V2EventManager
-import io.github.v2compose.ui.main.AndroidAutoCheckInScheduler
 import io.github.v2compose.ui.main.AndroidWebViewProxyController
 import io.github.v2compose.ui.main.AutoCheckInScheduler
 import io.github.v2compose.ui.main.WebViewProxyController
@@ -33,7 +31,6 @@ import io.github.v2compose.usecase.FixHtmlUseCase
 import io.github.v2compose.usecase.HtmlImageLoader
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
-import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -68,7 +65,7 @@ actual val platformModule: Module = module {
             .diskCache(get<DiskCache>())
             .build()
     }
-    single<AutoCheckInScheduler> { AndroidAutoCheckInScheduler(get()) }
+    single<AutoCheckInScheduler> { NoOpAutoCheckInScheduler }
     single<WebViewProxyController> { AndroidWebViewProxyController(get()) }
 
     // Network
@@ -119,6 +116,8 @@ actual val platformModule: Module = module {
     singleOf(::FixHtmlUseCase)
     single<HtmlImageLoader> { get<FixHtmlUseCase>() }
 
-    // Worker
-    workerOf(::CheckInWorker)
+}
+
+private object NoOpAutoCheckInScheduler : AutoCheckInScheduler {
+    override fun syncAutoCheckIn(enabled: Boolean) = Unit
 }

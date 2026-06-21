@@ -78,13 +78,11 @@ dependencies {
 
     // Dependency Injection
     implementation(libs.koin.android)
-    implementation(libs.koin.androidx.workmanager)
 
     implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.browser)
     implementation(libs.androidx.startup.runtime)
-    implementation(libs.androidx.work.runtime.ktx)
 
     // compose
     implementation(platform(libs.androidx.compose.bom))
