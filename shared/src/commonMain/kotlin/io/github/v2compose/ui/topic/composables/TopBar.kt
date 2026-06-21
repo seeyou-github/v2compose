@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.v2compose.LocalAppSettings
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
 import org.jetbrains.compose.resources.StringResource
@@ -90,14 +91,16 @@ fun TopicTopBar(
     onMenuClick: (TopicMenuItem) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
+    val appSettings = LocalAppSettings.current
     TopAppBar(
         title = {
             Text(
                 text = with(topicInfo.topic?.headerInfo?.title) {
                     if (showTopicTitle && this != null) this else stringResource(Res.string.topic)
                 },
-                style = MaterialTheme.typography.titleMedium,
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = appSettings.topicListTitleTextSize.sp,
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )

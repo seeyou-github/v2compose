@@ -665,6 +665,7 @@ private fun TopicContent(
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
+    val appSettings = LocalAppSettings.current
     val htmlState = topicBodyHtmlContentState(
         renderedContent = content,
         originalContent = sourceContent,
@@ -673,6 +674,9 @@ private fun TopicContent(
         content = htmlState.content,
         sourceContent = htmlState.sourceContent,
         selectable = false,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            fontSize = appSettings.topicBodyTextSize.sp,
+        ),
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
         onUriClick = openUri,
         loadImage = loadHtmlImage,
@@ -689,6 +693,7 @@ private fun TopicSupplement(
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
+    val appSettings = LocalAppSettings.current
     val backgroundColor = MaterialTheme.colorScheme.surfaceVariant
     val leftBorderColor = MaterialTheme.colorScheme.tertiary
 
@@ -710,6 +715,9 @@ private fun TopicSupplement(
                 content = content,
                 sourceContent = supplement.content,
                 selectable = false,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = appSettings.topicBodyTextSize.sp,
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 onUriClick = openUri,
                 loadImage = loadHtmlImage,

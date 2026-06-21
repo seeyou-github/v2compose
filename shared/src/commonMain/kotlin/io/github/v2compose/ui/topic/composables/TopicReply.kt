@@ -47,10 +47,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.Reply
+import io.github.v2compose.LocalAppSettings
 import io.github.v2compose.ui.common.HtmlContent
 import io.github.v2compose.ui.common.ListDivider
 import io.github.v2compose.ui.common.OnHtmlImageClick
@@ -88,6 +90,7 @@ fun TopicReply(
     shakeable: Boolean = false,
     onShakeFinished: (() -> Unit)? = null,
 ) {
+    val appSettings = LocalAppSettings.current
     val isOp = opName == reply.userName
 
     val containerColor = if (highlightOpReply && isOp) {
@@ -138,6 +141,9 @@ fun TopicReply(
                         content = content,
                         sourceContent = reply.replyContent,
                         selectable = false,
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = appSettings.topicReplyTextSize.sp,
+                        ),
                         linkFloor = true,
                         onUriClick = { onUriClick(it, reply) },
                         onClick = { if (isLoggedIn) onClick(reply) },
@@ -263,6 +269,7 @@ fun UserTopicReply(
     loadHtmlImage: (String, String?) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
+    val appSettings = LocalAppSettings.current
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
         if (index != 0) {
             ListDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
@@ -272,6 +279,9 @@ fun UserTopicReply(
             content = content,
             sourceContent = reply.replyContent,
             linkFloor = true,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = appSettings.topicReplyTextSize.sp,
+            ),
             onUriClick = { onUriClick(it, reply) },
             loadImage = loadHtmlImage,
             onHtmlImageClick = onHtmlImageClick

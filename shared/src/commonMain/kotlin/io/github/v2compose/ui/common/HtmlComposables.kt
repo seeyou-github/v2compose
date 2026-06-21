@@ -19,11 +19,8 @@ fun HtmlContent(
     sourceContent: String = content,
     modifier: Modifier = Modifier,
     selectable: Boolean = false,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(
-        fontSize = 15.sp,
-        lineHeight = 22.sp,
-        letterSpacing = 0.3.sp,
-    ),
+    // Let callers/MaterialTheme control font size so in-app text size settings work.
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     baseUrl: String = Constants.baseUrl,
     linkFloor: Boolean = false,
     onUriClick: ((uri: String) -> Unit)? = null,
