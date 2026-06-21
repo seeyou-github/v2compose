@@ -35,23 +35,15 @@ jobs:
 
       - name: Restore release-only files
         env:
-          ANDROID_RELEASE_KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
           GOOGLE_SERVICES_JSON_RELEASE_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_RELEASE_BASE64 }}
         run: |
           set -euo pipefail
-          : "${ANDROID_RELEASE_KEYSTORE_BASE64:?Missing ANDROID_RELEASE_KEYSTORE_BASE64 secret}"
           : "${GOOGLE_SERVICES_JSON_RELEASE_BASE64:?Missing GOOGLE_SERVICES_JSON_RELEASE_BASE64 secret}"
 
-          mkdir -p "$RUNNER_TEMP/v2compose-signing" androidApp/src/googleRelease
-          printf '%s' "$ANDROID_RELEASE_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/v2compose-signing/release.keystore"
+          mkdir -p androidApp/src/googleRelease
           printf '%s' "$GOOGLE_SERVICES_JSON_RELEASE_BASE64" | base64 --decode > androidApp/src/googleRelease/google-services.json
 
       - name: Build signed release APKs
-        env:
-          ANDROID_RELEASE_KEYSTORE_PATH: ${{ runner.temp }}/v2compose-signing/release.keystore
-          ANDROID_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD }}
-          ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
-          ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
         run: ./gradlew --no-configuration-cache :androidApp:assembleFossRelease :androidApp:assembleGoogleRelease
 
       - name: Stage release assets

@@ -28,29 +28,6 @@ if (isGoogleTask) {
 val appVersionCode = providers.gradleProperty("app.versionCode").get().toInt()
 val appVersionName = providers.gradleProperty("app.versionName").get()
 
-val releaseSigningEnvVars = listOf(
-    "ANDROID_RELEASE_KEYSTORE_PATH",
-    "ANDROID_RELEASE_KEYSTORE_PASSWORD",
-    "ANDROID_RELEASE_KEY_ALIAS",
-    "ANDROID_RELEASE_KEY_PASSWORD"
-)
-val isReleaseBuildTask = gradle.startParameter.taskRequests.any { request ->
-    request.args.any { arg ->
-        val taskName = arg.substringAfterLast(':')
-        taskName.contains("Release") &&
-            (taskName.startsWith("assemble") || taskName.startsWith("bundle"))
-    }
-}
-val missingReleaseSigningEnvVars = releaseSigningEnvVars.filter {
-    providers.environmentVariable(it).orNull.isNullOrBlank()
-}
-if (isReleaseBuildTask && missingReleaseSigningEnvVars.isNotEmpty()) {
-    throw GradleException(
-        "Release signing environment variables are missing: " +
-            missingReleaseSigningEnvVars.joinToString()
-    )
-}
-
 android {
     namespace = "io.github.v2compose"
     compileSdk = 36
@@ -70,12 +47,16 @@ android {
 
     signingConfigs {
         create("release") {
-            providers.environmentVariable("ANDROID_RELEASE_KEYSTORE_PATH").orNull?.let {
-                storeFile = file(it)
-            }
-            storePassword = providers.environmentVariable("ANDROID_RELEASE_KEYSTORE_PASSWORD").orNull
-            keyAlias = providers.environmentVariable("ANDROID_RELEASE_KEY_ALIAS").orNull
-            keyPassword = providers.environmentVariable("ANDROID_RELEASE_KEY_PASSWORD").orNull
+            storeFile = file("Test.jks")
+            storePassword = "123456"
+            keyAlias = "Test"
+            keyPassword = "123456"
+        }
+        getByName("debug") {
+            storeFile = file("Test.jks")
+            storePassword = "123456"
+            keyAlias = "Test"
+            keyPassword = "123456"
         }
     }
 
