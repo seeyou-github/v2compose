@@ -122,6 +122,12 @@
     <string name="settings_hide_login_related_ui">隐藏登录相关界面</string>
     <string name="settings_hide_login_related_ui_summary">隐藏通知、登录与我的相关入口</string>
 
+    <string name="settings_hide_topic_node_tag">隐藏列表节点标签</string>
+    <string name="settings_hide_topic_node_tag_summary">帖子列表不显示节点标签</string>
+
+    <string name="settings_hide_topic_user_info">隐藏列表用户信息</string>
+    <string name="settings_hide_topic_user_info_summary">帖子列表不显示头像与用户名，仅显示标题和时间/评论数</string>
+
     <string name="settings_auto_check_in">自动签到</string>
     <string name="settings_auto_check_in_description">自动领取每日登录奖励</string>
     <string name="settings_auto_check_in_description_ios">自动领取每日登录奖励，执行时机由 iOS 系统决定</string>

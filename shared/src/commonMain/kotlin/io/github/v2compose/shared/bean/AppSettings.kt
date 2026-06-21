@@ -11,6 +11,8 @@ data class AppSettings(
     val highlightOpReply: Boolean = false,
     val replyWithFloor: Boolean = true,
     val hideLoginRelatedUi: Boolean = true,
+    val hideTopicNodeTag: Boolean = true,
+    val hideTopicUserInfo: Boolean = true,
 ) {
     companion object {
         val Default = AppSettings()

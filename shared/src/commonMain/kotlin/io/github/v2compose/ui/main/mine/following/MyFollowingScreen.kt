@@ -40,10 +40,13 @@ fun MyFollowingScreenRoute(
     viewModel: MyFollowingViewModel = koinViewModel()
 ) {
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
+    val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
     val myFollowing = viewModel.myFollowing.collectAsLazyPagingItems()
 
     MyFollowingScreen(
         topicTitleOverview = topicTitleOverview,
+        hideNodeTag = appSettings.hideTopicNodeTag,
+        hideUserInfo = appSettings.hideTopicUserInfo,
         myFollowing = myFollowing,
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
@@ -56,6 +59,8 @@ fun MyFollowingScreenRoute(
 @Composable
 private fun MyFollowingScreen(
     topicTitleOverview: Boolean,
+    hideNodeTag: Boolean,
+    hideUserInfo: Boolean,
     myFollowing: LazyPagingItems<MyFollowingInfo.Item>,
     onBackClick: () -> Unit,
     onTopicClick: (MyFollowingInfo.Item) -> Unit,
@@ -81,6 +86,8 @@ private fun MyFollowingScreen(
             MyFollowingTopicList(
                 myFollowing = myFollowing,
                 topicTitleOverview = topicTitleOverview,
+                hideNodeTag = hideNodeTag,
+                hideUserInfo = hideUserInfo,
                 onTopicClick = onTopicClick,
                 onNodeClick = onNodeClick,
                 onUserAvatarClick = onUserAvatarClick
@@ -93,6 +100,8 @@ private fun MyFollowingScreen(
 private fun MyFollowingTopicList(
     myFollowing: LazyPagingItems<MyFollowingInfo.Item>,
     topicTitleOverview: Boolean,
+    hideNodeTag: Boolean,
+    hideUserInfo: Boolean,
     onTopicClick: (MyFollowingInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit
@@ -113,6 +122,8 @@ private fun MyFollowingTopicList(
                     nodeName = item.tagTitle,
                     nodeTitle = item.tagTitle,
                     titleOverview = topicTitleOverview,
+                    hideNodeTag = hideNodeTag,
+                    hideUserInfo = hideUserInfo,
                     onItemClick = { onTopicClick(item) },
                     onNodeClick = { onNodeClick(item.tagTitle, item.tagTitle) },
                     onUserAvatarClick = { onUserAvatarClick(item.userName, item.avatar) }

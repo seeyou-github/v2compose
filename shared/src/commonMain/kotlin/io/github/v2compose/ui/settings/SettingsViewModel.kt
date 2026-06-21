@@ -106,6 +106,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setHideTopicNodeTag(value: Boolean) {
+        viewModelScope.launch {
+            appPreferences.hideTopicNodeTag(value)
+        }
+    }
+
+    fun setHideTopicUserInfo(value: Boolean) {
+        viewModelScope.launch {
+            appPreferences.hideTopicUserInfo(value)
+        }
+    }
+
     fun changeProxy(proxy: ProxyInfo) {
         viewModelScope.launch {
             appPreferences.proxyInfo(proxy)

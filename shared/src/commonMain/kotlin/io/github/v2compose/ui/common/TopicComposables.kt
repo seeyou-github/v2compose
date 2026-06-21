@@ -40,6 +40,8 @@ fun SimpleTopic(
     nodeTitle: String,
     title: String,
     titleOverview: Boolean = false,
+    hideNodeTag: Boolean = false,
+    hideUserInfo: Boolean = false,
     onItemClick: (() -> Unit)? = null,
     onUserAvatarClick: (() -> Unit)? = null,
     onNodeClick: (() -> Unit)? = null,
@@ -50,60 +52,81 @@ fun SimpleTopic(
             .clickable(enabled = onItemClick != null) { onItemClick?.invoke() },
     ) {
         Column(Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TopicUserAvatar(
-                    userName = userName,
-                    userAvatar = userAvatar,
-                    onUserAvatarClick = onUserAvatarClick,
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = userName,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            lineHeightStyle = LineHeightStyle(
-                                alignment = LineHeightStyle.Alignment.Center,
-                                trim = LineHeightStyle.Trim.FirstLineTop,
-                            ),
-                        ),
+            if (!hideUserInfo) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TopicUserAvatar(
+                        userName = userName,
+                        userAvatar = userAvatar,
+                        onUserAvatarClick = onUserAvatarClick,
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = userName,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                lineHeightStyle = LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Center,
+                                    trim = LineHeightStyle.Trim.FirstLineTop,
+                                ),
+                            ),
+                        )
 
-                    Row {
-                        Text(
-                            time,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            stringResource(Res.string.n_comment, replyCount.ifBlank { "0" }),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        viewCount?.let {
-                            Spacer(modifier = Modifier.width(4.dp))
+                        Row {
                             Text(
-                                stringResource(Res.string.n_views, viewCount.toString()),
+                                time,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                stringResource(Res.string.n_comment, replyCount.ifBlank { "0" }),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            viewCount?.let {
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    stringResource(Res.string.n_views, viewCount.toString()),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
                     }
+                    if (!hideNodeTag) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        NodeTag(
+                            nodeTitle = nodeTitle,
+                            nodeName = nodeName,
+                            onItemClick = { _, _ -> onNodeClick?.invoke() },
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                NodeTag(
-                    nodeTitle = nodeTitle,
-                    nodeName = nodeName,
-                    onItemClick = { _, _ -> onNodeClick?.invoke() },
-                )
+                Spacer(modifier = Modifier.height(8.dp))
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 title,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,
             )
+
+            if (hideUserInfo) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Row {
+                    Text(
+                        time,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        stringResource(Res.string.n_comment, replyCount.ifBlank { "0" }),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
         ListDivider(
             modifier = Modifier.align(Alignment.BottomCenter),

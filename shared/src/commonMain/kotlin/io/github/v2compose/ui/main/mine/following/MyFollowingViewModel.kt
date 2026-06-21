@@ -21,4 +21,7 @@ class MyFollowingViewModel(
 
     val myFollowing = accountRepository.myFollowing.cachedIn(viewModelScope)
 
+    val appSettings = appPreferences.appSettings
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), io.github.v2compose.shared.bean.AppSettings.Default)
+
 }

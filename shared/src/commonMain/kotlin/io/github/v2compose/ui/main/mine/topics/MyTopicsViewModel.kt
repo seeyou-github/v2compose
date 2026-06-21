@@ -21,4 +21,7 @@ class MyTopicsViewModel(
 
     val myTopics = accountRepository.myTopics.cachedIn(viewModelScope)
 
+    val appSettings = appPreferences.appSettings
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), io.github.v2compose.shared.bean.AppSettings.Default)
+
 }

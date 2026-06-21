@@ -34,6 +34,7 @@ fun NewsTab(
         parametersOf(newsTabInfo.value)
     }
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
+    val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
 
     val newsUiState by viewModel.newsUiState.collectAsStateWithLifecycle()
     val refreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
@@ -42,6 +43,8 @@ fun NewsTab(
         refreshing = refreshing,
         newsUiState = newsUiState,
         topicTitleOverview = topicTitleOverview,
+        hideNodeTag = appSettings.hideTopicNodeTag,
+        hideUserInfo = appSettings.hideTopicUserInfo,
         onNewsItemClick = onNewsItemClick,
         onRefreshList = { viewModel.refresh() },
         onRetryClick = { viewModel.retry() },
@@ -55,6 +58,8 @@ fun NewsContent(
     refreshing: Boolean,
     newsUiState: NewsUiState,
     topicTitleOverview: Boolean,
+    hideNodeTag: Boolean,
+    hideUserInfo: Boolean,
     onNewsItemClick: ((NewsInfo.Item) -> Unit),
     onNodeClick: (String, String) -> Unit,
     onRetryClick: () -> Unit,
@@ -68,6 +73,8 @@ fun NewsContent(
                     refreshing = refreshing,
                     newsInfo = newsUiState.data,
                     topicTitleOverview = topicTitleOverview,
+                    hideNodeTag = hideNodeTag,
+                    hideUserInfo = hideUserInfo,
                     onRefresh = onRefreshList,
                     onNewsItemClick = onNewsItemClick,
                     onNodeClick = onNodeClick,
@@ -92,6 +99,8 @@ private fun NewsList(
     refreshing: Boolean,
     newsInfo: NewsInfo,
     topicTitleOverview: Boolean,
+    hideNodeTag: Boolean,
+    hideUserInfo: Boolean,
     onRefresh: () -> Unit,
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
@@ -131,6 +140,8 @@ private fun NewsList(
                     nodeName = tagId,
                     nodeTitle = item.tagName,
                     titleOverview = topicTitleOverview,
+                    hideNodeTag = hideNodeTag,
+                    hideUserInfo = hideUserInfo,
                     onItemClick = { onNewsItemClick(item) },
                     onNodeClick = { onNodeClick(tagId, item.tagName) },
                     onUserAvatarClick = { onUserAvatarClick(item.userName, item.avatar) }

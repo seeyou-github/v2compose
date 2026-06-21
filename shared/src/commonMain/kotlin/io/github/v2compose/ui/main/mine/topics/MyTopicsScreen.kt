@@ -40,6 +40,7 @@ fun MyTopicsScreenRoute(
     viewModel: MyTopicsViewModel = koinViewModel(),
 ) {
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
+    val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
     val myTopics = viewModel.myTopics.collectAsLazyPagingItems()
 
     MyTopicsScreen(
@@ -82,6 +83,8 @@ private fun MyTopicsScreen(
             MyTopicsList(
                 myTopics = myTopics,
                 topicTitleOverview = topicTitleOverview,
+                hideNodeTag = appSettings.hideTopicNodeTag,
+                hideUserInfo = appSettings.hideTopicUserInfo,
                 onTopicClick = onTopicClick,
                 onNodeClick = onNodeClick,
                 onUserAvatarClick = onUserAvatarClick
@@ -94,6 +97,8 @@ private fun MyTopicsScreen(
 private fun MyTopicsList(
     myTopics: LazyPagingItems<MyTopicsInfo.Item>,
     topicTitleOverview: Boolean,
+    hideNodeTag: Boolean,
+    hideUserInfo: Boolean,
     onTopicClick: (MyTopicsInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit
@@ -114,6 +119,8 @@ private fun MyTopicsList(
                     nodeName = item.tagName,
                     nodeTitle = item.tagTitle,
                     titleOverview = topicTitleOverview,
+                    hideNodeTag = hideNodeTag,
+                    hideUserInfo = hideUserInfo,
                     onItemClick = { onTopicClick(item) },
                     onNodeClick = { onNodeClick(item.tagName, item.tagTitle) },
                     onUserAvatarClick = { onUserAvatarClick(item.userName, item.avatar) }

@@ -3,6 +3,7 @@ package io.github.v2compose.ui.main.home.tab
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.repository.NewsRepository
 import io.github.v2compose.repository.TopicRepository
@@ -17,6 +18,7 @@ class NewsViewModel(
     val tab: String,
     private val newsRepository: NewsRepository,
     private val topicRepository: TopicRepository,
+    appPreferences: AppPreferences,
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
@@ -29,6 +31,12 @@ class NewsViewModel(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
         initialValue = true,
+    )
+
+    val appSettings = appPreferences.appSettings.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        initialValue = io.github.v2compose.shared.bean.AppSettings.Default,
     )
 
     init {

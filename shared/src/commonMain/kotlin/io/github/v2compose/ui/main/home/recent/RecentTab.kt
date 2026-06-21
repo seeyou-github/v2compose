@@ -34,6 +34,7 @@ fun RecentTab(
 
     val recentTopics = viewModel.recentTopics.collectAsLazyPagingItems()
     val topicTitleOverview by viewModel.topicTitleOverview.collectAsStateWithLifecycle()
+    val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (recentTopics.itemSnapshotList.isEmpty()) {
@@ -45,6 +46,8 @@ fun RecentTab(
             RecentTopicsList(
                 recentTopics = recentTopics,
                 topicTitleOverview = topicTitleOverview,
+                hideNodeTag = appSettings.hideTopicNodeTag,
+                hideUserInfo = appSettings.hideTopicUserInfo,
                 onRecentItemClick = onRecentItemClick,
                 onNodeClick = onNodeClick,
                 onUserAvatarClick = onUserAvatarClick,
@@ -57,6 +60,8 @@ fun RecentTab(
 private fun RecentTopicsList(
     recentTopics: LazyPagingItems<RecentTopics.Item>,
     topicTitleOverview: Boolean,
+    hideNodeTag: Boolean,
+    hideUserInfo: Boolean,
     onRecentItemClick: (RecentTopics.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
@@ -94,6 +99,8 @@ private fun RecentTopicsList(
                     nodeName = item.nodeName,
                     nodeTitle = item.nodeTitle,
                     titleOverview = topicTitleOverview,
+                    hideNodeTag = hideNodeTag,
+                    hideUserInfo = hideUserInfo,
                     onItemClick = { onRecentItemClick(item) },
                     onNodeClick = { onNodeClick(item.nodeName, item.nodeTitle) },
                     onUserAvatarClick = { onUserAvatarClick(item.userName, item.avatar) })
