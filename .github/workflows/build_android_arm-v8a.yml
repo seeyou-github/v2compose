@@ -1,0 +1,122 @@
+name: build_android_arm-v8a
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+    inputs:
+      gradle_task:
+        description: "Gradle task to build APK (default :androidApp:assembleRelease)"
+        required: false
+        default: ":androidApp:assembleRelease"
+        type: string
+      artifact_path:
+        description: "Exact APK path relative to repo root (recommended if output is renamed)"
+        required: false
+        type: string
+      artifact_glob:
+        description: "Fallback glob to locate APK under androidApp/build/outputs (e.g. *armeabi-v7a*release*.apk)"
+        required: false
+        default: "*armeabi-v7a*release*.apk"
+        type: string
+      output_name:
+        description: "Optional: rename uploaded file to this name"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build_android_arm_v8a:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Build Android APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew --no-configuration-cache "${{ inputs.gradle_task }}"
+
+      - name: Locate APK
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob globstar
+
+          artifact_path="${{ inputs.artifact_path }}"
+          artifact_glob="${{ inputs.artifact_glob }}"
+
+          if [ -n "$artifact_path" ] && [ -f "$artifact_path" ]; then
+            file="$artifact_path"
+          else
+            # Prefer ABI-specific outputs if present.
+            matches=(androidApp/build/outputs/apk/**/${artifact_glob})
+            if [ ${#matches[@]} -eq 0 ]; then
+              # Fallback: if project does not produce ABI splits, expect a single release APK.
+              matches=(androidApp/build/outputs/apk/release/*.apk)
+            fi
+
+            if [ ${#matches[@]} -ne 1 ]; then
+              echo "Expected exactly 1 APK match, got ${#matches[@]}" >&2
+              printf '%s\n' "${matches[@]}" >&2
+              exit 1
+            fi
+
+            file="${matches[0]}"
+          fi
+
+          name="${{ inputs.output_name }}"
+          if [ -z "$name" ]; then
+            name="$(basename "$file")"
+          fi
+
+          out="$RUNNER_TEMP/$name"
+          cp -f "$file" "$out"
+
+          echo "file=$out" >> "$GITHUB_OUTPUT"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK to tmpfile.link
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+
+          file="${{ steps.locate.outputs.file }}"
+          response="$(curl -sS -X POST -F "file=@${file}" https://tmpfile.link/api/upload)"
+          echo "${response}"
+
+          download="$(printf '%s' "${response}" | jq -r '.downloadLinkEncoded // empty')"
+          if [ -z "${download}" ]; then
+            echo "tmpfile.link upload failed: ${response}" >&2
+            exit 1
+          fi
+
+          {
+            echo "## Android arm-v8a build"
+            echo
+            echo "- File: \`${{ steps.locate.outputs.name }}\`"
+            echo "- Download: ${download}"
+            echo "- Retention: tmpfile.link anonymous uploads are deleted after 7 days."
+          } >> "$GITHUB_STEP_SUMMARY"
