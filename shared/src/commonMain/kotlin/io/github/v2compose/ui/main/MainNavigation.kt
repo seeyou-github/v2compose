@@ -20,6 +20,7 @@ fun NavController.navigateToMain() {
 fun NavGraphBuilder.mainScreen(
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onRecentItemClick: (RecentTopics.Item) -> Unit,
+    onTopicIdClick: (String) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
     onSearchClick: () -> Unit,
@@ -31,6 +32,7 @@ fun NavGraphBuilder.mainScreen(
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAppearanceSettingsClick: () -> Unit,
+    onHomeTabSettingsClick: () -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
@@ -38,6 +40,7 @@ fun NavGraphBuilder.mainScreen(
         MainScreenRoute(
             onNewsItemClick = onNewsItemClick,
             onRecentItemClick = onRecentItemClick,
+            onTopicIdClick = onTopicIdClick,
             onNodeClick = onNodeClick,
             onUserAvatarClick = onUserAvatarClick,
             onSearchClick = onSearchClick,
@@ -49,6 +52,7 @@ fun NavGraphBuilder.mainScreen(
             onMyFollowingClick = onMyFollowingClick,
             onSettingsClick = onSettingsClick,
             onAppearanceSettingsClick = onAppearanceSettingsClick,
+            onHomeTabSettingsClick = onHomeTabSettingsClick,
             openUri = openUri,
             onHtmlImageClick = onHtmlImageClick,
         )

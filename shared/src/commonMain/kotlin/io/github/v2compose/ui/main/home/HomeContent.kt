@@ -10,53 +10,48 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.unit.dp
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.ui.common.MyScrollableTabRow
+import io.github.v2compose.ui.main.home.HomeTabConfig.Companion.decodeList
+import io.github.v2compose.ui.main.home.HomeTabConfig.Companion.defaultTabs
+import io.github.v2compose.ui.main.home.effectiveHomeTabs
 import io.github.v2compose.ui.main.home.recent.RecentTab
 import io.github.v2compose.ui.main.home.tab.NewsTab
+import io.github.v2compose.ui.main.home.node.HomeNodeTab
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
+import io.github.v2compose.datasource.AppPreferences
 
 private val TabRowHeight = 32.dp
 
-private val HomeTabInfos = listOf(
-    NewsTabInfo("全部", "all"),
-    NewsTabInfo("最热", "hot"),
-    NewsTabInfo("最近", "recent"),
-    NewsTabInfo("技术", "tech"),
-    NewsTabInfo("创意", "creative"),
-    NewsTabInfo("好玩", "play"),
-    NewsTabInfo("Apple", "apple"),
-    NewsTabInfo("酷工作", "jobs"),
-    NewsTabInfo("交易", "deals"),
-    NewsTabInfo("城市", "city"),
-    NewsTabInfo("问与答", "qna"),
-    NewsTabInfo("R2", "r2"),
-    NewsTabInfo("节点", "nodes"),
-    NewsTabInfo("关注", "members"),
-)
-
-data class NewsTabInfo(val name: String, val value: String) {
-    companion object {
-        const val recent = "recent"
-    }
-}
+private const val RecentTabValue = "recent"
 
 @Composable
 fun HomeContent(
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onRecentItemClick: (RecentTopics.Item) -> Unit,
+    onTopicIdClick: (String) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     nestedScrollConnection: NestedScrollConnection? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val tabInfos = HomeTabInfos
+    val appPreferences: AppPreferences = koinInject()
+    val appSettings by appPreferences.appSettings.collectAsState(initial = io.github.v2compose.shared.bean.AppSettings.Default)
+
+    val configuredTabs = remember(appSettings.homeTabConfigsJson) {
+        decodeList(appSettings.homeTabConfigsJson)
+    }
+    val tabInfos = configuredTabs.effectiveHomeTabs()
     val pagerState = rememberPagerState { tabInfos.size }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -65,10 +60,19 @@ fun HomeContent(
                 .fillMaxSize()
                 .padding(top = TabRowHeight),
             state = pagerState,
-            key = { tabInfos[it].value },
+            key = { tabInfos[it].id },
         ) { pageIndex ->
             val tabInfo = tabInfos[pageIndex]
-            if (tabInfo.value == NewsTabInfo.recent) {
+            if (tabInfo.isNodeTab()) {
+                HomeNodeTab(
+                    nodeName = tabInfo.nodeName!!,
+                    nodeTitle = tabInfo.name,
+                    onTopicIdClick = onTopicIdClick,
+                    onNodeClick = onNodeClick,
+                    onUserAvatarClick = onUserAvatarClick,
+                    nestedScrollConnection = nestedScrollConnection,
+                )
+            } else if (tabInfo.newsTabValue == RecentTabValue) {
                 RecentTab(
                     onRecentItemClick = onRecentItemClick,
                     onNodeClick = onNodeClick,
@@ -77,7 +81,7 @@ fun HomeContent(
                 )
             } else {
                 NewsTab(
-                    newsTabInfo = tabInfo,
+                    newsTabInfo = NewsTabInfo(tabInfo.name, tabInfo.newsTabValue ?: "all"),
                     onNewsItemClick = onNewsItemClick,
                     onNodeClick = onNodeClick,
                     onUserAvatarClick = onUserAvatarClick,
@@ -116,3 +120,5 @@ fun HomeContent(
         }
     }
 }
+
+data class NewsTabInfo(val name: String, val value: String)

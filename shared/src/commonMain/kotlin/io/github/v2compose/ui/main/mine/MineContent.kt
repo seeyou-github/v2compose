@@ -79,6 +79,7 @@ fun MineContent(
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAppearanceSettingsClick: () -> Unit,
+    onHomeTabSettingsClick: () -> Unit,
     hideLoginRelatedUi: Boolean,
     modifier: Modifier = Modifier,
     viewModel: MineViewModel = koinViewModel(),
@@ -120,6 +121,7 @@ fun MineContent(
         onMyFollowingClick = { doActionIfLoggedIn(onMyFollowingClick) },
         onSettingsClick = onSettingsClick,
         onAppearanceSettingsClick = onAppearanceSettingsClick,
+        onHomeTabSettingsClick = onHomeTabSettingsClick,
         hideLoginRelatedUi = hideLoginRelatedUi,
         modifier = Modifier
     )
@@ -140,6 +142,7 @@ private fun MineContainer(
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAppearanceSettingsClick: () -> Unit,
+    onHomeTabSettingsClick: () -> Unit,
     hideLoginRelatedUi: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -209,6 +212,13 @@ private fun MineContainer(
                 leadingIcon = Icons.Rounded.ColorLens,
                 title = stringResource(Res.string.settings_appearance),
                 onEntryClick = onAppearanceSettingsClick,
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            )
+            Spacer(Modifier.height(8.dp))
+            MineEntry(
+                leadingIcon = Icons.Rounded.Category,
+                title = "分类设置",
+                onEntryClick = onHomeTabSettingsClick,
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             )
         }

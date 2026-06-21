@@ -26,6 +26,8 @@ import io.github.v2compose.ui.login.google.GoogleLoginViewModel
 import io.github.v2compose.ui.login.twostep.TwoStepLoginViewModel
 import io.github.v2compose.ui.main.MainViewModel
 import io.github.v2compose.ui.main.home.recent.RecentViewModel
+import io.github.v2compose.ui.main.home.HomeTabSettingsViewModel
+import io.github.v2compose.ui.main.home.node.HomeNodeTabViewModel
 import io.github.v2compose.ui.main.home.tab.NewsViewModel
 import io.github.v2compose.ui.main.mine.MineViewModel
 import io.github.v2compose.ui.main.mine.following.MyFollowingViewModel
@@ -96,6 +98,8 @@ val sharedViewModelModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::RecentViewModel)
     viewModelOf(::NewsViewModel)
+    viewModelOf(::HomeTabSettingsViewModel)
+    viewModelOf(::HomeNodeTabViewModel)
     viewModelOf(::NodesViewModel)
     viewModelOf(::NotificationViewModel)
     viewModelOf(::MineViewModel)

@@ -16,6 +16,8 @@ import io.github.v2compose.ui.login.navigateToLogin
 import io.github.v2compose.ui.login.twostep.twoStepLoginScreen
 import io.github.v2compose.ui.main.mainNavigationRoute
 import io.github.v2compose.ui.main.mainScreen
+import io.github.v2compose.ui.main.home.homeTabSettingsScreen
+import io.github.v2compose.ui.main.home.navigateToHomeTabSettings
 import io.github.v2compose.ui.main.mine.following.myFollowingScreen
 import io.github.v2compose.ui.main.mine.following.navigateToMyFollowing
 import io.github.v2compose.ui.main.mine.nodes.myNodesScreen
@@ -57,6 +59,7 @@ fun SharedAppNavGraph(
         mainScreen(
             onNewsItemClick = { navController.navigateToTopic(it.id) },
             onRecentItemClick = { navController.navigateToTopic(it.id) },
+            onTopicIdClick = navController::navigateToTopic,
             onNodeClick = navController::navigateToNode,
             onUserAvatarClick = navController::navigateToUser,
             onSearchClick = navController::navigateToSearch,
@@ -75,6 +78,7 @@ fun SharedAppNavGraph(
             onCreateTopicClick = navController::navigateToWriteTopic,
             onSettingsClick = navController::navigateToSettings,
             onAppearanceSettingsClick = navController::navigateToAppearanceSettings,
+            onHomeTabSettingsClick = navController::navigateToHomeTabSettings,
             openUri = appState::openUri,
             onHtmlImageClick = navController::navigateToGallery,
         )
@@ -119,6 +123,10 @@ fun SharedAppNavGraph(
             onAppearanceSettingsClick = navController::navigateToAppearanceSettings,
         )
         appearanceScreen(
+            onBackClick = appState::back,
+        )
+
+        homeTabSettingsScreen(
             onBackClick = appState::back,
         )
         loginScreen(

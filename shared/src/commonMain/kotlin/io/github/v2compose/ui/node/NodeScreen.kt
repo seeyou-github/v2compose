@@ -17,8 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.BookmarkAdd
 import androidx.compose.material.icons.rounded.BookmarkAdded
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -66,6 +69,8 @@ import io.github.v2compose.ui.common.TopicUserAvatar
 import io.github.v2compose.ui.common.pagingAppendMoreItem
 import io.github.v2compose.ui.common.pagingRefreshItem
 import io.github.v2compose.ui.common.rememberLazyListState
+import io.github.v2compose.ui.main.home.HomeTabConfig
+import io.github.v2compose.ui.main.home.HomeTabSettingsViewModel
 import io.github.v2compose.util.KLogger
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -197,6 +202,17 @@ private fun NodeTopBarTitle(
     onFavoriteClick: () -> Unit,
     onShareClick: () -> Unit,
 ) {
+    val homeTabsViewModel: HomeTabSettingsViewModel = koinViewModel()
+    val appSettings by homeTabsViewModel.appSettings.collectAsStateWithLifecycle()
+
+    val currentTabs = remember(appSettings.homeTabConfigsJson) {
+        val decoded = HomeTabConfig.decodeList(appSettings.homeTabConfigsJson)
+        if (decoded.isEmpty()) HomeTabConfig.defaultTabs() else decoded
+    }
+    val nodeTabId = "node:${nodeArgs.nodeName}"
+    val nodeTabIndex = remember(currentTabs, nodeTabId) { currentTabs.indexOfFirst { it.id == nodeTabId } }
+    val alreadyAdded = nodeTabIndex >= 0
+
     var favorited by remember(nodeTopicInfo) { mutableStateOf(nodeTopicInfo?.hasStared) }
     var showUnfollowDialog by remember { mutableStateOf(false) }
     val onFavoriteClickInternal = {
@@ -239,6 +255,34 @@ private fun NodeTopBarTitle(
         navigationIcon = { BackIcon(onBackClick = onBackClick) },
         actions = {
             val progress = scrollBehavior.state.collapsedFraction
+
+            TextButton(
+                onClick = {
+                    val updated = if (alreadyAdded) {
+                        currentTabs.filterNot { it.id == nodeTabId }
+                    } else {
+                        val label = (nodeUiState as? NodeUiState.Success)?.nodeInfo?.title
+                            ?: nodeArgs.nodeTitle
+                            ?: nodeArgs.nodeName
+                        currentTabs + HomeTabConfig(
+                            id = nodeTabId,
+                            name = label,
+                            nodeName = nodeArgs.nodeName,
+                            enabled = true,
+                        )
+                    }
+                    homeTabsViewModel.saveHomeTabs(updated)
+                },
+                modifier = Modifier.graphicsLayer(alpha = progress),
+            ) {
+                Icon(
+                    imageVector = if (alreadyAdded) Icons.Rounded.Remove else Icons.Rounded.Add,
+                    contentDescription = if (alreadyAdded) "remove" else "add",
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(if (alreadyAdded) "从分类删除" else "添加到主页分类")
+            }
+
             if (isLoggedIn) {
                 favorited?.let {
                     IconButton(

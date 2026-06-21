@@ -26,6 +26,7 @@ class AppPreferences(
         private val KeyIgnoredReleaseName = stringPreferencesKey("ignored_release_name")
         private val KeyAutoCheckIn = booleanPreferencesKey("auto_check_in")
         private val KeySearchKeywords = stringPreferencesKey("search_keywords")
+        private val KeyHomeTabConfigsJson = stringPreferencesKey("home_tab_configs_json")
         private val KeyHighlightOpReply = booleanPreferencesKey("highlight_op_reply")
         private val KeyReplyWithFloor = booleanPreferencesKey("reply_with_floor")
         private val KeyHideLoginRelatedUi = booleanPreferencesKey("hide_login_related_ui")
@@ -54,6 +55,7 @@ class AppPreferences(
             ignoredReleaseName = it[KeyIgnoredReleaseName],
             autoCheckIn = it[KeyAutoCheckIn] ?: false,
             searchKeywords = it[KeySearchKeywords]?.split(",") ?: listOf(),
+            homeTabConfigsJson = it[KeyHomeTabConfigsJson] ?: "",
             highlightOpReply = it[KeyHighlightOpReply] ?: false,
             replyWithFloor = it[KeyReplyWithFloor] ?: true,
             hideLoginRelatedUi = it[KeyHideLoginRelatedUi] ?: true,
@@ -120,6 +122,12 @@ class AppPreferences(
     suspend fun searchKeywords(value: List<String>) {
         dataStore.edit {
             it[KeySearchKeywords] = value.joinToString(",")
+        }
+    }
+
+    suspend fun homeTabConfigsJson(value: String) {
+        dataStore.edit {
+            it[KeyHomeTabConfigsJson] = value
         }
     }
 

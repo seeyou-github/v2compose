@@ -8,6 +8,8 @@ data class AppSettings(
     val ignoredReleaseName: String? = null,
     val autoCheckIn: Boolean = false,
     val searchKeywords: List<String> = listOf(),
+    // Customizable Home tab categories (order/visibility/custom nodes). Empty -> use defaults.
+    val homeTabConfigsJson: String = "",
     val highlightOpReply: Boolean = false,
     val replyWithFloor: Boolean = true,
     val hideLoginRelatedUi: Boolean = true,
