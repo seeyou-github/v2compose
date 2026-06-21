@@ -104,6 +104,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.n_comment
+import v2compose.shared.generated.resources.ok
 import v2compose.shared.generated.resources.replies_order_negative
 import v2compose.shared.generated.resources.replies_order_positive
 

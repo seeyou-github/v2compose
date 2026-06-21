@@ -121,6 +121,7 @@ fun MainScreenRoute(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(
     selectedTabIndex: Int,
