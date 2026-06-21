@@ -170,13 +170,13 @@ private fun AppearanceScreen(
             TextSizeSlider(
                 label = "主页列表内部上下间距",
                 value = appSettings.homeListItemVerticalPadding.toFloat(),
-                range = 4f..28f,
+                range = 0f..15f,
                 onValueChange = { onHomeListItemVerticalPaddingChanged(it.roundToInt()) },
             )
             TextSizeSlider(
                 label = "顶栏内部上下间距",
                 value = appSettings.topBarMinHeight.toFloat(),
-                range = 40f..72f,
+                range = 0f..25f,
                 onValueChange = { onTopBarMinHeightChanged(it.roundToInt()) },
             )
 

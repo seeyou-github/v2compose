@@ -22,12 +22,12 @@ data class AppSettings(
     val primaryTextSize: Int = 16,
     val secondaryTextSize: Int = 12,
     // Only affects topic titles in list items (home/recent/mine etc). Keep separate from global typography.
-    val topicListTitleTextSize: Int = 14,
+    val topicListTitleTextSize: Int = 22,
     // Layout spacing (dp)
-    val homeListItemVerticalPadding: Int = 16,
-    val topBarMinHeight: Int = 44,
-    val topicBodyTextSize: Int = 14,
-    val topicReplyTextSize: Int = 14,
+    val homeListItemVerticalPadding: Int = 5,
+    val topBarMinHeight: Int = 5,
+    val topicBodyTextSize: Int = 20,
+    val topicReplyTextSize: Int = 19,
 ) {
     companion object {
         val Default = AppSettings()

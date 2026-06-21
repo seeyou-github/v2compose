@@ -69,11 +69,11 @@ class AppPreferences(
             appearanceLightOverridesJson = it[KeyAppearanceLightOverridesJson] ?: "",
             primaryTextSize = it[KeyPrimaryTextSize] ?: 16,
             secondaryTextSize = it[KeySecondaryTextSize] ?: 12,
-            topicListTitleTextSize = it[KeyTopicListTitleTextSize] ?: 14,
-            homeListItemVerticalPadding = it[KeyHomeListItemVerticalPadding] ?: 16,
-            topBarMinHeight = it[KeyTopBarMinHeight] ?: 44,
-            topicBodyTextSize = it[KeyTopicBodyTextSize] ?: 14,
-            topicReplyTextSize = it[KeyTopicReplyTextSize] ?: 14,
+            topicListTitleTextSize = it[KeyTopicListTitleTextSize] ?: 22,
+            homeListItemVerticalPadding = it[KeyHomeListItemVerticalPadding] ?: 5,
+            topBarMinHeight = it[KeyTopBarMinHeight] ?: 5,
+            topicBodyTextSize = it[KeyTopicBodyTextSize] ?: 20,
+            topicReplyTextSize = it[KeyTopicReplyTextSize] ?: 19,
         )
     }.distinctUntilChanged()
 

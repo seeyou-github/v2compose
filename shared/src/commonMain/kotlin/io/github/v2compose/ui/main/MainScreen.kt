@@ -277,8 +277,10 @@ private fun MainTopBar(
             else -> MenuItem.Search
         }
     }
+    val baseMinHeight = 44
     CenterAlignedTopAppBar(
-        modifier = Modifier.heightIn(min = appSettings.topBarMinHeight.dp),
+        // topBarMinHeight is treated as extra vertical padding (0..25dp)
+        modifier = Modifier.heightIn(min = (baseMinHeight + appSettings.topBarMinHeight * 2).dp),
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
