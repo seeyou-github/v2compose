@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
@@ -35,6 +36,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
@@ -322,7 +324,7 @@ fun MainBottomNavigation(
     hideLoginRelatedUi: Boolean,
     onItemSelected: (Int) -> Unit,
 ) {
-    NavigationBar {
+    NavigationBar(modifier = Modifier.height(56.dp)) {
         val tabs = remember(hideLoginRelatedUi) {
             MainBottomTab.values().filterNot { hideLoginRelatedUi && it == MainBottomTab.Notifications }
         }
@@ -338,7 +340,7 @@ fun MainBottomNavigation(
                         Icon(item.icon, contentDescription = item.name)
                     }
                 },
-                label = { Text(stringResource(item.title)) },
+                alwaysShowLabel = false,
                 selected = tabIndex == selectedIndex,
                 onClick = { onItemSelected(tabIndex) },
             )
