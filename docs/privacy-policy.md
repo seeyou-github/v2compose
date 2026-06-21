@@ -20,7 +20,7 @@ If enabled, V2X may use notifications and background refresh to support automati
 
 ## Analytics And Crash Reports
 
-The iOS app includes Firebase Analytics and Firebase Crashlytics. These services are used for basic usage statistics, crash diagnostics, and stability improvements. They are not used for advertising tracking.
+The app does not include Firebase Analytics or Firebase Crashlytics.
 
 ## Tracking
 
@@ -32,7 +32,7 @@ V2X communicates with:
 
 - V2EX, for forum browsing and account features.
 - The search service used by this project, for search results.
-- Firebase, for analytics and crash diagnostics.
+-- (Removed) Firebase, for analytics and crash diagnostics.
 
 Each third-party service may process data according to its own privacy practices.
 

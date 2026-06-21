@@ -3,28 +3,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
-// 1. 定义判断逻辑：是否包含 Google 相关的构建任务
-val isGoogleTask = gradle.startParameter.taskRequests.any { request ->
-    request.args.any { it.contains("Google", ignoreCase = true) }
-}
-
-// 2. 只有在执行 Google 相关任务时才动态应用插件
-if (isGoogleTask) {
-    apply(plugin = libs.plugins.google.services.get().pluginId)
-    apply(plugin = libs.plugins.crashlytics.get().pluginId)
-
-    tasks.matching {
-        it.name.endsWith("GoogleServices") && !it.name.startsWith("processGoogle")
-    }.configureEach {
-        enabled = false
-    }
-    tasks.matching {
-        it.name.contains("Crashlytics") && !it.name.contains("Google")
-    }.configureEach {
-        enabled = false
-    }
-}
-
 val appVersionCode = providers.gradleProperty("app.versionCode").get().toInt()
 val appVersionName = providers.gradleProperty("app.versionName").get()
 
@@ -89,17 +67,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    flavorDimensions += "tracking"
-    productFlavors {
-        create("foss") {
-            dimension = "tracking"
-            multiDexEnabled = true
-        }
-        create("google") {
-            dimension = "tracking"
-            multiDexEnabled = true
-        }
-    }
 }
 
 dependencies {
@@ -124,11 +91,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.tooling.preview)
-
-    // firebase (flavor specific)
-    "googleImplementation"(platform(libs.firebase.bom))
-    "googleImplementation"(libs.firebase.crashlytics)
-    "googleImplementation"(libs.firebase.analytics)
 
     // test
     testImplementation(libs.junit)

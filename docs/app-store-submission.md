@@ -73,7 +73,7 @@ Data not used for tracking:
 - User ID, linked to the user, used for app functionality.
 - Other user content, linked to the user, used for app functionality.
 - Search history, not linked to the user by V2X, used for app functionality.
-- Product interaction, diagnostics, crash data, and performance data from Firebase Analytics and Crashlytics, used for analytics and app functionality according to the installed Firebase SDK behavior.
+- (Removed) Firebase Analytics / Crashlytics data collection (Firebase SDK removed).
 
 Tracking:
 
@@ -105,7 +105,7 @@ Photo library:
 The app requests add-only photo access only when the user saves an image from V2X to the system photo library.
 
 Firebase:
-Firebase Analytics and Crashlytics are used for basic usage statistics, crash diagnostics, and stability improvements. They are not used for advertising tracking.
+Firebase Analytics and Crashlytics are not used (Firebase SDK removed).
 
 Test account:
 If review requires login, provide a dedicated V2EX test account in App Store Connect review notes. Do not commit credentials to the repository.
@@ -113,9 +113,6 @@ If review requires login, provide a dedicated V2EX test account in App Store Con
 
 ## Local Release Checks
 
-- Confirm `iosApp/Configuration/Release.xcconfig` points to `iosApp/GoogleService-Info.plist`.
-- Confirm `iosApp/iosApp/GoogleService-Info.plist` exists before Archive.
-- Confirm Archive contains `GoogleService-Info.plist` and `PrivacyInfo.xcprivacy` in the app bundle.
-- Confirm Crashlytics dSYM upload script finishes without error during Archive.
+- (Removed) Firebase `GoogleService-Info.plist` release checks (Firebase SDK removed).
 - Generate an Xcode privacy report from the Release archive and compare it with the App Privacy draft above.
 

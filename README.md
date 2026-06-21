@@ -47,7 +47,7 @@
 
 ## 用户隐私
 
-V2compose 集成了 Firebase 的 Crashlytics 和 Analytics
+V2compose 不再集成 Firebase（Crashlytics/Analytics 已移除）
 功能，仅用于崩溃诊断、稳定性改进与基础使用统计，不用于广告跟踪。
 登录、发帖、回帖、签到、搜索等功能会按用户操作与 V2EX 或搜索服务通信；相关隐私说明请参考 `docs/privacy-policy.md`。
 
@@ -59,7 +59,7 @@ V2compose 集成了 Firebase，开放的源码中不包含 Firebase 的密钥。
 
 - Android:
   - 创建自己的 Firebase 应用；
-  - 添加 `androidApp/src/google/google-services.json`。
+  - 不再需要 `google-services.json`。
 - iOS:
   - 在 Firebase Console 中分别为 bundle id `io.github.v2compose.iosApp` 和 `io.github.v2compose.iosApp.debug` 注册 iOS App；
   - 添加 `iosApp/iosApp/GoogleService-Info.plist`（Release）；

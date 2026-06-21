@@ -2,4 +2,3 @@
 
 APP_BUNDLE_IDENTIFIER = io.github.v2compose.iosApp.debug
 APP_ICON_NAME = AppIconDebug
-FIREBASE_PLIST_SOURCE = iosApp/GoogleService-Info-Debug.plist

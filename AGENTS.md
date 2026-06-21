@@ -58,8 +58,7 @@ V2compose 是一个现代化的 V2EX 客户端，采用 **Compose Multiplatform 
 
 - Android 应用的主入口 (`MainActivity.kt`, `V2App.kt`)。
 - **构建变体 (Flavors)**:
-    - `foss`: 自由开源版本，不含闭源追踪库。
-    - `google`: 包含 Firebase Analytics 和 Crashlytics。
+    - 已移除 `foss/google` 双渠道，Android 统一为单渠道构建。
 
 ### `:iosApp` - iOS 壳模块
 
@@ -128,7 +127,7 @@ V2compose 是一个现代化的 V2EX 客户端，采用 **Compose Multiplatform 
 
 - 绝大部分 UI 修改请在 `shared/src/commonMain/kotlin/io/github/v2compose/ui/` 下进行。
 - 新页面也应当在此处编写，并在同级的 NavGraph 中注册。
-- 修改后请验证 Android/iOS 双端构建 (`./gradlew :app:assembleFossDebug` 和
+- 修改后请验证 Android/iOS 双端构建 (`./gradlew :androidApp:assembleDebug` 和
   `./gradlew :shared:compileKotlinIosSimulatorArm64`)。
 
 ### 调试网络
