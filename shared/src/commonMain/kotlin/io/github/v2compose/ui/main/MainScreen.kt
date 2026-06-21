@@ -12,7 +12,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -168,8 +167,6 @@ private fun MainScreen(
                                 onSearchClick()
                             }
                         }
-
-                        MenuItem.Settings -> onSettingsClick()
                     }
                 },
             )
@@ -229,7 +226,7 @@ private fun MainScreen(
 }
 
 private enum class MenuItem(val imageVector: ImageVector) {
-    Search(Icons.Rounded.Search), Settings(Icons.Rounded.Settings)
+    Search(Icons.Rounded.Search),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -246,19 +243,22 @@ private fun MainTopBar(
     )
     val menuItem = remember(currentNavBarIndex) {
         when (currentNavBarIndex) {
-            3 -> MenuItem.Settings
+            // Mine tab has its own entry to Settings; hide top-right Settings icon there.
+            3 -> null
             else -> MenuItem.Search
         }
     }
     CenterAlignedTopAppBar(
         title = { Text(navBarItemNames[currentNavBarIndex]) },
         actions = {
-            IconButton(onClick = { onMenuItemClick(menuItem) }) {
-                Icon(
-                    menuItem.imageVector,
-                    contentDescription = menuItem.name,
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+            menuItem?.let {
+                IconButton(onClick = { onMenuItemClick(it) }) {
+                    Icon(
+                        it.imageVector,
+                        contentDescription = it.name,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         },
     )
