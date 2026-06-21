@@ -76,6 +76,7 @@ fun MineContent(
     onMyTopicsClick: () -> Unit,
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    hideLoginRelatedUi: Boolean,
     modifier: Modifier = Modifier,
     viewModel: MineViewModel = koinViewModel(),
 ) {
@@ -115,6 +116,7 @@ fun MineContent(
         onMyTopicsClick = { doActionIfLoggedIn(onMyTopicsClick) },
         onMyFollowingClick = { doActionIfLoggedIn(onMyFollowingClick) },
         onSettingsClick = onSettingsClick,
+        hideLoginRelatedUi = hideLoginRelatedUi,
         modifier = Modifier
     )
 }
@@ -133,6 +135,7 @@ private fun MineContainer(
     onMyTopicsClick: () -> Unit,
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    hideLoginRelatedUi: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -146,42 +149,45 @@ private fun MineContainer(
                 lastCheckInTime = lastCheckInTime,
                 hasCheckingInTips = hasCheckingInTips,
                 checkingIn = checkingIn,
+                hideLoginRelatedUi = hideLoginRelatedUi,
                 onLoginClick = onLoginClick,
                 onMyHomePageClick = onMyHomePageClick,
                 onCheckInClick = onCheckInClick,
             )
             Spacer(Modifier.height(8.dp))
-            MineEntry(
-                leadingIcon = Icons.Rounded.Edit,
-                title = stringResource(Res.string.create_topic),
-                onEntryClick = onCreateTopicClick,
-                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-            )
-            Spacer(Modifier.height(8.dp))
-            Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+            if (!hideLoginRelatedUi) {
                 MineEntry(
-                    leadingIcon = Icons.Rounded.Category,
-                    title = stringResource(Res.string.my_nodes),
-                    subtitle = account.nodes.toString(),
-                    onEntryClick = onMyNodesClick,
+                    leadingIcon = Icons.Rounded.Edit,
+                    title = stringResource(Res.string.create_topic),
+                    onEntryClick = onCreateTopicClick,
                     modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
                 )
-                ListDivider()
-                MineEntry(
-                    leadingIcon = Icons.Rounded.Topic,
-                    title = stringResource(Res.string.my_topics),
-                    subtitle = account.topics.toString(),
-                    onEntryClick = onMyTopicsClick,
-                    modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-                )
-                ListDivider()
-                MineEntry(
-                    leadingIcon = Icons.Rounded.People,
-                    title = stringResource(Res.string.my_following),
-                    subtitle = account.following.toString(),
-                    onEntryClick = onMyFollowingClick,
-                    modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-                )
+                Spacer(Modifier.height(8.dp))
+                Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+                    MineEntry(
+                        leadingIcon = Icons.Rounded.Category,
+                        title = stringResource(Res.string.my_nodes),
+                        subtitle = account.nodes.toString(),
+                        onEntryClick = onMyNodesClick,
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                    )
+                    ListDivider()
+                    MineEntry(
+                        leadingIcon = Icons.Rounded.Topic,
+                        title = stringResource(Res.string.my_topics),
+                        subtitle = account.topics.toString(),
+                        onEntryClick = onMyTopicsClick,
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                    )
+                    ListDivider()
+                    MineEntry(
+                        leadingIcon = Icons.Rounded.People,
+                        title = stringResource(Res.string.my_following),
+                        subtitle = account.following.toString(),
+                        onEntryClick = onMyFollowingClick,
+                        modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                    )
+                }
             }
             Spacer(Modifier.height(8.dp))
             MineEntry(
@@ -200,13 +206,20 @@ private fun MineHeader(
     lastCheckInTime: Long,
     hasCheckingInTips: Boolean,
     checkingIn: Boolean,
+    hideLoginRelatedUi: Boolean,
     onLoginClick: () -> Unit,
     onMyHomePageClick: () -> Unit,
     onCheckInClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
-            .clickable { if (account.isValid()) onMyHomePageClick() else onLoginClick() }
+            .clickable(enabled = account.isValid() || !hideLoginRelatedUi) {
+                if (account.isValid()) {
+                    onMyHomePageClick()
+                } else if (!hideLoginRelatedUi) {
+                    onLoginClick()
+                }
+            }
             .background(color = MaterialTheme.colorScheme.background)
             .padding(vertical = 24.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,

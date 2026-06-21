@@ -10,6 +10,7 @@ data class AppSettings(
     val searchKeywords: List<String> = listOf(),
     val highlightOpReply: Boolean = false,
     val replyWithFloor: Boolean = true,
+    val hideLoginRelatedUi: Boolean = true,
 ) {
     companion object {
         val Default = AppSettings()

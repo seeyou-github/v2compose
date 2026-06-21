@@ -28,6 +28,7 @@ class AppPreferences(
         private val KeySearchKeywords = stringPreferencesKey("search_keywords")
         private val KeyHighlightOpReply = booleanPreferencesKey("highlight_op_reply")
         private val KeyReplyWithFloor = booleanPreferencesKey("reply_with_floor")
+        private val KeyHideLoginRelatedUi = booleanPreferencesKey("hide_login_related_ui")
 
         private val KeyProxyInfo = stringPreferencesKey("proxy_info")
     }
@@ -44,6 +45,7 @@ class AppPreferences(
             searchKeywords = it[KeySearchKeywords]?.split(",") ?: listOf(),
             highlightOpReply = it[KeyHighlightOpReply] ?: false,
             replyWithFloor = it[KeyReplyWithFloor] ?: true,
+            hideLoginRelatedUi = it[KeyHideLoginRelatedUi] ?: true,
         )
     }.distinctUntilChanged()
 
@@ -108,6 +110,12 @@ class AppPreferences(
     suspend fun proxyInfo(proxy: ProxyInfo) {
         dataStore.edit {
             it[KeyProxyInfo] = proxy.toJson()
+        }
+    }
+
+    suspend fun hideLoginRelatedUi(value: Boolean) {
+        dataStore.edit {
+            it[KeyHideLoginRelatedUi] = value
         }
     }
 }

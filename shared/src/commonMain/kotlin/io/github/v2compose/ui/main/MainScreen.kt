@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -78,6 +79,7 @@ fun MainScreenRoute(
     val unreadNotifications by viewModel.unreadNotifications.collectAsStateWithLifecycle()
     val loadNodesState by viewModel.loadNodes.state.collectAsStateWithLifecycle()
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsStateWithLifecycle()
+    val hideLoginRelatedUi by viewModel.hideLoginRelatedUi.collectAsStateWithLifecycle()
 
     HandleSnackbarMessage(viewModel)
 
@@ -88,6 +90,7 @@ fun MainScreenRoute(
             selectedTabIndex = selectedTabIndex,
             unreadNotifications = unreadNotifications,
             loadNodesState = loadNodesState,
+            hideLoginRelatedUi = hideLoginRelatedUi,
             onSearchClick = onSearchClick,
             onSettingsClick = onSettingsClick,
             onNewsItemClick = onNewsItemClick,
@@ -115,6 +118,7 @@ private fun MainScreen(
     selectedTabIndex: Int,
     unreadNotifications: Int,
     loadNodesState: LoadNodesState,
+    hideLoginRelatedUi: Boolean,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onNewsItemClick: (NewsInfo.Item) -> Unit,
@@ -134,6 +138,13 @@ private fun MainScreen(
     onBottomTabClickAgain: () -> Unit,
 ) {
     var navBarSelectedIndex by rememberSaveable { mutableIntStateOf(selectedTabIndex) }
+
+    // Hide notifications tab (index=2) when login-related UI is disabled.
+    LaunchedEffect(hideLoginRelatedUi) {
+        if (hideLoginRelatedUi && navBarSelectedIndex == MainBottomTab.Notifications.ordinal) {
+            navBarSelectedIndex = MainBottomTab.Home.ordinal
+        }
+    }
     var showNodes by rememberSaveable { mutableStateOf(false) }
     val hasNodes = rememberSaveable(loadNodesState) { loadNodesState is LoadNodesState.Success }
 
@@ -173,6 +184,7 @@ private fun MainScreen(
             ) {
                 MainContent(
                     navBarSelectedIndex = navBarSelectedIndex,
+                    hideLoginRelatedUi = hideLoginRelatedUi,
                     onNewsItemClick = onNewsItemClick,
                     onRecentItemClick = onRecentItemClick,
                     onNodeClick = onNodeClick,
@@ -191,6 +203,7 @@ private fun MainScreen(
             MainBottomNavigation(
                 selectedIndex = navBarSelectedIndex,
                 unreadNotifications = unreadNotifications,
+                hideLoginRelatedUi = hideLoginRelatedUi,
                 onItemSelected = { index ->
                     onBottomTabClick(index)
                     if (index == navBarSelectedIndex) onBottomTabClickAgain()
@@ -252,6 +265,7 @@ private fun MainTopBar(
 @Composable
 fun MainContent(
     navBarSelectedIndex: Int,
+    hideLoginRelatedUi: Boolean,
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onRecentItemClick: (RecentTopics.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
@@ -277,13 +291,14 @@ fun MainContent(
             )
 
             1 -> NodesContent(onNodeClick = onNodeClick, modifier = modifier)
-            2 -> NotificationsContent(
+            2 -> if (!hideLoginRelatedUi) NotificationsContent(
                 onLoginClick = onLoginClick,
                 onUriClick = onUriClick,
                 onUserAvatarClick = onUserAvatarClick,
                 onHtmlImageClick = onHtmlImageClick,
                 modifier = modifier,
             )
+            else -> Unit
 
             3 -> MineContent(
                 onLoginClick = onLoginClick,
@@ -293,6 +308,7 @@ fun MainContent(
                 onMyTopicsClick = onMyTopicsClick,
                 onMyFollowingClick = onMyFollowingClick,
                 onSettingsClick = onSettingsClick,
+                hideLoginRelatedUi = hideLoginRelatedUi,
                 modifier = modifier,
             )
         }
@@ -301,13 +317,20 @@ fun MainContent(
 
 @Composable
 fun MainBottomNavigation(
-    selectedIndex: Int, unreadNotifications: Int, onItemSelected: (Int) -> Unit
+    selectedIndex: Int,
+    unreadNotifications: Int,
+    hideLoginRelatedUi: Boolean,
+    onItemSelected: (Int) -> Unit,
 ) {
     NavigationBar {
-        MainBottomTab.values().forEachIndexed { index, item ->
+        val tabs = remember(hideLoginRelatedUi) {
+            MainBottomTab.values().filterNot { hideLoginRelatedUi && it == MainBottomTab.Notifications }
+        }
+        tabs.forEach { item ->
+            val tabIndex = item.ordinal
             NavigationBarItem(
                 icon = {
-                    if (index == 2 && unreadNotifications > 0) {
+                    if (tabIndex == MainBottomTab.Notifications.ordinal && unreadNotifications > 0) {
                         BadgedBox(badge = { Badge { Text(unreadNotifications.toString()) } }) {
                             Icon(item.icon, contentDescription = item.name)
                         }
@@ -316,8 +339,8 @@ fun MainBottomNavigation(
                     }
                 },
                 label = { Text(stringResource(item.title)) },
-                selected = index == selectedIndex,
-                onClick = { onItemSelected(index) },
+                selected = tabIndex == selectedIndex,
+                onClick = { onItemSelected(tabIndex) },
             )
         }
     }

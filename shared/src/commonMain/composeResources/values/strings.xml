@@ -119,6 +119,9 @@
     <string name="settings_clear_cache_summary">包括图片及其他缓存数据，共%1$dMB</string>
     <string name="clear_cache_tips">确认清除缓存吗？</string>
 
+    <string name="settings_hide_login_related_ui">隐藏登录相关界面</string>
+    <string name="settings_hide_login_related_ui_summary">隐藏通知、登录与我的相关入口</string>
+
     <string name="settings_auto_check_in">自动签到</string>
     <string name="settings_auto_check_in_description">自动领取每日登录奖励</string>
     <string name="settings_auto_check_in_description_ios">自动领取每日登录奖励，执行时机由 iOS 系统决定</string>

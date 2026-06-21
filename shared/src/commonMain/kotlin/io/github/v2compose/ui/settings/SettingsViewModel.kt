@@ -100,6 +100,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setHideLoginRelatedUi(value: Boolean) {
+        viewModelScope.launch {
+            appPreferences.hideLoginRelatedUi(value)
+        }
+    }
+
     fun changeProxy(proxy: ProxyInfo) {
         viewModelScope.launch {
             appPreferences.proxyInfo(proxy)

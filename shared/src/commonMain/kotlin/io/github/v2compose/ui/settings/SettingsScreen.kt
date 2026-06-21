@@ -72,6 +72,8 @@ import v2compose.shared.generated.resources.settings_dark_mode_off
 import v2compose.shared.generated.resources.settings_dark_mode_on
 import v2compose.shared.generated.resources.settings_highlight_op_reply
 import v2compose.shared.generated.resources.settings_highlight_op_reply_summary
+import v2compose.shared.generated.resources.settings_hide_login_related_ui
+import v2compose.shared.generated.resources.settings_hide_login_related_ui_summary
 import v2compose.shared.generated.resources.settings_other
 import v2compose.shared.generated.resources.settings_proxy
 import v2compose.shared.generated.resources.settings_proxy_ios_notice
@@ -103,6 +105,7 @@ fun SettingsScreenRoute(
         proxyInfo = proxyInfo,
         onBackClick = onBackClick,
         onClearCacheClick = viewModel::clearCache,
+        onHideLoginRelatedUiChanged = viewModel::setHideLoginRelatedUi,
         onAutoCheckInChanged = viewModel::updateAutoCheckIn,
         onReplyWithFloorChanged = viewModel::updateReplyWithFloor,
         onDarkModeChanged = viewModel::setDarkMode,
@@ -126,6 +129,7 @@ private fun SettingsScreen(
     proxyInfo: ProxyInfo,
     onBackClick: () -> Unit,
     onClearCacheClick: () -> Unit,
+    onHideLoginRelatedUiChanged: (Boolean) -> Unit,
     onAutoCheckInChanged: (Boolean) -> Unit,
     onReplyWithFloorChanged: (Boolean) -> Unit,
     onDarkModeChanged: (DarkMode) -> Unit,
@@ -147,6 +151,12 @@ private fun SettingsScreen(
             val platformHandlers = LocalAppPlatformHandlers.current
             PreferenceGroupTitle(title = stringResource(Res.string.settings_common))
             ClearCachePreference(cacheSize, onClearCacheClick)
+            SwitchPreference(
+                title = stringResource(Res.string.settings_hide_login_related_ui),
+                summary = stringResource(Res.string.settings_hide_login_related_ui_summary),
+                checked = appSettings.hideLoginRelatedUi,
+                onCheckedChange = onHideLoginRelatedUiChanged,
+            )
             if (platformHandlers.capabilities.supportsAutoCheckIn) {
                 AutoCheckInPreference(appSettings, onAutoCheckInChanged)
             }

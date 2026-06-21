@@ -11,11 +11,13 @@ import io.github.v2compose.ui.BaseViewModel
 import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
@@ -34,6 +36,14 @@ class MainViewModel(
 
     private val _selectedTabIndex = MutableStateFlow(0)
     val selectedTabIndex = _selectedTabIndex.asStateFlow()
+
+    val hideLoginRelatedUi: StateFlow<Boolean> = appPreferences.appSettings
+        .map { it.hideLoginRelatedUi }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = true,
+        )
 
     val unreadNotifications = accountRepository.unreadNotifications
         .stateIn(
