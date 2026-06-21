@@ -12,7 +12,6 @@ import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
-import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +23,6 @@ private const val TAG = "SettingsViewModel"
 
 class SettingsViewModel(
     private val appPreferences: AppPreferences,
-    val checkForUpdates: CheckForUpdatesUseCase,
     private val accountRepository: AccountRepository,
     private val httpCache: HttpCacheManager,
     private val imageDiskCache: DiskCache,

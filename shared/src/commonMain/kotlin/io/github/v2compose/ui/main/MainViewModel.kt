@@ -8,7 +8,6 @@ import io.github.v2compose.network.bean.Release
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.ui.BaseViewModel
-import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +23,6 @@ import v2compose.shared.generated.resources.Res
 import v2compose.shared.generated.resources.daily_mission_failure
 
 class MainViewModel(
-    private val checkForUpdates: CheckForUpdatesUseCase,
     private val checkIn: CheckInUseCase,
     private val appPreferences: AppPreferences,
     private val accountRepository: AccountRepository,
@@ -37,9 +35,6 @@ class MainViewModel(
     private val _selectedTabIndex = MutableStateFlow(0)
     val selectedTabIndex = _selectedTabIndex.asStateFlow()
 
-    private val _newRelease = MutableStateFlow(Release.Empty)
-    val newRelease = _newRelease.asStateFlow()
-
     val unreadNotifications = accountRepository.unreadNotifications
         .stateIn(
             scope = viewModelScope,
@@ -48,16 +43,9 @@ class MainViewModel(
         )
 
     init {
-        autoCheckForUpdates()
         listenCanCheckIn()
         listenAutoCheckIn()
         initWebViewProxy()
-    }
-
-    private fun autoCheckForUpdates() {
-        viewModelScope.launch {
-            _newRelease.emit(checkForUpdates())
-        }
     }
 
     private fun listenCanCheckIn() {
@@ -111,12 +99,6 @@ class MainViewModel(
                     webViewProxyController.updateWebViewProxy(proxyInfo)
                 }
             }
-        }
-    }
-
-    fun resetNewRelease() {
-        viewModelScope.launch {
-            _newRelease.emit(Release.Empty)
         }
     }
 

@@ -25,29 +25,23 @@ class IosNetworkClientRegistry(
     private var currentProxyInfo: ProxyInfo = runBlocking { appPreferences.proxyInfo.first() }
     private var v2HttpClient: HttpClient = buildV2HttpClient(currentProxyInfo)
     private var imageHttpClient: HttpClient = buildImageHttpClient(currentProxyInfo)
-    private var githubHttpClient: HttpClient = buildGithubHttpClient(currentProxyInfo)
 
     override fun v2HttpClient(): HttpClient = v2HttpClient
 
     override fun imageHttpClient(): HttpClient = imageHttpClient
-
-    override fun githubHttpClient(): HttpClient = githubHttpClient
 
     override fun updateProxy(proxyInfo: ProxyInfo) {
         if (proxyInfo == currentProxyInfo) return
 
         val oldV2HttpClient = v2HttpClient
         val oldImageHttpClient = imageHttpClient
-        val oldGithubHttpClient = githubHttpClient
 
         currentProxyInfo = proxyInfo
         v2HttpClient = buildV2HttpClient(proxyInfo)
         imageHttpClient = buildImageHttpClient(proxyInfo)
-        githubHttpClient = buildGithubHttpClient(proxyInfo)
 
         oldV2HttpClient.close()
         oldImageHttpClient.close()
-        oldGithubHttpClient.close()
     }
 
     private fun buildV2HttpClient(proxyInfo: ProxyInfo): HttpClient =
@@ -70,14 +64,6 @@ class IosNetworkClientRegistry(
             ),
         )
 
-    private fun buildGithubHttpClient(proxyInfo: ProxyInfo): HttpClient =
-        createGithubHttpClient(
-            engine = createIosHttpClientEngine(
-                proxyInfo = proxyInfo,
-                urlCache = urlCache,
-                useSharedCookieStorage = false,
-            ),
-        )
 }
 
 private fun createIosHttpClientEngine(

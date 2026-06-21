@@ -22,7 +22,6 @@ import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.WebkitCookieManager
 import io.github.v2compose.network.createAndroidImageHttpClient
 import io.github.v2compose.network.AndroidNetworkClientProvider
-import io.github.v2compose.network.createAndroidGithubHttpClient
 import io.github.v2compose.network.createAndroidV2HttpClient
 import io.github.v2compose.network.di.V2ProxySelector
 import io.github.v2compose.shared.core.V2EventManager
@@ -109,14 +108,10 @@ actual val platformModule: Module = module {
         )
     }
 
-    single<HttpClient>(named("GithubHttpClient")) {
-        createAndroidGithubHttpClient(okHttpClient = get<OkHttpClient>(named("CommonOkHttpClient")))
-    }
     single<NetworkClientProvider> {
         AndroidNetworkClientProvider(
             v2HttpClient = get(named("V2HttpClient")),
             imageHttpClient = get(named("ImageHttpClient")),
-            githubHttpClient = get(named("GithubHttpClient")),
         )
     }
 

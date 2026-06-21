@@ -38,7 +38,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.ui.HandleSnackbarMessage
-import io.github.v2compose.ui.common.NewReleaseDialog
 import io.github.v2compose.ui.common.OnHtmlImageClick
 import io.github.v2compose.ui.common.PlatformBackHandler
 import io.github.v2compose.ui.common.SelectNode
@@ -81,22 +80,6 @@ fun MainScreenRoute(
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsStateWithLifecycle()
 
     HandleSnackbarMessage(viewModel)
-
-    val newRelease by viewModel.newRelease.collectAsStateWithLifecycle()
-    if (newRelease.isValid()) {
-        NewReleaseDialog(
-            release = newRelease,
-            onIgnoreClick = {
-                viewModel.ignoreRelease(newRelease)
-                viewModel.resetNewRelease()
-            },
-            onCancelClick = viewModel::resetNewRelease,
-            onOkClick = {
-                openUri(newRelease.htmlUrl)
-                viewModel.resetNewRelease()
-            },
-        )
-    }
 
     val clickDispatcher = remember { ClickDispatcher() }
 

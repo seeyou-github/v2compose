@@ -37,14 +37,12 @@ import io.github.v2compose.Constants
 import io.github.v2compose.AutoCheckInPrerequisiteState
 import io.github.v2compose.LocalAppPlatformHandlers
 import io.github.v2compose.PlatformCapabilities
-import io.github.v2compose.network.bean.Release
 import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.ui.common.BackIcon
 import io.github.v2compose.ui.common.ListDivider
-import io.github.v2compose.ui.common.NewReleaseDialog
 import io.github.v2compose.ui.common.SingleChoiceListDialog
 import io.github.v2compose.ui.common.TextAlertDialog
 import io.github.v2compose.ui.settings.composables.SelectProxyDialog
@@ -97,27 +95,10 @@ fun SettingsScreenRoute(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    var newRelease by rememberSaveable(
-        saver = mapSaver(
-            save = { it.value.toMap() },
-            restore = { mutableStateOf(Release.fromMap(it)) },
-        )
-    ) { mutableStateOf(Release.Empty) }
-
     val cacheSize by viewModel.cacheSize.collectAsStateWithLifecycle()
     val appSettings by viewModel.appSettings.collectAsStateWithLifecycle()
     val proxyInfo by viewModel.proxyInfo.collectAsStateWithLifecycle()
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
-
-    if (newRelease.isValid()) {
-        NewReleaseDialog(release = newRelease, onIgnoreClick = {
-            viewModel.ignoreRelease(newRelease)
-            newRelease = Release.Empty
-        }, onCancelClick = { newRelease = Release.Empty }, onOkClick = {
-            openUri(newRelease.htmlUrl)
-            newRelease = Release.Empty
-        })
-    }
 
     SettingsScreen(
         isLoggedIn = isLoggedIn,
@@ -135,14 +116,7 @@ fun SettingsScreenRoute(
         onSourceClick = openUri,
         onIssuesClick = openUri,
         onVersionClick = {},
-        onCheckForUpdatesClick = {
-            coroutineScope.launch {
-                settingsScreenState.checkForUpdates(
-                    checkForUpdates = { viewModel.checkForUpdates.invoke(true) },
-                    onNewRelease = { newRelease = it },
-                )
-            }
-        },
+        onCheckForUpdatesClick = {},
         onLogout = {
             coroutineScope.launch {
                 viewModel.logout()
@@ -235,10 +209,13 @@ private fun SettingsScreen(
                 summary = Constants.versionName,
                 onPreferenceClick = onVersionClick
             )
+            // 禁止应用内“检查更新”：避免触发 GitHub release 检测链路。
+            // 点击项保留但不可点击，便于 UI 保持稳定。
             ClickablePreference(
                 title = stringResource(Res.string.settings_check_for_updates),
                 summary = stringResource(Res.string.settings_check_for_updates_summary),
-                onPreferenceClick = onCheckForUpdatesClick,
+                enabled = false,
+                onPreferenceClick = {},
             )
             if (isLoggedIn) {
                 Logout(onLogout = onLogout)
@@ -402,9 +379,16 @@ private fun PreferenceGroupTitle(title: String) {
 
 @Composable
 private fun ClickablePreference(
-    title: String, summary: String? = null, onPreferenceClick: (() -> Unit)? = null
+    title: String,
+    summary: String? = null,
+    enabled: Boolean = true,
+    onPreferenceClick: (() -> Unit)? = null,
 ) {
-    Box(modifier = Modifier.clickable(enabled = onPreferenceClick != null) { onPreferenceClick?.invoke() }) {
+    Box(
+        modifier = Modifier.clickable(
+            enabled = enabled && onPreferenceClick != null,
+        ) { onPreferenceClick?.invoke() }
+    ) {
         PreferenceContent(title, summary = summary)
         ListDivider(modifier = Modifier.align(Alignment.BottomCenter))
     }

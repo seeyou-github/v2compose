@@ -77,16 +77,6 @@ fun createImageHttpClient(
     },
 )
 
-fun createGithubHttpClient(engine: HttpClientEngine? = null): HttpClient =
-    HttpClient(engine ?: createHttpClientEngine()) {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                coerceInputValues = true
-            })
-        }
-    }
-
 private fun createConfiguredHttpClient(
     engine: HttpClientEngine?,
     eventManager: V2EventManager?,

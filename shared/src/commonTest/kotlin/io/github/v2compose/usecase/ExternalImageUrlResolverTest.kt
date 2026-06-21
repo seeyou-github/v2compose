@@ -121,6 +121,4 @@ private class FakeNetworkClientProvider : NetworkClientProvider {
     override fun v2HttpClient(): HttpClient = HttpClient()
 
     override fun imageHttpClient(): HttpClient = HttpClient()
-
-    override fun githubHttpClient(): HttpClient = HttpClient()
 }

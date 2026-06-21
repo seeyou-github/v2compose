@@ -27,9 +27,3 @@ fun createAndroidImageHttpClient(okHttpClient: OkHttpClient): HttpClient {
     return createImageHttpClient(engine)
 }
 
-fun createAndroidGithubHttpClient(okHttpClient: OkHttpClient): HttpClient {
-    val engine = OkHttp.create {
-        preconfigured = okHttpClient
-    }
-    return createGithubHttpClient(engine)
-}

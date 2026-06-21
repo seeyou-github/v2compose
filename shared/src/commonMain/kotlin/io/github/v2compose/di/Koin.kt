@@ -8,17 +8,13 @@ import io.github.v2compose.datasource.AppPreferences
 import io.github.v2compose.datasource.AppStateStore
 import io.github.v2compose.datasource.MyFollowingPagingSource
 import io.github.v2compose.datasource.MyTopicsPagingSource
-import io.github.v2compose.network.GithubApi
-import io.github.v2compose.network.KtorGithubApi
 import io.github.v2compose.network.V2exApi
 import io.github.v2compose.repository.AccountRepository
-import io.github.v2compose.repository.AppRepository
 import io.github.v2compose.repository.NewsRepository
 import io.github.v2compose.repository.NodeRepository
 import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.repository.UserRepository
 import io.github.v2compose.repository.def.DefaultAccountRepository
-import io.github.v2compose.repository.def.DefaultAppRepository
 import io.github.v2compose.repository.def.DefaultNewsRepository
 import io.github.v2compose.repository.def.DefaultNodeRepository
 import io.github.v2compose.repository.def.DefaultTopicRepository
@@ -46,7 +42,6 @@ import io.github.v2compose.ui.topic.TopicViewModel
 import io.github.v2compose.ui.user.UserViewModel
 import io.github.v2compose.ui.webview.WebViewViewModel
 import io.github.v2compose.ui.write.WriteTopicViewModel
-import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.DefaultExternalImageUrlResolver
 import io.github.v2compose.usecase.ExternalImageUrlResolver
@@ -70,11 +65,9 @@ val sharedCoreModule = module {
 
 val sharedNetworkModule = module {
     singleOf(::V2exApi)
-    single<GithubApi> { KtorGithubApi(get()) }
 }
 
 val sharedDataModule = module {
-    singleOf(::DefaultAppRepository) { bind<AppRepository>() }
     singleOf(::DefaultNewsRepository) { bind<NewsRepository>() }
     singleOf(::DefaultNodeRepository) { bind<NodeRepository>() }
     singleOf(::DefaultTopicRepository) { bind<TopicRepository>() }
@@ -87,7 +80,6 @@ val sharedDataModule = module {
 }
 
 val sharedUseCaseModule = module {
-    singleOf(::CheckForUpdatesUseCase)
     singleOf(::UpdateAccountUseCase)
     singleOf(::CheckInUseCase)
     singleOf(::LoadNodesUseCase)

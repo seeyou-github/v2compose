@@ -16,14 +16,12 @@ import io.github.v2compose.network.bean.MyNodesInfo
 import io.github.v2compose.network.bean.MyTopicsInfo
 import io.github.v2compose.network.bean.NotificationInfo
 import io.github.v2compose.network.bean.ReplyTopicResultInfo
-import io.github.v2compose.network.bean.Release
 import io.github.v2compose.network.bean.SoV2EXSearchResultInfo
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TwoStepLoginInfo
 import io.github.v2compose.network.bean.V2exResult
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.repository.ActionMethod
-import io.github.v2compose.repository.AppRepository
 import io.github.v2compose.repository.TopicRepository
 import io.github.v2compose.shared.bean.Account
 import io.github.v2compose.shared.bean.ContentFormat
@@ -31,7 +29,6 @@ import io.github.v2compose.shared.bean.DraftTopic
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.shared.bean.TopicNode
-import io.github.v2compose.usecase.CheckForUpdatesUseCase
 import io.github.v2compose.usecase.CheckInUseCase
 import io.github.v2compose.usecase.LoadNodesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -74,7 +71,6 @@ class MainViewModelTest {
         val webViewProxyController = RecordingWebViewProxyController()
 
         MainViewModel(
-            checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), fakeAppPreferences()),
             checkIn = CheckInUseCase(accountRepository),
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
@@ -105,7 +101,6 @@ class MainViewModelTest {
         val webViewProxyController = RecordingWebViewProxyController()
 
         MainViewModel(
-            checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), fakeAppPreferences()),
             checkIn = CheckInUseCase(accountRepository),
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
@@ -132,7 +127,6 @@ class MainViewModelTest {
         val webViewProxyController = RecordingWebViewProxyController()
 
         MainViewModel(
-            checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), fakeAppPreferences()),
             checkIn = CheckInUseCase(accountRepository),
             appPreferences = fakeAppPreferences(),
             accountRepository = accountRepository,
@@ -158,7 +152,6 @@ class MainViewModelTest {
         appPreferences.proxyInfo(proxyInfo)
 
         MainViewModel(
-            checkForUpdates = CheckForUpdatesUseCase(FakeAppRepository(), appPreferences),
             checkIn = CheckInUseCase(accountRepository),
             appPreferences = appPreferences,
             accountRepository = accountRepository,
@@ -203,10 +196,6 @@ private class RecordingWebViewProxyController : WebViewProxyController {
     override fun updateWebViewProxy(proxyInfo: ProxyInfo) {
         proxyUpdates += proxyInfo
     }
-}
-
-private class FakeAppRepository : AppRepository {
-    override suspend fun getAppLatestRelease(): Release = Release.Empty
 }
 
 private class FakeTopicRepository : TopicRepository {

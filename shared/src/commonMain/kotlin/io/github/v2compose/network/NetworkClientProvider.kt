@@ -6,6 +6,4 @@ interface NetworkClientProvider {
     fun v2HttpClient(): HttpClient
 
     fun imageHttpClient(): HttpClient
-
-    fun githubHttpClient(): HttpClient
 }
