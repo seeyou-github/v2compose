@@ -4,9 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.v2compose.shared.bean.AppSettings
-import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -21,7 +21,7 @@ class AppPreferences(
     companion object {
         private val KeyTopicRepliesReversed = booleanPreferencesKey("topic_replies_reversed")
         private val KeyOpenInInternalBrowser = booleanPreferencesKey("open_in_internal_browser")
-        private val KeyDarkMode = stringPreferencesKey("dark_mode")
+        private val KeyDarkThemeEnabled = booleanPreferencesKey("dark_theme_enabled")
         private val KeyTopicTitleOverview = booleanPreferencesKey("topic_title_overview")
         private val KeyIgnoredReleaseName = stringPreferencesKey("ignored_release_name")
         private val KeyAutoCheckIn = booleanPreferencesKey("auto_check_in")
@@ -32,6 +32,13 @@ class AppPreferences(
         private val KeyHideTopicUserInfo = booleanPreferencesKey("hide_topic_user_info")
         private val KeyDisableAvatarImages = booleanPreferencesKey("disable_avatar_images")
 
+        private val KeyAppearanceDarkPresetIndex = intPreferencesKey("appearance_dark_preset_index")
+        private val KeyAppearanceLightPresetIndex = intPreferencesKey("appearance_light_preset_index")
+        private val KeyAppearanceDarkOverridesJson = stringPreferencesKey("appearance_dark_overrides_json")
+        private val KeyAppearanceLightOverridesJson = stringPreferencesKey("appearance_light_overrides_json")
+        private val KeyPrimaryTextSize = intPreferencesKey("primary_text_size")
+        private val KeySecondaryTextSize = intPreferencesKey("secondary_text_size")
+
         private val KeyProxyInfo = stringPreferencesKey("proxy_info")
     }
 
@@ -39,8 +46,7 @@ class AppPreferences(
         AppSettings(
             topicRepliesReversed = it[KeyTopicRepliesReversed] ?: true,
             openInInternalBrowser = it[KeyOpenInInternalBrowser] ?: true,
-            darkMode = it[KeyDarkMode]?.let { value -> DarkMode.valueOf(value) }
-                ?: DarkMode.FollowSystem,
+            darkThemeEnabled = it[KeyDarkThemeEnabled] ?: true,
             topicTitleOverview = it[KeyTopicTitleOverview] ?: true,
             ignoredReleaseName = it[KeyIgnoredReleaseName],
             autoCheckIn = it[KeyAutoCheckIn] ?: false,
@@ -50,6 +56,12 @@ class AppPreferences(
             hideLoginRelatedUi = it[KeyHideLoginRelatedUi] ?: true,
             hideTopicUserInfo = it[KeyHideTopicUserInfo] ?: true,
             disableAvatarImages = it[KeyDisableAvatarImages] ?: true,
+            appearanceDarkPresetIndex = it[KeyAppearanceDarkPresetIndex] ?: 0,
+            appearanceLightPresetIndex = it[KeyAppearanceLightPresetIndex] ?: 0,
+            appearanceDarkOverridesJson = it[KeyAppearanceDarkOverridesJson] ?: "",
+            appearanceLightOverridesJson = it[KeyAppearanceLightOverridesJson] ?: "",
+            primaryTextSize = it[KeyPrimaryTextSize] ?: 16,
+            secondaryTextSize = it[KeySecondaryTextSize] ?: 12,
         )
     }.distinctUntilChanged()
 
@@ -69,9 +81,9 @@ class AppPreferences(
         }
     }
 
-    suspend fun darkMode(value: DarkMode) {
+    suspend fun darkThemeEnabled(value: Boolean) {
         dataStore.edit {
-            it[KeyDarkMode] = value.name
+            it[KeyDarkThemeEnabled] = value
         }
     }
 
@@ -133,5 +145,29 @@ class AppPreferences(
         dataStore.edit {
             it[KeyDisableAvatarImages] = value
         }
+    }
+
+    suspend fun appearanceDarkPresetIndex(value: Int) {
+        dataStore.edit { it[KeyAppearanceDarkPresetIndex] = value }
+    }
+
+    suspend fun appearanceLightPresetIndex(value: Int) {
+        dataStore.edit { it[KeyAppearanceLightPresetIndex] = value }
+    }
+
+    suspend fun appearanceDarkOverridesJson(value: String) {
+        dataStore.edit { it[KeyAppearanceDarkOverridesJson] = value }
+    }
+
+    suspend fun appearanceLightOverridesJson(value: String) {
+        dataStore.edit { it[KeyAppearanceLightOverridesJson] = value }
+    }
+
+    suspend fun primaryTextSize(value: Int) {
+        dataStore.edit { it[KeyPrimaryTextSize] = value }
+    }
+
+    suspend fun secondaryTextSize(value: Int) {
+        dataStore.edit { it[KeySecondaryTextSize] = value }
     }
 }

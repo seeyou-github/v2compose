@@ -30,6 +30,7 @@ fun NavGraphBuilder.mainScreen(
     onMyTopicsClick: () -> Unit,
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onAppearanceSettingsClick: () -> Unit,
     openUri: (String) -> Unit,
     onHtmlImageClick: OnHtmlImageClick,
 ) {
@@ -47,6 +48,7 @@ fun NavGraphBuilder.mainScreen(
             onMyTopicsClick = onMyTopicsClick,
             onMyFollowingClick = onMyFollowingClick,
             onSettingsClick = onSettingsClick,
+            onAppearanceSettingsClick = onAppearanceSettingsClick,
             openUri = openUri,
             onHtmlImageClick = onHtmlImageClick,
         )

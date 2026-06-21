@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.NavigateNext
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ColorLens
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.People
 import androidx.compose.material.icons.rounded.Settings
@@ -64,6 +65,7 @@ import v2compose.shared.generated.resources.my_following
 import v2compose.shared.generated.resources.my_nodes
 import v2compose.shared.generated.resources.my_topics
 import v2compose.shared.generated.resources.settings
+import v2compose.shared.generated.resources.settings_appearance
 import v2compose.shared.generated.resources.silver
 
 
@@ -76,6 +78,7 @@ fun MineContent(
     onMyTopicsClick: () -> Unit,
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onAppearanceSettingsClick: () -> Unit,
     hideLoginRelatedUi: Boolean,
     modifier: Modifier = Modifier,
     viewModel: MineViewModel = koinViewModel(),
@@ -116,6 +119,7 @@ fun MineContent(
         onMyTopicsClick = { doActionIfLoggedIn(onMyTopicsClick) },
         onMyFollowingClick = { doActionIfLoggedIn(onMyFollowingClick) },
         onSettingsClick = onSettingsClick,
+        onAppearanceSettingsClick = onAppearanceSettingsClick,
         hideLoginRelatedUi = hideLoginRelatedUi,
         modifier = Modifier
     )
@@ -135,6 +139,7 @@ private fun MineContainer(
     onMyTopicsClick: () -> Unit,
     onMyFollowingClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onAppearanceSettingsClick: () -> Unit,
     hideLoginRelatedUi: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -197,6 +202,13 @@ private fun MineContainer(
                 leadingIcon = Icons.Rounded.Settings,
                 title = stringResource(Res.string.settings),
                 onEntryClick = onSettingsClick,
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            )
+            Spacer(Modifier.height(8.dp))
+            MineEntry(
+                leadingIcon = Icons.Rounded.ColorLens,
+                title = stringResource(Res.string.settings_appearance),
+                onEntryClick = onAppearanceSettingsClick,
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             )
         }

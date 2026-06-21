@@ -10,7 +10,6 @@ import io.github.v2compose.network.ProxyManager
 import io.github.v2compose.network.bean.Release
 import io.github.v2compose.repository.AccountRepository
 import io.github.v2compose.shared.bean.AppSettings
-import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -82,12 +81,6 @@ class SettingsViewModel(
         }
     }
 
-    fun setDarkMode(value: DarkMode) {
-        viewModelScope.launch {
-            appPreferences.darkMode(value)
-        }
-    }
-
     fun setTopicTitleTwoLineMax(value: Boolean) {
         viewModelScope.launch {
             appPreferences.topicTitleOverview(value)
@@ -115,6 +108,48 @@ class SettingsViewModel(
     fun setDisableAvatarImages(value: Boolean) {
         viewModelScope.launch {
             appPreferences.disableAvatarImages(value)
+        }
+    }
+
+    fun setDarkThemeEnabled(value: Boolean) {
+        viewModelScope.launch {
+            appPreferences.darkThemeEnabled(value)
+        }
+    }
+
+    fun setPrimaryTextSize(value: Int) {
+        viewModelScope.launch {
+            appPreferences.primaryTextSize(value)
+        }
+    }
+
+    fun setSecondaryTextSize(value: Int) {
+        viewModelScope.launch {
+            appPreferences.secondaryTextSize(value)
+        }
+    }
+
+    fun setDarkPresetIndex(value: Int) {
+        viewModelScope.launch {
+            appPreferences.appearanceDarkPresetIndex(value)
+        }
+    }
+
+    fun setLightPresetIndex(value: Int) {
+        viewModelScope.launch {
+            appPreferences.appearanceLightPresetIndex(value)
+        }
+    }
+
+    fun setDarkOverridesJson(value: String) {
+        viewModelScope.launch {
+            appPreferences.appearanceDarkOverridesJson(value)
+        }
+    }
+
+    fun setLightOverridesJson(value: String) {
+        viewModelScope.launch {
+            appPreferences.appearanceLightOverridesJson(value)
         }
     }
 

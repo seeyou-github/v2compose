@@ -28,8 +28,10 @@ import io.github.v2compose.ui.node.nodeScreen
 import io.github.v2compose.ui.search.navigateToSearch
 import io.github.v2compose.ui.search.searchScreen
 import io.github.v2compose.ui.settings.navigateToSettings
+import io.github.v2compose.ui.settings.navigateToAppearanceSettings
 import io.github.v2compose.ui.settings.settingsScreen
 import io.github.v2compose.ui.settings.settingsScreenNavigationRoute
+import io.github.v2compose.ui.settings.appearanceScreen
 import io.github.v2compose.ui.supplement.addSupplementScreen
 import io.github.v2compose.ui.supplement.navigateToAddSupplement
 import io.github.v2compose.ui.topic.navigateToTopic
@@ -72,6 +74,7 @@ fun SharedAppNavGraph(
             onMyFollowingClick = navController::navigateToMyFollowing,
             onCreateTopicClick = navController::navigateToWriteTopic,
             onSettingsClick = navController::navigateToSettings,
+            onAppearanceSettingsClick = navController::navigateToAppearanceSettings,
             openUri = appState::openUri,
             onHtmlImageClick = navController::navigateToGallery,
         )
@@ -113,6 +116,10 @@ fun SharedAppNavGraph(
                     }
                 })
             },
+            onAppearanceSettingsClick = navController::navigateToAppearanceSettings,
+        )
+        appearanceScreen(
+            onBackClick = appState::back,
         )
         loginScreen(
             onCloseClick = appState::back,

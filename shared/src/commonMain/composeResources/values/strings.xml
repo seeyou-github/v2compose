@@ -111,7 +111,7 @@
     <!-- Settings Screen Start -->
     <string name="settings">设置</string>
     <string name="settings_common">常规设置</string>
-    <string name="settings_appearance">显示设置</string>
+    <string name="settings_appearance">外观设置</string>
     <string name="settings_advanced">高级</string>
     <string name="settings_other">其他</string>
 

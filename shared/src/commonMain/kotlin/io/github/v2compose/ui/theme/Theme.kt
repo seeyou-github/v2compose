@@ -6,6 +6,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import io.github.v2compose.shared.bean.AppSettings
+import io.github.v2compose.ui.settings.appearanceColorScheme
 
 /**
  * Light default theme color scheme
@@ -138,8 +141,20 @@ fun V2composeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     androidTheme: Boolean = false,
     dynamicColor: Boolean = true,
+    appSettings: AppSettings? = null,
     content: @Composable () -> Unit
 ) {
+    val settings = appSettings
+
+    if (settings != null) {
+        MaterialTheme(
+            colorScheme = appearanceColorScheme(settings),
+            typography = appTypography(settings.primaryTextSize.sp, settings.secondaryTextSize.sp),
+            content = content,
+        )
+        return
+    }
+
     PlatformTheme(
         darkTheme = darkTheme,
         androidTheme = androidTheme,
@@ -147,7 +162,7 @@ fun V2composeTheme(
     ) { colorScheme ->
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = appTypography(16.sp, 12.sp),
             content = content
         )
     }

@@ -38,7 +38,6 @@ import io.github.v2compose.AutoCheckInPrerequisiteState
 import io.github.v2compose.LocalAppPlatformHandlers
 import io.github.v2compose.PlatformCapabilities
 import io.github.v2compose.shared.bean.AppSettings
-import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.shared.bean.ProxyInfo
 import io.github.v2compose.shared.bean.ProxyType
 import io.github.v2compose.ui.common.BackIcon
@@ -66,10 +65,6 @@ import v2compose.shared.generated.resources.settings_auto_check_in_description_i
 import v2compose.shared.generated.resources.settings_clear_cache
 import v2compose.shared.generated.resources.settings_clear_cache_summary
 import v2compose.shared.generated.resources.settings_common
-import v2compose.shared.generated.resources.settings_dark_mode
-import v2compose.shared.generated.resources.settings_dark_mode_follow_system
-import v2compose.shared.generated.resources.settings_dark_mode_off
-import v2compose.shared.generated.resources.settings_dark_mode_on
 import v2compose.shared.generated.resources.settings_highlight_op_reply
 import v2compose.shared.generated.resources.settings_highlight_op_reply_summary
 import v2compose.shared.generated.resources.settings_hide_login_related_ui
@@ -92,6 +87,7 @@ fun SettingsScreenRoute(
     onBackClick: () -> Unit,
     openUri: (String) -> Unit,
     onLogoutSuccess: () -> Unit,
+    onAppearanceSettingsClick: () -> Unit,
     viewModel: SettingsViewModel = koinViewModel(),
     settingsScreenState: SettingsScreenState = rememberSettingsScreenState()
 ) {
@@ -114,7 +110,7 @@ fun SettingsScreenRoute(
         onDisableAvatarImagesChanged = viewModel::setDisableAvatarImages,
         onAutoCheckInChanged = viewModel::updateAutoCheckIn,
         onReplyWithFloorChanged = viewModel::updateReplyWithFloor,
-        onDarkModeChanged = viewModel::setDarkMode,
+        onAppearanceSettingsClick = onAppearanceSettingsClick,
         onTopicTitleTwoLineMaxChanged = viewModel::setTopicTitleTwoLineMax,
         onHighlightOpReplyChanged = viewModel::toggleHighlightOpReply,
         onProxyChanged = viewModel::changeProxy,
@@ -140,7 +136,7 @@ private fun SettingsScreen(
     onDisableAvatarImagesChanged: (Boolean) -> Unit,
     onAutoCheckInChanged: (Boolean) -> Unit,
     onReplyWithFloorChanged: (Boolean) -> Unit,
-    onDarkModeChanged: (DarkMode) -> Unit,
+    onAppearanceSettingsClick: () -> Unit,
     onTopicTitleTwoLineMaxChanged: (Boolean) -> Unit,
     onHighlightOpReplyChanged: (Boolean) -> Unit,
     onProxyChanged: (ProxyInfo) -> Unit,
@@ -187,15 +183,9 @@ private fun SettingsScreen(
                 onCheckedChange = onReplyWithFloorChanged,
             )
             PreferenceGroupTitle(title = stringResource(Res.string.settings_appearance))
-            DropdownPreference(
-                title = stringResource(Res.string.settings_dark_mode),
-                entries = listOf(
-                    stringResource(Res.string.settings_dark_mode_follow_system),
-                    stringResource(Res.string.settings_dark_mode_off),
-                    stringResource(Res.string.settings_dark_mode_on),
-                ),
-                selectedIndex = appSettings.darkMode.ordinal,
-                onEntryClick = { index -> onDarkModeChanged(DarkMode.entries[index]) },
+            ClickablePreference(
+                title = stringResource(Res.string.settings_appearance),
+                onPreferenceClick = onAppearanceSettingsClick,
             )
             SwitchPreference(
                 title = stringResource(Res.string.settings_topic_title_overview),

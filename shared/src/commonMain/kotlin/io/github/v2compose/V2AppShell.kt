@@ -1,6 +1,5 @@
 package io.github.v2compose
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -14,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.v2compose.shared.bean.AppSettings
-import io.github.v2compose.shared.bean.DarkMode
 import io.github.v2compose.ui.theme.V2composeTheme
 
 val LocalSnackbarHostState =
@@ -34,15 +32,11 @@ fun V2AppShell(
     androidTheme: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val darkTheme = when (appSettings.darkMode) {
-        DarkMode.FollowSystem -> isSystemInDarkTheme()
-        DarkMode.Off -> false
-        DarkMode.On -> true
-    }
+    val darkTheme = appSettings.darkThemeEnabled
     val extraPadding =
         if (keyboardVisible) Modifier.imePadding() else Modifier.padding(bottom = BottomAppBarHeight)
 
-    V2composeTheme(androidTheme = androidTheme, darkTheme = darkTheme) {
+    V2composeTheme(androidTheme = androidTheme, darkTheme = darkTheme, appSettings = appSettings) {
         CompositionLocalProvider(
             LocalSnackbarHostState provides snackbarHostState,
             LocalAppPlatformHandlers provides platformHandlers,
