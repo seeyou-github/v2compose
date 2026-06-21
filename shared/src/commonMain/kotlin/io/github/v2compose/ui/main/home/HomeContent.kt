@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.unit.dp
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
@@ -52,6 +53,7 @@ fun HomeContent(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
+    nestedScrollConnection: NestedScrollConnection? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val tabInfos = HomeTabInfos
@@ -70,7 +72,8 @@ fun HomeContent(
                 RecentTab(
                     onRecentItemClick = onRecentItemClick,
                     onNodeClick = onNodeClick,
-                    onUserAvatarClick = onUserAvatarClick
+                    onUserAvatarClick = onUserAvatarClick,
+                    nestedScrollConnection = nestedScrollConnection,
                 )
             } else {
                 NewsTab(
@@ -78,6 +81,7 @@ fun HomeContent(
                     onNewsItemClick = onNewsItemClick,
                     onNodeClick = onNodeClick,
                     onUserAvatarClick = onUserAvatarClick,
+                    nestedScrollConnection = nestedScrollConnection,
                 )
             }
         }

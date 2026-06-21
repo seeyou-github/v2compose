@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.automirrored.rounded.Comment
 import androidx.compose.material.icons.automirrored.rounded.Send
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -33,7 +35,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,6 +71,7 @@ import io.github.v2compose.core.plainTextClipEntry
 import io.github.v2compose.network.bean.TopicInfo
 import io.github.v2compose.network.bean.TopicInfo.ContentInfo.Supplement
 import io.github.v2compose.network.bean.TopicInfo.Reply
+import io.github.v2compose.shared.bean.AppSettings
 import io.github.v2compose.ui.HandleSnackbarMessage
 import io.github.v2compose.ui.common.HtmlAlertDialog
 import io.github.v2compose.ui.common.HtmlContent
@@ -84,6 +89,7 @@ import io.github.v2compose.ui.topic.bean.TopicInfoWrapper
 import io.github.v2compose.ui.topic.composables.ReplyInput
 import io.github.v2compose.ui.topic.composables.ReplyInputState
 import io.github.v2compose.ui.topic.composables.ReplyMenuItem
+import io.github.v2compose.ui.settings.SettingsViewModel
 import io.github.v2compose.ui.topic.composables.TopicMenuItem
 import io.github.v2compose.ui.topic.composables.TopicReply
 import io.github.v2compose.ui.topic.composables.TopicTopBar
@@ -92,6 +98,7 @@ import io.github.v2compose.ui.topic.composables.fabSizeWithMargin
 import io.github.v2compose.util.KLogger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -113,12 +120,14 @@ fun TopicScreenRoute(
     onHtmlImageClick: OnHtmlImageClick,
     onShareTopic: (String, String) -> Unit,
     viewModel: TopicViewModel = koinViewModel(),
+    settingsViewModel: SettingsViewModel = koinViewModel(),
 ) {
     val clipboard = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
     val platformHandlers = LocalAppPlatformHandlers.current
     val args = viewModel.topicArgs
     val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+    val appSettings by settingsViewModel.appSettings.collectAsStateWithLifecycle()
     val repliesReversed by viewModel.repliesReversed.collectAsStateWithLifecycle(initialValue = true)
     val highlightOpReply by viewModel.highlightOpReply.collectAsStateWithLifecycle()
     val replyWithFloor by viewModel.replyWithFloor.collectAsStateWithLifecycle()
@@ -174,6 +183,8 @@ fun TopicScreenRoute(
         highlightOpReply = highlightOpReply,
         replyWithFloor = replyWithFloor,
         onBackClick = onBackClick,
+        appSettings = appSettings,
+        settingsViewModel = settingsViewModel,
         onTopicMenuClick = {
             when (it) {
                 TopicMenuItem.Favorite -> viewModel.favoriteTopic()
@@ -194,6 +205,7 @@ fun TopicScreenRoute(
                 TopicMenuItem.OpenInBrowser ->
                     platformHandlers.openExternalUri(V2exUri.topicUrl(args.topicId))
 
+                TopicMenuItem.TextSize -> Unit
                 TopicMenuItem.More -> Unit
             }
         },
@@ -228,6 +240,8 @@ private fun TopicScreen(
     targetFloor: Int,
     isLoggedIn: Boolean,
     topicInfo: TopicInfoWrapper,
+    appSettings: AppSettings,
+    settingsViewModel: SettingsViewModel,
     repliesOrder: RepliesOrder,
     topicItems: LazyPagingItems<Any>,
     sizedHtmls: SnapshotStateMap<String, String>,
@@ -252,6 +266,7 @@ private fun TopicScreen(
     var replyInputInitialText by remember { mutableStateOf("") }
     var replyInputCurrentText by remember { mutableStateOf("") }
     var replyInputState by remember { mutableStateOf(ReplyInputState.Collapsed) }
+    var showTextSizeDialog by remember { mutableStateOf(false) }
 
     val scrollState = topicItems.rememberLazyListState()
     val topBarShowTopicTitle by remember(density, scrollState) {
@@ -273,7 +288,13 @@ private fun TopicScreen(
                 topicInfo = topicInfo,
                 showTopicTitle = topBarShowTopicTitle,
                 onBackClick = onBackClick,
-                onMenuClick = onTopicMenuClick,
+                onMenuClick = { menuItem ->
+                    if (menuItem == TopicMenuItem.TextSize) {
+                        showTextSizeDialog = true
+                    } else {
+                        onTopicMenuClick(menuItem)
+                    }
+                },
                 scrollBehavior = topAppBarScrollBehavior
             )
         },
@@ -357,6 +378,14 @@ private fun TopicScreen(
                 }
             }
         }
+    }
+
+    if (showTextSizeDialog) {
+        TextSizeSettingDialog(
+            appSettings = appSettings,
+            settingsViewModel = settingsViewModel,
+            onDismiss = { showTextSizeDialog = false },
+        )
     }
 }
 
@@ -505,7 +534,7 @@ private fun TopicList(
                 }
             }
 
-            stickyHeader(key = "repliesBar", contentType = "repliesBar") {
+            item(key = "repliesBar", contentType = "repliesBar") {
                 TopicRepliesBar(
                     replyNum = topicInfo.topic.headerInfo!!.getCommentNum(),
                     repliesOrder = repliesOrder,
@@ -847,5 +876,68 @@ private fun HandleReplyTopicState(
                 onDismissRequest = { showProblem = false },
             )
         }
+    }
+}
+
+@Composable
+private fun TextSizeSettingDialog(
+    appSettings: AppSettings,
+    settingsViewModel: SettingsViewModel,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("文字大小设置") },
+        text = {
+            Column {
+                TextSizeSliderRow(
+                    "帖子标题",
+                    appSettings.primaryTextSize,
+                ) { settingsViewModel.setPrimaryTextSize(it) }
+                Spacer(Modifier.height(16.dp))
+                TextSizeSliderRow(
+                    "帖子正文",
+                    appSettings.topicBodyTextSize,
+                ) { settingsViewModel.setTopicBodyTextSize(it) }
+                Spacer(Modifier.height(16.dp))
+                TextSizeSliderRow(
+                    "回复内容",
+                    appSettings.topicReplyTextSize,
+                ) { settingsViewModel.setTopicReplyTextSize(it) }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(Res.string.ok))
+            }
+        },
+    )
+}
+
+@Composable
+private fun TextSizeSliderRow(
+    label: String,
+    value: Int,
+    onValueChange: (Int) -> Unit,
+) {
+    Column {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                "${value}px",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Slider(
+            value = value.toFloat(),
+            onValueChange = { onValueChange(it.roundToInt()) },
+            valueRange = 5f..25f,
+            steps = 19,
+        )
     }
 }

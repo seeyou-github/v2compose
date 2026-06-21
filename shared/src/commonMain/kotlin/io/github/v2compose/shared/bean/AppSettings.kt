@@ -19,6 +19,8 @@ data class AppSettings(
     val appearanceLightOverridesJson: String = "",
     val primaryTextSize: Int = 16,
     val secondaryTextSize: Int = 12,
+    val topicBodyTextSize: Int = 14,
+    val topicReplyTextSize: Int = 14,
 ) {
     companion object {
         val Default = AppSettings()

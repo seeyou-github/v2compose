@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.List
@@ -24,6 +25,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +38,8 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
@@ -152,6 +156,7 @@ private fun MainScreen(
     }
     var showNodes by rememberSaveable { mutableStateOf(false) }
     val hasNodes = rememberSaveable(loadNodesState) { loadNodesState is LoadNodesState.Success }
+    val topAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     PlatformBackHandler(enabled = showNodes) {
         showNodes = false
@@ -173,6 +178,7 @@ private fun MainScreen(
                         }
                     }
                 },
+                scrollBehavior = topAppBarScrollBehavior,
             )
         }, contentWindowInsets = WindowInsets(bottom = 0)
     ) { paddingValues ->
@@ -180,6 +186,7 @@ private fun MainScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                 .padding(paddingValues)
         ) {
             Box(
@@ -188,6 +195,7 @@ private fun MainScreen(
                 MainContent(
                     navBarSelectedIndex = navBarSelectedIndex,
                     hideLoginRelatedUi = hideLoginRelatedUi,
+                    nestedScrollConnection = topAppBarScrollBehavior.nestedScrollConnection,
                     onNewsItemClick = onNewsItemClick,
                     onRecentItemClick = onRecentItemClick,
                     onNodeClick = onNodeClick,
@@ -239,6 +247,7 @@ private enum class MenuItem(val imageVector: ImageVector) {
 private fun MainTopBar(
     currentNavBarIndex: Int,
     onMenuItemClick: (MenuItem) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     val navBarItemNames = listOf(
         stringResource(Res.string.main_home),
@@ -254,6 +263,7 @@ private fun MainTopBar(
         }
     }
     CenterAlignedTopAppBar(
+        modifier = Modifier.heightIn(min = 44.dp),
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -274,6 +284,7 @@ private fun MainTopBar(
                 }
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -281,6 +292,7 @@ private fun MainTopBar(
 fun MainContent(
     navBarSelectedIndex: Int,
     hideLoginRelatedUi: Boolean,
+    nestedScrollConnection: NestedScrollConnection? = null,
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onRecentItemClick: (RecentTopics.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
@@ -304,6 +316,7 @@ fun MainContent(
                 onRecentItemClick = onRecentItemClick,
                 onNodeClick = onNodeClick,
                 onUserAvatarClick = onUserAvatarClick,
+                nestedScrollConnection = nestedScrollConnection,
             )
 
             1 -> NodesContent(onNodeClick = onNodeClick, modifier = modifier)

@@ -66,7 +66,6 @@ fun AppearanceScreenRoute(
         onBackClick = onBackClick,
         onDarkModeChanged = viewModel::setDarkThemeEnabled,
         onPrimaryTextSizeChanged = viewModel::setPrimaryTextSize,
-        onSecondaryTextSizeChanged = viewModel::setSecondaryTextSize,
         onPresetSelected = { index ->
             if (appSettings.darkThemeEnabled) viewModel.setDarkPresetIndex(index)
             else viewModel.setLightPresetIndex(index)
@@ -87,7 +86,6 @@ private fun AppearanceScreen(
     onBackClick: () -> Unit,
     onDarkModeChanged: (Boolean) -> Unit,
     onPrimaryTextSizeChanged: (Int) -> Unit,
-    onSecondaryTextSizeChanged: (Int) -> Unit,
     onPresetSelected: (Int) -> Unit,
     onColorOverridesChanged: (String) -> Unit,
 ) {
@@ -156,16 +154,10 @@ private fun AppearanceScreen(
             // ── Font size sliders ────────────────────────────────────────────
             PresetSectionTitle("文字大小")
             TextSizeSlider(
-                label = "主要文字",
+                label = "帖子标题文字",
                 value = appSettings.primaryTextSize.toFloat(),
                 range = 5f..25f,
                 onValueChange = { onPrimaryTextSizeChanged(it.roundToInt()) },
-            )
-            TextSizeSlider(
-                label = "次要文字",
-                value = appSettings.secondaryTextSize.toFloat(),
-                range = 5f..25f,
-                onValueChange = { onSecondaryTextSizeChanged(it.roundToInt()) },
             )
 
             Spacer(Modifier.height(48.dp))

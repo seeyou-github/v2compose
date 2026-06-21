@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -30,6 +32,7 @@ fun RecentTab(
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
     viewModel: RecentViewModel = koinViewModel(),
+    nestedScrollConnection: NestedScrollConnection? = null,
 ) {
 
     val recentTopics = viewModel.recentTopics.collectAsLazyPagingItems()
@@ -50,6 +53,7 @@ fun RecentTab(
                 onRecentItemClick = onRecentItemClick,
                 onNodeClick = onNodeClick,
                 onUserAvatarClick = onUserAvatarClick,
+                nestedScrollConnection = nestedScrollConnection,
             )
         }
     }
@@ -63,6 +67,7 @@ private fun RecentTopicsList(
     onRecentItemClick: (RecentTopics.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
+    nestedScrollConnection: NestedScrollConnection? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val refreshing = remember(recentTopics.loadState) {
@@ -84,7 +89,14 @@ private fun RecentTopicsList(
             }
         }
 
-        LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = lazyListState,
+            modifier = if (nestedScrollConnection != null) {
+                Modifier.nestedScroll(nestedScrollConnection).fillMaxSize()
+            } else {
+                Modifier.fillMaxSize()
+            },
+        ) {
             pagingPrependMoreItem(recentTopics)
             items(recentTopics.itemCount, key = recentTopics.itemKey { it.id }) { index ->
                 val item = recentTopics[index] ?: return@items

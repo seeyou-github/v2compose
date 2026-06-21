@@ -149,7 +149,7 @@ fun V2composeTheme(
     if (settings != null) {
         MaterialTheme(
             colorScheme = appearanceColorScheme(settings),
-            typography = appTypography(settings.primaryTextSize.sp, settings.secondaryTextSize.sp),
+            typography = appTypography(settings.primaryTextSize.sp, settings.topicBodyTextSize.sp, settings.topicReplyTextSize.sp),
             content = content,
         )
         return
@@ -162,7 +162,7 @@ fun V2composeTheme(
     ) { colorScheme ->
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = appTypography(16.sp, 12.sp),
+            typography = appTypography(16.sp),
             content = content
         )
     }

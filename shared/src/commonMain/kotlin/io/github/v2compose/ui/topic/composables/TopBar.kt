@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.BookmarkAdded
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.FormatSize
 import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Report
 import androidx.compose.material.icons.rounded.Share
@@ -58,6 +59,7 @@ import v2compose.shared.generated.resources.topic_menu_item_open_in_browser
 import v2compose.shared.generated.resources.topic_menu_item_report
 import v2compose.shared.generated.resources.topic_menu_item_reported
 import v2compose.shared.generated.resources.topic_menu_item_share
+import v2compose.shared.generated.resources.topic_menu_item_text_size
 import v2compose.shared.generated.resources.topic_menu_item_unfavorite
 import v2compose.shared.generated.resources.topic_menu_item_unignore
 
@@ -75,6 +77,7 @@ enum class TopicMenuItem(val icon: ImageVector, val label: StringResource) {
     Reported(Icons.Outlined.Report, Res.string.topic_menu_item_reported),
     Share(Icons.Rounded.Share, Res.string.topic_menu_item_share),
     OpenInBrowser(Icons.Rounded.OpenInBrowser, Res.string.topic_menu_item_open_in_browser),
+    TextSize(Icons.Rounded.FormatSize, Res.string.topic_menu_item_text_size),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -169,7 +172,7 @@ private fun TopicTopBarActions(
 //                    add(if (topicInfo.isReported) TopicMenuItem.Reported else TopicMenuItem.Report)
 //                }
             }
-            addAll(listOf(TopicMenuItem.Share, TopicMenuItem.OpenInBrowser))
+            addAll(listOf(TopicMenuItem.Share, TopicMenuItem.OpenInBrowser, TopicMenuItem.TextSize))
         }
     }
     DropdownMenu(expanded = moreExpanded, onDismissRequest = { moreExpanded = false }) {

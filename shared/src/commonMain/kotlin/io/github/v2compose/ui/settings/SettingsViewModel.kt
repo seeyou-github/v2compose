@@ -153,6 +153,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setTopicBodyTextSize(value: Int) {
+        viewModelScope.launch {
+            appPreferences.topicBodyTextSize(value)
+        }
+    }
+
+    fun setTopicReplyTextSize(value: Int) {
+        viewModelScope.launch {
+            appPreferences.topicReplyTextSize(value)
+        }
+    }
+
     fun changeProxy(proxy: ProxyInfo) {
         viewModelScope.launch {
             appPreferences.proxyInfo(proxy)

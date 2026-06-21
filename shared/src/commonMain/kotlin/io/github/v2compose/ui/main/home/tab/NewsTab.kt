@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.ui.common.LoadMore
@@ -27,6 +29,7 @@ fun NewsTab(
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
+    nestedScrollConnection: NestedScrollConnection? = null,
 ) {
     val viewModel: NewsViewModel = koinViewModel(
         key = newsTabInfo.value
@@ -49,6 +52,7 @@ fun NewsTab(
         onRetryClick = { viewModel.retry() },
         onNodeClick = onNodeClick,
         onUserAvatarClick = onUserAvatarClick,
+        nestedScrollConnection = nestedScrollConnection,
     )
 }
 
@@ -63,6 +67,7 @@ fun NewsContent(
     onRetryClick: () -> Unit,
     onRefreshList: () -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
+    nestedScrollConnection: NestedScrollConnection? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (newsUiState) {
@@ -76,6 +81,7 @@ fun NewsContent(
                     onNewsItemClick = onNewsItemClick,
                     onNodeClick = onNodeClick,
                     onUserAvatarClick = onUserAvatarClick,
+                    nestedScrollConnection = nestedScrollConnection,
                 )
             }
 
@@ -101,6 +107,7 @@ private fun NewsList(
     onNewsItemClick: (NewsInfo.Item) -> Unit,
     onNodeClick: (String, String) -> Unit,
     onUserAvatarClick: (String, String) -> Unit,
+    nestedScrollConnection: NestedScrollConnection? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -120,7 +127,10 @@ private fun NewsList(
             }
         }
 
-        LazyColumn(state = lazyListState) {
+        LazyColumn(
+            state = lazyListState,
+            modifier = if (nestedScrollConnection != null) Modifier.nestedScroll(nestedScrollConnection) else Modifier,
+        ) {
             items(newsInfo.items, key = { it.id }) { item ->
                 val tagId = item.tagId()
                 if (tagId.isNullOrBlank()) {
