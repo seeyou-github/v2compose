@@ -80,11 +80,11 @@ val LightPresets = listOf(
 val DarkPresets = listOf(
     ColorPreset(
         name = "经典黑",
-        primaryText = Color(0xFFE5E5EA),
+        primaryText = Color(0xFFBDA69C),
         secondaryText = Color(0xFF8E8E93),
-        primaryBackground = Color(0xFF000000),
-        secondaryBackground = Color(0xFF1C1C1E),
-        accent = Color(0xFF0A84FF),
+        primaryBackground = Color(0xFF333335),
+        secondaryBackground = Color(0xFF1F1F21),
+        accent = Color(0xFF3C7AB9),
     ),
     ColorPreset(
         name = "深空灰",

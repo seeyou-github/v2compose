@@ -5,12 +5,12 @@ import androidx.compose.ui.graphics.Color
 // Low-contrast, iOS-like muted palettes.
 val DarkAppearancePresets: List<AppearancePreset> = listOf(
     AppearancePreset(
-        name = "石墨",
-        primaryText = Color(0xFFE7EAF0),
-        secondaryText = Color(0xFFA6AFBA),
-        primaryBackground = Color(0xFF121417),
-        secondaryBackground = Color(0xFF1A1E23),
-        accent = Color(0xFF6AA9FF),
+        name = "经典黑",
+        primaryText = Color(0xFFBDA69C),
+        secondaryText = Color(0xFF8E8E93),
+        primaryBackground = Color(0xFF333335),
+        secondaryBackground = Color(0xFF1F1F21),
+        accent = Color(0xFF3C7AB9),
     ),
     AppearancePreset(
         name = "夜蓝",
