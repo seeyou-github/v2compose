@@ -65,6 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import io.github.v2compose.LocalAppSettings
 import io.github.v2compose.LocalAppPlatformHandlers
 import io.github.v2compose.V2exUri
 import io.github.v2compose.core.plainTextClipEntry
