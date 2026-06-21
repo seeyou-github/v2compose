@@ -66,6 +66,7 @@ fun AppearanceScreenRoute(
         onBackClick = onBackClick,
         onDarkModeChanged = viewModel::setDarkThemeEnabled,
         onTopicListTitleTextSizeChanged = viewModel::setTopicListTitleTextSize,
+        onHomeListTitleLineHeightChanged = viewModel::setHomeListTitleLineHeight,
         onHomeListItemVerticalPaddingChanged = viewModel::setHomeListItemVerticalPadding,
         onTopBarMinHeightChanged = viewModel::setTopBarMinHeight,
         onPresetSelected = { index ->
@@ -88,6 +89,7 @@ private fun AppearanceScreen(
     onBackClick: () -> Unit,
     onDarkModeChanged: (Boolean) -> Unit,
     onTopicListTitleTextSizeChanged: (Int) -> Unit,
+    onHomeListTitleLineHeightChanged: (Int) -> Unit,
     onHomeListItemVerticalPaddingChanged: (Int) -> Unit,
     onTopBarMinHeightChanged: (Int) -> Unit,
     onPresetSelected: (Int) -> Unit,
@@ -162,6 +164,13 @@ private fun AppearanceScreen(
                 value = appSettings.topicListTitleTextSize.toFloat(),
                 range = 5f..25f,
                 onValueChange = { onTopicListTitleTextSizeChanged(it.roundToInt()) },
+            )
+
+            TextSizeSlider(
+                label = "主页帖子列表 标题行距",
+                value = appSettings.homeListTitleLineHeight.toFloat(),
+                range = 10f..50f,
+                onValueChange = { onHomeListTitleLineHeightChanged(it.roundToInt()) },
             )
 
             Spacer(Modifier.height(16.dp))

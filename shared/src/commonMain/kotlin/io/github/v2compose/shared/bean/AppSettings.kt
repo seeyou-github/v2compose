@@ -23,6 +23,8 @@ data class AppSettings(
     val secondaryTextSize: Int = 12,
     // Only affects topic titles in list items (home/recent/mine etc). Keep separate from global typography.
     val topicListTitleTextSize: Int = 22,
+    // Line height for topic titles in home list (sp). Kept explicit since title uses a custom fontSize.
+    val homeListTitleLineHeight: Int = 33,
     // Layout spacing (dp)
     val homeListItemVerticalPadding: Int = 5,
     val topBarMinHeight: Int = 5,

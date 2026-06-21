@@ -119,6 +119,7 @@ fun SimpleTopic(
                 title,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = LocalAppSettings.current.topicListTitleTextSize.sp,
+                    lineHeight = LocalAppSettings.current.homeListTitleLineHeight.sp,
                 ),
                 maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,

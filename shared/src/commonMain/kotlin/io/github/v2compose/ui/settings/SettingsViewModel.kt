@@ -165,6 +165,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setHomeListTitleLineHeight(value: Int) {
+        viewModelScope.launch {
+            appPreferences.homeListTitleLineHeight(value)
+        }
+    }
+
     fun setHomeListItemVerticalPadding(value: Int) {
         viewModelScope.launch {
             appPreferences.homeListItemVerticalPadding(value)

@@ -40,6 +40,7 @@ class AppPreferences(
         private val KeyPrimaryTextSize = intPreferencesKey("primary_text_size")
         private val KeySecondaryTextSize = intPreferencesKey("secondary_text_size")
         private val KeyTopicListTitleTextSize = intPreferencesKey("topic_list_title_text_size")
+        private val KeyHomeListTitleLineHeight = intPreferencesKey("home_list_title_line_height")
         private val KeyHomeListItemVerticalPadding = intPreferencesKey("home_list_item_vertical_padding")
         private val KeyTopBarMinHeight = intPreferencesKey("top_bar_min_height")
         private val KeyTopicBodyTextSize = intPreferencesKey("topic_body_text_size")
@@ -70,6 +71,7 @@ class AppPreferences(
             primaryTextSize = it[KeyPrimaryTextSize] ?: 16,
             secondaryTextSize = it[KeySecondaryTextSize] ?: 12,
             topicListTitleTextSize = it[KeyTopicListTitleTextSize] ?: 22,
+            homeListTitleLineHeight = it[KeyHomeListTitleLineHeight] ?: 33,
             homeListItemVerticalPadding = it[KeyHomeListItemVerticalPadding] ?: 5,
             topBarMinHeight = it[KeyTopBarMinHeight] ?: 5,
             topicBodyTextSize = it[KeyTopicBodyTextSize] ?: 20,
@@ -199,6 +201,10 @@ class AppPreferences(
 
     suspend fun topicListTitleTextSize(value: Int) {
         dataStore.edit { it[KeyTopicListTitleTextSize] = value }
+    }
+
+    suspend fun homeListTitleLineHeight(value: Int) {
+        dataStore.edit { it[KeyHomeListTitleLineHeight] = value }
     }
 
     suspend fun homeListItemVerticalPadding(value: Int) {
