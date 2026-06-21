@@ -165,6 +165,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setHomeListItemVerticalPadding(value: Int) {
+        viewModelScope.launch {
+            appPreferences.homeListItemVerticalPadding(value)
+        }
+    }
+
+    fun setTopBarMinHeight(value: Int) {
+        viewModelScope.launch {
+            appPreferences.topBarMinHeight(value)
+        }
+    }
+
     fun setTopicReplyTextSize(value: Int) {
         viewModelScope.launch {
             appPreferences.topicReplyTextSize(value)

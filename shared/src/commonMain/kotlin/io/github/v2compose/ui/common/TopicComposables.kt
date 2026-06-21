@@ -51,12 +51,20 @@ fun SimpleTopic(
     onUserAvatarClick: (() -> Unit)? = null,
     onNodeClick: (() -> Unit)? = null,
 ) {
+    val appSettings = LocalAppSettings.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(enabled = onItemClick != null) { onItemClick?.invoke() },
     ) {
-        Column(Modifier.padding(16.dp)) {
+        Column(
+            Modifier.padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = appSettings.homeListItemVerticalPadding.dp,
+                bottom = appSettings.homeListItemVerticalPadding.dp,
+            )
+        ) {
             if (!hideUserInfo) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     TopicUserAvatar(

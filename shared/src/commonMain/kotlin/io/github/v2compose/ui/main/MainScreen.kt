@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.v2compose.LocalAppSettings
 import io.github.v2compose.network.bean.NewsInfo
 import io.github.v2compose.network.bean.RecentTopics
 import io.github.v2compose.ui.HandleSnackbarMessage
@@ -262,6 +263,7 @@ private fun MainTopBar(
     onMenuItemClick: (MenuItem) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
+    val appSettings = LocalAppSettings.current
     val navBarItemNames = listOf(
         stringResource(Res.string.main_home),
         stringResource(Res.string.main_nodes),
@@ -276,7 +278,7 @@ private fun MainTopBar(
         }
     }
     CenterAlignedTopAppBar(
-        modifier = Modifier.heightIn(min = 44.dp),
+        modifier = Modifier.heightIn(min = appSettings.topBarMinHeight.dp),
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),

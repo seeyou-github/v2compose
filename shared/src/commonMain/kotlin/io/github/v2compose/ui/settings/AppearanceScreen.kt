@@ -66,6 +66,8 @@ fun AppearanceScreenRoute(
         onBackClick = onBackClick,
         onDarkModeChanged = viewModel::setDarkThemeEnabled,
         onTopicListTitleTextSizeChanged = viewModel::setTopicListTitleTextSize,
+        onHomeListItemVerticalPaddingChanged = viewModel::setHomeListItemVerticalPadding,
+        onTopBarMinHeightChanged = viewModel::setTopBarMinHeight,
         onPresetSelected = { index ->
             if (appSettings.darkThemeEnabled) viewModel.setDarkPresetIndex(index)
             else viewModel.setLightPresetIndex(index)
@@ -86,6 +88,8 @@ private fun AppearanceScreen(
     onBackClick: () -> Unit,
     onDarkModeChanged: (Boolean) -> Unit,
     onTopicListTitleTextSizeChanged: (Int) -> Unit,
+    onHomeListItemVerticalPaddingChanged: (Int) -> Unit,
+    onTopBarMinHeightChanged: (Int) -> Unit,
     onPresetSelected: (Int) -> Unit,
     onColorOverridesChanged: (String) -> Unit,
 ) {
@@ -158,6 +162,22 @@ private fun AppearanceScreen(
                 value = appSettings.topicListTitleTextSize.toFloat(),
                 range = 5f..25f,
                 onValueChange = { onTopicListTitleTextSizeChanged(it.roundToInt()) },
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            PresetSectionTitle("间距")
+            TextSizeSlider(
+                label = "主页列表内部上下间距",
+                value = appSettings.homeListItemVerticalPadding.toFloat(),
+                range = 4f..28f,
+                onValueChange = { onHomeListItemVerticalPaddingChanged(it.roundToInt()) },
+            )
+            TextSizeSlider(
+                label = "顶栏内部上下间距",
+                value = appSettings.topBarMinHeight.toFloat(),
+                range = 40f..72f,
+                onValueChange = { onTopBarMinHeightChanged(it.roundToInt()) },
             )
 
             Spacer(Modifier.height(48.dp))
