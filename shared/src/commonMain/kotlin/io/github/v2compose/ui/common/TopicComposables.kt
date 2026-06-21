@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import io.github.v2compose.Constants
 import io.github.v2compose.LocalAppSettings
@@ -108,7 +109,9 @@ fun SimpleTopic(
             }
             Text(
                 title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = LocalAppSettings.current.topicListTitleTextSize.sp,
+                ),
                 maxLines = if (titleOverview) Constants.topicTitleOverviewMaxLines else Int.MAX_VALUE,
                 overflow = TextOverflow.Ellipsis,
             )

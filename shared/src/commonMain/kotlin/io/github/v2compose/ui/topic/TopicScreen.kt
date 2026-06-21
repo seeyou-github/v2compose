@@ -893,8 +893,8 @@ private fun TextSizeSettingDialog(
             Column {
                 TextSizeSliderRow(
                     "帖子标题",
-                    appSettings.primaryTextSize,
-                ) { settingsViewModel.setPrimaryTextSize(it) }
+                    appSettings.topicListTitleTextSize,
+                ) { settingsViewModel.setTopicListTitleTextSize(it) }
                 Spacer(Modifier.height(16.dp))
                 TextSizeSliderRow(
                     "帖子正文",

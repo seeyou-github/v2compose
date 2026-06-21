@@ -159,6 +159,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setTopicListTitleTextSize(value: Int) {
+        viewModelScope.launch {
+            appPreferences.topicListTitleTextSize(value)
+        }
+    }
+
     fun setTopicReplyTextSize(value: Int) {
         viewModelScope.launch {
             appPreferences.topicReplyTextSize(value)

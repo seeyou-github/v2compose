@@ -38,6 +38,7 @@ class AppPreferences(
         private val KeyAppearanceLightOverridesJson = stringPreferencesKey("appearance_light_overrides_json")
         private val KeyPrimaryTextSize = intPreferencesKey("primary_text_size")
         private val KeySecondaryTextSize = intPreferencesKey("secondary_text_size")
+        private val KeyTopicListTitleTextSize = intPreferencesKey("topic_list_title_text_size")
         private val KeyTopicBodyTextSize = intPreferencesKey("topic_body_text_size")
         private val KeyTopicReplyTextSize = intPreferencesKey("topic_reply_text_size")
 
@@ -64,6 +65,7 @@ class AppPreferences(
             appearanceLightOverridesJson = it[KeyAppearanceLightOverridesJson] ?: "",
             primaryTextSize = it[KeyPrimaryTextSize] ?: 16,
             secondaryTextSize = it[KeySecondaryTextSize] ?: 12,
+            topicListTitleTextSize = it[KeyTopicListTitleTextSize] ?: 14,
             topicBodyTextSize = it[KeyTopicBodyTextSize] ?: 14,
             topicReplyTextSize = it[KeyTopicReplyTextSize] ?: 14,
         )
@@ -181,5 +183,9 @@ class AppPreferences(
 
     suspend fun topicReplyTextSize(value: Int) {
         dataStore.edit { it[KeyTopicReplyTextSize] = value }
+    }
+
+    suspend fun topicListTitleTextSize(value: Int) {
+        dataStore.edit { it[KeyTopicListTitleTextSize] = value }
     }
 }
