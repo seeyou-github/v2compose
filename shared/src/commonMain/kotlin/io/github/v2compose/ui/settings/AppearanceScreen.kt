@@ -183,9 +183,9 @@ private fun AppearanceScreen(
                 onValueChange = { onHomeListItemVerticalPaddingChanged(it.roundToInt()) },
             )
             TextSizeSlider(
-                label = "顶栏内部上下间距",
+                label = "顶栏高度",
                 value = appSettings.topBarMinHeight.toFloat(),
-                range = 0f..25f,
+                range = 0f..100f,
                 onValueChange = { onTopBarMinHeightChanged(it.roundToInt()) },
             )
 
