@@ -177,6 +177,12 @@ class SettingsViewModel(
         }
     }
 
+    fun setHomeTabRowTextVerticalPadding(value: Int) {
+        viewModelScope.launch {
+            appPreferences.homeTabRowTextVerticalPadding(value)
+        }
+    }
+
     fun setTopBarMinHeight(value: Int) {
         viewModelScope.launch {
             appPreferences.topBarMinHeight(value)

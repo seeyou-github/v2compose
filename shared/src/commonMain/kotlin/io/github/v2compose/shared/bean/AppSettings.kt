@@ -27,6 +27,7 @@ data class AppSettings(
     val homeListTitleLineHeight: Int = 33,
     // Layout spacing (dp)
     val homeListItemVerticalPadding: Int = 5,
+    val homeTabRowTextVerticalPadding: Int = 0,
     val topBarMinHeight: Int = 5,
     val topicBodyTextSize: Int = 20,
     val topicReplyTextSize: Int = 19,

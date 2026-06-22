@@ -68,6 +68,7 @@ fun AppearanceScreenRoute(
         onTopicListTitleTextSizeChanged = viewModel::setTopicListTitleTextSize,
         onHomeListTitleLineHeightChanged = viewModel::setHomeListTitleLineHeight,
         onHomeListItemVerticalPaddingChanged = viewModel::setHomeListItemVerticalPadding,
+        onHomeTabRowTextVerticalPaddingChanged = viewModel::setHomeTabRowTextVerticalPadding,
         onTopBarMinHeightChanged = viewModel::setTopBarMinHeight,
         onPresetSelected = { index ->
             if (appSettings.darkThemeEnabled) viewModel.setDarkPresetIndex(index)
@@ -91,6 +92,7 @@ private fun AppearanceScreen(
     onTopicListTitleTextSizeChanged: (Int) -> Unit,
     onHomeListTitleLineHeightChanged: (Int) -> Unit,
     onHomeListItemVerticalPaddingChanged: (Int) -> Unit,
+    onHomeTabRowTextVerticalPaddingChanged: (Int) -> Unit,
     onTopBarMinHeightChanged: (Int) -> Unit,
     onPresetSelected: (Int) -> Unit,
     onColorOverridesChanged: (String) -> Unit,
@@ -181,6 +183,12 @@ private fun AppearanceScreen(
                 value = appSettings.homeListItemVerticalPadding.toFloat(),
                 range = 0f..15f,
                 onValueChange = { onHomeListItemVerticalPaddingChanged(it.roundToInt()) },
+            )
+            TextSizeSlider(
+                label = "MyScrollableTabRow 文本上下间距",
+                value = appSettings.homeTabRowTextVerticalPadding.toFloat(),
+                range = 0f..100f,
+                onValueChange = { onHomeTabRowTextVerticalPaddingChanged(it.roundToInt()) },
             )
             TextSizeSlider(
                 label = "顶栏高度",

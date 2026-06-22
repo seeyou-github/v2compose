@@ -42,6 +42,7 @@ class AppPreferences(
         private val KeyTopicListTitleTextSize = intPreferencesKey("topic_list_title_text_size")
         private val KeyHomeListTitleLineHeight = intPreferencesKey("home_list_title_line_height")
         private val KeyHomeListItemVerticalPadding = intPreferencesKey("home_list_item_vertical_padding")
+        private val KeyHomeTabRowTextVerticalPadding = intPreferencesKey("home_tab_row_text_vertical_padding")
         private val KeyTopBarMinHeight = intPreferencesKey("top_bar_min_height")
         private val KeyTopicBodyTextSize = intPreferencesKey("topic_body_text_size")
         private val KeyTopicReplyTextSize = intPreferencesKey("topic_reply_text_size")
@@ -73,6 +74,7 @@ class AppPreferences(
             topicListTitleTextSize = it[KeyTopicListTitleTextSize] ?: 22,
             homeListTitleLineHeight = it[KeyHomeListTitleLineHeight] ?: 33,
             homeListItemVerticalPadding = it[KeyHomeListItemVerticalPadding] ?: 5,
+            homeTabRowTextVerticalPadding = it[KeyHomeTabRowTextVerticalPadding] ?: 0,
             topBarMinHeight = it[KeyTopBarMinHeight] ?: 5,
             topicBodyTextSize = it[KeyTopicBodyTextSize] ?: 20,
             topicReplyTextSize = it[KeyTopicReplyTextSize] ?: 19,
@@ -209,6 +211,10 @@ class AppPreferences(
 
     suspend fun homeListItemVerticalPadding(value: Int) {
         dataStore.edit { it[KeyHomeListItemVerticalPadding] = value }
+    }
+
+    suspend fun homeTabRowTextVerticalPadding(value: Int) {
+        dataStore.edit { it[KeyHomeTabRowTextVerticalPadding] = value }
     }
 
     suspend fun topBarMinHeight(value: Int) {

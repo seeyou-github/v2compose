@@ -48,6 +48,7 @@ fun HomeContent(
     val coroutineScope = rememberCoroutineScope()
     val appPreferences: AppPreferences = koinInject()
     val appSettings by appPreferences.appSettings.collectAsState(initial = io.github.v2compose.shared.bean.AppSettings.Default)
+    val tabRowHeight = (TabRowHeight.value + appSettings.homeTabRowTextVerticalPadding * 2).dp
 
     val configuredTabs = remember(appSettings.homeTabConfigsJson) {
         decodeList(appSettings.homeTabConfigsJson)
@@ -68,7 +69,7 @@ fun HomeContent(
         HorizontalPager(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = TabRowHeight),
+                .padding(top = tabRowHeight),
             state = pagerState,
             key = { tabInfos[it].id },
         ) { pageIndex ->
@@ -114,7 +115,7 @@ fun HomeContent(
                             pagerState.scrollToPage(index)
                         }
                     },
-                    modifier = Modifier.height(TabRowHeight)
+                    modifier = Modifier.height(tabRowHeight)
                 ) {
                     Text(
                         tabInfo.name,
@@ -123,7 +124,7 @@ fun HomeContent(
                         } else {
                             MaterialTheme.colorScheme.onBackground
                         },
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = appSettings.homeTabRowTextVerticalPadding.dp)
                     )
                 }
             }
