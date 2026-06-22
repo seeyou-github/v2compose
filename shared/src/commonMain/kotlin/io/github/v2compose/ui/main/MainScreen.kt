@@ -287,7 +287,7 @@ private fun MainTopBar(
         title = {
             Text(
                 navBarItemNames[currentNavBarIndex],
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyLarge,
             )
         },
         actions = {
