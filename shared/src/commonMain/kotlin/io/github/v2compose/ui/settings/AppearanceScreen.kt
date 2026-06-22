@@ -69,7 +69,6 @@ fun AppearanceScreenRoute(
         onHomeListTitleLineHeightChanged = viewModel::setHomeListTitleLineHeight,
         onHomeListItemVerticalPaddingChanged = viewModel::setHomeListItemVerticalPadding,
         onHomeTabRowTextVerticalPaddingChanged = viewModel::setHomeTabRowTextVerticalPadding,
-        onTopBarMinHeightChanged = viewModel::setTopBarMinHeight,
         onPresetSelected = { index ->
             if (appSettings.darkThemeEnabled) viewModel.setDarkPresetIndex(index)
             else viewModel.setLightPresetIndex(index)
@@ -93,7 +92,6 @@ private fun AppearanceScreen(
     onHomeListTitleLineHeightChanged: (Int) -> Unit,
     onHomeListItemVerticalPaddingChanged: (Int) -> Unit,
     onHomeTabRowTextVerticalPaddingChanged: (Int) -> Unit,
-    onTopBarMinHeightChanged: (Int) -> Unit,
     onPresetSelected: (Int) -> Unit,
     onColorOverridesChanged: (String) -> Unit,
 ) {
@@ -185,16 +183,10 @@ private fun AppearanceScreen(
                 onValueChange = { onHomeListItemVerticalPaddingChanged(it.roundToInt()) },
             )
             TextSizeSlider(
-                label = "MyScrollableTabRow 文本上下间距",
+                label = "分类Tab高度",
                 value = appSettings.homeTabRowTextVerticalPadding.toFloat(),
-                range = 0f..100f,
+                range = 0f..20f,
                 onValueChange = { onHomeTabRowTextVerticalPaddingChanged(it.roundToInt()) },
-            )
-            TextSizeSlider(
-                label = "顶栏高度",
-                value = appSettings.topBarMinHeight.toFloat(),
-                range = 0f..100f,
-                onValueChange = { onTopBarMinHeightChanged(it.roundToInt()) },
             )
 
             Spacer(Modifier.height(48.dp))
@@ -516,7 +508,7 @@ private fun TextSizeSlider(
             value = value,
             onValueChange = onValueChange,
             valueRange = range,
-            steps = 19, // 20 discrete steps (5..25)
+            steps = 19,
         )
     }
 }

@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import io.github.v2compose.datasource.AppPreferences
 
-private val TabRowHeight = 32.dp
+private val TabRowBaseHeight = 32.dp
 
 private const val RecentTabValue = "recent"
 
@@ -48,7 +48,7 @@ fun HomeContent(
     val coroutineScope = rememberCoroutineScope()
     val appPreferences: AppPreferences = koinInject()
     val appSettings by appPreferences.appSettings.collectAsState(initial = io.github.v2compose.shared.bean.AppSettings.Default)
-    val tabRowHeight = (TabRowHeight.value + appSettings.homeTabRowTextVerticalPadding * 2).dp
+    val tabRowHeight = (TabRowBaseHeight.value + appSettings.homeTabRowTextVerticalPadding * 2).dp
 
     val configuredTabs = remember(appSettings.homeTabConfigsJson) {
         decodeList(appSettings.homeTabConfigsJson)
